@@ -1,0 +1,48 @@
+# Prompt generate test data
+Please look at the data base schema, the test case and 
+- generate sql to generate test data for specific test case that will not exist in the database
+- generate sql to cleanup the generated test data you just generated
+
+# Prompt list all api endpoint from source code
+(first attach api source code to copilot (@ProductApI) and then prompt)
+Please don't hallucination, scan this file line by line and list all the api endoint
+
+# Prompt list all logical paths for a method needs to test
+You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, read the files line by line, follow every execution path deeply to completly understand the whole logic of method CreateInvoice. Then please list out all logical path in that method. You must not miss even 1 path since it will be a serious problem.
+
+You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, start from the method CreateInvoice, follow every execution path (deeply nested to other methods, file) and give all the methods and files included to the CreateInvoiceDependencies.md
+
+# Prompt summary logic doc
+You are senior .net developer and have deep knowledge about Point Of Sale System. Don't hallucinated, please review the actual code line by line and help me list all the business logic of CreateInvoice methods to a markdown file in vietnamese. Don't imagine or grab the common features in the domain. The logic you list out must found in the actual code
+
+## Add more logic  for each section
+Can you please check if there are more test case for section 8 "Xử lý đơn hàng" by read the actual code line by line (don't be hallucinated)
+
+Can you please check the actual code the whole file,follow every execution path (nestedly into other files, methods) to add all detail logic for section "1.1" (don't be hallucinated). Don't update the file, just give me the detail content in markdown format and should be explained in Vietnamese, don't include source code just explain the logic in natural language and domain terms
+
+## Add more detail description for logic
+Can you please elaborate more about the items in section 1.8 "Xác thực lô/hạn sử dụng" by read the actual code line by line (don't be hallucinated) and keep others section intact
+
+
+
+# Prompt generate test cases
+Please looks at the files, don't hallucination and read the files throughout, and help me write robot framwork test case for the selected code that
+
+- cover all branching logic
+- validate response data and input data
+- test specification is in gherkin format (given when then)
+- using the api endpoint https://api-man.kvpos.com:8443 to call api
+
+
+# Prompt implement test cases
+You are a senior .net developer and master robot framework, gherkin language, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination,generate all api test cases for section 1 "Kiểm tra và xác thực đầu vào" without using mock
+- Completed source code that runable
+- Don't be lazy, miss one case is a serious problem
+- Test specification simple don't use code such as If Else 
+- Must strictly follow the example and best practices and templates in the "Readme" file
+- Do not call api to setup test data or validate test result
+- Look into CommonData.robot file to reused existed common test data and create test case specific test data in new file
+- Please write the test case in Vietnamese
+- When you finish, check the result your self to see if you miss something and do it for the missed ones
+- using the api endpoint https://api-man.kvpos.com:8443 to call api
+

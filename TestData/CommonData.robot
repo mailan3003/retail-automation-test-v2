@@ -1,0 +1,136 @@
+*** Variables ***
+# Environment variables
+${RETAILER_ID}    6613
+${BRANCH_ID}      4316  
+${SOLD_BY_ID}     4119
+
+${DEFAULT_BANK_ACCOUNT_ID}      1
+${DEFAULT_LOCATION_ID}          1        
+${DEFAULT_WARD_ID}              1 
+${INVOICE_DUPLICATED_CODE}      HDSDO_000179
+${INVOICE_LONG_CODE}            HDSDO_012345678901234567890123456789012345678901234567890
+
+# Customer data
+${customer_1}     1111
+${customer_2}     2222
+${DEFAULT_CUSTOMER_ID}              1001
+${DEBT_CUSTOMER_ID}                 1002
+${DEBT_LIMIT_CUSTOMER_ID}           1003
+${DEBT_WARNING_OFF_CUSTOMER_ID}     1004
+${OTHER_BRANCH_CUSTOMER_ID}         1005
+
+# Product data
+${PRODUCT_1}            520107862
+${PRODUCT_CODE_1}       SP040943
+${PRODUCT_2}      1002
+${product_with_vat}    3333
+${PRESCRIPTION_DRUG_ID}   2001
+${INACTIVE_PRODUCT_ID}    3001
+${COMBO_PRODUCT_ID}       4001
+
+# Additional product data
+${product_batch}    6666
+${product_out_of_stock}    7777
+${batch_1}    8888
+
+# Product Details
+&{VALID_PRODUCT_WITH_DISCOUNT}    
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    Discount=10000
+
+&{PRODUCT_1_DETAILS}    
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    Discount=0
+
+&{PRODUCT_2_DETAILS}    
+...    ProductId=${PRODUCT_2}
+...    Quantity=1
+...    Price=200000
+...    Discount=0
+
+# Serial Product Templates
+&{VALID_SERIAL_PRODUCT}    
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    SerialNumbers=SN001,SN002
+
+&{USED_SERIAL_PRODUCT}    
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    SerialNumbers=SN003,SN004
+
+# Sale channel data
+${valid_channel_id}    6666
+
+# Dates
+${FUTURE_DATE}    2024-12-31
+${PAST_DATE}      2023-01-01
+
+# Promotion data
+${promotion_1}    7777
+${promotion_2}    8888
+${VALID_PROMOTION_ID}     1001
+${EXPIRED_PROMOTION_ID}   2001
+${INACTIVE_PROMOTION_ID}  3001
+
+# Branch data  
+${MAIN_BRANCH}    1234
+${SUB_BRANCH}     5678
+${DEFAULT_BRANCH_ID}      1
+${OTHER_BRANCH_ID}        2
+${MASTER_BRANCH_ID}       1
+
+# Tax data
+${VAT_RATE}       10
+${NO_TAX}         0
+${DEFAULT_TAX_RATE}        10
+${INVALID_TAX_RATE}        999
+
+# Payment methods
+${PAYMENT_CASH}    Cash
+${PAYMENT_CARD}    Card 
+${PAYMENT_COD}     COD
+&{CASH_PAYMENT}
+...    Method=Cash
+...    Amount=100000
+
+&{CARD_PAYMENT}
+...    Method=Card
+...    Amount=100000 
+...    AccountId=${DEFAULT_BANK_ACCOUNT_ID}
+
+# Delivery data
+${DEFAULT_DELIVERY_PRICE}    20000
+${DELIVERY_PARTNER_1}        9999
+${DELIVERY_PARTNER_2}        8888
+&{VALID_DELIVERY_INFO}
+...    ReceiverName=Test Receiver
+...    ReceiverPhone=0987654321
+...    ReceiverAddress=123 Test Street
+...    LocationId=${DEFAULT_LOCATION_ID}
+...    WardId=${DEFAULT_WARD_ID}
+...    DeliveryBy=1
+...    UseDefaultPartner=true
+...    Status=0
+
+# Status codes
+${STATUS_PENDING}        1
+${STATUS_PROCESSING}     2
+${STATUS_COMPLETED}      3
+${STATUS_CANCELLED}      4
+${STATUS_FAILED}         5
+
+# API endpoints
+${API_BASE_URL}         https://api.kiotviet.com
+${API_VERSION}          v1
+${API_INVOICE}          ${API_BASE_URL}/${API_VERSION}/invoices
+
+# API Config
+${API_ENDPOINT}             https://
+
