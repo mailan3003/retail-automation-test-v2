@@ -1,119 +1,184 @@
 *** Settings ***
-Resource    ../../../Keywords/Utilities/ResponseHelper.robot
-Resource    ../../../Keywords/Utilities/RequestHelper.robot
-Resource    ../../../TestData/CommonData.robot
-Resource    ../../../TestData/Invoice/InvoiceData.robot
-Resource    ../../../Keywords/Invoice/InvoiceValidationKeywords.robot
+Documentation     Test API kiểm tra và xác thực đầu vào khi tạo hóa đơn
+Resource          ../../../Keywords/Invoice/InvoiceValidationKeywords.robot
+Suite Setup       Suite Setup
+
+*** Keywords ***
+Suite Setup
+    Set Suite Variable    ${SUITE_NAME}    InvoiceValidationTest
 
 *** Test Cases ***
-RT-IN-001 Tạo hóa đơn thành công với mã hợp lệ
-    [Documentation]    Kiểm tra tạo hóa đơn với mã hợp lệ
-    [Tags]    invoice    validation    create    
-    Given Chuẩn bị dữ liệu tạo hóa đơn hợp lệ
-    When Gửi yêu cầu tạo hóa đơn
+RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
+    [Documentation]    Kiểm tra tạo hóa đơn thành công với dữ liệu đầu vào hợp lệ
+    Given Prepare Standard Invoice Request
+    When Send Create Invoice Request
     Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    And Response Should Have Data.Id exist
 
-RT-IN-002 Tạo hóa đơn thất bại khi trùng mã trong 7 ngày
-    [Documentation]    Kiểm tra validate mã hóa đơn trùng trong khoảng 7 ngày
-    [Tags]    invoice    validation    duplicate
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_DUPLICATED_CODE}
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 420
+RT-IV-002 Kiểm tra mã hóa đơn trùng
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
+    Given Prepare Invoice With Duplicate Code
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 409
     And Response Should Have Error "Mã hóa đơn đã tồn tại"
 
-RT-IN-003 Tạo hóa đơn thất bại khi độ dài mã vượt quá 50 ký tự
-    [Documentation]    Kiểm tra validate độ dài mã hóa đơn
-    [Tags]    invoice    validation    length
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_LONG_CODE}
-    When Gửi yêu cầu tạo hóa đơn  
-    Then Response Status Code Should Be 420
+RT-IV-003 Kiểm tra mã hóa đơn quá dài
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã quá dài
+    Given Prepare Invoice With Long Code
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
     And Response Should Have Error "Mã hóa đơn không được vượt quá 50 ký tự"
 
-RT-IN-004 Tạo hóa đơn offline thành công với prefix HDO
-    [Documentation]    Kiểm tra tạo hóa đơn offline với prefix HDO
-    [Tags]    invoice    validation    prefix    offline
-    Given Chuẩn bị dữ liệu hóa đơn offline với mã HDO001  
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value HDO001
+RT-IV-004 Kiểm tra thiếu thông tin chi nhánh
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhánh
+    Given Prepare Invoice With Missing Branch
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng chọn chi nhánh"
 
-RT-IN-005 Tạo hóa đơn Shopee thành công với prefix SP
-    [Documentation]    Kiểm tra tạo hóa đơn Shopee với prefix SP
-    [Tags]    invoice    validation    prefix    shopee
-    Given Chuẩn bị dữ liệu hóa đơn Shopee với mã SP001
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200  
-    And Response Should Have Code With value SP001
+RT-IV-005 Kiểm tra chi nhánh không hợp lệ
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với chi nhánh không tồn tại
+    Given Prepare Invoice With Invalid Branch
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 404
+    And Response Should Have Error "Chi nhánh không tồn tại"
 
-RT-IN-006 Tạo hóa đơn Lazada thành công với prefix LD 
-    [Documentation]    Kiểm tra tạo hóa đơn Lazada với prefix LD
-    [Tags]    invoice    validation    prefix    lazada
-    Given Chuẩn bị dữ liệu hóa đơn Lazada với mã LD001
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value LD001
+RT-IV-006 Kiểm tra khách hàng không thuộc chi nhánh
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không thuộc chi nhánh
+    Given Prepare Invoice With Customer From Other Branch
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Khách hàng không thuộc chi nhánh đang chọn"
 
-RT-IN-007 Tạo hóa đơn Facebook thành công với prefix FB_
-    [Documentation]    Kiểm tra tạo hóa đơn Facebook với prefix FB_
-    [Tags]    invoice    validation    prefix    facebook
-    Given Chuẩn bị dữ liệu hóa đơn Facebook với mã FB_001
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value FB_001
+RT-IV-007 Kiểm tra thiếu thông tin người bán
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin người bán
+    Given Prepare Invoice With Missing Sold By
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng chọn người bán hàng"
 
-RT-IN-008 Tạo hóa đơn Instagram thành công với prefix IG_
-    [Documentation]    Kiểm tra tạo hóa đơn Instagram với prefix IG_
-    [Tags]    invoice    validation    prefix    instagram  
-    Given Chuẩn bị dữ liệu hóa đơn Instagram với mã IG_001
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value IG_001
+RT-IV-008 Kiểm tra người bán không hợp lệ
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với người bán không tồn tại
+    Given Prepare Invoice With Invalid Sold By
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 404
+    And Response Should Have Error "Người bán không tồn tại"
 
-RT-IN-009 Tạo hóa đơn TikTok thành công với prefix TT_
-    [Documentation]    Kiểm tra tạo hóa đơn TikTok với prefix TT_
-    [Tags]    invoice    validation    prefix    tiktok
-    Given Chuẩn bị dữ liệu hóa đơn TikTok với mã TT_001
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value TT_001
+RT-IV-009 Kiểm tra ngày tạo hóa đơn trong tương lai
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với ngày trong tương lai
+    Given Prepare Invoice With Future Date
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Ngày mua hàng không được lớn hơn ngày hiện tại"
 
-RT-IN-010 Tạo hóa đơn thành công khi mã trùng với hóa đơn đã Void
-    [Documentation]    Kiểm tra cho phép tạo hóa đơn khi trùng mã với hóa đơn đã hủy
-    [Tags]    invoice    validation    duplicate    void
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_VOID_CODE}
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value ${INVOICE_VOID_CODE}
+RT-IV-010 Kiểm tra khách hàng có công nợ quá hạn
+    [Documentation]    Kiểm tra cảnh báo khi tạo hóa đơn với khách hàng có công nợ quá hạn
+    Given Prepare Invoice With Debt Customer
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Khách hàng có công nợ quá hạn, vui lòng thanh toán trước khi mua"
 
-RT-IN-011 Tạo hóa đơn thành công khi mã trùng với hóa đơn Failed
-    [Documentation]    Kiểm tra cho phép tạo hóa đơn khi trùng mã với hóa đơn thất bại
-    [Tags]    invoice    validation    duplicate    failed
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_FAILED_CODE}
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value ${INVOICE_FAILED_CODE}
+RT-IV-011 Kiểm tra khách hàng vượt hạn mức nợ
+    [Documentation]    Kiểm tra cảnh báo khi tạo hóa đơn với khách hàng vượt hạn mức nợ
+    Given Prepare Invoice With Debt Limit Customer
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Khách hàng đã vượt hạn mức nợ cho phép"
 
-RT-IN-012 Tạo hóa đơn thành công khi mã trùng ngoài khoảng 7 ngày trước
-    [Documentation]    Kiểm tra cho phép tạo hóa đơn khi trùng mã với hóa đơn cũ hơn 7 ngày
-    [Tags]    invoice    validation    duplicate    date_range
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_PAST_7_DAYS_CODE}
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value ${INVOICE_PAST_7_DAYS_CODE}
+RT-IV-012 Kiểm tra hóa đơn không có sản phẩm
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn không có sản phẩm
+    Given Prepare Invoice With No Details
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng chọn ít nhất một sản phẩm"
 
-RT-IN-013 Tạo hóa đơn thành công khi mã trùng ngoài khoảng 7 ngày sau
-    [Documentation]    Kiểm tra cho phép tạo hóa đơn khi trùng mã với hóa đơn tương lai hơn 7 ngày
-    [Tags]    invoice    validation    duplicate    date_range
-    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_FUTURE_7_DAYS_CODE}
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Code With value ${INVOICE_FUTURE_7_DAYS_CODE}
+RT-IV-013 Kiểm tra thiếu thông tin sản phẩm
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với thông tin sản phẩm không đầy đủ
+    Given Prepare Invoice With Missing Product Detail
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng chọn sản phẩm"
 
-RT-IN-014 Tạo hóa đơn thất bại khi trùng UUID trong 7 ngày
-    [Documentation]    Kiểm tra không cho phép tạo hóa đơn khi trùng UUID trong khoảng 7 ngày
-    [Tags]    invoice    validation    duplicate    uuid
-    Given Chuẩn bị dữ liệu hóa đơn offline có UUID trùng
-    When Gửi yêu cầu tạo hóa đơn
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "UUID hóa đơn đã tồn tại"
+RT-IV-014 Kiểm tra số lượng sản phẩm bằng không
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với số lượng sản phẩm bằng 0
+    Given Prepare Invoice With Zero Quantity
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Số lượng phải lớn hơn 0"
+
+RT-IV-015 Kiểm tra số lượng sản phẩm âm
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với số lượng sản phẩm âm
+    Given Prepare Invoice With Negative Quantity
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Số lượng phải lớn hơn 0"
+
+RT-IV-016 Kiểm tra giá bán âm
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với giá bán âm
+    Given Prepare Invoice With Negative Price
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Giá bán không được nhỏ hơn 0"
+
+RT-IV-017 Kiểm tra sản phẩm không còn hoạt động
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm đã ngừng kinh doanh
+    Given Prepare Invoice With Inactive Product
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Sản phẩm đã ngừng kinh doanh"
+
+RT-IV-018 Kiểm tra sản phẩm không tồn tại
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm không tồn tại
+    Given Prepare Invoice With Invalid Product
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 404
+    And Response Should Have Error "Sản phẩm không tồn tại"
+
+RT-IV-019 Kiểm tra sản phẩm hết hàng
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm hết hàng
+    Given Prepare Invoice With Out Of Stock Product
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Sản phẩm đã hết hàng"
+
+RT-IV-020 Kiểm tra sản phẩm thuốc kê đơn thiếu thông tin đơn thuốc
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm thuốc kê đơn không có thông tin đơn thuốc
+    Given Prepare Invoice With Prescription Drug
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng cung cấp thông tin đơn thuốc"
+
+RT-IV-021 Kiểm tra sản phẩm combo không đủ hàng
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm combo mà các thành phần không đủ hàng
+    Given Prepare Invoice With Combo Product
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Một hoặc nhiều thành phần trong combo không đủ hàng"
+
+RT-IV-022 Kiểm tra thanh toán với số tiền âm
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với phương thức thanh toán có số tiền âm
+    Given Prepare Invoice With Negative Payment Amount
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Số tiền thanh toán không được nhỏ hơn 0"
+
+RT-IV-023 Kiểm tra thanh toán với số tiền bằng không
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với phương thức thanh toán có số tiền bằng 0
+    Given Prepare Invoice With Zero Payment Amount
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Số tiền thanh toán phải lớn hơn 0"
+
+RT-IV-024 Kiểm tra thanh toán thẻ thiếu thông tin tài khoản
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với phương thức thanh toán thẻ nhưng thiếu thông tin tài khoản
+    Given Prepare Invoice With Card Payment Missing Account
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Vui lòng chọn tài khoản ngân hàng"
+
+RT-IV-025 Kiểm tra thanh toán không đủ
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với số tiền thanh toán không đủ
+    Given Prepare Invoice With Insufficient Payment
+    When Send Create Invoice Request
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Số tiền thanh toán không đủ"

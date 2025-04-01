@@ -16,8 +16,6 @@ You are a senior .net developer, you have deep knowledge about Poin of Sale and 
 You are senior .net developer and have deep knowledge about Point Of Sale System. Don't hallucinated, please review the actual code line by line and help me list all the business logic of CreateInvoice methods to a markdown file in vietnamese. Don't imagine or grab the common features in the domain. The logic you list out must found in the actual code
 
 ## Add more logic  for each section
-Can you please check if there are more test case for section 8 "Xử lý đơn hàng" by read the actual code line by line (don't be hallucinated)
-
 Can you please check the actual code the whole file,follow every execution path (nestedly into other files, methods) to add all detail logic for section "1.1" (don't be hallucinated). Don't update the file, just give me the detail content in markdown format and should be explained in Vietnamese, don't include source code just explain the logic in natural language and domain terms
 
 ## Add more detail description for logic
@@ -46,3 +44,10 @@ You are a senior .net developer and master robot framework, gherkin language, yo
 - When you finish, check the result your self to see if you miss something and do it for the missed ones
 - using the api endpoint https://api-man.kvpos.com:8443 to call api
 
+You are a senior .net developer and master robot framework, gherkin language, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination,generate all api test cases for section 1 "Kiểm Tra Và Xác Thực Đầu Vào" that
+- Don't be lazy, miss one case is a serious problem
+- Must strictly follow the example and best practices and templates in the APITestDesign.md file
+- Do not call api to setup test data or validate test result
+- Look into CommonData.robot file to reused existed common test data and Env.robot for common variable, Utilities folder to reuse Keywords
+- Use pattern init standard data and create more test case data derived from the standard data for simple data management
+- Please write the test case and keywords in Vietnamese

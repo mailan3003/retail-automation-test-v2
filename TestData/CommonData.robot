@@ -10,14 +10,26 @@ ${DEFAULT_WARD_ID}              1
 ${INVOICE_DUPLICATED_CODE}      HDSDO_000179
 ${INVOICE_LONG_CODE}            HDSDO_012345678901234567890123456789012345678901234567890
 
+#Invoice data
+${VOID_INVOICE_ID}              521838
+${NONEXISTENT_INVOICE_ID}       123456789
+${EXISTENT_INVOICE_UUID}        WN0c1958b4-73fc-42f2-bd50-42ba7294e925
+
+#Order data
+${ORDER_ID}                     130047
+${NONEXISTENT_ORDER_ID}         123456789
+${FINALIZED_ORDER_ID}           1300473
+
+
 # Customer data
 ${customer_1}     1111
 ${customer_2}     2222
-${DEFAULT_CUSTOMER_ID}              1001
+${DEFAULT_CUSTOMER_ID}              629661
 ${DEBT_CUSTOMER_ID}                 1002
 ${DEBT_LIMIT_CUSTOMER_ID}           1003
 ${DEBT_WARNING_OFF_CUSTOMER_ID}     1004
 ${OTHER_BRANCH_CUSTOMER_ID}         1005
+${NONEXISTENT_CUSTOMER_ID}          123456789
 
 # Product data
 ${PRODUCT_1}            520107862
@@ -25,7 +37,7 @@ ${PRODUCT_CODE_1}       SP040943
 ${PRODUCT_2}      1002
 ${product_with_vat}    3333
 ${PRESCRIPTION_DRUG_ID}   2001
-${INACTIVE_PRODUCT_ID}    3001
+${INACTIVE_PRODUCT_ID}              1033707
 ${COMBO_PRODUCT_ID}       4001
 
 # Additional product data
@@ -104,6 +116,10 @@ ${PAYMENT_COD}     COD
 ...    Method=Card
 ...    Amount=100000 
 ...    AccountId=${DEFAULT_BANK_ACCOUNT_ID}
+
+#Pricebook data
+${NON_EXISTENT_PRICEBOOK_ID}        123456789
+${PRICEBOOK_ID}                     520107862
 
 # Delivery data
 ${DEFAULT_DELIVERY_PRICE}    20000

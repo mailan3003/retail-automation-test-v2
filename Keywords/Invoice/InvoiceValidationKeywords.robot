@@ -1,59 +1,285 @@
 *** Settings ***
-Resource    Keywords/Utilities/ResponseHelper.robot
-Resource    Keywords/Utilities/RequestHelper.robot
-Resource    Keywords/Utilities/Utilities.robot
-Resource    TestData/CommonData.robot
-Resource    TestData/Invoice/InvoiceData.robot
+Resource    ../Utilities/Utilities.robot
+Resource    ../Utilities/RequestHelper.robot
+Resource    ../Utilities/ResponseHelper.robot
+Resource    ../../TestData/Invoice/InvoiceValidationData.robot
+Library     Collections
+Library     String
+Library     DateTime
 
 Resource    Env.robot
 
 
 *** Keywords ***
-Chuẩn bị dữ liệu tạo hóa đơn hợp lệ
-    ${base_data}=    Evaluate    json.loads('''${VALID_INVOICE_DATA}''')    json
-    ${request}=    Set Variable    ${base_data}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+Prepare Standard Invoice Request
+    [Arguments]    ${invoice_details}=${None}    ${payments}=${None}
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    
+    # Add invoice details if provided, otherwise use standard details
+    ${details}=    Run Keyword If    '${invoice_details}' == '${None}'    
+    ...    Create List    ${STANDARD_INVOICE_DETAIL}
+    ...    ELSE    Set Variable    ${invoice_details}
+    
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    # Add payments if provided
+    ${payment_list}=    Run Keyword If    '${payments}' == '${None}'    
+    ...    Create List    ${STANDARD_PAYMENT}
+    ...    ELSE    Set Variable    ${payments}
+    
+    Set To Dictionary    ${data}    Payments=${payment_list}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}    
+Prepare Invoice With No Details
+    ${data}=    Evaluate    dict(${NO_DETAILS_INVOICE_DATA})
+    ${empty_details}=    Create List
+    Set To Dictionary    ${data}    InvoiceDetails=${empty_details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn offline có UUID trùng
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${INVOICE_SAME_UUID}
-    Set To Dictionary    ${REQUEST_DATA}    UUID=existing-uuid-123    
+Prepare Invoice With Duplicate Code
+    ${data}=    Evaluate    dict(${DUPLICATE_CODE_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn offline với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    IsOffline=${TRUE}
+Prepare Invoice With Long Code
+    ${data}=    Evaluate    dict(${LONG_CODE_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn Shopee với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    SaleChannelId=1
+Prepare Invoice With Missing Branch
+    ${data}=    Evaluate    dict(${MISSING_BRANCH_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn Lazada với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    SaleChannelId=2
+Prepare Invoice With Invalid Branch
+    ${data}=    Evaluate    dict(${INVALID_BRANCH_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn Facebook với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    SaleChannelId=3
+Prepare Invoice With Customer From Other Branch
+    ${data}=    Evaluate    dict(${OTHER_BRANCH_CUSTOMER_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn Instagram với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    SaleChannelId=4
+Prepare Invoice With Missing Sold By
+    ${data}=    Evaluate    dict(${MISSING_SOLD_BY_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Chuẩn bị dữ liệu hóa đơn TikTok với mã ${code}
-    Chuẩn bị dữ liệu tạo hóa đơn hợp lệ    
-    Set To Dictionary    ${REQUEST_DATA}    Code=${code}
-    Set To Dictionary    ${REQUEST_DATA}    SaleChannelId=5
+Prepare Invoice With Invalid Sold By
+    ${data}=    Evaluate    dict(${INVALID_SOLD_BY_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
 
-Gửi yêu cầu tạo hóa đơn
-    #${response}=    POST    ${API_URL}/invoices    json=${REQUEST_DATA}
-    ${response}=     Call API    invoices    ${REQUEST_DATA}    
+Prepare Invoice With Future Date
+    ${data}=    Evaluate    dict(${FUTURE_DATE_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Debt Customer
+    ${data}=    Evaluate    dict(${DEBT_CUSTOMER_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Debt Limit Customer
+    ${data}=    Evaluate    dict(${DEBT_LIMIT_CUSTOMER_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Missing Product Detail
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${MISSING_PRODUCT_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Zero Quantity
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${ZERO_QUANTITY_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Negative Quantity
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${NEGATIVE_QUANTITY_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Negative Price
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${NEGATIVE_PRICE_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Inactive Product
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${INACTIVE_PRODUCT_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Invalid Product
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${INVALID_PRODUCT_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Out Of Stock Product
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${OUT_OF_STOCK_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Prescription Drug
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Combo Product
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${COMBO_PRODUCT_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Negative Payment Amount
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${NEGATIVE_AMOUNT_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Zero Payment Amount
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${ZERO_AMOUNT_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Card Payment Missing Account
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    ${payments}=    Create List    ${CARD_WITHOUT_ACCOUNT_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Prepare Invoice With Insufficient Payment
+    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    # Create payment with insufficient amount
+    &{insufficient_payment}=    Create Dictionary
+    ...    Method=${PAYMENT_CASH}
+    ...    Amount=50000
+    
+    ${payments}=    Create List    ${insufficient_payment}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Send Create Invoice Request
+    ${headers}=    Create Auth Headers
+    ${response}=    POST    ${API_URL}/invoices    json=${REQUEST_DATA}    headers=${headers}
     Set Test Variable    ${RESPONSE}    ${response}
+    RETURN    ${response}
