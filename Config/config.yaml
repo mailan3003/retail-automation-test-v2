@@ -1,0 +1,256 @@
+configs:
+  kiotviet:
+    production:
+      config:
+        mobile_api_url: https://mobile.kiotapi.com
+        sale_api_url:  https://api-sale.kiotviet.vn/api
+        warranty_api_url: https://api-guarantee.kiotviet.vn/api
+        promotion_api_url: https://promotion.kiotapi.com/api
+        url: https://api-man1.kiotviet.vn
+        facing_url_tmpl: https://%%RETAILER_CODE%%.kiotviet.vn
+        api_url: https://api-man1.kiotviet.vn/api
+        timesheet_api_url: https://api-timesheet.kiotviet.vn
+        api_public:  https://public.kiotapi.com
+        api_get_token:  https://id.kiotviet.vn
+        api_shipping:   https://shipping.kiotapi.com
+        api_qlkv:   https://qlkv.kiotviet.vn
+      zones:
+        ZONE1:
+          retailers:
+            auto1:
+              code: auto1
+              branch_id: "172786"
+              lastest_branch: LatestBranch_366420_441968
+              users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+          ZONE2:
+            retailers:
+              auto2:
+                code: auto2
+                branch_id: "85976"
+                lastest_branch: LatestBranch_366521_196750
+                users:
+                    admin:
+                      username: "admin"
+                      password: "Kiotviet123456"
+                    tester:
+                      username: "tester"
+                      password: "123"
+          ZONE3:
+            retailers:
+              auto3:
+                code: auto3
+                branch_id: "152624"
+                lastest_branch: LatestBranch_366523_386013
+                users:
+                    admin:
+                      username: "admin"
+                      password: "Kiotviet123456"
+                    tester:
+                      username: "tester"
+                      password: "123"
+          ZONE6:
+            retailers:
+              auto6:
+                code: auto6
+                branch_id: "80994"
+                lastest_branch: LatestBranch_364689_192226
+                users:
+                    admin:
+                      username: "admin"
+                      password: "Kiotviet123456"
+                    tester:
+                      username: "tester"
+                      password: "123"
+          ZONE9:
+            retailers:
+              auto9:
+                code: auto9
+                branch_id: "138"
+                lastest_branch: LatestBranch_364685_1784
+                users:
+                    admin:
+                      username: "admin"
+                      password: "Kiotviet123456"
+                    tester:
+                      username: "tester"
+                      password: "123"
+          ZONE11:
+            retailers:
+              testcanaryauto11:
+                code: testcanaryauto11
+                branch_id: "76360"
+                lastest_branch: LatestBranch_846995_88766
+                users:
+                    admin:
+                      username: "admin"
+                      password: "Kiotviet123456"
+                    tester:
+                      username: "tester"
+                      password: "123"
+          ZONE12:
+            retailers:
+              auto12:
+                code: auto12
+                branch_id: "181235"
+                lastest_branch: LatestBranch_339758_438680
+                users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+          ZONE18:
+            retailers:
+              auto18:
+                code: auto18
+                branch_id: "8309"
+                lastest_branch: LatestBranch_561711_18176
+                users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+          ZONE19:
+            retailers:
+              auto19:
+                code: auto19
+                branch_id: "48009"
+                lastest_branch: LatestBranch_559564_100334
+                users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+          ZONE28:
+            retailers:
+              auto28:
+                code: auto28
+                branch_id: "41159"
+                lastest_branch: LatestBranch_846995_88766
+                users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+    staging:
+      config:
+        mobile_api_url:  https://api-mobile3.kiotviet.fun
+        sale_api_url:  https://api-sale3.kiotviet.fun/api
+        warranty_api_url:  https://api-guarantee3.kiotviet.fun/api
+        promotion_api_url: https://api-promotion3.kiotviet.fun/api
+        url:  https://api-man3.kiotviet.fun
+        facing_url_tmpl: https://%%RETAILER_CODE%%.kiotviet.fun
+        api_url: https://api-man3.kiotviet.fun/api
+        timesheet_api_url:  https://api-timesheet3.kiotviet.fun
+        api_public:  https://api-kv-public3.kiotviet.fun
+        api_get_token:  https://api-kv-identity3.kiotviet.fun
+        api_shipping:   https://api-shipping-prelive.kvpos.com
+        api_qlkv:  https://qlkv3.kiotviet.fun
+      zones:
+        RZONE:
+          retailers:
+            auto2fun:
+              code: auto2fun
+              branch_id: "1765"
+              lastest_branch: LatestBranch_1765_441968
+              users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+            auto1:
+              code: auto1
+              branch_id: "6"
+              lastest_branch: LatestBranch_1765_441968
+              users:
+                  admin:
+                    username: "admin"
+                    password: "1"
+                  tester:
+                    username: "tester"
+                    password: "123"
+
+    develop:
+      config:
+        mobile_api_url: https://mobile.kvpos.com
+        sale_api_url:  https://api-sale.kvpos.com/api
+        warranty_api_url: https://api-guarantee.kvpos.com/api
+        promotion_api_url: https://api-promotion.kvpos.com/api
+        url: https://api-man.kvpos.com
+        facing_url_tmpl: https://%%RETAILER_CODE%%.kvpos.com
+        api_url: https://api-man.kvpos.com/api
+        timesheet_api_url: https://api-timesheet.kvpos.com
+        api_public:    https://public.kvpos.com
+        api_get_token:  https://id.kvpos.com
+        api_shipping:    https://api-shipping-staging.kvpos.com
+        api_qlkv:  https://qlkv.kvpos.com
+      zones:
+        R1:
+          retailers:
+            autodevforautomation:
+              code: autodevforautomation
+              branch_id: "283"
+              lastest_branch: LatestBranch_366420_441968
+              users:
+                  admin:
+                    username: "admin"
+                    password: "kiotviet123456"
+                  tester:
+                    username: "tester"
+                    password: "123"
+        R2:
+          retailers:
+            autoapi:
+              code: autoapi
+              branch_id: "1000000025"
+              lastest_branch: LatestBranch_366420_441968
+              users:
+                  admin:
+                    username: "admin"
+                    password: "123"
+                  tester:
+                    username: "tester"
+                    password: "123"                    
+    sandbox:
+      config:
+        mobile_api_url: https://mobile.kvpos.com:8443
+        sale_api_url:  https://api-sale.kvpos.com:8443/api
+        warranty_api_url: https://api-guarantee.kvpos.com:8443/api
+        promotion_api_url: https://api-promotion.kvpos.com:8443/api
+        url: https://api-man.kvpos.com:8443
+        facing_url_tmpl: https://%%RETAILER_CODE%%.kvpos.com:8443
+        api_url: https://api-man.kvpos.com:8443/api
+        timesheet_api_url: https://api-timesheet.kvpos.com:8443
+        api_public:    https://public.kvpos.com:8443
+        api_get_token:  https://id.kvpos.com:8443
+        api_shipping:    https://api-shipping-staging.kvpos.com
+        api_qlkv:  https://qlkv.kvpos.com:8443
+      zones:
+        R1:
+          retailers:
+            autosanbox:
+              code: autosanbox
+              branch_id: "1297"
+              lastest_branch: LatestBranch_1181_1297
+              users:
+                  admin:
+                    username: "admin"
+                    password: "Kiotviet12345678"
+                  tester:
+                    username: "tester"
+                    password: "123"
