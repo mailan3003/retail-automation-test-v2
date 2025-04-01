@@ -48,6 +48,7 @@ You are a senior .net developer and master robot framework, gherkin language, yo
 - Don't be lazy, miss one case is a serious problem
 - Must strictly follow the example and best practices and templates in the APITestDesign.md file
 - Do not call api to setup test data or validate test result
+- Verify expected data is insert/updated in the database
 - Look into CommonData.robot file to reused existed common test data and Env.robot for common variable, Utilities folder to reuse Keywords
 - Use pattern init standard data and create more test case data derived from the standard data for simple data management
 - Please write the test case and keywords in Vietnamese

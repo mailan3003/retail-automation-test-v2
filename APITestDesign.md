@@ -105,7 +105,17 @@ Response Data Should Match Request    ${expected_data}
 ### 4.1 Simple Test Case
 ```robotframework
 RT-IN-001 Create invoice successfully
-    [Documentation]    Verify creating invoice with valid data
+    RT-IN-001 - Tạo hóa đơn thành công với các sản phẩm
+    [Documentation]    Kiểm tra tạo hóa đơn với nhiều sản phẩm:
+    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() line ~1550
+    ...    - Logic: Calculates total from product details
+    ...    - Code: decimal calTotal = invoice.InvoiceDetails.Sum(x => x.Quantity * x.Price);
+    ...    - SP1: 2 x 100,000đ = 200,000đ
+    ...    - SP2: 1 x 150,000đ = 150,000đ  
+    ...    - Tổng tiền: 350,000đ
+    [Template]    Create Basic Invoice With Products And Verify
+    # product details in format: id,qty,price|id,qty,price     expected_total
+    ${product_1},2,100000|${product_2},1,150000               350000
     Given Prepare Valid Invoice Data
     When Send Create Invoice Request
     Then Response Status Code Should Be 200

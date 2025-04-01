@@ -34,6 +34,7 @@ Resource    ../CommonData.robot
 ...    BranchId=${BRANCH_ID}
 ...    SoldById=${SOLD_BY_ID}
 ...    CustomerId=${DEFAULT_CUSTOMER_ID}
+...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
 ...    PurchaseDate=2024-05-05
 
 # Dữ liệu hóa đơn cập nhật
@@ -44,7 +45,7 @@ Resource    ../CommonData.robot
 ...    CustomerId=${DEFAULT_CUSTOMER_ID}
 ...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
 ...    PurchaseDate=2024-05-05
-...    UpdateInvoiceId=1001
+...    UpdateInvoiceId={NONEXISTENT_INVOICE_ID}
 
 &{UPDATE_VOID_INVOICE}
 ...    BranchId=${BRANCH_ID}
