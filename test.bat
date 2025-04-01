@@ -1,1 +1,1 @@
-pabot --processes 8 -T -d reports --argumentfile variable_file.txt -i    TDKH   TestSpecs
+pabot --processes 8 -T -d reports  -i    invoice   TestSpecs
