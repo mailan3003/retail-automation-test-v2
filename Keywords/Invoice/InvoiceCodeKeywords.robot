@@ -1,148 +1,129 @@
 *** Settings ***
 Documentation     Keywords cho test cases API xử lý mã hóa đơn
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/InvoiceCodeData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           Collections
+Library           json
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Hợp Lệ
-    ${data}=    Tạo Dữ Liệu Tiêu Chuẩn Cho Test Mã Hóa Đơn
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
+    
+    # Cập nhật trực tiếp mã hóa đơn
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${VALID_INVOICE_CODE}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Facebook
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn Facebook để không ảnh hưởng biến gốc
-    ${facebook_invoice}=    Copy Dictionary    ${FACEBOOK_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn và kênh bán
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${VALID_FACEBOOK_CODE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${FACEBOOK_SALE_CHANNEL_ID}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${facebook_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${facebook_invoice}
-    RETURN    ${facebook_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Lazada
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn Lazada để không ảnh hưởng biến gốc
-    ${lazada_invoice}=    Copy Dictionary    ${LAZADA_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn và kênh bán
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${VALID_LAZADA_CODE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${LAZADA_SALE_CHANNEL_ID}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${lazada_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${lazada_invoice}
-    RETURN    ${lazada_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Tiền Tố Không Hợp Lệ
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn không hợp lệ để không ảnh hưởng biến gốc
-    ${invalid_prefix_invoice}=    Copy Dictionary    ${INVALID_PREFIX_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVALID_INVOICE_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${invalid_prefix_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${invalid_prefix_invoice}
-    RETURN    ${invalid_prefix_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Chứa Ký Tự Đặc Biệt
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với ký tự đặc biệt để không ảnh hưởng biến gốc
-    ${special_char_invoice}=    Copy Dictionary    ${SPECIAL_CHAR_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVALID_SPECIAL_CHAR_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${special_char_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${special_char_invoice}
-    RETURN    ${special_char_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Rỗng
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với mã rỗng để không ảnh hưởng biến gốc
-    ${empty_code_invoice}=    Copy Dictionary    ${EMPTY_CODE_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVALID_EMPTY_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${empty_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${empty_code_invoice}
-    RETURN    ${empty_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Chứa Khoảng Trắng
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với khoảng trắng để không ảnh hưởng biến gốc
-    ${whitespace_code_invoice}=    Copy Dictionary    ${WHITESPACE_CODE_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVALID_WHITESPACE_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${whitespace_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${whitespace_code_invoice}
-    RETURN    ${whitespace_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Đã Tồn Tại
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với mã đã tồn tại để không ảnh hưởng biến gốc
-    ${duplicate_code_invoice}=    Copy Dictionary    ${DUPLICATE_CODE_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVOICE_DUPLICATED_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${duplicate_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${duplicate_code_invoice}
-    RETURN    ${duplicate_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Quá Dài
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với mã dài để không ảnh hưởng biến gốc
-    ${long_code_invoice}=    Copy Dictionary    ${LONG_CODE_INVOICE_DATA}
+    # Cập nhật trực tiếp mã hóa đơn 
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${INVALID_LONG_CODE}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${long_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${long_code_invoice}
-    RETURN    ${long_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sinh Mã Tự Động
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với mã tự động để không ảnh hưởng biến gốc
-    ${auto_code_invoice}=    Copy Dictionary    ${AUTO_CODE_INVOICE_DATA}
+    # Xóa trường Code để hệ thống sinh mã tự động
+    ${request}=    Remove Nested Dictionary Property    ${request}    Invoice.Code
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${auto_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${auto_code_invoice}
-    RETURN    ${auto_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Theo Phân Quyền
-    # Tạo chi tiết hóa đơn
-    ${invoice_details}=    Create List    ${STANDARD_INVOICE_DETAILS}
+    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
+    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
     
-    # Tạo bản sao của dữ liệu hóa đơn với tiền tố phân quyền để không ảnh hưởng biến gốc
-    ${permission_code_invoice}=    Copy Dictionary    ${PERMISSION_CODE_INVOICE_DATA}
+    # Xóa trường Code và thêm trường PermissionPrefix
+    ${request}=    Remove Nested Dictionary Property    ${request}    Invoice.Code
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PermissionPrefix    ${PERMISSION_PREFIX}
     
-    # Cập nhật chi tiết hóa đơn vào dữ liệu
-    Set To Dictionary    ${permission_code_invoice}    InvoiceDetails=${invoice_details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${permission_code_invoice}
-    RETURN    ${permission_code_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Gửi Yêu Cầu Tạo Hóa Đơn    
     ${response}=    Call API    invoices    ${REQUEST_DATA} 

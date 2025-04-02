@@ -146,6 +146,9 @@ Xác Thực Chi Tiết Hóa Đơn
     [Arguments]    ${invoice_id}    ${product_id}    ${quantity}
     ${query}=    Set Variable    SELECT InvoiceId, ProductId, Quantity FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${product_id}
+    Log     ${result}
+    Log     ${invoice_id}
+    Log     ${product_id}
     Should Not Be Equal    ${result}    None    Chi tiết hóa đơn không tồn tại trong CSDL
     Should Be Equal As Numbers    ${result[2]}    ${quantity}    Số lượng sản phẩm không khớp
 

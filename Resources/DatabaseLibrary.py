@@ -2,9 +2,9 @@ import pyodbc
 
 DATABASE_CONFIG = {
     'server': '103.252.0.202,6002',
-    'database': 'KiotVietShard1',
-    'username': 'retail_dev_profiler',
-    'password': 'TGYjqRvS6ACE',
+    'database': 'KiotVietShard40',
+    'username': 'replicator',
+    'password': 'kiotviet@1',
     'driver': 'ODBC Driver 17 for SQL Server'
 }
 
