@@ -100,6 +100,47 @@ Response Should Have Error ${expected_error}
 Response Data Should Match Request    ${expected_data}
 ```
 
+### 3.4 Embedded Parameter Pattern
+For improved test case readability, prefer using embedded parameters in keywords. This makes test cases more descriptive and self-documenting.
+
+1. Define keywords with embedded parameters:
+```robotframework
+Chuẩn Bị Dữ Liệu Với Tham Số ${parameter1} Và ${parameter2}
+    ${data}=    Create Dictionary    value1=${parameter1}    value2=${parameter2}
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Giá Trị Của Trường ${field_name} Là ${expected_value}
+    ${actual_value}=    Get From Dictionary    ${RESPONSE.json()}    ${field_name}
+    Should Be Equal    ${actual_value}    ${expected_value}
+```
+
+2. Call keywords with embedded parameters in test cases:
+```robotframework
+RT-XX-001 Test case with embedded parameters
+    [Documentation]    Test case using embedded parameters for better readability
+    Given Chuẩn Bị Dữ Liệu Với Tham Số value1 Và value2
+    When Gửi Yêu Cầu API
+    Then Response Status Code Should Be 200
+    And Giá Trị Của Trường field_name Là expected_value
+```
+
+This pattern is particularly useful for:
+- Making test cases more descriptive and self-documenting
+- Reducing the need for intermediate variables
+- Improving test case readability in reports
+- Following natural language conventions for Given-When-Then steps
+
+Example for data validation:
+```robotframework
+RT-IN-006 Tạo hóa đơn với chiết khấu
+    [Documentation]    Kiểm tra tạo hóa đơn với chiết khấu
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với tổng điểm 100000 thiết lập chiết khấu 10000 điểm MoneyPerPoint là 10000 và cấu hình tính điểm thưởng trên giá chưa giảm là True
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Response Status Code Should Be 200 
+    And Điểm thưởng của hóa đơn là 10
+```
+
 ## 4. Example Implementation
 
 ### 4.1 Simple Test Case

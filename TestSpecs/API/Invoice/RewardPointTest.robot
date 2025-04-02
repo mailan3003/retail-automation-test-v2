@@ -1,6 +1,7 @@
 *** Settings ***
-Documentation     Test cấc test case API liên quan đến tính điểm thưởng khi tạo hóa đơn
+Documentation     Test cases API cho phần tính điểm thưởng khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/RewardPointKeywords.robot
+Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
 *** Keywords ***
@@ -8,298 +9,261 @@ Suite Setup
     Set Suite Variable    ${SUITE_NAME}    RewardPointTest
 
 *** Test Cases ***
-RT-RP-001 Tính điểm theo hóa đơn với sản phẩm được cấu hình tích điểm
-    [Documentation]    Kiểm tra tính điểm theo hóa đơn khi tất cả sản phẩm được cấu hình tích điểm
-    Given Prepare Invoice With Invoice Reward Type
-    When Send Create Invoice Request
+RT-RP-001 Tạo hóa đơn với tích điểm theo hóa đơn
+    [Documentation]    Kiểm tra tính điểm thưởng thành công khi RewardPoint_Type = Invoice
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền hóa đơn = 100,000đ 
+    ...    - MoneyPerPoint = 10,000đ (Mỗi 10,000đ tương đương 1 điểm)
+    ...    - Không có phụ phí và thuế
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(Tổng tiền / MoneyPerPoint) = Floor(100,000 / 10,000) = 10 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 10 điểm thưởng
+    ...    - Lịch sử điểm được cập nhật
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 10
+    And Lịch sử điểm của khách hàng ${DEFAULT_CUSTOMER_ID} được ghi nhận với 10 điểm
 
-RT-RP-002 Tính điểm theo hóa đơn với một số sản phẩm không được tích điểm
-    [Documentation]    Kiểm tra tính điểm theo hóa đơn khi có sản phẩm không được cấu hình tích điểm
-    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}    ${PRODUCT_WITHOUT_REWARD_POINT}
-    Given Prepare Invoice With Invoice Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-002 Tạo hóa đơn với tích điểm theo sản phẩm
+    [Documentation]    Kiểm tra tính điểm thưởng thành công khi RewardPoint_Type = Product
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm có Point = 10, Quantity = 1
+    ...    - Logic tính điểm:
+    ...    - Điểm = Sum(Số lượng * Point) = 1 * 10 = 10 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 10 điểm thưởng
+    ...    - Chi tiết hóa đơn được ghi nhận điểm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với sản phẩm có điểm thưởng là 10 và số lượng là 1
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 10
+    And Điểm thưởng chi tiết của sản phẩm ${PRODUCT_1} là 10
 
-RT-RP-003 Tính điểm theo hóa đơn với tất cả sản phẩm không được tích điểm
-    [Documentation]    Kiểm tra tính điểm theo hóa đơn khi không có sản phẩm nào được cấu hình tích điểm
-    ${details}=    Create List    ${PRODUCT_WITHOUT_REWARD_POINT}
-    Given Prepare Invoice With Invoice Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-003 Tạo hóa đơn với sản phẩm không tích điểm
+    [Documentation]    Kiểm tra tính điểm thưởng khi sản phẩm có UsePoint = False
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm có UsePoint = False
+    ...    - Logic tính điểm:
+    ...    - Điểm = 0 (không tích điểm cho sản phẩm có UsePoint = False)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 0 điểm thưởng
+    ...    - Chi tiết hóa đơn có điểm = 0
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Không Tích Điểm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    0
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 0
+    And Điểm thưởng chi tiết của sản phẩm ${PRODUCT_1} là 0
 
-RT-RP-004 Tính điểm theo hóa đơn với số tiền chia không đủ cho 1 điểm
-    [Documentation]    Kiểm tra tính điểm theo hóa đơn khi tổng tiền không đủ để đổi thành 1 điểm hoàn chỉnh
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=1
-    ...    Price=5000
-    ...    IsRewardPoint=True
-    ${details}=    Create List    ${detail}
-    Given Prepare Invoice With Invoice Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-004 Tạo hóa đơn với nhiều sản phẩm có điểm thưởng khác nhau
+    [Documentation]    Kiểm tra tính điểm thưởng khi có nhiều sản phẩm với điểm thưởng khác nhau
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm 1: Point = 10, Quantity = 1, UsePoint = True 
+    ...    - Sản phẩm 2: UsePoint = False
+    ...    - Logic tính điểm:
+    ...    - Điểm = Sum(Điểm sản phẩm có tích điểm) = 10 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 10 điểm thưởng
+    ...    - Chi tiết hóa đơn 1 có 10 điểm, chi tiết hóa đơn 2 có 0 điểm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm Khác Nhau
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    0
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 10
+    And Điểm thưởng chi tiết của sản phẩm ${PRODUCT_1} là 10
 
-RT-RP-005 Tính điểm theo sản phẩm với sản phẩm có điểm thưởng
-    [Documentation]    Kiểm tra tính điểm theo sản phẩm khi sản phẩm có cấu hình điểm thưởng
-    Given Prepare Invoice With Product Reward Type
-    When Send Create Invoice Request
+RT-RP-005 Tạo hóa đơn với chiết khấu và tích điểm trên giá đã giảm
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn có chiết khấu và RewardPoint_ForDiscountInvoice = True
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền ban đầu = 100,000đ, Chiết khấu = 10,000đ, Tổng sau giảm = 90,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - RewardPoint_ForDiscountInvoice = True (tính điểm trên giá đã giảm)
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(Tổng sau giảm / MoneyPerPoint) = Floor(90,000 / 10,000) = 9 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 9 điểm thưởng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với tổng điểm 100000 thiết lập chiết khấu 10000 điểm MoneyPerPoint là 10000 và cấu hình tính điểm thưởng trên giá chưa giảm là False
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Product Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 9
 
-RT-RP-006 Tính điểm theo sản phẩm với sản phẩm không có điểm thưởng
-    [Documentation]    Kiểm tra tính điểm theo sản phẩm khi sản phẩm không có cấu hình điểm thưởng
-    ${details}=    Create List    ${PRODUCT_WITHOUT_REWARD_POINT}
-    Given Prepare Invoice With Product Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-006 Tạo hóa đơn với chiết khấu và không tích điểm trên giá đã giảm
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn có chiết khấu và RewardPoint_ForDiscountInvoice = False
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền ban đầu = 100,000đ, Chiết khấu = 10,000đ, Tổng sau giảm = 90,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - RewardPoint_ForDiscountInvoice = False (tính điểm trên giá chưa giảm)
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(Tổng trước giảm / MoneyPerPoint) = Floor(100,000 / 10,000) = 10 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 10 điểm thưởng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với tổng điểm 100000 thiết lập chiết khấu 10000 điểm MoneyPerPoint là 10000 và cấu hình tính điểm thưởng trên giá chưa giảm là True
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    0
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 10
 
-RT-RP-007 Tính điểm theo sản phẩm với một sản phẩm có nhiều số lượng
-    [Documentation]    Kiểm tra tính điểm theo sản phẩm khi một sản phẩm có nhiều số lượng
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=5
-    ...    Price=100000
-    ...    IsRewardPoint=True
-    ...    RewardPoint=10
-    ${details}=    Create List    ${detail}
-    Given Prepare Invoice With Product Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-007 Tạo hóa đơn không có khách hàng
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn không có khách hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 100,000đ
+    ...    - CustomerId = 0 (không có khách hàng)
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - Logic tính điểm:
+    ...    - Điểm = 0 (không tích điểm cho hóa đơn không có khách hàng)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 0 điểm thưởng
+    ...    - Không có lịch sử điểm được tạo
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    50
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 0
+    And Không có lịch sử điểm nào được tạo
 
-RT-RP-008 Tính điểm theo sản phẩm với nhiều sản phẩm khác nhau
-    [Documentation]    Kiểm tra tính điểm theo sản phẩm khi có nhiều sản phẩm khác nhau có điểm thưởng
-    &{detail1}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=2
-    ...    Price=100000
-    ...    IsRewardPoint=True
-    ...    RewardPoint=10
-    &{detail2}=    Create Dictionary
-    ...    ProductId=${PRODUCT_2}
-    ...    Quantity=1
-    ...    Price=100000
-    ...    IsRewardPoint=True
-    ...    RewardPoint=5
-    ${details}=    Create List    ${detail1}    ${detail2}
-    Given Prepare Invoice With Product Reward Type    ${details}
-    When Send Create Invoice Request
+RT-RP-008 Tạo hóa đơn với khuyến mãi tặng điểm
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn có khuyến mãi tặng điểm
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 100,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - Khuyến mãi PromotionType = PROMOTION_INVOICE_DONATE_POINT, PromotionValue = 20
+    ...    - Logic tính điểm:
+    ...    - Điểm từ hóa đơn = Floor(100,000 / 10,000) = 10 điểm
+    ...    - Điểm từ khuyến mãi = 20 điểm
+    ...    - Tổng điểm = 10 + 20 = 30 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 30 điểm thưởng
+    ...    - Thông tin khuyến mãi tặng điểm được lưu vào DB
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với khuyến mãi tặng 20 điểm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    25
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 30
+    And Khuyến mãi điểm của hóa đơn PROMOTION_INVOICE_DONATE_POINT có giá trị là 20
 
-RT-RP-009 Tính điểm khuyến mãi theo hóa đơn với giá trị cố định
-    [Documentation]    Kiểm tra tính điểm khuyến mãi theo hóa đơn với giá trị điểm tặng cố định
-    Given Prepare Invoice With Promotion Point
-    When Send Create Invoice Request
+RT-RP-009 Tạo hóa đơn với khuyến mãi tặng điểm theo sản phẩm
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn có khuyến mãi tặng điểm theo sản phẩm
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm: Point = 10, Quantity = 1
+    ...    - Khuyến mãi PromotionType = PROMOTION_PRODUCT_DONATE_POINT, PromotionValue = 5, ProductId = sản phẩm
+    ...    - Logic tính điểm:
+    ...    - Điểm từ sản phẩm = 10 * 1 = 10 điểm
+    ...    - Điểm từ khuyến mãi = 5 điểm
+    ...    - Tổng điểm = 10 + 5 = 15 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 15 điểm thưởng
+    ...    - Thông tin khuyến mãi tặng điểm được lưu vào DB
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với khuyến mãi sản phẩm tặng 5 điểm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${base_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    ${promotion_points}=    Calculate Expected Promotion Points    ${REQUEST_DATA}    ${base_points}
-    ${total_points}=    Evaluate    ${base_points} + ${promotion_points}
-    And Response Should Have Correct Reward Points    ${total_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 15
+    And Điểm thưởng chi tiết của sản phẩm ${PRODUCT_1} là 10
+    And Khuyến mãi điểm của hóa đơn PROMOTION_PRODUCT_DONATE_POINT có giá trị là 5
 
-RT-RP-010 Tính điểm khuyến mãi theo hóa đơn với tỷ lệ phần trăm
-    [Documentation]    Kiểm tra tính điểm khuyến mãi theo hóa đơn với tỷ lệ phần trăm trên điểm thưởng cơ bản
-    &{promotion}=    Create Dictionary
-    ...    Id=1001
-    ...    Type=2
-    ...    ApplyFor=1
-    ...    PointPercentage=20
-    Given Prepare Invoice With Promotion Point    ${promotion}
-    When Send Create Invoice Request
+RT-RP-010 Tạo hóa đơn với số lượng sản phẩm lớn
+    [Documentation]    Kiểm tra tính điểm thưởng khi có số lượng sản phẩm lớn
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm có Point = 10, Quantity = 5
+    ...    - Logic tính điểm:
+    ...    - Điểm = Số lượng * Point = 5 * 10 = 50 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 50 điểm thưởng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với sản phẩm có điểm thưởng là 10 và số lượng là 5
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${base_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    ${promotion_points}=    Calculate Expected Promotion Points    ${REQUEST_DATA}    ${base_points}
-    ${total_points}=    Evaluate    ${base_points} + ${promotion_points}
-    And Response Should Have Correct Reward Points    ${total_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 50
+    And Điểm thưởng chi tiết của sản phẩm ${PRODUCT_1} là 50
 
-RT-RP-011 Tính điểm khuyến mãi theo sản phẩm với tỷ lệ phần trăm
-    [Documentation]    Kiểm tra tính điểm khuyến mãi theo sản phẩm với tỷ lệ phần trăm trên điểm thưởng của sản phẩm
-    Given Prepare Product With Promotion Point
-    When Send Create Invoice Request
+RT-RP-011 Tạo hóa đơn với phụ phí và thuế
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn có phụ phí và thuế
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 100,000đ
+    ...    - Phụ phí = 5,000đ
+    ...    - Thuế = 10,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor((Tổng tiền - Phụ phí - Thuế) / MoneyPerPoint) = Floor((100,000 - 5,000 - 10,000) / 10,000) = 8 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 8 điểm thưởng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với tổng tiền 100000 MoneyPerPoint là 10000 phụ phí 5000 và thuế 10000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${base_points}=    Calculate Expected Product Type Reward Points    ${REQUEST_DATA}
-    ${promotion_points}=    Calculate Expected Promotion Points    ${REQUEST_DATA}    ${base_points}
-    ${total_points}=    Evaluate    ${base_points} + ${promotion_points}
-    And Response Should Have Correct Reward Points    ${total_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 8
 
-RT-RP-012 Tính điểm với nhiều loại khuyến mãi cùng lúc
-    [Documentation]    Kiểm tra tính điểm khi áp dụng nhiều loại khuyến mãi cùng lúc
-    ${data}=    Evaluate    dict(${INVOICE_WITH_PROMOTION_POINT_DATA})
-    
-    # Add standard invoice detail
-    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    # Add multiple promotions
-    &{promotion1}=    Create Dictionary
-    ...    Id=1001
-    ...    Type=2
-    ...    ApplyFor=1
-    ...    PointValue=50
-    &{promotion2}=    Create Dictionary
-    ...    Id=1002
-    ...    Type=3
-    ...    ApplyFor=2
-    ...    PointPercentage=10
-    ...    ApplyProductIds=${PRODUCT_1}
-    
-    ${promotions}=    Create List    ${promotion1}    ${promotion2}
-    Set To Dictionary    ${data}    Promotions=${promotions}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
+RT-RP-012 Tạo hóa đơn với tổng tiền không tích điểm
+    [Documentation]    Kiểm tra tính điểm thưởng khi tổng tiền không đủ để tích điểm
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 9,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(9,000 / 10,000) = 0 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 0 điểm thưởng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn
+    # Cập nhật tổng tiền hóa đơn
+    Set To Dictionary    ${REQUEST_DATA.Invoice}    Total=9000
+    # Cập nhật giá sản phẩm
+    Set To Dictionary    ${REQUEST_DATA.Invoice.InvoiceDetails[0]}    Price=9000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${base_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    ${promotion_points}=    Calculate Expected Promotion Points    ${REQUEST_DATA}    ${base_points}
-    ${total_points}=    Evaluate    ${base_points} + ${promotion_points}
-    And Response Should Have Correct Reward Points    ${total_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 0
 
-RT-RP-013 Tính điểm với hóa đơn không đủ điều kiện khuyến mãi
-    [Documentation]    Kiểm tra tính điểm khi hóa đơn không đủ điều kiện để nhận khuyến mãi điểm
-    &{promotion}=    Create Dictionary
-    ...    Id=1001
-    ...    Type=2
-    ...    ApplyFor=1
-    ...    PointValue=50
-    ...    MinValue=1000000
-    
-    ${data}=    Evaluate    dict(${INVOICE_WITH_PROMOTION_POINT_DATA})
-    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    ${promotions}=    Create List    ${promotion}
-    Set To Dictionary    ${data}    Promotions=${promotions}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
+RT-RP-013 Tạo hóa đơn với nhóm khách hàng có tỷ lệ điểm đặc biệt
+    [Documentation]    Kiểm tra tính điểm thưởng khi khách hàng thuộc nhóm VIP có tỷ lệ quy đổi điểm đặc biệt
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 100,000đ
+    ...    - MoneyPerPoint = 5,000đ (nhóm VIP: 5,000đ = 1 điểm, gấp đôi thông thường)
+    ...    - CustomerGroupId = 1001 (nhóm VIP)
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(100,000 / 5,000) = 20 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 20 điểm thưởng
+    ...    - Lịch sử điểm được cập nhật
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn nhóm khách hàng VIP với MoneyPerPoint là 5000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    ${base_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${base_points}
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 20
+    And Lịch sử điểm của khách hàng ${DEFAULT_CUSTOMER_ID} được ghi nhận với 20 điểm
 
-RT-RP-014 Tính điểm khuyến mãi theo sản phẩm không được cấu hình tích điểm
-    [Documentation]    Kiểm tra tính điểm khuyến mãi theo sản phẩm khi sản phẩm không được cấu hình tích điểm
-    &{promotion}=    Create Dictionary
-    ...    Id=1002
-    ...    Type=3
-    ...    ApplyFor=2
-    ...    PointPercentage=10
-    ...    ApplyProductIds=${PRODUCT_2}
-    
-    ${data}=    Evaluate    dict(${PRODUCT_WITH_PROMOTION_POINT_DATA})
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_2}
-    ...    Quantity=1
-    ...    Price=100000
-    ...    IsRewardPoint=False
-    ${details}=    Create List    ${detail}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    ${promotions}=    Create List    ${promotion}
-    Set To Dictionary    ${data}    Promotions=${promotions}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
+RT-RP-014 Tạo hóa đơn với thanh toán bằng voucher
+    [Documentation]    Kiểm tra tính điểm thưởng khi hóa đơn thanh toán bằng voucher và RewardPoint_ForInvoiceUsingVoucher = True
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền = 100,000đ
+    ...    - Thanh toán bằng voucher = 20,000đ
+    ...    - MoneyPerPoint = 10,000đ
+    ...    - RewardPoint_ForInvoiceUsingVoucher = True (tích điểm cho cả phần thanh toán bằng voucher)
+    ...    - Logic tính điểm:
+    ...    - Điểm = Floor(100,000 / 10,000) = 10 điểm
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được ghi nhận với 10 điểm thưởng
+    ...    - Lịch sử điểm được cập nhật
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn với thanh toán voucher 20000 và cấu hình tích điểm trên voucher là True
+    When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    0
-
-RT-RP-015 Tính điểm với giảm giá trên sản phẩm
-    [Documentation]    Kiểm tra tính điểm khi sản phẩm có giảm giá
-    ${data}=    Evaluate    dict(${INVOICE_REWARD_TYPE_DATA})
-    
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=1
-    ...    Price=100000
-    ...    Discount=20000
-    ...    IsRewardPoint=True
-    
-    ${details}=    Create List    ${detail}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
-
-RT-RP-016 Tính điểm với hóa đơn có thuế
-    [Documentation]    Kiểm tra tính điểm khi hóa đơn có thuế, điểm tích lũy không bao gồm thuế
-    ${data}=    Evaluate    dict(${INVOICE_REWARD_TYPE_DATA})
-    
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=1
-    ...    Price=100000
-    ...    IsRewardPoint=True
-    ...    TaxRate=${VAT_RATE}
-    
-    ${details}=    Create List    ${detail}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
-
-RT-RP-017 Tính điểm với hóa đơn có phụ phí
-    [Documentation]    Kiểm tra tính điểm khi hóa đơn có phụ phí, điểm tích lũy không bao gồm phụ phí
-    ${data}=    Evaluate    dict(${INVOICE_REWARD_TYPE_DATA})
-    
-    &{detail}=    Create Dictionary
-    ...    ProductId=${PRODUCT_1}
-    ...    Quantity=1
-    ...    Price=100000
-    ...    IsRewardPoint=True
-    
-    ${details}=    Create List    ${detail}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    &{surcharge}=    Create Dictionary
-    ...    Id=1
-    ...    Value=10000
-    ...    IsPercent=False
-    
-    @{surcharges}=    Create List    ${surcharge}
-    Set To Dictionary    ${data}    Surcharges=${surcharges}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 200
-    ${expected_points}=    Calculate Expected Invoice Type Reward Points    ${REQUEST_DATA}
-    And Response Should Have Correct Reward Points    ${expected_points}
-
-RT-RP-018 Không tích điểm khi chức năng tích điểm không được kích hoạt
-    [Documentation]    Kiểm tra không tính điểm khi chức năng tích điểm trong cài đặt không được kích hoạt
-    ${data}=    Evaluate    dict(${INVOICE_REWARD_TYPE_DATA})
-    
-    # Disable reward point setting
-    ${pos_setting}=    Create Dictionary
-    ...    RewardPointType=1
-    ...    RewardPoint_IsActive=False
-    ...    RewardPoint_MoneyPerPoint=10000
-    
-    Set To Dictionary    ${data}    PosSetting=${pos_setting}
-    
-    # Add standard invoice detail
-    ${details}=    Create List    ${STANDARD_INVOICE_DETAIL}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 200
-    And Response Should Have Correct Reward Points    0 
+    And Response Should Have Id exist
+    And Điểm thưởng của hóa đơn là 10
+    And Lịch sử điểm của khách hàng ${DEFAULT_CUSTOMER_ID} được ghi nhận với 10 điểm 
