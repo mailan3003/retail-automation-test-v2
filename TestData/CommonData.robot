@@ -43,13 +43,27 @@ ${OTHER_BRANCH_CUSTOMER_ID}         1005
 ${NONEXISTENT_CUSTOMER_ID}          123456789
 
 # Product data
-${PRODUCT_1}            1000017637
-${PRODUCT_CODE_1}       SP000001
+${PRODUCT_1}                1000017637
+${PRODUCT_1_CODE}           SP000001
+${PRODUCT_1_NAME}           Auto Test Product 1
+${MASTER_PRODUCT_1_ID}      1000017637
 ${PRODUCT_2}      1002
-${product_with_vat}    3333
-${PRESCRIPTION_DRUG_ID}   2001
-${INACTIVE_PRODUCT_ID}              1033707
-${COMBO_PRODUCT_ID}       4001
+${product_with_vat}         3333
+${PRESCRIPTION_DRUG_ID}     2001
+${INACTIVE_PRODUCT_ID}      1033707
+${COMBO_PRODUCT_ID}         4001
+
+# Partner Delivery Data
+${PARTNER_DELIVERY_1_ID}        1000000127
+${PARTNER_DELIVERY_1_CODE}      DT00013
+
+#Category Data
+${CATEGORY_1_ID}        1000000717
+
+#Surcharge Data
+${SURCHARGE_1_ID}       1000000043
+
+${SURCHARGE_2_ID}       1000000044
 
 # Additional product data
 ${product_batch}    6666
