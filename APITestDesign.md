@@ -206,6 +206,13 @@ ${AUTH_TOKEN}    token_value
 - Business rule violations
 - Authorization errors
 
+### 6.3 Inventory Management Tests
+- Inventory update with different product types (regular, batch, serial)
+- Inventory reservation and release
+- Batch handling with different strategies (FIFO, FEFO, LIFO, lowest cost)
+- Multi-branch inventory operations
+- Handling negative inventory and permissions
+
 ## 7. Test Case Checklist
 
 - [ ] Unique test case ID
@@ -271,7 +278,58 @@ RT-XX-001 Test case with custom invoice code
     And Response Should Have Id exist
 ```
 
-### 8.3 Response Verification
+### 8.3 Pattern kiểm thử cho quản lý lô (batch) và đặt giữ (reservation)
+
+Khi kiểm thử các tính năng liên quan đến quản lý lô và đặt giữ, chúng ta nên sử dụng các pattern sau:
+
+#### 8.3.1. Kiểm thử đặt giữ (Reservation Testing)
+
+1. **Cấu trúc cơ bản cho test case đặt giữ**:
+   ```
+   [Test Case]
+   1. Chuẩn bị dữ liệu hóa đơn với ReservationMode=1
+   2. Lưu trạng thái ban đầu của Reserved và OnHand
+   3. Gửi yêu cầu tạo đặt giữ
+   4. Xác thực Reserved thay đổi, OnHand không thay đổi
+   ```
+
+2. **Kiểm tra lifecycle đầy đủ của đặt giữ**:
+   ```
+   [Test Case]
+   1. Tạo đặt giữ (Reserved +)
+   2. Xác nhận đặt giữ (Reserved -, OnHand -)
+   3. Tùy chọn: Hủy đặt giữ (Reserved -, OnHand không đổi)
+   ```
+
+#### 8.3.2. Kiểm thử xử lý lô (Batch Testing)
+
+1. **Cấu trúc cơ bản cho test case xử lý lô**:
+   ```
+   [Test Case]
+   1. Chuẩn bị dữ liệu hóa đơn với BatchProcessingType="[FIFO|FEFO|LIFO|LowestCost]"
+   2. Lưu trạng thái ban đầu của các lô
+   3. Gửi yêu cầu tạo hóa đơn
+   4. Xác thực lô được xuất theo đúng thứ tự quy định
+   ```
+
+2. **Kiểm tra lifecycle đầy đủ của lô**:
+   ```
+   [Test Case]
+   1. Tạo lô mới với ngày hết hạn
+   2. Xuất lô
+   3. Tùy chọn: Hủy xuất lô
+   ```
+
+#### 8.3.3. Kết hợp kiểm thử lô và đặt giữ
+
+Có thể kết hợp cả hai pattern trên để kiểm thử các trường hợp phức tạp hơn:
+   ```
+   [Test Case]
+   1. Tạo đặt giữ với lô cụ thể (Reserved +, lô không thay đổi)
+   2. Xác nhận đặt giữ (Reserved -, lô giảm)
+   ```
+
+### 8.4 Response Verification
 ```robotframework
 Verify Response
     [Arguments]    ${response}    ${expected_data}
@@ -280,194 +338,6 @@ Verify Response
     Should Be Equal    ${response.json()['field']}    ${expected_data['field']}
 ```
 
-### 8.4 Combining Deep Cloning with Embedded Parameters
-
-The deep cloning approach can be combined with embedded parameters to create highly readable and flexible test cases. This pattern is especially useful for complex data structures that need to be modified in multiple ways:
-
-```robotframework
-*** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã ${code} Và Kênh Bán ${channel_id}
-    # Tạo bản sao sâu của request chuẩn
-    ${request_json}=    Evaluate    json.dumps(${STANDARD_INVOICE_REQUEST})    json
-    ${request}=    Evaluate    json.loads($request_json)    json
-    
-    # Cập nhật trực tiếp các thuộc tính theo tham số
-    Set To Dictionary    ${request["Invoice"]}    Code=${code}
-    
-    # Chỉ cập nhật kênh bán nếu không rỗng
-    Run Keyword If    '${channel_id}' != '${EMPTY}'    Set To Dictionary    ${request["Invoice"]}    SaleChannelId=${channel_id}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Hóa Đơn Có ${count} Sản Phẩm Với Tổng Tiền ${total}
-    # Truy xuất trực tiếp thông tin từ response
-    ${invoice}=    Set Variable    ${RESPONSE.json()}
-    
-    # Xác thực thông tin
-    Length Should Be    ${invoice["InvoiceDetails"]}    ${count}
-    Should Be Equal As Numbers    ${invoice["Total"]}    ${total}
-```
-
-Example usage in test cases:
-```robotframework
-RT-XX-002 Tạo hóa đơn Facebook với mã tùy chỉnh
-    [Documentation]    Kiểm tra tạo hóa đơn với mã tùy chỉnh qua kênh Facebook
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã FB_CUSTOM_001 Và Kênh Bán 2
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Hóa Đơn Có 1 Sản Phẩm Với Tổng Tiền 100000
-
-RT-XX-003 Tạo hóa đơn thông thường
-    [Documentation]    Kiểm tra tạo hóa đơn thông thường không qua kênh bán
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã HD_TEST_001 Và Kênh Bán ${EMPTY}
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Hóa Đơn Có 1 Sản Phẩm Với Tổng Tiền 100000
-```
-
-Benefits of combining these patterns:
-- **Highly readable test cases**: Test scenarios are self-documenting
-- **Reduced duplication**: Deep cloning ensures data isolation while embedded parameters make the code flexible
-- **Maintainable**: Changes to standard data structure only need to be made once
-- **Natural language**: Tests read like specifications
-- **Improved reporting**: Test reports show descriptive steps with actual parameter values
-
-### 8.5 Creating Utility Functions for Data Manipulation
-
-To improve code readability, maintainability, and reduce duplication, create utility functions for data manipulation in a dedicated file (`Keywords/Utilities/DataUtilities.robot`):
-
-```robotframework
-*** Keywords ***
-Deep Copy
-    [Documentation]    Creates a deep copy of any data structure using JSON serialization
-    [Arguments]    ${data}
-    ${json_data}=    Evaluate    json.dumps(${data})    json
-    ${copied_data}=    Evaluate    json.loads($json_data)    json
-    RETURN    ${copied_data}
-
-Update Dictionary Property
-    [Documentation]    Updates a property in a dictionary, useful for request modification
-    [Arguments]    ${dictionary}    ${property_name}    ${property_value}
-    Set To Dictionary    ${dictionary}    ${property_name}=${property_value}
-    RETURN    ${dictionary}
-
-Update Nested Dictionary Property
-    [Documentation]    Updates a nested property in a dictionary using a path with dot notation
-    [Arguments]    ${dictionary}    ${property_path}    ${property_value}
-    @{parts}=    Split String    ${property_path}    .
-    ${parts_count}=    Get Length    ${parts}
-    ${current}=    Set Variable    ${dictionary}
-    
-    # Navigate to the correct level, stopping at the parent
-    FOR    ${i}    IN RANGE    0    ${parts_count-1}
-        ${part}=    Get From List    ${parts}    ${i}
-        ${current}=    Get From Dictionary    ${current}    ${part}
-    END
-    
-    # Set the value at the final level
-    ${last_part}=    Get From List    ${parts}    ${parts_count-1}
-    Set To Dictionary    ${current}    ${last_part}=${property_value}
-    
-    RETURN    ${dictionary}
-
-Remove Nested Dictionary Property
-    [Documentation]    Removes a nested property from a dictionary using a path
-    [Arguments]    ${dictionary}    ${property_path}
-    @{parts}=    Split String    ${property_path}    .
-    ${parts_count}=    Get Length    ${parts}
-    ${current}=    Set Variable    ${dictionary}
-    
-    # Navigate to the correct level, stopping at the parent
-    FOR    ${i}    IN RANGE    0    ${parts_count-1}
-        ${part}=    Get From List    ${parts}    ${i}
-        ${current}=    Get From Dictionary    ${current}    ${part}
-    END
-    
-    # Remove the key at the final level
-    ${last_part}=    Get From List    ${parts}    ${parts_count-1}
-    Remove From Dictionary    ${current}    ${last_part}
-    
-    RETURN    ${dictionary}
-
-Add List Item
-    [Documentation]    Adds an item to a list at the specified path in a dictionary
-    [Arguments]    ${dictionary}    ${path}    ${item}
-    @{parts}=    Split String    ${path}    .
-    ${current}=    Set Variable    ${dictionary}
-    
-    # Navigate to the target list
-    FOR    ${part}    IN    @{parts}
-        ${current}=    Get From Dictionary    ${current}    ${part}
-    END
-    
-    # Add the item to the list
-    Append To List    ${current}    ${item}
-    RETURN    ${dictionary}
-
-Create Invoice Detail
-    [Documentation]    Creates a standard invoice detail dictionary
-    [Arguments]    ${product_id}    ${quantity}    ${price}    ${discount}=0
-    ${detail}=    Create Dictionary    ProductId=${product_id}    Quantity=${quantity}    Price=${price}    Discount=${discount}
-    RETURN    ${detail}
-
-Add Invoice Detail
-    [Documentation]    Adds a product detail to the invoice request
-    [Arguments]    ${request}    ${product_id}    ${quantity}    ${price}    ${discount}=0
-    ${detail}=    Create Invoice Detail    ${product_id}    ${quantity}    ${price}    ${discount}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail}
-    RETURN    ${request}
-
-Get Nested Property
-    [Documentation]    Gets a nested property from a dictionary using a path
-    [Arguments]    ${dictionary}    ${property_path}
-    @{parts}=    Split String    ${property_path}    .
-    ${current}=    Set Variable    ${dictionary}
-    
-    FOR    ${part}    IN    @{parts}
-        ${current}=    Get From Dictionary    ${current}    ${part}
-    END
-    
-    RETURN    ${current}
-```
-
-These utility functions can then be used throughout your code, making data preparation keywords cleaner and more maintainable:
-
-```robotframework
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Hợp Lệ
-    # Sao chép sâu STANDARD_INVOICE_REQUEST sử dụng utility function
-    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
-    
-    # Cập nhật trực tiếp mã hóa đơn
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${VALID_INVOICE_CODE}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-```
-
-For more complex data preparation:
-
-```robotframework
-Chuẩn Bị Dữ Liệu Hóa Đơn Phức Tạp
-    ${request}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_COMPLEX_001
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Description    Hóa đơn phức tạp
-    ${request}=    Add Invoice Detail    ${request}    ${PRODUCT_1}    2    100000    10000
-    ${request}=    Add Invoice Detail    ${request}    ${PRODUCT_2}    1    150000
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-```
-
-This approach provides:
-- **Cleaner code**: Complex operations are wrapped in descriptive functions
-- **Better code organization**: Utility functions are centralized in one file
-- **Easier maintenance**: Updates to data handling logic only need to be made in one place
-- **Improved readability**: Keywords express intention more clearly
-- **Consistent data handling**: Common patterns for modifying nested data structures
-
-By importing `DataUtilities.robot` in your test files, you make these utility functions available across all test cases, promoting consistent data handling patterns throughout your test suite.
-
 ## 9. Maintenance Tips
 
 1. Keep test data updated
@@ -475,3 +345,100 @@ By importing `DataUtilities.robot` in your test files, you make these utility fu
 3. Monitor API changes
 4. Update authentication tokens
 5. Maintain documentation
+
+## 8. Test Implementation Strategies
+
+### 8.1 Inventory Update Testing
+
+Khi kiểm thử cập nhật tồn kho, cần triển khai các chiến lược sau:
+
+1. **Chuẩn bị dữ liệu tồn kho ban đầu**:
+   ```robotframework
+   Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
+       ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+       ${result}=    Fetch One    ${query}    ${product_id}    ${BRANCH_ID}
+       Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho ban đầu
+       ${initial_onhand}=    Set Variable    ${result[2]}
+       Set Test Variable    ${INITIAL_ONHAND}    ${initial_onhand}
+       RETURN    ${initial_onhand}
+   ```
+
+2. **Xác thực thay đổi tồn kho**:
+   ```robotframework
+   Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị
+       [Arguments]    ${product_id}
+       ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+       ${result}=    Fetch One    ${query}    ${product_id}    ${BRANCH_ID}
+       Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho
+       ${new_onhand}=    Set Variable    ${result[2]}
+       ${expected_onhand}=    Evaluate    ${INITIAL_ONHAND} - ${quantity}
+       Should Be Equal As Numbers    ${new_onhand}    ${expected_onhand}    Số lượng tồn kho không giảm đúng
+   ```
+
+3. **Xác thực lịch sử tồn kho**:
+   ```robotframework
+   Xác Thực Lịch Sử Tồn Kho
+       [Arguments]    ${product_id}    ${quantity}    ${document_type}
+       ${query}=    Set Variable    SELECT DocumentId, DocumentType, ProductId, Value FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = ?
+       ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}    ${document_type}
+       Should Not Be Equal    ${result}    None    Không tìm thấy lịch sử tồn kho
+       ${expected_value}=    Evaluate    -${quantity}
+       Should Be Equal As Numbers    ${result[3]}    ${expected_value}    Giá trị thay đổi tồn kho không khớp
+   ```
+
+### 8.2 Batch Handling Testing
+
+Khi kiểm thử xử lý lô, cần triển khai các chiến lược sau:
+
+1. **Chuẩn bị kiểm tra xử lý lô theo quy tắc cụ thể**:
+   ```robotframework
+   Chuẩn Bị Dữ Liệu Xử Lý Lô Theo ${processing_type}
+       ${data}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
+       ${details}=    Create List    
+       ${product_detail}=    Create Dictionary    ProductId=${product_batch}    ProductCode=BATCH001    Quantity=${quantity}    Price=100000    BatchProcessingType=${processing_type}
+       Append To List    ${details}    ${product_detail}
+       ${data}=    Update Nested Dictionary Property    ${data}    Invoice.InvoiceDetails    ${details}
+       ${data}=    Update Nested Dictionary Property    ${data}    Invoice.Code    HD_BATCH_${processing_type}_001
+       Set Test Variable    ${REQUEST_DATA}    ${data}
+       RETURN    ${data}
+   ```
+
+2. **Xác thực lô được xuất theo quy tắc**:
+   ```robotframework
+   Xác Thực Lô Được Xuất Theo Quy Tắc ${processing_type}
+       [Arguments]    ${product_id}    ${quantity}
+       # Lấy danh sách lô theo thứ tự phù hợp với quy tắc processing_type
+       ${batches}=    Lấy Danh Sách Lô Theo Quy Tắc    ${product_id}    ${processing_type}
+       
+       # Lấy lịch sử xuất lô
+       ${tracking_results}=    Fetch All    SELECT BatchExpireId, Value FROM BatchExpireTracking WHERE DocumentId = ? AND DocumentType = 3    ${INVOICE_ID}
+       
+       # Xác thực lô được xuất theo đúng thứ tự quy định
+       # Chi tiết thực hiện tùy thuộc vào từng quy tắc processing_type
+   ```
+
+### 8.3 Reservation Testing
+
+Khi kiểm thử đặt giữ, cần triển khai các chiến lược sau:
+
+1. **Chuẩn bị dữ liệu hóa đơn với chế độ đặt giữ**:
+   ```robotframework
+   Chuẩn Bị Dữ Liệu Hóa Đơn Với Chế Độ Đặt Giữ
+       ${data}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
+       ${data}=    Update Nested Dictionary Property    ${data}    Invoice.ReservationMode    1
+       ${data}=    Update Nested Dictionary Property    ${data}    Invoice.Status    3
+       Set Test Variable    ${REQUEST_DATA}    ${data}
+       RETURN    ${data}
+   ```
+
+2. **Xác thực số lượng đặt giữ**:
+   ```robotframework
+   Xác Thực Số Lượng Đặt Giữ Tăng ${quantity} Đơn Vị
+       [Arguments]    ${product_id}
+       ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand, Reserved FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+       ${result}=    Fetch One    ${query}    ${product_id}    ${BRANCH_ID}
+       Should Not Be Equal    ${result}    None    Không tìm thấy thông tin đặt giữ
+       ${new_reserved}=    Set Variable    ${result[3]}
+       ${expected_reserved}=    Evaluate    ${INITIAL_RESERVED} + ${quantity}
+       Should Be Equal As Numbers    ${new_reserved}    ${expected_reserved}    Số lượng đặt giữ không tăng đúng
+   ```

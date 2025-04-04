@@ -276,11 +276,11 @@ Xác Thực Điểm Thưởng Hóa Đơn
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
     
     # Xác thực điểm thưởng trong response
-    ${actual_point}=    Set Variable    ${RESPONSE.json()["RewardPoint"]}
+    ${actual_point}=    Set Variable    ${RESPONSE.json()["Point"]}
     Should Be Equal As Numbers    ${actual_point}    ${expected_point}    Điểm thưởng của hóa đơn không đúng mong đợi
     
     # Xác thực điểm thưởng trong database
-    ${query}=    Set Variable    SELECT RewardPoint FROM Invoice WHERE Id = ?
+    ${query}=    Set Variable    SELECT Point FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
     Should Be Equal As Numbers    ${result[0]}    ${expected_point}    Điểm thưởng trong CSDL không đúng với giá trị mong đợi
