@@ -1,300 +1,150 @@
 *** Settings ***
-Resource    ../CommonData.robot
+Documentation     Dữ liệu cho test cases tính điểm thưởng hóa đơn
+Resource          ../CommonData.robot
+Resource          ./CommonInvoiceData.robot
 
 *** Variables ***
-# Configuration Constants for Reward Points
-${MONEY_PER_POINT}    10000
-${POINT_TO_MONEY}     100
+# Cấu hình tích điểm thưởng
+${REWARD_TYPE_NONE}            0    # Không tích điểm
+${REWARD_TYPE_INVOICE}         1    # Tích điểm theo hóa đơn
+${REWARD_TYPE_PRODUCT}         2    # Tích điểm theo sản phẩm
+${REWARD_POINTS_MONEY_RATIO}   10000    # 10,000đ = 1 điểm
 
-# Standard invoice data
-@{STANDARD_INVOICE_DETAILS}
-...    &{PRODUCT_1_DETAILS}
+# Template chuẩn cho tích điểm theo hóa đơn
+&{STANDARD_INVOICE_REWARD_REQUEST}    
+...    Invoice=&{invoice_body}
+...    Payments=@{EMPTY}
 
-# Standard invoice data
-&{STANDARD_INVOICE}
-...    Code=HD_TEST_REWARD001
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
+# Template chuẩn cho tích điểm theo sản phẩm
+&{STANDARD_PRODUCT_REWARD_REQUEST}    
+...    Invoice=&{invoice_body}
+...    Payments=@{EMPTY}
 
-# Products with different point settings
-&{PRODUCT_WITH_POINT}
+# Template chuẩn cho không tích điểm
+&{STANDARD_NO_REWARD_REQUEST}    
+...    Invoice=&{invoice_body}
+...    Payments=@{EMPTY}
+
+# Template chuẩn cho hóa đơn có khuyến mãi tích điểm
+&{STANDARD_PROMOTION_REWARD_REQUEST}    
+...    Invoice=&{invoice_body}
+...    Payments=@{EMPTY}
+
+# Sản phẩm có tích điểm
+&{PRODUCT_WITH_REWARD_POINT}    
 ...    ProductId=${PRODUCT_1}
 ...    Quantity=1
 ...    Price=100000
-...    Point=10
+...    Discount=0
+...    IsRewardPoint=${TRUE}
+...    RewardPoint=0
 
-&{PRODUCT_WITHOUT_POINT}
+# Sản phẩm có điểm cố định
+&{PRODUCT_WITH_FIXED_REWARD_POINT}    
 ...    ProductId=${PRODUCT_1}
 ...    Quantity=1
 ...    Price=100000
-...    UsePoint=False
+...    Discount=0
+...    IsRewardPoint=${TRUE}
+...    RewardPoint=5
 
-# Products with different point settings
-&{PRODUCT_WITH_HIGH_POINT}
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    Point=50
-
-&{PRODUCT_WITH_LOW_POINT}
+# Sản phẩm không tích điểm
+&{PRODUCT_WITHOUT_REWARD_POINT}    
 ...    ProductId=${PRODUCT_2}
 ...    Quantity=1
-...    Price=50000
-...    Point=5
+...    Price=100000
+...    Discount=0
+...    IsRewardPoint=${FALSE}
+...    RewardPoint=0
 
-# Invoice with invoice reward type
-&{INVOICE_REWARD_TYPE}
-...    Code=HD_TEST_REWARD002
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
+# Khuyến mãi tặng điểm theo hóa đơn
+&{INVOICE_PROMOTION_POINT_GIFT}
+...    PromotionId=${VALID_PROMOTION_ID}
+...    Type=12    # InvoicePointGift
+...    Value=10
+...    DiscountQuantity=1
+...    SourceId=${VALID_PROMOTION_ID}
+...    ProductId=0
+...    CustomerGroupId=0
 
-# Invoice with product reward type
-&{PRODUCT_REWARD_TYPE}
-...    Code=HD_TEST_REWARD003
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Product
-
-# Invoice with discount for testing RewardPoint_ForDiscountInvoice
-&{INVOICE_WITH_DISCOUNT}
-...    Code=HD_TEST_REWARD004
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=90000
-...    Discount=10000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
-...    RewardPoint_ForDiscountInvoice=True
-
-# Invoice without discount point award
-&{INVOICE_NO_DISCOUNT_POINT}
-...    Code=HD_TEST_REWARD005
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=90000
-...    Discount=10000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
-...    RewardPoint_ForDiscountInvoice=False
-
-# Reward Point Promotion Data
-&{PROMOTION_DONATE_POINT}
-...    Id=1001
-...    PromotionType=PROMOTION_INVOICE_DONATE_POINT
-...    PromotionValue=20
-
-&{PRODUCT_PROMOTION_DONATE_POINT}
-...    Id=1002
-...    PromotionType=PROMOTION_PRODUCT_DONATE_POINT
-...    PromotionValue=5
+# Khuyến mãi tặng điểm theo sản phẩm
+&{PRODUCT_PROMOTION_POINT_GIFT}
+...    PromotionId=${VALID_PROMOTION_ID}
+...    Type=13    # ProductPointGift
+...    Value=20
+...    DiscountQuantity=1
+...    SourceId=${VALID_PROMOTION_ID}
 ...    ProductId=${PRODUCT_1}
+...    CustomerGroupId=0
 
-# Invoice with point promotion
-&{INVOICE_WITH_PROMOTION_POINT}
-...    Code=HD_TEST_REWARD006
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
+# Khuyến mãi mua X tặng Y điểm
+&{BUY_X_GET_Y_POINT_PROMOTION}
+...    PromotionId=${VALID_PROMOTION_ID}
+...    Type=14    # BuyXGetYPoint
+...    Value=30
+...    DiscountQuantity=1
+...    SourceId=${VALID_PROMOTION_ID}
+...    ProductId=${PRODUCT_1}
+...    CustomerGroupId=0
+...    QuantityX=2
+...    ProductIdY=0
+
+# Invoice body với ví dụ cấu hình tích điểm theo hóa đơn
+&{invoice_reward_body}    
+...    BranchId=${DEFAULT_BRANCH_ID}
+...    RetailerId=${RETAILER_ID}
 ...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
+...    SoldById=${DEFAULT_USER_ID}
+...    SoldBy=&{sold_by_body}
+...    Code=HD_REWARD_001
 ...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
+...    InvoiceDetails=@{EMPTY}
+...    InvoicePromotions=@{EMPTY}
+...    Status=3
+...    Type=1
+...    RewardPointType=${REWARD_TYPE_INVOICE}
+...    IsRewardPointUsingPriceAfterDiscount=${TRUE}
+...    RewardPoint_MoneyPerPoint=${REWARD_POINTS_MONEY_RATIO}
 
-# Product-specific promotion point data
-&{INVOICE_WITH_PRODUCT_PROMOTION}
-...    Code=HD_TEST_REWARD007
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Product
+# Sản phẩm với tích điểm cố định
+&{fixed_point_product_detail}
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    Discount=0
+...    IsRewardPoint=${TRUE}
+...    RewardPoint=5
 
-# Hóa đơn với nhiều sản phẩm khác nhau
-@{MIXED_PRODUCT_DETAILS}
-...    &{PRODUCT_WITH_POINT}
-...    &{PRODUCT_WITHOUT_POINT}
+# Sản phẩm không tích điểm
+&{no_reward_product_detail}
+...    ProductId=${PRODUCT_2}
+...    Quantity=1
+...    Price=100000
+...    Discount=0
+...    IsRewardPoint=${FALSE}
+...    RewardPoint=0
 
-&{INVOICE_WITH_MIXED_PRODUCTS}
-...    Code=HD_TEST_REWARD008
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{MIXED_PRODUCT_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=200000
-...    RewardPoint_Type=Product
+# Sản phẩm với giá bằng 0
+&{zero_price_product_detail}
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=0
+...    Discount=0
+...    IsRewardPoint=${TRUE}
+...    RewardPoint=0
 
-# Invoice without customer ID (should not award points)
-&{INVOICE_WITHOUT_CUSTOMER}
-...    Code=HD_TEST_REWARD009
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=0
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
+# Phụ phí nhỏ để test làm tròn
+&{small_surcharge_detail}
+...    SurchargeId=${SURCHARGE_1_ID}
+...    Price=5000
+...    ValueRatio=0
 
-# Invoice using reward points for payment
-@{POINT_PAYMENT}
-...    &{POINT_PAYMENT_DETAILS}
-
-&{POINT_PAYMENT_DETAILS}
-...    Method=Point
-...    Amount=20000
-
-&{INVOICE_WITH_POINT_PAYMENT}
-...    Code=HD_TEST_REWARD010
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
-...    RewardPoint_ForInvoiceUsingRewardPoint=True
-
-# Invoice using voucher
-@{VOUCHER_PAYMENT}
-...    &{VOUCHER_PAYMENT_DETAILS}
-
-&{VOUCHER_PAYMENT_DETAILS}
-...    Method=Voucher
-...    Amount=20000
-...    VoucherId=1001
-
-&{INVOICE_WITH_VOUCHER}
-...    Code=HD_TEST_REWARD011
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
-...    RewardPoint_ForInvoiceUsingVoucher=True
-
-# Invoice with surcharge and tax
-&{INVOICE_WITH_SURCHARGE_TAX}
-...    Code=HD_TEST_REWARD012
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=115000
-...    Surcharge=5000
-...    TotalTax=10000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=10000
-
-# Custom customer group with special point ratio
-&{INVOICE_WITH_CUSTOMER_GROUP}
-...    Code=HD_TEST_REWARD013
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Invoice
-...    MoneyPerPoint=5000    # 5000 VND = 1 point (double points for VIP customers)
-...    CustomerGroupId=1001
-
-# Invoice with both invoice and product promotion
-&{INVOICE_WITH_BOTH_PROMOTIONS}
-...    Code=HD_TEST_REWARD014
-...    BranchId=${BRANCH_ID}
-...    SoldById=${SOLD_BY_ID}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
-...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
-...    Total=100000
-...    RewardPoint_Type=Product
-
-# Request templates
-&{STANDARD_INVOICE_REQUEST}
-...    Invoice=${STANDARD_INVOICE}
-...    Payments=@{EMPTY}
-
-&{INVOICE_REWARD_TYPE_REQUEST}
-...    Invoice=${INVOICE_REWARD_TYPE}
-...    Payments=@{EMPTY}
-
-&{PRODUCT_REWARD_TYPE_REQUEST}
-...    Invoice=${PRODUCT_REWARD_TYPE}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITH_DISCOUNT_REQUEST}
-...    Invoice=${INVOICE_WITH_DISCOUNT}
-...    Payments=@{EMPTY}
-
-&{INVOICE_NO_DISCOUNT_POINT_REQUEST}
-...    Invoice=${INVOICE_NO_DISCOUNT_POINT}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITH_PROMOTION_POINT_REQUEST}
-...    Invoice=${INVOICE_WITH_PROMOTION_POINT}
-...    Payments=@{EMPTY}
-...    Promotions=&{PROMOTION_DONATE_POINT}
-
-&{INVOICE_WITH_PRODUCT_PROMOTION_REQUEST}
-...    Invoice=${INVOICE_WITH_PRODUCT_PROMOTION}
-...    Payments=@{EMPTY}
-...    Promotions=&{PRODUCT_PROMOTION_DONATE_POINT}
-
-&{INVOICE_WITH_MIXED_PRODUCTS_REQUEST}
-...    Invoice=${INVOICE_WITH_MIXED_PRODUCTS}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITHOUT_CUSTOMER_REQUEST}
-...    Invoice=${INVOICE_WITHOUT_CUSTOMER}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITH_POINT_PAYMENT_REQUEST}
-...    Invoice=${INVOICE_WITH_POINT_PAYMENT}
-...    Payments=@{POINT_PAYMENT}
-
-&{INVOICE_WITH_VOUCHER_REQUEST}
-...    Invoice=${INVOICE_WITH_VOUCHER}
-...    Payments=@{VOUCHER_PAYMENT}
-
-&{INVOICE_WITH_SURCHARGE_TAX_REQUEST}
-...    Invoice=${INVOICE_WITH_SURCHARGE_TAX}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITH_CUSTOMER_GROUP_REQUEST}
-...    Invoice=${INVOICE_WITH_CUSTOMER_GROUP}
-...    Payments=@{EMPTY}
-
-&{INVOICE_WITH_BOTH_PROMOTIONS_REQUEST}
-...    Invoice=${INVOICE_WITH_BOTH_PROMOTIONS}
-...    Payments=@{EMPTY}
-...    Promotions=&{PROMOTION_DONATE_POINT}
-...    ProductPromotions=&{PRODUCT_PROMOTION_DONATE_POINT} 
+# Template cho khuyến mãi tích điểm
+&{invoice_promotion_point_gift}
+...    PromotionId=${VALID_PROMOTION_ID}
+...    Type=12    # InvoicePointGift
+...    Value=10
+...    DiscountQuantity=1
+...    SourceId=${VALID_PROMOTION_ID}
+...    ProductId=0
+...    CustomerGroupId=0 

@@ -4,6 +4,10 @@ Resource          ../CommonData.robot
 Resource          ./CommonInvoiceData.robot
 
 *** Variables ***
+
+${INVOICE_HAS_COD_1}        1000003284
+
+
 # Thông tin giao hàng chuẩn
 &{STANDARD_DELIVERY_INFO}
 ...    ReceiverName=Nguyễn Văn A

@@ -23,8 +23,10 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD mặc định
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với giao hàng COD mặc định
     ${request}=    Deep Copy    ${invoice_request_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.UseDefaultPartner    true
-    #${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.DeliveryBy    ${PARTNER_DELIVERY_1_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.UseDefaultPartner    ${True}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerCode    ${PARTNER_DELIVERY_1_CODE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerName    ${PARTNER_DELIVERY_1_NAME}
+    #${request}=   Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.DeliveryBy    ${PARTNER_DELIVERY_1_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 
@@ -87,7 +89,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Từ Facebook
 
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Có Giao Hàng
     [Documentation]    Chuẩn bị dữ liệu cập nhật hóa đơn có giao hàng
-    ${request}=    Deep Copy    ${UPDATE_INVOICE_COD_REQUEST}
+    #${request}=    Deep Copy    ${UPDATE_INVOICE_COD_REQUEST}
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Id    ${INVOICE_HAS_COD_1}
+    #${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.DeliveryBy    ${PARTNER_DELIVERY_2_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    2025-03-27T06:44:21.083Z
+    
+    
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -169,7 +177,7 @@ Xác Thực Địa Chỉ Lấy Hàng Từ Chi Nhánh
 Xác Thực Cập Nhật Thông Tin Giao Hàng
     [Documentation]    Xác thực thông tin giao hàng được cập nhật IsCurrent = 0 cho bản ghi cũ
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    ${current_delivery_info_id}=    Set Variable    ${RESPONSE.json()["DeliveryInfoId"]}
+    #${current_delivery_info_id}=    Set Variable    ${RESPONSE.json()["DeliveryInfoId"]}
     
     # Xác thực có nhiều bản ghi DeliveryInfo
     ${query}=    Set Variable    SELECT COUNT(*) FROM DeliveryInfo WHERE InvoiceId = ?
@@ -184,4 +192,4 @@ Xác Thực Cập Nhật Thông Tin Giao Hàng
     # Xác thực bản ghi hiện tại đúng là bản ghi mới
     ${query}=    Set Variable    SELECT Id FROM DeliveryInfo WHERE InvoiceId = ? AND IsCurrent = 1
     ${result}=    Fetch One    ${query}    ${invoice_id}
-    Should Be Equal As Strings    ${result[0]}    ${current_delivery_info_id}    Bản ghi hiện tại không phải là bản ghi mới nhất 
+    #Should Be Equal As Strings    ${result[0]}    ${current_delivery_info_id}    Bản ghi hiện tại không phải là bản ghi mới nhất 

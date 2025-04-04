@@ -26,6 +26,38 @@ Resource          ../CommonData.robot
 
 
 
+# Surcharge details
+&{surcharge_item_body}    
+...    SurchargeId=${SURCHARGE_1_ID}
+...    Price=10000
+...    ValueRatio=0
+
+
+&{surcharge_percent_item_body}
+...    SurchargeId=${SURCHARGE_2_ID}
+...    Price=0
+...    ValueRatio=10
+
+#Combo 
+&{combo_product_detail_body}
+...    ProductId=${COMBO_PRODUCT_1_ID}
+...    Quantity=1
+...    Price=250000
+...    Discount=0
+...    IsCombo=${TRUE}
+
+&{combo_product_1_matterial_1_body}
+...    ProductId=${COMBO_PRODUCT_1_MATTERIAL_1_ID}
+...    Quantity=1
+...    Price=100000
+
+&{combo_product_1_matterial_2_body}
+...    ProductId=${COMBO_PRODUCT_1_MATTERIAL_2_ID}
+...    Quantity=1
+...    Price=150000
+
+
+
 
 
 # SoldBy Body
@@ -41,7 +73,7 @@ Resource          ../CommonData.robot
 &{surcharge_2}    Code=TK002    CreatedDate=2025-03-28T02:47:38.940Z    Name=Phí VAT2    Order=2    Price=0    RetailerId=19809    SurValue=0    SurchargeBranches=@{Empty}    SurchargeId=${SURCHARGE_2_ID}    UsageFlag=${True}    Value=0    isAuto=${True}    isReturnAuto=${True}
 
 # DeliveryDetail Body
-&{delivery_detail_body}    Type=0    TypeName=    Status=1    Address=${None}    ContactNumber=0988673523    Receiver=Hung    DeliveryBy=${DEFAULT_PARTNER_DELIVERY_ID}    LocationId=1    LocationName=An Giang - Huyện Chợ Mới    WardName=Thị trấn Chợ Mới    CustomerId=${None}    CustomerCode=${None}    BranchTakingAddressId=${None}    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"    AdministrativeAreaId=${None}    WardId=10548    Weight=500    Height=10    Width=10    Length=10    IsChangeGBH=${False}    PackageType=0    Paymenter=0    ServiceCode=0    UseDefaultPartner=${False}    UsingOfBilling=${False}    UsingPriceCod=1    ChangeExpectedDelivery=${False}    WeightInput=500    LastLocation=An Giang - Huyện Chợ Mới    LastWard=Thị trấn Chợ Mới    PackageTypeObj=&{package_type_body}
+&{delivery_detail_body}    Type=0    TypeName=    Status=1    Address=${None}    ContactNumber=0988673523    Receiver=Hung    DeliveryBy=${PARTNER_DELIVERY_1_ID}    LocationId=1    LocationName=An Giang - Huyện Chợ Mới    WardName=Thị trấn Chợ Mới    CustomerId=${None}    CustomerCode=${None}    BranchTakingAddressId=${None}    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"    AdministrativeAreaId=${None}    WardId=10548    Weight=500    Height=10    Width=10    Length=10    IsChangeGBH=${False}    PackageType=0    Paymenter=0    ServiceCode=0    UseDefaultPartner=${False}    UsingOfBilling=${False}    UsingPriceCod=1    ChangeExpectedDelivery=${False}    WeightInput=500    LastLocation=An Giang - Huyện Chợ Mới    LastWard=Thị trấn Chợ Mới    PackageTypeObj=&{package_type_body}
 
 &{default_delivery_detail_body}    
 ...    Type=0    

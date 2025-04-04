@@ -99,7 +99,7 @@ RT-DI-006 Tạo hóa đơn thành công với đơn vị vận chuyển mặc đ
     Then Response Status Code Should Be 200
     And Xác Thực Thông Tin Giao Hàng Trong Response
     And Xác Thực Thông Tin Giao Hàng Trong DB
-    And Xác Thực Thông Tin Đơn Vị Vận Chuyển    ${DEFAULT_PARTNER_DELIVERY_ID}
+    And Xác Thực Thông Tin Đơn Vị Vận Chuyển    ${PARTNER_DELIVERY_1_ID}
 
 RT-DI-007 Tạo hóa đơn thành công với giao hàng từ Facebook
     [Documentation]    Kiểm tra tạo hóa đơn giao hàng từ Facebook:

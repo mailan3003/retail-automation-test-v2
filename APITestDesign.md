@@ -83,6 +83,7 @@ RT-XX-001 Test scenario description
 - Use variables for reusable data
 - Store common data in `CommonData.robot`
 - Use descriptive variable names
+- Preparation keywords should reuse variables from `CommonInvoiceData.robot` and modify them to fit specific test needs
 
 ### 3.3 Verification Steps
 1. Status Code Verification:

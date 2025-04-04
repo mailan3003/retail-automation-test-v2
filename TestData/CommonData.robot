@@ -47,28 +47,48 @@ ${PRODUCT_1}                1000017637
 ${PRODUCT_1_CODE}           SP000001
 ${PRODUCT_1_NAME}           Auto Test Product 1
 ${MASTER_PRODUCT_1_ID}      1000017637
-${PRODUCT_2}      1002
-${product_with_vat}         3333
+${PRODUCT_2}                1000014172
+
+${PRODUCT_WITH_VAT_1_ID}         1000014171
+
 ${PRESCRIPTION_DRUG_ID}     2001
 ${INACTIVE_PRODUCT_ID}      1033707
-${COMBO_PRODUCT_ID}         4001
+${COMBO_PRODUCT_1_ID}                   1000014447
+${COMBO_PRODUCT_1_MATTERIAL_1_ID}       1000014220
+${COMBO_PRODUCT_1_MATTERIAL_2_ID}       1000014225
+
+
+${PRODUCT_WITH_DISCOUNT_1}      1000014172
 
 # Partner Delivery Data
 ${PARTNER_DELIVERY_1_ID}        1000000127
 ${PARTNER_DELIVERY_1_CODE}      DT00013
+${PARTNER_DELIVERY_1_NAME}      Phạm Anh Tú
+
+${PARTNER_DELIVERY_2_ID}        1000000115
+${PARTNER_DELIVERY_2_CODE}      DT00001
+${PARTNER_DELIVERY_2_NAME}      Giao hàng nhanh
 
 #Category Data
 ${CATEGORY_1_ID}        1000000717
 
 #Surcharge Data
-${SURCHARGE_1_ID}       1000000043
-
-${SURCHARGE_2_ID}       1000000044
+${SURCHARGE_1_ID}       1000000047
+${SURCHARGE_2_ID}       1000000046
 
 # Additional product data
 ${product_batch}    6666
 ${product_out_of_stock}    7777
 ${batch_1}    8888
+
+
+# Tax details
+${TAX_1_ID}             2
+&{tax_detail_body}
+...    TaxPercentage=${DEFAULT_TAX_RATE}
+...    TaxType=${1}
+...    TaxId=${TAX_1_ID}
+
 
 # Product Details
 &{VALID_PRODUCT_WITH_DISCOUNT}    
