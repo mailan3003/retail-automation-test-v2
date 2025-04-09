@@ -6,7 +6,7 @@ Resource          ../CommonData.robot
 # Dữ liệu hóa đơn tiêu chuẩn
 ${RECEIPT_INVOICE_CODE}    HD_RECEIPT001
 ${STANDARD_RECEIPT_AMOUNT}    100000
-${RECEIPT_PREFIX}    PT
+${RECEIPT_PREFIX}    TT
 ${RECEIPT_DESCRIPTION}    Thu tiền hóa đơn bán hàng
 
 # Dữ liệu phương thức thanh toán
@@ -58,21 +58,22 @@ ${BANK_ACCOUNT_NAME}    Tài khoản ngân hàng mặc định
 &{CASH_RECEIPT_PAYMENT}
 ...    Method=${PAYMENT_CASH}
 ...    Amount=${STANDARD_RECEIPT_AMOUNT}
-...    Description=${RECEIPT_DESCRIPTION}
 
 # Dữ liệu thanh toán thẻ
 &{CARD_RECEIPT_PAYMENT}
 ...    Method=${PAYMENT_CARD}
 ...    Amount=${STANDARD_RECEIPT_AMOUNT}
-...    AccountId=${BANK_ACCOUNT_ID}
-...    Description=${RECEIPT_DESCRIPTION}
+...    AccountId= 0
+...    Id=-1
+...    UsePoint=null
 
 # Dữ liệu thanh toán chuyển khoản
 &{TRANSFER_RECEIPT_PAYMENT}
 ...    Method=${PAYMENT_TRANSFER}
 ...    Amount=${STANDARD_RECEIPT_AMOUNT}
-...    AccountId=${BANK_ACCOUNT_ID}
-...    Description=${RECEIPT_DESCRIPTION}
+...    AccountId=0
+...    Id=-1
+...    UsePoint=null
 
 # Request và response tiêu chuẩn
 &{STANDARD_RECEIPT_REQUEST}
@@ -94,13 +95,16 @@ ${BANK_ACCOUNT_NAME}    Tài khoản ngân hàng mặc định
 &{CASH_MULTIPLE_PAYMENT}
 ...    Method=${PAYMENT_CASH}
 ...    Amount=${MULTIPLE_PAYMENT_AMOUNT}
-...    Description=${RECEIPT_DESCRIPTION}
+...    AccountId=null
+...    UsePoint=null
+...    Id=-1
 
 &{CARD_MULTIPLE_PAYMENT}
 ...    Method=${PAYMENT_CARD}
 ...    Amount=${MULTIPLE_PAYMENT_AMOUNT}
-...    AccountId=${BANK_ACCOUNT_ID}
-...    Description=${RECEIPT_DESCRIPTION}
+...    AccountId=0
+...    UsePoint=null
+...    Id=-1
 
 # Dữ liệu thanh toán thừa
 &{OVERPAYMENT_RECEIPT_REQUEST}
@@ -113,7 +117,6 @@ ${BANK_ACCOUNT_NAME}    Tài khoản ngân hàng mặc định
 &{OVERPAYMENT_PAYMENT}
 ...    Method=${PAYMENT_CASH}
 ...    Amount=${EXCESS_RECEIPT_AMOUNT}
-...    Description=${RECEIPT_DESCRIPTION}
 
 # Dữ liệu thanh toán thiếu
 &{UNDERPAYMENT_RECEIPT_REQUEST}
@@ -126,7 +129,7 @@ ${BANK_ACCOUNT_NAME}    Tài khoản ngân hàng mặc định
 &{UNDERPAYMENT_PAYMENT}
 ...    Method=${PAYMENT_CASH}
 ...    Amount=${PARTIAL_RECEIPT_AMOUNT}
-...    Description=${RECEIPT_DESCRIPTION}
+
 
 # Dữ liệu thanh toán trực tiếp không qua hóa đơn
 &{DIRECT_RECEIPT_REQUEST}

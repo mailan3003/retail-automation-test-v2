@@ -3,9 +3,9 @@ import pyodbc
 DATABASE_CONFIG = {
     'server': '103.252.0.202,6002',
     'database': 'KiotVietShard40',
-    'username': 'replicator',
-    'password': 'kiotviet@1',
-    'driver': 'ODBC Driver 17 for SQL Server'
+    'username': 'retail_app',
+    'password': 'LnqxffeJulNvQi6u',
+    'driver': 'SQL Server'
 }
 
 def db_connection():

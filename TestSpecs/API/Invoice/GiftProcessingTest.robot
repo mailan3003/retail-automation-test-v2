@@ -1,6 +1,9 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý quà tặng
 Resource          ../../../Keywords/Invoice/GiftProcessingKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 

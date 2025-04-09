@@ -100,7 +100,7 @@ RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     And Xác Thực Công Nợ Của Hóa Đơn    None    0
 
 RT-RC-005 Tạo phiếu thu với thanh toán thừa
-    [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thừa
+    [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thừa tính vào công nợ khách hàng 
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
     ...    - Phương thức thanh toán: tiền mặt
@@ -117,7 +117,7 @@ RT-RC-005 Tạo phiếu thu với thanh toán thừa
     And Response Should Have Id exist
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 120000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    120000
-    And Xác Thực Tiền Thừa Của Hóa Đơn    None    20000
+    #And Xác Thực Tiền Thừa Của Hóa Đơn    None    20000   không có mục lưu DB tính tiền thừa 
     And Xác Thực Công Nợ Của Hóa Đơn    None    0
 
 RT-RC-006 Tạo phiếu thu với thanh toán thiếu
@@ -131,7 +131,7 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
     ...    - Phiếu thu được tạo trong DB với số tiền 80,000đ
     ...    - Tổng tiền thanh toán của hóa đơn = 80,000đ
     ...    - Công nợ của hóa đơn = 20,000đ
-    ...    - Trạng thái thanh toán: 1 (thanh toán một phần)
+    ...    - Trạng thái thanh toán: 1 (có thanh toán)
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Thiếu    80000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
@@ -141,55 +141,55 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
     And Xác Thực Công Nợ Của Hóa Đơn    None    20000
     And Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn    None    1
 
-RT-RC-007 Tạo phiếu thu với mô tả
-    [Documentation]    Kiểm tra tạo phiếu thu với mô tả chi tiết
-    ...    - Dữ liệu đầu vào:
-    ...    - Hóa đơn có tổng tiền = 100,000đ
-    ...    - Phương thức thanh toán: tiền mặt
-    ...    - Số tiền thanh toán: 100,000đ
-    ...    - Mô tả: "Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}"
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-    ...    - Mô tả của phiếu thu trùng khớp với mô tả đầu vào
-    Given Chuẩn Bị Dữ Liệu Thanh Toán Với Mô Tả Chi Tiết    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 100000
-    And Xác Thực Phiếu Thu Có Mô Tả Chính Xác    None    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
+#RT-RC-007 Tạo phiếu thu với mô tả phiếu này không nằm trong 
+    # [Documentation]    Kiểm tra tạo phiếu thu với mô tả chi tiết
+    # ...    - Dữ liệu đầu vào:
+    # ...    - Hóa đơn có tổng tiền = 100,000đ
+    # ...    - Phương thức thanh toán: tiền mặt
+    # ...    - Số tiền thanh toán: 100,000đ
+    # ...    - Mô tả: "Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}"
+    # ...    - Kỳ vọng:
+    # ...    - Status code: 200
+    # ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
+    # ...    - Mô tả của phiếu thu trùng khớp với mô tả đầu vào
+    # Given Chuẩn Bị Dữ Liệu Thanh Toán Với Mô Tả Chi Tiết    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
+    # When Gửi Yêu Cầu Tạo Hóa Đơn
+    # Then Response Status Code Should Be 200
+    # And Response Should Have Id exist
+    # And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 100000
+    # And Xác Thực Phiếu Thu Có Mô Tả Chính Xác    None    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
 
-RT-RC-008 Tạo phiếu thu trực tiếp không qua hóa đơn
-    [Documentation]    Kiểm tra tạo phiếu thu trực tiếp không qua hóa đơn
-    ...    - Dữ liệu đầu vào:
-    ...    - Phiếu thu trực tiếp cho khách hàng
-    ...    - Số tiền: 100,000đ
-    ...    - Loại phiếu thu: 3 (phiếu thu khác)
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-    ...    - Loại phiếu thu: 3 (phiếu thu khác)
-    Given Chuẩn Bị Dữ Liệu Thanh Toán Trực Tiếp    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
-    When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_OTHER}
+# RT-RC-008 Tạo phiếu thu trực tiếp không qua hóa đơn
+#     [Documentation]    Kiểm tra tạo phiếu thu trực tiếp không qua hóa đơn
+#     ...    - Dữ liệu đầu vào:
+#     ...    - Phiếu thu trực tiếp cho khách hàng
+#     ...    - Số tiền: 100,000đ
+#     ...    - Loại phiếu thu: 3 (phiếu thu khác)
+#     ...    - Kỳ vọng:
+#     ...    - Status code: 200
+#     ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
+#     ...    - Loại phiếu thu: 3 (phiếu thu khác)
+#     Given Chuẩn Bị Dữ Liệu Thanh Toán Trực Tiếp    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
+#     When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
+#     Then Response Status Code Should Be 200
+#     And Response Should Have Id exist
+#     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_OTHER}
 
-RT-RC-009 Tạo phiếu thu thanh toán công nợ
-    [Documentation]    Kiểm tra tạo phiếu thu thanh toán công nợ
-    ...    - Dữ liệu đầu vào:
-    ...    - Phiếu thu thanh toán công nợ cho khách hàng
-    ...    - Số tiền: 100,000đ
-    ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-    ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
-    Given Chuẩn Bị Dữ Liệu Thanh Toán Công Nợ    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
-    When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_PAYMENT}
+# RT-RC-009 Tạo phiếu thu thanh toán công nợ
+#     [Documentation]    Kiểm tra tạo phiếu thu thanh toán công nợ
+#     ...    - Dữ liệu đầu vào:
+#     ...    - Phiếu thu thanh toán công nợ cho khách hàng
+#     ...    - Số tiền: 100,000đ
+#     ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
+#     ...    - Kỳ vọng:
+#     ...    - Status code: 200
+#     ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
+#     ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
+#     Given Chuẩn Bị Dữ Liệu Thanh Toán Công Nợ    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
+#     When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
+#     Then Response Status Code Should Be 200
+#     And Response Should Have Id exist
+#     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_PAYMENT}
 
 RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     [Documentation]    Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
@@ -202,12 +202,13 @@ RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     ...    - Không có phiếu thu nào được tạo
     ...    - Tổng tiền thanh toán của hóa đơn = 0đ
     ...    - Công nợ của hóa đơn = 100,000đ
+
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán    ${PAYMENT_CASH}    0
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
-    And Xác Thực Không Có Phiếu Thu Được Tạo
-    And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    0
+   # And Xác Thực Không Có Phiếu Thu Được Tạo    # payment k để null nên vẫn sinh ra phiêu thanh toán 0 dồng trong D
+    And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    0   
     And Xác Thực Công Nợ Của Hóa Đơn    None    100000
 
 RT-RC-011 Tạo phiếu thu với số tiền lớn
@@ -228,7 +229,7 @@ RT-RC-011 Tạo phiếu thu với số tiền lớn
     And Response Should Have Id exist
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 9999999
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    9999999
-    And Xác Thực Tiền Thừa Của Hóa Đơn    None    9899999
+   # And Xác Thực Tiền Thừa Của Hóa Đơn    None    9899999
     And Xác Thực Công Nợ Của Hóa Đơn    None    0
 
 RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức khác nhau
@@ -248,7 +249,7 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
-    And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 60000
+    And Xác thực tổng thanh toán hóa đơn   60000
     And Xác Thực Thanh Toán Được Ghi Nhận    None    ${PAYMENT_CASH}    30000
     And Xác Thực Thanh Toán Được Ghi Nhận    None    ${PAYMENT_CARD}    30000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    60000

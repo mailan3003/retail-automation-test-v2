@@ -1,7 +1,9 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần tạo phiếu thu khi tạo hóa đơn
 Resource          ../../TestData/Invoice/ReceiptCreationData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/CommonData.robot
+Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -13,11 +15,10 @@ Library           DateTime
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán
     [Arguments]    ${payment_method}=${PAYMENT_CASH}    ${payment_amount}=${STANDARD_RECEIPT_AMOUNT}
-    ${data}=    Set Variable    ${STANDARD_RECEIPT_REQUEST}
-    
-    # Cập nhật phương thức thanh toán nếu khác mặc định
-    IF    '${payment_method}' != '${PAYMENT_CASH}'
-        ${payments}=    Create List
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${payments}=    Create List
+    IF    '${payment_method}' == '${PAYMENT_CASH}'
+           ${payment}=    Set Variable   {CASH_RECEIPT_PAYMENT}
         IF    '${payment_method}' == '${PAYMENT_CARD}'
             ${payment}=    Set Variable    ${CARD_RECEIPT_PAYMENT}
         ELSE IF    '${payment_method}' == '${PAYMENT_TRANSFER}'
@@ -30,57 +31,59 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán
         IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
             Set To Dictionary    ${payment}    Amount=${payment_amount}
         END
-        
         Append To List    ${payments}    ${payment}
-        Set To Dictionary    ${data}    Payments=${payments}
+        ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
     ELSE
         # Chỉ cập nhật số tiền nếu khác mặc định
         IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
-            Set To Dictionary    ${data.Payments[0]}    Amount=${payment_amount}
+            Set To Dictionary    ${request.Payments[0]}    Amount=${payment_amount}
         END
     END
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Phương Thức Thanh Toán
     [Arguments]    ${cash_amount}=${MULTIPLE_PAYMENT_AMOUNT}    ${card_amount}=${MULTIPLE_PAYMENT_AMOUNT}
-    ${data}=    Set Variable    ${MULTIPLE_PAYMENT_RECEIPT_REQUEST}
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Set Variable    ${MULTIPLE_PAYMENT_METHODS}
     # Cập nhật số tiền nếu khác mặc định
     IF    ${cash_amount} != ${MULTIPLE_PAYMENT_AMOUNT}
-        Set To Dictionary    ${data.Payments[0]}    Amount=${cash_amount}
+        Set To Dictionary    ${data[0]}    Amount=${cash_amount}
     END
     
     IF    ${card_amount} != ${MULTIPLE_PAYMENT_AMOUNT}
-        Set To Dictionary    ${data.Payments[1]}    Amount=${card_amount}
+        Set To Dictionary    ${data[1]}    Amount=${card_amount}
     END
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments     ${data}
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request} 
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Thừa
     [Arguments]    ${excess_amount}=${EXCESS_RECEIPT_AMOUNT}
-    ${data}=    Set Variable    ${OVERPAYMENT_RECEIPT_REQUEST}
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Set Variable    @{OVERPAYMENT_METHODS}
     # Cập nhật số tiền nếu khác mặc định
     IF    ${excess_amount} != ${EXCESS_RECEIPT_AMOUNT}
         Set To Dictionary    ${data.Payments[0]}    Amount=${excess_amount}
     END
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.addToAccount    1
+    Set Test Variable    ${REQUEST_DATA}    ${request} 
+    RETURN    ${request} 
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Thiếu
     [Arguments]    ${partial_amount}=${PARTIAL_RECEIPT_AMOUNT}
-    ${data}=    Set Variable    ${UNDERPAYMENT_RECEIPT_REQUEST}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Set Variable    @{UNDERPAYMENT_METHODS}
     
     # Cập nhật số tiền nếu khác mặc định
     IF    ${partial_amount} != ${PARTIAL_RECEIPT_AMOUNT}
         Set To Dictionary    ${data.Payments[0]}    Amount=${partial_amount}
     END
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    Set Test Variable    ${REQUEST_DATA}     ${request}  
     RETURN    ${data}
 
 Chuẩn Bị Dữ Liệu Thanh Toán Trực Tiếp
@@ -155,14 +158,26 @@ Xác Thực Phiếu Thu Được Tạo
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT COUNT(*) FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    1    Không tìm thấy phiếu thu cho hóa đơn ID ${invoice_id}
     
     # Kiểm tra số tiền phiếu thu
-    ${query}=    Set Variable    SELECT Amount FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT Amount FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền phiếu thu không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
+
+Xác thực tổng thanh toán hóa đơn 
+    [Arguments]       ${expected_total_payment}=${STANDARD_RECEIPT_AMOUNT}
+    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    IF    '${invoice_id}' == 'None'
+        ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    END
+    
+    ${query}=    Set Variable    SELECT TotalPayment FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_total_payment}    Tổng tiền thanh toán không đúng. Kỳ vọng: ${expected_total_payment}, Thực tế: ${result[0]}
+
 
 Xác Thực Phiếu Thu Được Tạo Với Số Tiền ${expected_amount}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
@@ -176,12 +191,12 @@ Xác Thực Thanh Toán Được Ghi Nhận
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT COUNT(*) FROM InvoicePayments WHERE InvoiceId = ? AND Method = ?
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${payment_method}
     Should Be Equal As Numbers    ${result[0]}    1    Không tìm thấy thanh toán ${payment_method} cho hóa đơn ID ${invoice_id}
     
     # Kiểm tra số tiền thanh toán
-    ${query}=    Set Variable    SELECT Amount FROM InvoicePayments WHERE InvoiceId = ? AND Method = ?
+    ${query}=    Set Variable    SELECT Amount FROM Payment WHERE InvoiceId = ? AND Method = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${payment_method}
     Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
 
@@ -193,7 +208,7 @@ Xác Thực Phiếu Thu Có Mã Phù Hợp
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT Code FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT Code FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${result[0]}    ${None}    Mã phiếu thu không được tạo
     
@@ -208,7 +223,7 @@ Xác Thực Phiếu Thu Có Mô Tả Chính Xác
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT Description FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT Description FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal    ${result[0]}    ${expected_description}    Mô tả phiếu thu không đúng. Kỳ vọng: ${expected_description}, Thực tế: ${result[0]}
 
@@ -220,7 +235,7 @@ Xác Thực Ngày Tạo Phiếu Thu Là Ngày Hiện Tại
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT CONVERT(date, CreatedDate) FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT CONVERT(date, CreatedDate) FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     
     ${current_date}=    Get Current Date    result_format=%Y-%m-%d
@@ -275,7 +290,7 @@ Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT PaidState FROM Invoice WHERE Id = ?
+    ${query}=    Set Variable    SELECT Status FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_status}    Trạng thái thanh toán không đúng. Kỳ vọng: ${expected_status}, Thực tế: ${result[0]}
 
@@ -288,12 +303,12 @@ Xác Thực Phiếu Thu Trực Tiếp Được Tạo
     END
     
     # Kiểm tra loại phiếu thu
-    ${query}=    Set Variable    SELECT ReceiptType FROM Receipts WHERE Id = ?
+    ${query}=    Set Variable    SELECT system FROM Payment WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${receipt_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_type}    Loại phiếu thu không đúng. Kỳ vọng: ${expected_type}, Thực tế: ${result[0]}
     
     # Kiểm tra số tiền
-    ${query}=    Set Variable    SELECT Amount FROM Receipts WHERE Id = ?
+    ${query}=    Set Variable    SELECT Amount FROM Payment WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${receipt_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền phiếu thu không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
 
@@ -305,6 +320,6 @@ Xác Thực Không Có Phiếu Thu Được Tạo
         ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     END
     
-    ${query}=    Set Variable    SELECT COUNT(*) FROM Receipts WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    0    Phiếu thu được tạo mặc dù không kỳ vọng 

@@ -1,11 +1,14 @@
 *** Settings ***
 Documentation     Keywords for Gift Processing API Tests
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/GiftProcessingData.robot
-Resource          ./RequestHelper.robot
-Resource          ./ResponseHelper.robot
-Resource          ./Utilities.robot
+Resource          ../Utilities/RequestHelper.robot
+Resource          ../Utilities/ResponseHelper.robot
+Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
+Library           json
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Sản Phẩm
@@ -91,11 +94,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Voucher
 
 Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
     [Documentation]    Gửi yêu cầu API để tạo hóa đơn với quà tặng
-    ${response}=    Send Create Invoice Request    ${INVOICE_REQUEST}
+    ${response}=    Call API    invoices    ${INVOICE_REQUEST}
     Set Test Variable    ${RESPONSE}    ${response}
     
     # Lấy ID của hóa đơn vừa tạo từ response
-    ${invoice_id}=    Get Response Id    ${response}
+    ${invoice_id}=    Get From Response    Id
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
 Xác Thực Quà Tặng Sản Phẩm
@@ -234,4 +237,11 @@ Xác Thực Số Lượng Voucher
     ${query}=    Set Variable    SELECT COUNT(*) FROM Voucher v JOIN InvoiceVoucher iv ON v.Id = iv.VoucherId WHERE iv.InvoiceId = ?
     ${results}=    Query Database    ${query}    ${invoice_id}
     ${count}=    Set Variable    ${results[0][0]}
-    Should Be Equal As Numbers    ${count}    ${expected_quantity}    Số lượng voucher không đúng 
+    Should Be Equal As Numbers    ${count}    ${expected_quantity}    Số lượng voucher không đúng
+
+Get From Response
+    [Documentation]    Extrait une valeur de la réponse JSON
+    [Arguments]    ${property_name}
+    ${response_json}=    Evaluate    json.loads('''${RESPONSE.content.decode('utf-8')}''')
+    ${value}=    Get From Dictionary    ${response_json}    ${property_name}
+    RETURN    ${value} 

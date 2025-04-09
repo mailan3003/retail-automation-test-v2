@@ -1,12 +1,10 @@
 *** Settings ***
-Resource        Env.robot 
 Documentation     Utility keywords for API testing
 Library           Collections
 Library           String
 Library           RequestsLibrary
 Library           OperatingSystem
-Library           json
-
+Resource          ../../Config/Env.robot
 *** Keywords ***
 Create Auth Headers
     [Arguments]    ${token}=${AUTH_TOKEN}
