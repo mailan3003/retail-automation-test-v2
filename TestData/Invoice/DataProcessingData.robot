@@ -17,14 +17,14 @@ Resource    ../CommonData.robot
 # Dữ liệu cho làm tròn số
 &{ROUNDING_UP_PRODUCT}
 ...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100500
+...    Quantity=2
+...    Price=100500.3
 ...    Discount=0
 
 &{ROUNDING_DOWN_PRODUCT}
 ...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100400
+...    Quantity=4
+...    Price=100400.33
 ...    Discount=0
 
 # Dữ liệu sản phẩm với thuế

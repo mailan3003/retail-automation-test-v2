@@ -1,6 +1,8 @@
 *** Settings ***
 Documentation     Keywords mở rộng cho test cases API phần cập nhật tồn kho
-Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../../TestData/Invoice/CommonData.robot
+Resource          ../../TestData/Invoice/TotalCalculationData.robot
 Resource          ../../TestData/Invoice/InventoryUpdateData.robot
 Resource          ../../TestData/Invoice/InventoryUpdateExtendedData.robot
 Resource          ../Utilities/RequestHelper.robot
@@ -13,8 +15,7 @@ Library           json
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Nhiều Loại Tồn Kho
-    ${data}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
-    
+    ${data}=    Deep Copy    ${invoice_request_body_not_delivery}
     # Tạo danh sách chi tiết hóa đơn với sản phẩm có các loại tồn kho khác nhau
     @{details}=    Create List    
     ...    ${MIXED_INVENTORY_TYPE_PRODUCT_DETAIL_1}

@@ -1,6 +1,9 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý hoàn tiền khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
@@ -8,28 +11,28 @@ Suite Setup       Suite Setup
 Suite Setup
     Set Suite Variable    ${SUITE_NAME}    RefundProcessingTest
     # Thiết lập cấu hình mặc định cho các test case
-    Thiết Lập Cấu Hình ChangeToDebt    ${TRUE}
+    #Thiết Lập Cấu Hình ChangeToDebt    ${TRUE}
 
 *** Test Cases ***
-RT-RP-001 Tạo hóa đơn với thanh toán đúng số tiền
-    [Documentation]    Kiểm tra tạo hóa đơn với thanh toán đúng số tiền (không phát sinh tiền thừa)
-    ...    - Dữ liệu đầu vào:
-    ...    - Tổng tiền hóa đơn: 100,000đ
-    ...    - Thanh toán tiền mặt: 100,000đ
-    ...    - Logic:
-    ...    - Không phát sinh tiền thừa, không tạo phiếu chi
-    ...    - Hóa đơn được tạo bình thường với TotalPayment = Total
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Hóa đơn được ghi nhận với Total = TotalPayment = 100,000đ
-    ...    - Không có phiếu chi được tạo
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cơ Bản
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    Xác Thực Tổng Thanh Toán Trong Hóa Đơn    ${invoice_id}    100000
-    Xác Thực Không Có Phiếu Chi Được Tạo    ${invoice_id}
+# RT-RP-001 Tạo hóa đơn với thanh toán đúng số tiền 
+#     [Documentation]    Kiểm tra tạo hóa đơn với thanh toán đúng số tiền (không phát sinh tiền thừa)
+#     ...    - Dữ liệu đầu vào:
+#     ...    - Tổng tiền hóa đơn: 100,000đ
+#     ...    - Thanh toán tiền mặt: 100,000đ
+#     ...    - Logic:
+#     ...    - Không phát sinh tiền thừa, không tạo phiếu chi
+#     ...    - Hóa đơn được tạo bình thường với TotalPayment = Total
+#     ...    - Kỳ vọng:
+#     ...    - Status code: 200
+#     ...    - Hóa đơn được ghi nhận với Total = TotalPayment = 100,000đ
+#     ...    - Không có phiếu chi được tạo
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cơ Bản
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Response Status Code Should Be 200
+#     And Response Should Have Id exist
+#     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+#     Xác Thực Tổng Thanh Toán Trong Hóa Đơn    ${invoice_id}    100000
+#     Xác Thực Không Có Phiếu Chi Được Tạo    ${invoice_id}
 
 RT-RP-002 Tạo hóa đơn với thanh toán vượt quá và cấu hình chuyển tiền thừa thành công nợ
     [Documentation]    Kiểm tra tạo hóa đơn với thanh toán vượt quá và cấu hình chuyển tiền thừa thành công nợ

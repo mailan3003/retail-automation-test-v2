@@ -3,7 +3,7 @@ Documentation     Test cases kiểm thử API áp dụng khuyến mãi cho hóa 
 ...               Section: 5.1. Áp dụng khuyến mãi
 Resource          ../../../Keywords/Invoice/PromotionKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Suite Setup       Connect To Database
+#Suite Setup       Connect To Database
 
 *** Test Cases ***
 # =====================================================================
@@ -18,14 +18,14 @@ RT-PR-001: Tạo hóa đơn với khuyến mãi giảm giá trị cố định
     [Tags]    promotion    fixed    api
     
     # GIVEN
-    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giảm 15000 Đồng
+    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giảm 10000 Đồng
     
     # WHEN
     Gửi Yêu Cầu Tạo Hóa Đơn
     
     # THEN
-    Status Should Be    200
-    Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 15000 Đồng
+    Response Status Code Should Be 200
+    Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 10000 Đồng
     ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_ID}
     Thông Tin Khuyến Mãi Có Loại FIXED_AMOUNT
 

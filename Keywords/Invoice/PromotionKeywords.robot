@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần áp dụng khuyến mãi
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/PromotionData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
@@ -20,13 +22,15 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giá Trị Cố Định
-    [Arguments]    ${promotion_value}=15000
-    ${data}=    Set Variable    ${FIXED_PROMOTION_REQUEST}
-    # Cập nhật giá trị khuyến mãi
-    Set To Dictionary    ${data.Promotions}    Value=${promotion_value}
-    Set To Dictionary    ${data.Invoice}    DiscountByPromotion=${promotion_value}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    [Arguments]    ${promotion_value}=10000
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data}=    Set Variable    ${FIXED_AMOUNT_PROMOTION}
+    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    10
+    ${request}=    Update Nested Dictionary Property     ${request}    InvoicePromotions    ${data}
+    ${request}=    Update Nested Dictionary Property     ${request}    InvoiceDetails[0]   ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm
     [Arguments]    ${percent_value}=10    ${max_value}=50000

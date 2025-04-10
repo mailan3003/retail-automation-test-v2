@@ -14,7 +14,6 @@ Resource    ../CommonData.robot
 ...    SoldById=${SOLD_BY_ID}
 ...    CustomerId=${DEFAULT_CUSTOMER_ID}
 ...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
 ...    Total=100000
 
 # ==========================================
@@ -33,14 +32,10 @@ ${PROMOTION_TYPE_VOUCHER_GIFT}        7    # Tặng voucher
 # ==========================================
 &{FIXED_AMOUNT_PROMOTION}
 ...    Id=${VALID_PROMOTION_ID}
+...    SalePromotionId=${VALID_PROMOTION_SALE_ID}
 ...    Type=${PROMOTION_TYPE_FIXED_AMOUNT}
-...    Value=15000
-...    Name=Khuyến mãi giảm 15.000đ
-...    MinSubtotalCondition=0
-...    StartDate=${PAST_DATE}
-...    EndDate=${FUTURE_DATE}
-...    Status=1
-...    IsActive=True
+...    Discount=10000
+...    PromotionInfo=Chương trình khuyến mại giảm giá hóa đơn VNĐ
 
 &{INVOICE_WITH_FIXED_PROMOTION}
 ...    Code=HD_TEST_PROMO_FIXED_001

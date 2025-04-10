@@ -77,9 +77,9 @@ ${SURCHARGE_1_ID}       1000000047
 ${SURCHARGE_2_ID}       1000000046
 
 # Additional product data
-${product_batch}    6666
+${product_batch}    1000016309
 ${product_out_of_stock}    7777
-${batch_1}    8888
+${batch_1}    1000000206
 
 
 # Tax details
@@ -132,7 +132,8 @@ ${PAST_DATE}      2023-01-01
 # Promotion data
 ${promotion_1}    7777
 ${promotion_2}    8888
-${VALID_PROMOTION_ID}     1001
+${VALID_PROMOTION_ID}     87280
+${VALID_PROMOTION_SALE_ID}   24747
 ${EXPIRED_PROMOTION_ID}   2001
 ${INACTIVE_PROMOTION_ID}  3001
 

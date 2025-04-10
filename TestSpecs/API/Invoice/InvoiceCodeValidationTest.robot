@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoiceCodeValidationKeywords.robot
+Resource    ../../../Keywords/Invoice/InvoiceVATKeywords.robot
 Resource    ../../../TestData/CommonData.robot
 Resource    ../../../TestData/Invoice/InvoiceCodeValidationData.robot
 
