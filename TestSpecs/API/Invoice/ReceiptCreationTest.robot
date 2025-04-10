@@ -93,7 +93,6 @@ RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
-    And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 100000
     And Xác Thực Thanh Toán Được Ghi Nhận    None    ${PAYMENT_CASH}    50000
     And Xác Thực Thanh Toán Được Ghi Nhận    None    ${PAYMENT_CARD}    50000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn    None    100000

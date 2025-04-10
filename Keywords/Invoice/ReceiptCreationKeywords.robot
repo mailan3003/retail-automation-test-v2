@@ -18,27 +18,21 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${payments}=    Create List
     IF    '${payment_method}' == '${PAYMENT_CASH}'
-           ${payment}=    Set Variable   {CASH_RECEIPT_PAYMENT}
-        IF    '${payment_method}' == '${PAYMENT_CARD}'
-            ${payment}=    Set Variable    ${CARD_RECEIPT_PAYMENT}
-        ELSE IF    '${payment_method}' == '${PAYMENT_TRANSFER}'
-            ${payment}=    Set Variable    ${TRANSFER_RECEIPT_PAYMENT}
-        ELSE
-            ${payment}=    Set Variable    ${CASH_RECEIPT_PAYMENT}
-        END
-        
-        # Cập nhật số tiền nếu khác mặc định
-        IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
-            Set To Dictionary    ${payment}    Amount=${payment_amount}
-        END
-        Append To List    ${payments}    ${payment}
-        ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+        ${payment}=    Set Variable   ${CASH_RECEIPT_PAYMENT}
+    ELSE IF    '${payment_method}' == '${PAYMENT_CARD}'
+        ${payment}=    Set Variable    ${CARD_RECEIPT_PAYMENT}
+    ELSE IF    '${payment_method}' == '${PAYMENT_TRANSFER}'
+        ${payment}=    Set Variable    ${TRANSFER_RECEIPT_PAYMENT}
     ELSE
-        # Chỉ cập nhật số tiền nếu khác mặc định
-        IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
-            Set To Dictionary    ${request.Payments[0]}    Amount=${payment_amount}
-        END
+        ${payment}=    Set Variable    ${CASH_RECEIPT_PAYMENT}
     END
+        
+    # Cập nhật số tiền nếu khác mặc định
+    IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
+        Set To Dictionary    ${payment}    Amount=${payment_amount}
+    END
+    Append To List    ${payments}    ${payment}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
 
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
