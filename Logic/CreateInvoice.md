@@ -7,33 +7,48 @@
 - **Xác thực mã hóa đơn**:
   - Hệ thống kiểm tra mã hóa đơn có bắt đầu bằng các tiền tố hợp lệ như `HDO`, `LZD`, `FB`.
   - Nếu là hóa đơn tạo từ online, kiểm tra `UUID` để không bị trùng lặp thông qua Redis cache (`InvoiceService.CheckCachRedisUUID`).
+  - Nếu phát hiện UUID trùng lặp, hệ thống sẽ hiển thị thông báo "Mã hóa đơn online bị trùng" (`KVMessage.invoiceLog_OnlineInvoiceCodeIsDup`) trên giao diện người dùng.
+  - Nếu là hóa đơn cập nhật, hệ thống sẽ kiểm tra và xác thực với dữ liệu cũ thông qua hàm `validateWithOldData`:
+    - Kiểm tra thông tin giao hàng cũ: Nếu hóa đơn cũ có thông tin giao hàng với `UseDefaultPartner` là `true` và trạng thái khác `Void`, nhưng hóa đơn mới không có thông tin giao hàng hoặc `UseDefaultPartner` là `false`, hệ thống sẽ hiển thị thông báo "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới" (`KVMessage.OverwriteNewerCopyNotAllowed`).
+    - Kiểm tra thay đổi khách hàng: Nếu hóa đơn cũ có khách hàng (CustomerId > 0) khác với khách hàng mới và đã có thanh toán (TotalPayment > 0), hệ thống sẽ hiển thị thông báo lỗi.
+    - Kiểm tra hóa đơn đã hoàn thành và có phiếu trả hàng: Nếu hóa đơn cũ ở trạng thái `Issued` và đã có phiếu trả hàng, hệ thống sẽ hiển thị thông báo "Không thể cập nhật hóa đơn đã có phiếu trả hàng" (`KVMessage._InvoiceUpdateHasReturnInvoice`).
+  - Nếu hóa đơn đã tồn tại (ID > 0), hệ thống sẽ kiểm tra thông tin giao hàng và trạng thái để đảm bảo không ghi đè phiên bản mới hơn, nếu không sẽ hiển thị thông báo lỗi trên giao diện người dùng.
 
 - **Kiểm tra ID cập nhật hóa đơn**:
   - Khi cập nhật hóa đơn (`invoice.UpdateInvoiceId > 0`), hệ thống kiểm tra tồn tại của hóa đơn cũ và trạng thái của nó.
   - Không được cập nhật hóa đơn ở trạng thái **Đã hủy (Void)** hoặc **Không giao được (Failed)**.
+  - Nếu hóa đơn không tồn tại, hệ thống sẽ hiển thị thông báo "Hóa đơn không tồn tại" (`KVMessage.Invoice_NotExist`) trên giao diện người dùng.
+  - Nếu hóa đơn ở trạng thái không hợp lệ, hệ thống sẽ hiển thị thông báo "Không thể cập nhật hóa đơn đã hủy hoặc không giao được" (`KVMessage.Invoice_CannotUpdateVoidOrFailed`) trên giao diện người dùng.
 
 - **Xác thực ID đơn hàng**:
   - Nếu hóa đơn được tạo từ đơn hàng (`invoice.OrderId != null`), hệ thống kiểm tra:
     - Đơn hàng có tồn tại không.
     - Đơn hàng thuộc cùng retailer.
     - Trạng thái đơn hàng hợp lệ (không ở trạng thái **Finalized** hoặc **Void**).
+  - Nếu đơn hàng không tồn tại, hệ thống sẽ hiển thị thông báo "Đơn hàng không tồn tại" (`KVMessage.Order_NotExist`) trên giao diện người dùng.
+  - Nếu đơn hàng ở trạng thái không hợp lệ, hệ thống sẽ hiển thị thông báo "Đơn hàng đã hoàn thành hoặc đã hủy" (`KVMessage.Order_FinishedOrVoid`) trên giao diện người dùng.
 
 - **Kiểm tra quyền thao tác với chi nhánh**:
   - Hệ thống xác thực người dùng có quyền thực hiện tác vụ trên chi nhánh hiện tại.
   - Kiểm tra thời gian khóa sổ của chi nhánh (`BranchService.ValidCloseDate`).
+  - Nếu người dùng không có quyền, hệ thống sẽ hiển thị thông báo "Bạn không có quyền thao tác trên chi nhánh này" (`KVMessage.Branch_NoPermission`) trên giao diện người dùng.
+  - Nếu chi nhánh đã khóa sổ, hệ thống sẽ hiển thị thông báo "Chi nhánh đã khóa sổ cho ngày này" (`KVMessage.Branch_ClosedForDate`) trên giao diện người dùng.
 
 - **Kiểm tra thông tin sổ giá**:
   - Nếu có sử dụng sổ giá (`invoice.PriceBookId > 0`), hệ thống kiểm tra:
     - Sổ giá tồn tại, còn hoạt động (`IsActive`) và chưa hết hạn.
-    - Nếu không hợp lệ, hệ thống sẽ báo lỗi.
+    - Nếu sổ giá không tồn tại, hệ thống sẽ hiển thị thông báo "Sổ giá không tồn tại" (`KVMessage.PriceBook_NotExist`) trên giao diện người dùng.
+    - Nếu sổ giá không hoạt động hoặc hết hạn, hệ thống sẽ hiển thị thông báo "Sổ giá không còn hiệu lực" (`KVMessage.PriceBook_NotActive`) trên giao diện người dùng.
 
 ### 1.2. Kiểm Tra Thông Tin Khách Hàng
 
 - **Xác thực ID khách hàng**:
   - Khi hóa đơn có khách hàng (`invoice.CustomerId != null`), hệ thống kiểm tra khách hàng có tồn tại trong hệ thống không.
+  - Nếu khách hàng không tồn tại, hệ thống sẽ hiển thị thông báo "Khách hàng không tồn tại" (`KVMessage.Customer_NotExist`) trên giao diện người dùng.
 
 - **Kiểm tra quản lý khách hàng theo chi nhánh**:
   - Nếu cài đặt quản lý khách hàng theo chi nhánh (`PosSetting.ManagerCustomerByBranch`), hệ thống xác thực khách hàng phải thuộc cùng chi nhánh với hóa đơn.
+  - Nếu khách hàng không thuộc chi nhánh, hệ thống sẽ hiển thị thông báo "Khách hàng không thuộc chi nhánh này" (`KVMessage.Customer_NotBelongToBranch`) trên giao diện người dùng.
 
 - **Kiểm tra thanh toán bằng điểm**:
   - Khi thanh toán bằng điểm thưởng (`payment.Method == "Point"`), hệ thống kiểm tra:
@@ -42,75 +57,113 @@
     - Số điểm khách hàng hiện có đủ để thanh toán.
     - Tổng tiền thanh toán bằng điểm không vượt quá tổng hóa đơn.
     - Số lượng hóa đơn tối thiểu để sử dụng điểm đã đạt yêu cầu.
+  - Nếu tính năng tích điểm không được bật, hệ thống sẽ hiển thị thông báo "Tính năng tích điểm chưa được bật" (`KVMessage.RewardPoint_NotEnabled`) trên giao diện người dùng.
+  - Nếu chức năng chuyển đổi điểm không được bật, hệ thống sẽ hiển thị thông báo "Chức năng chuyển đổi điểm thành tiền chưa được bật" (`KVMessage.RewardPoint_PointToMoneyNotEnabled`) trên giao diện người dùng.
+  - Nếu số điểm không đủ, hệ thống sẽ hiển thị thông báo "Khách hàng không đủ điểm để thanh toán" (`KVMessage.RewardPoint_NotEnough`) trên giao diện người dùng.
+  - Nếu số lượng hóa đơn không đủ, hệ thống sẽ hiển thị thông báo "Khách hàng chưa đủ số lượng hóa đơn tối thiểu để sử dụng điểm" (`KVMessage.RewardPoint_NotEnoughInvoiceCount`) trên giao diện người dùng.
 
 ### 1.3. Kiểm Tra Giao Hàng COD
 
 - **Xác thực thông tin đơn vị vận chuyển**:
   - Nếu là hóa đơn COD (`invoice.UsingCod == 1`), hệ thống kiểm tra đơn vị vận chuyển (`PartnerDelivery`) có tồn tại và đang hoạt động.
   - Nếu sử dụng đơn vị vận chuyển mặc định (`UseDefaultPartner`), phải có cấu hình đúng.
+  - Nếu đơn vị vận chuyển không tồn tại, hệ thống sẽ hiển thị thông báo "Đơn vị vận chuyển không tồn tại" (`KVMessage.PartnerDelivery_NotExist`) trên giao diện người dùng.
+  - Nếu đơn vị vận chuyển không hoạt động, hệ thống sẽ hiển thị thông báo "Đơn vị vận chuyển không hoạt động" (`KVMessage.PartnerDelivery_NotActive`) trên giao diện người dùng.
 
 - **Kiểm tra địa chỉ giao hàng**:
   - Hệ thống xác thực thông tin địa chỉ giao hàng (`DeliveryDetail`) và cập nhật mã định danh của địa chỉ (`WardId`, `LocationId`) dựa trên tên địa chỉ.
+  - Nếu thông tin địa chỉ không đầy đủ, hệ thống sẽ hiển thị thông báo "Thông tin địa chỉ giao hàng không đầy đủ" (`KVMessage.DeliveryInfo_AddressRequired`) trên giao diện người dùng.
 
 - **Xác thực dịch vụ vận chuyển**:
   - Kiểm tra thông tin dịch vụ vận chuyển (`ServiceAdd`) phải được nhập.
-  - Nếu có thay đổi trạng thái vận chuyển, hệ thống chuẩn hóa trạng thái theo đúng quy trình (`DeliveryStatus.Pending` hoặc `DeliveryStatus.Delivering`).
+  - Nếu thông tin dịch vụ không đầy đủ, hệ thống sẽ hiển thị thông báo "Thông tin dịch vụ vận chuyển không đầy đủ" (`KVMessage.DeliveryInfo_ServiceRequired`) trên giao diện người dùng.
 
 ### 1.4. Kiểm Tra Điểm Thưởng Và Khuyến Mãi
 
 - **Xác thực việc dùng voucher cùng khuyến mãi**:
   - Nếu cấu hình không cho phép sử dụng voucher kết hợp khuyến mãi (`!PosSetting.UseVoucherCombinePromotion`), hệ thống kiểm tra và báo lỗi nếu hóa đơn có cả voucher và khuyến mãi hoặc thanh toán bằng điểm.
+  - Nếu vi phạm quy tắc này, hệ thống sẽ hiển thị thông báo "Không thể sử dụng voucher cùng với khuyến mãi" (`KVMessage.Voucher_CannotCombineWithPromotion`) trên giao diện người dùng.
 
 - **Kiểm tra điều kiện tích điểm thưởng**:
   - Hệ thống kiểm tra các điều kiện tích điểm như:
     - Hóa đơn có giảm giá và cấu hình cho phép tích điểm (`RewardPoint_ForDiscountInvoice`).
     - Hóa đơn thanh toán bằng điểm và cấu hình cho phép tích điểm (`RewardPoint_ForInvoiceUsingRewardPoint`).
     - Hóa đơn thanh toán bằng voucher và cấu hình cho phép tích điểm (`RewardPoint_ForInvoiceUsingVoucher`).
-
-- **Tính toán điểm thưởng**:
-  - Hệ thống tính toán điểm thưởng dựa trên cấu hình (theo hóa đơn hoặc theo sản phẩm) và nhóm khách hàng.
-  - Nếu là tích điểm theo hóa đơn, điểm được tính dựa trên tổng giá trị hóa đơn chia cho tỷ lệ tiền/điểm.
-  - Nếu là tích điểm theo sản phẩm, hệ thống kiểm tra từng sản phẩm có thuộc diện tích điểm (`IsRewardPoint`) và cộng dồn điểm của các sản phẩm.
+  - Nếu hóa đơn có giảm giá nhưng cấu hình không cho phép tích điểm, hệ thống sẽ không tích điểm và hiển thị thông báo "Hóa đơn có giảm giá không được tích điểm" (`KVMessage.RewardPoint_NotForDiscountInvoice`) trên giao diện người dùng.
+  - Tương tự cho các trường hợp thanh toán bằng điểm hoặc voucher.
 
 ### 1.5. Kiểm Tra Tồn Kho
 
 - **Xác thực số lượng tồn kho**:
   - Nếu cấu hình không cho phép bán âm (`AllowSellWhenOutStock = false`), hệ thống kiểm tra số lượng tồn kho (`OnHand`) của các sản phẩm tại chi nhánh hiện tại so với số lượng trong hóa đơn.
+  - Nếu số lượng tồn kho không đủ, hệ thống sẽ hiển thị thông báo "Sản phẩm [Tên sản phẩm] không đủ số lượng tồn kho. Hiện tại: [OnHand], Yêu cầu: [Quantity]" (`KVMessage.Product_NotEnoughStock`) trên giao diện người dùng.
 
 - **Kiểm tra sản phẩm combo**:
   - Đối với sản phẩm combo, hệ thống kiểm tra tồn kho của từng thành phần con trong combo (`ValidateComboProduct`).
-  - Nếu bất kỳ thành phần nào không đủ số lượng, hệ thống báo lỗi.
+  - Nếu bất kỳ thành phần nào không đủ số lượng, hệ thống sẽ hiển thị thông báo tương tự về việc không đủ tồn kho trên giao diện người dùng.
 
 - **Xác thực tồn kho theo đơn hàng**:
   - Nếu hóa đơn được tạo từ đơn hàng, hệ thống kiểm tra cả số lượng tồn kho hiện tại và số lượng đã đặt trước cho đơn hàng khác.
+  - Nếu không đủ tồn kho, hệ thống sẽ hiển thị thông báo chi tiết về tình trạng tồn kho trên giao diện người dùng.
 
 ### 1.6. Kiểm Tra Serial/IMEI
 
 - **Xác thực trạng thái serial/imei**:
   - Đối với sản phẩm quản lý theo serial/imei, hệ thống kiểm tra mỗi serial/imei đã được nhập và có trạng thái hợp lệ (`Active`, chưa bán).
-  - Nếu serial đã được bán hoặc không tồn tại, hệ thống báo lỗi.
+  - Nếu serial không được nhập, hệ thống sẽ hiển thị thông báo "Vui lòng nhập serial cho sản phẩm [Tên sản phẩm]" (`KVMessage.Serial_Required`) trên giao diện người dùng.
+  - Nếu serial không tồn tại, hệ thống sẽ hiển thị thông báo "Serial [Mã serial] không tồn tại" (`KVMessage.Serial_NotExist`) trên giao diện người dùng.
+  - Nếu serial đã được bán, hệ thống sẽ hiển thị thông báo "Serial [Mã serial] đã được bán" (`KVMessage.Serial_AlreadySold`) trên giao diện người dùng.
 
 - **Kiểm tra trùng serial/imei**:
   - Hệ thống kiểm tra không có serial/imei nào bị trùng lặp trong cùng một hóa đơn.
+  - Nếu phát hiện trùng lặp, hệ thống sẽ hiển thị thông báo "Serial [Mã serial] đã được sử dụng trong hóa đơn này" (`KVMessage.Serial_DuplicateInInvoice`) trên giao diện người dùng.
 
 ### 1.7. Kiểm Tra Thanh Toán
 
 - **Xác thực giá trị thanh toán**:
   - Hệ thống kiểm tra tổng giá trị các khoản thanh toán không vượt quá tổng giá trị hóa đơn.
   - Đối với thanh toán bằng thẻ hoặc chuyển khoản, kiểm tra thông tin tài khoản ngân hàng hợp lệ.
+  - Nếu thông tin tài khoản không hợp lệ, hệ thống sẽ hiển thị thông báo "Thông tin tài khoản thanh toán không hợp lệ" (`KVMessage.Payment_InvalidAccountInfo`) trên giao diện người dùng.
 
 - **Kiểm tra phân bổ thanh toán tự động**:
   - Nếu có nhiều phương thức thanh toán, hệ thống kiểm tra việc phân bổ tự động có hợp lệ không.
+  - Nếu phân bổ không hợp lệ, hệ thống sẽ hiển thị thông báo phù hợp trên giao diện người dùng.
 
 - **Xác thực thanh toán bằng voucher/điểm**:
   - Kiểm tra mã voucher hợp lệ, chưa hết hạn và thuộc về khách hàng.
+  - Nếu voucher không tồn tại, hệ thống sẽ hiển thị thông báo "Voucher không tồn tại" (`KVMessage.Voucher_NotExist`) trên giao diện người dùng.
+  - Nếu voucher đã hết hạn, hệ thống sẽ hiển thị thông báo "Voucher đã hết hạn" (`KVMessage.Voucher_Expired`) trên giao diện người dùng.
+  - Nếu voucher đã được sử dụng, hệ thống sẽ hiển thị thông báo "Voucher đã được sử dụng" (`KVMessage.Voucher_Used`) trên giao diện người dùng.
   - Đối với thanh toán bằng điểm, kiểm tra khách hàng có đủ điểm không.
 
 ### 1.8. Xác Thực Lô/Hạn Sử Dụng
 
 - **Kiểm tra tồn kho theo lô** (`ValidateBatchInvoice`).
-- **Xác thực ngày hết hạn**: Đảm bảo lô chưa hết hạn tại thời điểm bán.
-- **Kiểm tra trạng thái lô**: Lô có được phép bán không và có bị khóa bởi kiểm kê không.
+  - Nếu lô không đủ số lượng, hệ thống sẽ hiển thị thông báo "Lô [Mã lô] không đủ số lượng. Hiện tại: [OnHand], Yêu cầu: [Quantity]" (`KVMessage.Batch_NotEnoughStock`) trên giao diện người dùng.
+- **Xác thực ngày hết hạn**: 
+  - Đảm bảo lô chưa hết hạn tại thời điểm bán.
+  - Nếu lô đã hết hạn, hệ thống sẽ hiển thị thông báo "Lô [Mã lô] đã hết hạn sử dụng" (`KVMessage.Batch_Expired`) trên giao diện người dùng.
+- **Kiểm tra trạng thái lô**: 
+  - Lô có được phép bán không và có bị khóa bởi kiểm kê không.
+  - Nếu lô bị khóa, hệ thống sẽ hiển thị thông báo "Lô [Mã lô] đang bị khóa bởi kiểm kê" (`KVMessage.Batch_LockedByInventory`) trên giao diện người dùng.
+
+### 1.9. Kiểm Tra Hóa Đơn Điện Tử
+
+- **Xác thực thông tin hóa đơn điện tử**:
+  - Nếu hóa đơn yêu cầu xuất hóa đơn điện tử (`invoice.IsRequestEInvoice`), hệ thống kiểm tra:
+    - Thông tin khách hàng đầy đủ (tên, địa chỉ, mã số thuế nếu có).
+    - Thông tin sản phẩm phù hợp với quy định về hóa đơn điện tử.
+    - Mẫu số hóa đơn điện tử hợp lệ.
+  - Nếu thông tin khách hàng không đầy đủ, hệ thống sẽ hiển thị thông báo "Thông tin khách hàng không đầy đủ để xuất hóa đơn điện tử" (`KVMessage.EInvoice_CustomerInfoRequired`) trên giao diện người dùng.
+  - Nếu mẫu số không hợp lệ, hệ thống sẽ hiển thị thông báo "Mẫu số hóa đơn điện tử không hợp lệ" (`KVMessage.EInvoice_InvalidTemplate`) trên giao diện người dùng.
+
+### 1.10. Kiểm Tra Giới Hạn Giảm Giá
+
+- **Xác thực giới hạn giảm giá**:
+  - Hệ thống kiểm tra tỷ lệ giảm giá không vượt quá giới hạn cho phép (`MaxDiscountRatio`).
+  - Nếu người dùng không có quyền vượt giới hạn giảm giá, hệ thống sẽ hiển thị thông báo "Tỷ lệ giảm giá vượt quá giới hạn cho phép ([MaxDiscountRatio]%)" (`KVMessage.Discount_ExceedLimit`) trên giao diện người dùng.
+  - Đối với từng sản phẩm, kiểm tra giảm giá không vượt quá giá bán của sản phẩm.
+  - Nếu giảm giá vượt quá giá bán, hệ thống sẽ hiển thị thông báo "Giảm giá không được vượt quá giá bán của sản phẩm" (`KVMessage.Discount_ExceedPrice`) trên giao diện người dùng.
 
 Tất cả các kiểm tra trên được thực hiện trong `CreateInvoice` và các phương thức hỗ trợ (`ValidateInvoiceAsync`, `ValidateBatchInvoice`, `PreValidate`, `ValidateBeforeCreateInvoice`).
 
@@ -126,12 +179,13 @@ Tất cả các kiểm tra trên được thực hiện trong `CreateInvoice` v�
     - Nếu hóa đơn được tạo từ Tiktok, mã được đổi từ `HDO` thành `TT` (Invoice.TiktokPosPrefix).
     - Nếu hóa đơn là bảo hành, mã được đổi từ `HDO` thành tiền tố bảo hành (Invoice.WarrantyPrefix).
   - Hệ thống kiểm tra độ dài mã hóa đơn không vượt quá 50 ký tự thông qua kiểm tra `invoice.Code.Length > 50`.
+  - Nếu mã hóa đơn vượt quá độ dài cho phép, hệ thống sẽ hiển thị thông báo "Mã hóa đơn không được vượt quá 50 ký tự" (`KVMessage.Invoice_CodeTooLong`) trên giao diện người dùng.
 
 - **Xử lý mã hóa đơn trùng**:
   - Sử dụng cơ chế khóa và cache Redis để ngăn chặn việc tạo mã hóa đơn trùng lặp.
-  - Nếu phát hiện khóa đã tồn tại, hệ thống sẽ ném ngoại lệ `KvValidateInvoiceException` với thông báo lỗi tương ứng.
+  - Nếu phát hiện khóa đã tồn tại, hệ thống sẽ hiển thị thông báo lỗi "Hóa đơn đang được tạo bởi người dùng khác" (`KVMessage.Invoice_BeingCreatedByOtherUser`) trên giao diện người dùng.
   - Khóa Redis có thời gian sống được cấu hình qua `AppServiceConfigInfo.RedisLockCreateInvoiceTimeout`.
-  - Trong trường hợp hóa đơn được tạo từ đơn hàng, hệ thống hiển thị thông báo lỗi khác thông qua tham số điều kiện `invoice.OrderId > 0`.
+  - Trong trường hợp hóa đơn được tạo từ đơn hàng, hệ thống hiển thị thông báo lỗi "Đơn hàng đang được xử lý bởi người dùng khác" (`KVMessage.Order_BeingProcessedByOtherUser`) trên giao diện người dùng.
 
 ### 2.2. Xử Lý Thông Tin Giao Hàng
 
@@ -140,6 +194,7 @@ Tất cả các kiểm tra trên được thực hiện trong `CreateInvoice` v�
   - Hệ thống chuẩn hóa trạng thái giao hàng từ thông tin địa chỉ, bao gồm:
     - Cập nhật mã định danh phường/xã (WardId) và địa chỉ (LocationId) dựa trên tên địa chỉ.
     - Tự động chuẩn hóa thông tin về người nhận, số điện thoại liên hệ, địa chỉ chi tiết.
+  - Nếu thông tin địa chỉ không hợp lệ, hệ thống sẽ hiển thị thông báo "Địa chỉ giao hàng không hợp lệ" (`KVMessage.DeliveryInfo_InvalidAddress`) trên giao diện người dùng.
   - Nếu hóa đơn đang được cập nhật (`invoice.Id > 0`), hệ thống kiểm tra thông tin giao hàng hiện có thông qua `DeliveryInfoService.GetLastByInvoiceIdAsync`.
   - Sau khi xử lý, hệ thống đánh dấu bản ghi thông tin giao hàng mới là hiện tại (`IsCurrent = true`).
 
@@ -173,6 +228,14 @@ Tất cả các kiểm tra trên được thực hiện trong `CreateInvoice` v�
   - Giảm giá hóa đơn sẽ được phân bổ cho các sản phẩm trong hóa đơn, giúp tính toán chính xác doanh thu theo sản phẩm và danh mục.
   - Việc phân bổ này được thực hiện dựa trên tỷ lệ giá trị của từng sản phẩm so với tổng giá trị hóa đơn.
   - Sau khi tạo hóa đơn, hệ thống sẽ gọi thủ tục lưu trữ `prCalcInvoiceTotal` hoặc `CalInvoiceTotalWithOut` (nếu được tối ưu) để tính toán lại tổng giá trị hóa đơn.
+
+### 2.4. Xử Lý Thông Tin Thuế
+
+- **Chuẩn hóa thông tin thuế**:
+  - Hệ thống kiểm tra và chuẩn hóa thông tin thuế cho từng sản phẩm trong hóa đơn.
+  - Nếu sản phẩm có thuế (`InvoiceDetail.TaxRate > 0`), hệ thống tính toán giá trị thuế dựa trên giá sau khi đã trừ giảm giá.
+  - Thông tin thuế được lưu trong bảng `InvoiceDetailTax` để theo dõi chi tiết thuế theo từng sản phẩm.
+  - Nếu hóa đơn yêu cầu xuất hóa đơn điện tử, thông tin thuế sẽ được kiểm tra kỹ lưỡng để đảm bảo tuân thủ quy định về thuế.
 
 Các xử lý dữ liệu đầu vào được thực hiện trong các phương thức như `DoMakeInvoiceAsync`, `CreateInvoiceAsync`, `NormallizeData`, `ConvertInvoiceDelivery` và `AssignPartnerDeliveryDefault`.
 
