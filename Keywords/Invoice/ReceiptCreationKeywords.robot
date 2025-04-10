@@ -38,6 +38,58 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Set Variable    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Phương Thức ${list_payment_method} Với Số Tiền ${list_payment_amount}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${payments}=    Create List
+    
+    ${length}=    Get Length    ${list_payment_method}
+    FOR    ${index}    IN RANGE    ${length}
+        ${payment_method}=    Get From List    ${list_payment_method}    ${index}
+        ${payment_amount}=    Get From List    ${list_payment_amount}    ${index}
+        
+        ${payment}=    Deep Copy    ${payment_body}
+        Set To Dictionary    ${payment}    Method=${payment_method}    Amount=${payment_amount}
+        Append To List    ${payments}    ${payment}
+    END
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request} 
+
+
+Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn ${expected_total_payment}
+    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT TotalPayment FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_total_payment}    Tổng tiền thanh toán không đúng. Kỳ vọng: ${expected_total_payment}, Thực tế: ${result[0]}
+
+
+Xác Thực Công Nợ Của Hóa Đơn ${expected_debt}
+     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT Debt FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_debt}    Công nợ không đúng. Kỳ vọng: ${expected_debt}, Thực tế: ${result[0]}
+
+
+Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${payment_method} Với Số Tiền ${expected_amount}
+    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${payment_method}
+    Should Be Equal As Numbers    ${result[0]}    1    Không tìm thấy thanh toán ${payment_method} cho hóa đơn ID ${invoice_id}
+    
+    # Kiểm tra số tiền thanh toán
+    ${query}=    Set Variable    SELECT Amount FROM Payment WHERE InvoiceId = ? AND Method = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${payment_method}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Phương Thức Thanh Toán
     [Arguments]    ${cash_amount}=${MULTIPLE_PAYMENT_AMOUNT}    ${card_amount}=${MULTIPLE_PAYMENT_AMOUNT}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
@@ -276,14 +328,8 @@ Xác Thực Tiền Thừa Của Hóa Đơn
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${overpayment}    Tiền thừa không đúng. Kỳ vọng: ${overpayment}, Thực tế: ${result[0]}
 
-Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn
-    [Arguments]    ${invoice_id}=None    ${expected_status}=1
-    
-    # Lấy invoice_id từ response nếu không được cung cấp
-    IF    '${invoice_id}' == 'None'
-        ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    END
-    
+Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn ${expected_status}
+     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     ${query}=    Set Variable    SELECT Status FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_status}    Trạng thái thanh toán không đúng. Kỳ vọng: ${expected_status}, Thực tế: ${result[0]}

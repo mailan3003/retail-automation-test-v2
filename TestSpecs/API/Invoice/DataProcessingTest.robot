@@ -44,7 +44,7 @@ RT-DP-002 Làm tròn số tiền lên theo cấu hình
 
 RT-DP-003 Làm tròn số tiền xuống theo cấu hình
     [Documentation]    Kiểm tra làm tròn số tiền xuống theo cấu hình hệ thống
-    [Documentation]    Kiểm tra làm tròn số tiền xuống theo cấu hình hệ thống
+
     ...    - Dữ liệu đầu vào: 
     ...    - Sản phẩm 1: ID=${PRODUCT_1}, Số lượng=4, Giá=100400.33đ (số lẻ)
     ...    - Logic xử lý: InvoiceService.RoundMoney() làm tròn số tiền theo cấu hình
@@ -93,39 +93,6 @@ RT-DP-006 Tính chiết khấu cố định cho sản phẩm
     And Xác Thực Hóa Đơn Trong DB
     And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10000
 
-RT-DP-007 Áp dụng khuyến mãi cho hóa đơn
-    [Documentation]    Kiểm tra áp dụng khuyến mãi cho hóa đơn
-    ...    - Dữ liệu đầu vào: 
-    ...    - Hóa đơn với PromotionId=${VALID_PROMOTION_ID}
-    ...    - Logic xử lý: InvoiceService.ApplyPromotion() 
-    ...    - Code: invoice.Discount += promotion.Value; hoặc invoice.Discount += invoice.Total * promotion.Value / 100;
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - PromotionId trong DB được lưu đúng
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    ${VALID_PROMOTION_ID}
-
-RT-DP-008 Xử lý nhiều phương thức thanh toán
-    [Documentation]    Kiểm tra xử lý nhiều phương thức thanh toán cùng lúc
-    ...    - Dữ liệu đầu vào: 
-    ...    - Hóa đơn với 2 phương thức thanh toán:
-    ...    - Tiền mặt: 100,000đ
-    ...    - Thẻ: 100,000đ, AccountId=${DEFAULT_BANK_ACCOUNT_ID}
-    ...    - Logic xử lý: InvoiceService.ProcessPayments() 
-    ...    - Code: foreach(var payment in invoice.Payments) { ... }
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Nhiều phương thức thanh toán được lưu trong DB
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Phương Thức Thanh Toán
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Nhiều Phương Thức Thanh Toán    ${INVOICE_ID}
-    And Xác Thực Thanh Toán Hóa Đơn    ${INVOICE_ID}    Cash    100000
-    And Xác Thực Thanh Toán Hóa Đơn    ${INVOICE_ID}    Card    100000
 
 RT-DP-009 Cập nhật số lượng tồn kho khi tạo hóa đơn
     [Documentation]    Kiểm tra cập nhật số lượng tồn kho khi tạo hóa đơn

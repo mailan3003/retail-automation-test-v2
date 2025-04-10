@@ -22,7 +22,16 @@ Response Should Have Error ${expected_error}
     ${cleaned_error}=    Replace String    ${expected_error}    "    ${EMPTY}
     Should Have Nested Property     ${RESPONSE.json()}  ResponseStatus.Message  ${cleaned_error}
 
+Mã trạng thái phải là ${expected_status_code}
+    Status Should Be    ${expected_status_code}    ${RESPONSE}
 
+Nội dung phản hồi trả về phải tồn tại ${path} 
+    ${keys}=    Split String    ${path}    .
+    ${current}=    Set Variable    ${RESPONSE.json()}
+    FOR    ${key}    IN    @{keys}
+        ${current}=    Evaluate    ${current}.get("${key}", None) if isinstance(${current}, dict) else None
+        Run Keyword If    '${current}' == 'None'    Fail    Key '${path}' not found in dictionary
+    END
 Response Should Have ${path} With value ${expected_value}    
     ${keys}=    Split String    ${path}    .
     ${actual_value}=    Set Variable    ${RESPONSE.json()}

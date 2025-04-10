@@ -30,6 +30,9 @@ Resource          ../CommonData.robot
 ...    Method=Cash
 ...    Amount=100000
 
+${payment_multiple_body} 
+...    &{payment_body} 
+...    &{payment_body} 
 
 # Surcharge details
 &{surcharge_item_body}    
