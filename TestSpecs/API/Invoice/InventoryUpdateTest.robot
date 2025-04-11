@@ -119,11 +119,11 @@ RT-INU-005 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo l
     ...    - Status code: 200
     ...    - Số lượng lô giảm 1 đơn vị
     ...    - Lịch sử lô được ghi nhận với DocumentType=Invoice, Value=-1
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${PRODUCT_BATCH_NAME} với ${BATCH_NAME} số lượng 1.5
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${PRODUCT_BATCH_NAME} với ${BATCH_NAME} số lượng 1
      And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
-    And Số lượng lô ${product_batch_id} đã giảm 1.5 đơn vị
+    And Số lượng lô ${product_batch_id} đã giảm 1 đơn vị
     Tear down Delete Hóa Đơn
 
 RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo serial
