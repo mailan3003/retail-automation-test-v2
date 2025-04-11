@@ -10,24 +10,19 @@ Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 # Khuyến mãi giá trị cố định
 # =====================================================================
 
+
 RT-PR-001: Tạo hóa đơn với khuyến mãi giảm giá trị cố định
     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi giảm giá trị cố định
     ...                Giá trị khuyến mãi: 15.000 đồng
     ...                Kỳ vọng: Hóa đơn được tạo với chiết khấu chính xác 15.000 đồng
     ...                và ID khuyến mãi được lưu trong hóa đơn
     [Tags]    promotion    fixed    api
-    
-    # GIVEN
-    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giảm 10000 Đồng
-    
-    # WHEN
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN
-    Response Status Code Should Be 200
-    Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 10000 Đồng
-    ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_ID}
-    Thông Tin Khuyến Mãi Có Loại FIXED_AMOUNT
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giá Trị Cố Định
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Response Status Code Should Be 200
+    And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 10000 Đồng
+    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_ID}
+    And Thông Tin Khuyến Mãi Có Loại FIXED_AMOUNT
 
 RT-PR-002: Tạo hóa đơn với khuyến mãi giảm giá trị phần trăm
     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi giảm theo phần trăm

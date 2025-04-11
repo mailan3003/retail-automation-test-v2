@@ -2,7 +2,6 @@
 Documentation     Keywords cho test cases API phần áp dụng khuyến mãi
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../../TestData/Invoice/PromotionData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -22,13 +21,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giá Trị Cố Định
-    [Arguments]    ${promotion_value}=10000
     ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
-    ${data}=    Set Variable    ${FIXED_AMOUNT_PROMOTION}
     ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    10
-    ${request}=    Update Nested Dictionary Property     ${request}    InvoicePromotions    ${data}
-    ${request}=    Update Nested Dictionary Property     ${request}    InvoiceDetails[0]   ${data_product}
+    Log    ${request}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 

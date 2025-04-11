@@ -10,6 +10,7 @@ Suite Setup
 *** Variables ***
 @{list_payment_method}   ${PAYMENT_CASH}    ${PAYMENT_CARD}
 @{list_payment_amount}   50000      50000
+@{list_payment_amount_1}   30000      30000
 *** Test Cases ***
 RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     [Documentation]    Kiểm tra tạo phiếu thu tiền mặt khi tạo hóa đơn
@@ -191,6 +192,55 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
 #     Then Mã trạng thái phải là 200
 #     And Nội dung phản hồi trả về phải tồn tại Id
 #     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_PAYMENT}
+RT-RC-008 Tạo Hóa đơn với thanh toán bằng wallet với tài khoản
+    [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng wallet với tài khoản
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền hóa đơn = 100,000đ
+    ...    - Phương thức thanh toán = Wallet
+    ...    - Số tiền thanh toán = 100,000đ
+    ...    - Tài khoản wallet = WALLET001
+    ...    - Logic tính toán:
+    ...    - Tổng thanh toán = 100,000đ
+    ...    - Tiền nợ = 0đ (Tổng tiền - Tổng thanh toán = 100,000đ - 100,000đ = 0đ)
+    ...    - Trạng thái thanh toán = Đã thanh toán đủ (1)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Tổng tiền thanh toán = 100,000đ
+    ...    - Tiền nợ = 0đ
+    ...    - Thanh toán wallet được ghi nhận với tài khoản ${BANK_WALLET_ID}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_WALLET} Tài khoản ${BANK_WALLET_ID} Với Số Tiền 100000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
+    And Xác Thực Công Nợ Của Hóa Đơn 0
+    And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_WALLET} Với Số Tiền 100000
+    And Xác Thực Tài Khoản Wallet ${BANK_WALLET_ID} Được Sử Dụng Khi Thanh Toán
+
+RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm 
+    [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng điểm thưởng
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền hóa đơn = 100,000đ
+    ...    - Phương thức thanh toán = Điểm
+    ...    - Số tiền thanh toán bằng điểm = 50,000đ
+    ...    - Logic tính toán:
+    ...    - Tổng thanh toán = 50,000đ
+    ...    - Tiền nợ = 50,000đ (Tổng tiền - Tổng thanh toán = 100,000đ - 50,000đ = 50,000đ)
+    ...    - Trạng thái thanh toán = Đã thanh toán một phần (2)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Tổng tiền thanh toán = 50,000đ
+    ...    - Tiền nợ = 50,000đ
+    ...    - Trạng thái thanh toán = 2
+    ...    - Khách hàng sử dụng điểm tương ứng (giả sử 50 điểm)
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Số Tiền 50000 Sử Dụng Điểm 50
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 50000
+    And Xác Thực Công Nợ Của Hóa Đơn 50000 
+    And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_POINT} Với Số Tiền 50000
+
 
 RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     [Documentation]    Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
@@ -230,7 +280,6 @@ RT-RC-011 Tạo phiếu thu với số tiền lớn
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 9999999
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 9999999
-   # And Xác Thực Tiền Thừa Của Hóa Đơn    None    9899999
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức khác nhau
@@ -246,7 +295,7 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     ...    - Thanh toán thẻ được ghi nhận số tiền 30,000đ
     ...    - Tổng tiền thanh toán của hóa đơn = 60,000đ
     ...    - Công nợ của hóa đơn = 40,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Phương Thức Thanh Toán    30000    30000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Phương Thức @{list_payment_method} Với Số Tiền @{list_payment_amount_1}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -254,3 +303,21 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CARD} Với Số Tiền 30000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 60000
     And Xác Thực Công Nợ Của Hóa Đơn 40000 
+
+RT-RC-009 Tạo Hóa đơn với thanh toán bằng voucher
+    [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng voucher
+    ...    - Dữ liệu đầu vào:
+    ...    - Tổng tiền hóa đơn = 500,000đ
+    ...    - Phương thức thanh toán 1 = Voucher, Số tiền = 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Tổng tiền thanh toán = 100,000đ
+    ...    - Tiền nợ = 400,000đ
+    ...    - Voucher được sử dụng với giá trị 100,000đ
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt CBVC00002
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
+    And Xác Thực Công Nợ Của Hóa Đơn 400000 
+    And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_VOUCHER} Với Số Tiền 100000

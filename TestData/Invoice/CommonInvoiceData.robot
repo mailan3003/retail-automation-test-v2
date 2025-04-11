@@ -30,9 +30,17 @@ Resource          ../CommonData.robot
 ...    Method=Cash
 ...    Amount=100000
 
-${payment_multiple_body} 
-...    &{payment_body} 
-...    &{payment_body} 
+
+# promotion
+@{invoice_promotion_body}    
+...    &{promotion_body}
+
+&{promotion_body}
+...    Type=1
+...    SalePromotionId=1589
+...    PromotionId=10477
+...    Discount=10000
+...    DiscountRatio=null
 
 # Surcharge details
 &{surcharge_item_body}    
@@ -170,5 +178,8 @@ ${payment_multiple_body}
 &{invoice_request_body}     Invoice=&{invoice_body}
 
 # Invoice body not delivery
-&{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{Empty}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
+&{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body_not_delivery}    Invoice=&{invoice_body_not_delivery}
+
+&{invoice_body_with_promotion}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{invoice_promotion_body}         UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
+&{invoice_request_body_with_promotion}    Invoice=&{invoice_body_with_promotion}

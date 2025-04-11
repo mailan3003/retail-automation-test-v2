@@ -26,3 +26,9 @@ Should Have Nested Property
     END
     Run Keyword If    '${expected_value}' != '${None}'    Should Be Equal    ${current}    ${expected_value}
     RETURN    ${current}
+
+Delete Data
+    [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
+    ${headers}=    Create Auth Headers    ${token}
+    ${response}=    DELETE    ${API_URL}${endpoint}    headers=${headers}    
+    RETURN    ${response}

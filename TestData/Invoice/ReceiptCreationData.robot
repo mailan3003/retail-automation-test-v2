@@ -13,6 +13,10 @@ ${RECEIPT_DESCRIPTION}    Thu tiền hóa đơn bán hàng
 ${PAYMENT_CASH}    Cash
 ${PAYMENT_CARD}    Card
 ${PAYMENT_TRANSFER}    Transfer
+${PAYMENT_POINT}    Point
+${PAYMENT_WALLET}    Wallet
+${PAYMENT_VOUCHER}    Voucher
+
 
 # Dữ liệu khách hàng
 ${RECEIPT_CUSTOMER_ID}    ${DEFAULT_CUSTOMER_ID}
@@ -39,7 +43,7 @@ ${MULTIPLE_PAYMENT_AMOUNT}    50000
 # Dữ liệu tài khoản ngân hàng và thẻ
 ${BANK_ACCOUNT_ID}    ${DEFAULT_BANK_ACCOUNT_ID}
 ${BANK_ACCOUNT_NAME}    Tài khoản ngân hàng mặc định
-
+${BANK_WALLET_ID}  1000000046
 # Dữ liệu hóa đơn chuẩn
 &{STANDARD_RECEIPT_INVOICE}
 ...    Code=${RECEIPT_INVOICE_CODE}
