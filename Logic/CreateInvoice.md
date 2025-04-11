@@ -9,9 +9,9 @@
   - Nếu là hóa đơn tạo từ online, kiểm tra `UUID` để không bị trùng lặp thông qua Redis cache (`InvoiceService.CheckCachRedisUUID`).
   - Nếu phát hiện UUID trùng lặp, hệ thống sẽ hiển thị thông báo "Mã hóa đơn online bị trùng" (`KVMessage.invoiceLog_OnlineInvoiceCodeIsDup`) trên giao diện người dùng.
   - Nếu là hóa đơn cập nhật, hệ thống sẽ kiểm tra và xác thực với dữ liệu cũ thông qua hàm `validateWithOldData`:
-    - Kiểm tra thông tin giao hàng cũ: Nếu hóa đơn cũ có thông tin giao hàng với `UseDefaultPartner` là `true` và trạng thái khác `Void`, nhưng hóa đơn mới không có thông tin giao hàng hoặc `UseDefaultPartner` là `false`, hệ thống sẽ hiển thị thông báo "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới" (`KVMessage.OverwriteNewerCopyNotAllowed`).
+    - Kiểm tra thông tin giao hàng cũ: Nếu hóa đơn cũ có thông tin giao hàng với `UseDefaultPartner` là `true` và trạng thái khác `Void` (hóa đơn đã hủy), nhưng hóa đơn mới không có thông tin giao hàng hoặc `UseDefaultPartner` là `false`, hệ thống sẽ hiển thị thông báo "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới" (`KVMessage.OverwriteNewerCopyNotAllowed`).
     - Kiểm tra thay đổi khách hàng: Nếu hóa đơn cũ có khách hàng (CustomerId > 0) khác với khách hàng mới và đã có thanh toán (TotalPayment > 0), hệ thống sẽ hiển thị thông báo lỗi.
-    - Kiểm tra hóa đơn đã hoàn thành và có phiếu trả hàng: Nếu hóa đơn cũ ở trạng thái `Issued` và đã có phiếu trả hàng, hệ thống sẽ hiển thị thông báo "Không thể cập nhật hóa đơn đã có phiếu trả hàng" (`KVMessage._InvoiceUpdateHasReturnInvoice`).
+    - Kiểm tra hóa đơn đã hoàn thành và có phiếu trả hàng: Nếu hóa đơn cũ ở trạng thái `Issued` và đã có phiếu trả hàng, hệ thống sẽ hiển thị thông báo "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật" (`KVMessage._InvoiceUpdateHasReturnInvoice`).
   - Nếu hóa đơn đã tồn tại (ID > 0), hệ thống sẽ kiểm tra thông tin giao hàng và trạng thái để đảm bảo không ghi đè phiên bản mới hơn, nếu không sẽ hiển thị thông báo lỗi trên giao diện người dùng.
 
 - **Kiểm tra ID cập nhật hóa đơn**:
