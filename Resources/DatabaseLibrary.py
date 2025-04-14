@@ -8,6 +8,14 @@ DATABASE_CONFIG = {
     'driver': 'SQL Server'
 }
 
+DATABASE_CONFIG_PROMOTION = {
+    'server': '103.252.0.202,6002',
+    'database': 'KiotVietPromotion',
+    'username': 'retail_app',
+    'password': 'LnqxffeJulNvQi6u',
+    'driver': 'SQL Server'
+}
+
 def db_connection():
     conn_str = (
         f"DRIVER={DATABASE_CONFIG['driver']};"
@@ -19,6 +27,7 @@ def db_connection():
     conn = pyodbc.connect(conn_str)
     return conn
 
+
 def execute_query(query, *params):
     conn = db_connection()
     cursor = conn.cursor()
@@ -26,6 +35,7 @@ def execute_query(query, *params):
     conn.commit()
     cursor.close()
     conn.close()
+
 
 def fetch_one(query, *params):
     conn = db_connection()
@@ -35,6 +45,7 @@ def fetch_one(query, *params):
     cursor.close()
     conn.close()
     return result
+
 
 def fetch_all(query, *params):
     conn = db_connection()

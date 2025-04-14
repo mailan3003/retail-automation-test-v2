@@ -14,7 +14,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Mã ${ma_hh} có Số Lượng
     ${result}=    Fetch One    ${query_1}    ${ma_hh}
     Set Test Variable    ${product_id}    ${result[0]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
-    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
         ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
@@ -41,7 +41,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial ${ma_hh} Vớ
     ${result}=    Fetch One    ${query_1}    ${ma_hh}
     Set Test Variable    ${product_id}    ${result[0]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
-    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=     Deep Copy     ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsLotSerialControl   ${true}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    SerialNumbers   ${serial_number}
@@ -207,25 +207,25 @@ Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi
 
 # Keywords với embedded parameters
 Tồn kho sản phẩm ${product_id} đã giảm ${quantity} đơn vị
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị    ${product_id}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị    ${product_id}
 
 Lịch sử tồn kho được tạo với số lượng ${quantity} đơn vị cho sản phẩm ${product_id}
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Lịch Sử Tồn Kho Hóa Đơn Với ${quantity} Đơn Vị Của ${product_id}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Lịch Sử Tồn Kho Hóa Đơn Với ${quantity} Đơn Vị Của ${product_id}
 
 Số lượng đặt hàng của sản phẩm ${product_id} được giảm ${quantity} đơn vị
     Xác Thực Cập Nhật Số Lượng Đặt Hàng    ${product_id}    ${quantity}
 
 Sản phẩm con trong combo ${combo_id} đã giảm tồn kho ${amount} lần số lượng
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo    ${combo_id}    ${amount}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo    ${combo_id}    ${amount}
 
 Serial ${serial_number} chuyển sang trạng thái đã bán
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Cập Nhật Trạng Thái Serial    ${serial_number}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Trạng Thái Serial    ${serial_number}
 
 Số lượng lô ${batch_id} đã giảm ${quantity} đơn vị
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Cập Nhật Số Lượng Lô    ${batch_id}    ${quantity}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Số Lượng Lô    ${batch_id}    ${quantity}
 
 Tồn kho sản phẩm ${product_id} đã giảm theo đơn vị chuyển đổi ${quantity} x ${conversion_value}
-    Wait Until Keyword Succeeds    3x    5s    Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi    ${product_id}    ${quantity}    ${conversion_value} 
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi    ${product_id}    ${quantity}    ${conversion_value} 
 
 
 Tear down Delete Hóa Đơn
