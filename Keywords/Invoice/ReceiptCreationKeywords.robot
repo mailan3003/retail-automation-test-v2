@@ -233,10 +233,6 @@ Chuẩn Bị Dữ Liệu Thanh Toán Với Mô Tả Chi Tiết
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    RETURN    ${response}
 
 Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
     ${response}=    Call API    receipts    ${REQUEST_DATA}

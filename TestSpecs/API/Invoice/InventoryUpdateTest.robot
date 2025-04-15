@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần cập nhật tồn kho khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 

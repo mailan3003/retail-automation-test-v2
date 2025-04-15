@@ -89,11 +89,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    ${invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["Id"]}    0
-    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
 Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?

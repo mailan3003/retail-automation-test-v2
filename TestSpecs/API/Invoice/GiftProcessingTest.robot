@@ -1,6 +1,8 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý quà tặng
 Resource          ../../../Keywords/Invoice/GiftProcessingKeywords.robot
+Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/PromotionKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
@@ -15,27 +17,28 @@ Suite Setup
 RT-GP-001 Tạo hóa đơn thành công với quà tặng sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng sản phẩm theo hóa đơn
     ...    - Dữ liệu đầu vào:
-    ...    - Mã hóa đơn: "HD_TEST_GIFT001"
-    ...    - Tổng tiền: 100,000đ
+    ...    - Tổng tiền: 100,0000đ
     ...    - Khuyến mãi: InvoiceProductGift (loại 2)
-    ...    - Sản phẩm quà tặng: ID=${PRODUCT_2}, số lượng=1
-    ...    - Điều kiện: tổng hóa đơn >= 100,000đ
+    ...    - Sản phẩm quà tặng: ID=${PRODUCT_2}, số lượng=3    
+    ...    - Điều kiện: tổng hóa đơn >= 100,0000đ
     ...    - Logic xử lý: InvoiceService.ProcessPromotionGift() tạo InvoiceDetail mới cho quà tặng
     ...    - Quà tặng được thêm vào hóa đơn với:
-    ...      + Giá = 0đ
-    ...      + Ghi chú: "Quà tặng từ khuyến mãi"
+    ...      + Giá=0
     ...      + Liên kết với SalePromotionId
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với giá 0đ
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion
     ...    - Sản phẩm quà tặng được trừ khỏi tồn kho
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_2}    1
-    And Xác Thực Ghi Chú Quà Tặng    ${INVOICE_ID}    ${PRODUCT_2}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_ID} Với Quà Tặng Sản Phẩm HTKM04 
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_promotion_id}
+    When Gửi Yêu Cầu Tạo Hóa Đơn 
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    ${product_promotion_id}    ${quantity_promotion}  
+    And Thông Tin Khuyến Mãi Có Loại 2
+    And Tồn kho sản phẩm ${product_promotion_id} đã giảm ${quantity_promotion} đơn vị
+
+
 
 RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng theo sản phẩm cụ thể
@@ -44,18 +47,19 @@ RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sả
     ...    - Chi tiết sản phẩm:
     ...      + ProductId=${PRODUCT_1}, Quantity=1, Price=100,000đ
     ...    - Khuyến mãi: ProductGift (loại 6)
-    ...    - Sản phẩm quà tặng: ID=${PRODUCT_2}, số lượng=1
+    ...    - Sản phẩm quà tặng: ID=${PRODUCT_2}, số lượng=12
     ...    - Điều kiện: mua sản phẩm PRODUCT_1 với số lượng >= 1
     ...    - Logic xử lý: InvoiceService.ProcessPromotionGift() tạo InvoiceDetail mới cho quà tặng theo sản phẩm
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với giá 0đ
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion với loại 6
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Sản Phẩm Theo Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Sản Phẩm Theo Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_2}    1
+    Given Chuẩn bị dữ liệu khuyến mãi ${PROMOTION_GIFT_ID_2} mua hàng HH0036 tặng sản phẩm NK001 
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    ${product_promotion_id}    ${quantity_promotion}  
+    And Thông Tin Khuyến Mãi Có Loại 6
+    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_GIFT_ID_2}
 
 RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng voucher theo hóa đơn
@@ -63,20 +67,20 @@ RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
     ...    - Tổng tiền: 100,000đ
     ...    - Khuyến mãi: InvoiceVoucherGift (loại 9)
-    ...    - Voucher: giá trị=50,000đ, số lượng=1, hạn sử dụng=30 ngày
+    ...    - Voucher: giá trị=100,000đ, số lượng=1
     ...    - Logic xử lý: 
     ...      + InvoiceService.ProcessPromotionGift() 
     ...      + VoucherService.CreateVoucher() tạo voucher mới
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Voucher mới được tạo với giá trị 50,000đ
+    ...    - Voucher mới được tạo với giá trị 100,000đ
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
     ...    - Trạng thái voucher là Kích hoạt (1)
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Voucher
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Voucher    ${INVOICE_ID}    50000    1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_3} Với Quà Tặng Voucher
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Quà Tặng Voucher    ${INVOICE_ID}    100000    1
 
 RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng voucher theo sản phẩm cụ thể
