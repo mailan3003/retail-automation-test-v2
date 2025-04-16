@@ -468,3 +468,251 @@ Thông tin hàng hóa
     ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
     ${result}=   Fetch One    ${query}    ${product_code}
     RETURN    ${result}
+
+# Keywords cho phần xử lý thanh toán bằng Voucher
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher ${voucher_campaign_id}
+    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
+    Set Test Variable    ${voucher_id}    ${voucher[0]}
+    Set Test Variable    ${voucher_code}    ${voucher[1]}
+    
+    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
+    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
+    ${voucher_value}=    Convert To Number    ${campaign[0]}
+    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${payment}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value}
+    ...    VoucherCode=${voucher_code}
+    ...    VoucherId=${voucher_id}
+    ...    VoucherCampaignId=${voucher_campaign_id}
+    
+    ${payments}=    Create List    ${payment}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER001
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giá Thấp Thanh Toán Bằng Voucher ${voucher_campaign_id}
+    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
+    Set Test Variable    ${voucher_id}    ${voucher[0]}
+    Set Test Variable    ${voucher_code}    ${voucher[1]}
+    
+    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
+    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
+    ${voucher_value}=    Convert To Number    ${campaign[0]}
+    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    50000
+    ${data_product}=    Create List    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    
+    ${payment}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value}
+    ...    VoucherCode=${voucher_code}
+    ...    VoucherId=${voucher_id}
+    ...    VoucherCampaignId=${voucher_campaign_id}
+    
+    ${payments}=    Create List    ${payment}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER002
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Kết Hợp Voucher ${voucher_campaign_id} Và Tiền Mặt
+    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
+    Set Test Variable    ${voucher_id}    ${voucher[0]}
+    Set Test Variable    ${voucher_code}    ${voucher[1]}
+    
+    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
+    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
+    ${voucher_value}=    Convert To Number    ${campaign[0]}
+    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    150000
+    ${data_product}=    Create List    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    
+    ${payment_voucher}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value}
+    ...    VoucherCode=${voucher_code}
+    ...    VoucherId=${voucher_id}
+    ...    VoucherCampaignId=${voucher_campaign_id}
+    
+    ${payment_cash}=    Create Dictionary
+    ...    Method=${PAYMENT_CASH}
+    ...    Amount=100000
+    
+    ${payments}=    Create List    ${payment_voucher}    ${payment_cash}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER003
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Create List    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    
+    ${payment}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=100000
+    ...    VoucherCode=INVALID_VOUCHER_CODE
+    ...    VoucherId=999999
+    ...    VoucherCampaignId=999999
+    
+    ${payments}=    Create List    ${payment}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER004
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với Nhiều Voucher
+    ${query_1}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+    ${voucher_1}=    Fetch One    ${query_1}    ${VOUCHER_CAMPAIGN_ID_2}
+    Set Test Variable    ${voucher_id_1}    ${voucher_1[0]}
+    Set Test Variable    ${voucher_code_1}    ${voucher_1[1]}
+    
+    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
+    ${campaign_1}=    Fetch One    ${query_2}    ${VOUCHER_CAMPAIGN_ID_2}
+    ${voucher_value_1}=    Convert To Number    ${campaign_1[0]}
+    
+    ${query_3}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0 AND Id <> ?
+    ${voucher_2}=    Fetch One    ${query_3}    ${VOUCHER_CAMPAIGN_ID_2}    ${voucher_id_1}
+    Set Test Variable    ${voucher_id_2}    ${voucher_2[0]}
+    Set Test Variable    ${voucher_code_2}    ${voucher_2[1]}
+    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    200000
+    ${data_product}=    Create List    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    
+    ${payment_voucher_1}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value_1}
+    ...    VoucherCode=${voucher_code_1}
+    ...    VoucherId=${voucher_id_1}
+    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
+    
+    ${payment_voucher_2}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value_1}
+    ...    VoucherCode=${voucher_code_2}
+    ...    VoucherId=${voucher_id_2}
+    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
+    
+    ${payment_cash}=    Create Dictionary
+    ...    Method=${PAYMENT_CASH}
+    ...    Amount=100000
+    
+    ${payments}=    Create List    ${payment_voucher_1}    ${payment_voucher_2}    ${payment_cash}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER005
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Kết Hợp Khuyến Mãi
+    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+    ${voucher}=    Fetch One    ${query}    ${VOUCHER_CAMPAIGN_ID_2}
+    Set Test Variable    ${voucher_id}    ${voucher[0]}
+    Set Test Variable    ${voucher_code}    ${voucher[1]}
+    
+    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
+    ${campaign}=    Fetch One    ${query_2}    ${VOUCHER_CAMPAIGN_ID_2}
+    ${voucher_value}=    Convert To Number    ${campaign[0]}
+    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    150000
+    ${data_product}=    Create List    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    
+    # Thêm thông tin khuyến mãi
+    ${data_promo}=    Deep Copy    ${promotion_body}
+    ${data_promo}=    Update Nested Dictionary Property    ${data_promo}    Discount    30000
+    ${data_promo}=    Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoicePromotions    ${data_promo}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    30000
+    
+    ${payment_voucher}=    Create Dictionary
+    ...    Method=${PAYMENT_VOUCHER}
+    ...    Amount=${voucher_value}
+    ...    VoucherCode=${voucher_code}
+    ...    VoucherId=${voucher_id}
+    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
+    
+    ${payment_cash}=    Create Dictionary
+    ...    Method=${PAYMENT_CASH}
+    ...    Amount=70000
+    
+    ${payments}=    Create List    ${payment_voucher}    ${payment_cash}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER006
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+# Các keywords kiểm tra kết quả
+Xác Thực Thanh Toán Voucher Hóa Đơn
+    [Arguments]    ${invoice_id}    ${voucher_id}    ${amount}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = 'Voucher' AND VoucherId = ? AND Amount = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${voucher_id}    ${amount}
+    Should Be Equal As Numbers    ${result[0]}    1    Thanh toán bằng voucher không được ghi nhận đúng
+
+Xác Thực Thanh Toán Tiền Mặt Hóa Đơn
+    [Arguments]    ${invoice_id}    ${amount}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = 'Cash' AND Amount = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${amount}
+    Should Be Equal As Numbers    ${result[0]}    1    Thanh toán bằng tiền mặt không được ghi nhận đúng
+
+Xác Thực Tổng Tiền Thanh Toán Hóa Đơn
+    [Arguments]    ${invoice_id}    ${amount}
+    ${query}=    Set Variable    SELECT SUM(Amount) FROM Payment WHERE InvoiceId = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${amount}    Tổng tiền thanh toán không khớp
+
+Xác Thực Trạng Thái Thanh Toán Hóa Đơn
+    [Arguments]    ${invoice_id}    ${status}
+    ${query}=    Set Variable    SELECT PaymentStatus FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${status}    Trạng thái thanh toán không đúng
+
+Xác Thực Trạng Thái Voucher Đã Sử Dụng
+    [Arguments]    ${voucher_id}
+    ${query}=    Set Variable    SELECT Status FROM Voucher WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${voucher_id}
+    Should Be Equal As Numbers    ${result[0]}    1    Voucher chưa được đánh dấu là đã sử dụng
+
+Xác Thực Trạng Thái Nhiều Voucher Đã Sử Dụng
+    ${query_1}=    Set Variable    SELECT Status FROM Voucher WHERE Id = ?
+    ${result_1}=    Fetch One    ${query_1}    ${voucher_id_1}
+    Should Be Equal As Numbers    ${result_1[0]}    1    Voucher 1 chưa được đánh dấu là đã sử dụng
+    
+    ${query_2}=    Set Variable    SELECT Status FROM Voucher WHERE Id = ?
+    ${result_2}=    Fetch One    ${query_2}    ${voucher_id_2}
+    Should Be Equal As Numbers    ${result_2[0]}    1    Voucher 2 chưa được đánh dấu là đã sử dụng
+
+Xác Thực Giảm Giá Khuyến Mãi Hóa Đơn
+    [Arguments]    ${invoice_id}    ${discount}
+    ${query}=    Set Variable    SELECT Discount FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${discount}    Giảm giá khuyến mãi không đúng
+
+Thông Báo Lỗi Phải Chứa
+    [Arguments]    ${error_message}
+    ${error}=    Get Response Property    message
+    Should Contain    ${error}    ${error_message}    Thông báo lỗi không chứa thông tin chính xác

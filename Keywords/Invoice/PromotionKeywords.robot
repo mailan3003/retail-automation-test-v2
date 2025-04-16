@@ -74,6 +74,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa 
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    15
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Target    2
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty    1
     ${data_promo}  Create List    ${data_promo}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  ${discount_amount}
@@ -479,4 +480,247 @@ Thông tin hàng hóa
     ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
     ${result}=   Fetch One    ${query}    ${product_id}
     RETURN    ${result}
+
+# ==============================================
+# Keywords for AI Generated Test Cases
+# ==============================================
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Hóa Đơn
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi tặng điểm theo hóa đơn
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${invoice_promotion_point_gift}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    12
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Value   10
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPointType    1
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPoint_MoneyPerPoint    10000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sản Phẩm
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi tặng điểm theo sản phẩm
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${PRODUCT_PROMOTION_POINT_GIFT}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    13
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Value   20
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductId  ${PRODUCT_1}
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPointType    1
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPoint_MoneyPerPoint    10000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với voucher không cho phép kết hợp với khuyến mãi
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    1
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount   10000
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCampaignId   ${VOUCHER_CAMPAIGN_ID}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherId   ${VOUCHER_ID}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCode   TESTNONCOMBINE
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherValue   20000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.AllowMergeWithOtherPromotion   ${FALSE}
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Voucher Theo Sản Phẩm
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi tặng voucher theo sản phẩm
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    10
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductId  ${PRODUCT_1}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Value   50000
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giới Hạn Sử Dụng
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi có giới hạn sử dụng
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    1
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount   10000
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     LimitPromotionUsage  ${TRUE}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     LimitPromotionUsageType  1
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId  ${CUSTOMER_GROUP_PROMOTION_ID}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kết Hợp Nhiều Loại Khuyến Mãi
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với nhiều loại khuyến mãi (giảm giá, điểm thưởng, voucher)
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${promo1}=    Deep Copy    ${promotion_body}    
+    ${promo2}=    Deep Copy    ${invoice_promotion_point_gift}
+    ${promo3}=    Deep Copy    ${promotion_body}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    
+    # Khuyến mãi 1: Giảm giá 10,000đ
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     PromotionId  ${PROMOTION_ID_FIXED}
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     Type    1
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     Discount   10000
+    
+    # Khuyến mãi 2: Tặng 10 điểm
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     PromotionId  ${PROMOTION_ID_POINT}
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     Type    12
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     Value   10
+    
+    # Khuyến mãi 3: Tặng voucher 30,000đ
+    ${promo3}=    Update Nested Dictionary Property     ${promo3}     PromotionId  ${PROMOTION_ID_VOUCHER}
+    ${promo3}=    Update Nested Dictionary Property     ${promo3}     Type    9
+    ${promo3}=    Update Nested Dictionary Property     ${promo3}     Value   30000
+    
+    ${promotions}=    Create List    ${promo1}    ${promo2}    ${promo3}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${promotions}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  10000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.DiscountByPromotion  10000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    90000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPointType    1
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.RewardPoint_MoneyPerPoint    10000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Giới Hạn Chiết Khấu Voucher
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với voucher có giới hạn chiết khấu tối đa
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCampaignId   ${VOUCHER_CAMPAIGN_ID}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherId   ${VOUCHER_ID}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCode   TESTMAXLIMIT
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherValue   15000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherMaxValue   15000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherRatio   20
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Chế Độ Ưu Tiên Giá Trị Lớn Nhất
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với chế độ ưu tiên khuyến mãi theo giá trị lớn nhất
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${promo1}=    Deep Copy    ${promotion_body}    
+    ${promo2}=    Deep Copy    ${promotion_body}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    
+    # Khuyến mãi 1: Giảm giá 10,000đ
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     PromotionId  ${PROMOTION_ID_FIXED}
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     Type    1
+    ${promo1}=    Update Nested Dictionary Property     ${promo1}     Discount   10000
+    
+    # Khuyến mãi 2: Giảm giá 20,000đ
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     PromotionId  ${PROMOTION_ID_FIXED_2}
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     Type    1
+    ${promo2}=    Update Nested Dictionary Property     ${promo2}     Discount   20000
+    
+    ${promotions}=    Create List    ${promo1}    ${promo2}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${promotions}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  20000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.DiscountByPromotion  20000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    80000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.PromotionPriorityType    1
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Số Lượng Tối Thiểu
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi yêu cầu số lượng sản phẩm tối thiểu
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    5
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    20000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${PROMOTION_ID_MIN_QUANTITY}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    7
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     DiscountRatio   20
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductId  ${PRODUCT_1}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     MinQuantity  5
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.ProductDiscount  20000
+    Set Test Variable    ${product_id_promotion}    ${PRODUCT_1}
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Xác Thực Điểm Thưởng Hóa Đơn
+    [Arguments]    ${expected_points}
+    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT Point FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy hóa đơn ID ${invoice_id} trong CSDL
+    Should Be Equal As Numbers    ${result[0]}    ${expected_points}    Điểm thưởng không chính xác. Mong đợi: ${expected_points}, Thực tế: ${result[0]}
+
+Xác Thực Quà Tặng Voucher Theo Sản Phẩm
+    [Arguments]    ${invoice_id}    ${expected_value}    ${expected_count}
+    ${query}=    Set Variable    SELECT COUNT(*), v.Value FROM Voucher v INNER JOIN InvoiceVoucher iv ON v.Id = iv.VoucherId WHERE iv.InvoiceId = ? GROUP BY v.Value
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy voucher được tạo cho hóa đơn ID ${invoice_id} trong CSDL
+    Should Be Equal As Numbers    ${result[0]}    ${expected_count}    Số lượng voucher không chính xác. Mong đợi: ${expected_count}, Thực tế: ${result[0]}
+    Should Be Equal As Numbers    ${result[1]}    ${expected_value}    Giá trị voucher không chính xác. Mong đợi: ${expected_value}, Thực tế: ${result[1]}
+
+Xác Thực Chiết Khấu Voucher Hóa Đơn
+    [Arguments]    ${invoice_id}    ${expected_discount}
+    ${query}=    Set Variable    SELECT VoucherValue FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy hóa đơn ID ${invoice_id} trong CSDL
+    Should Be Equal As Numbers    ${result[0]}    ${expected_discount}    Chiết khấu voucher không chính xác. Mong đợi: ${expected_discount}, Thực tế: ${result[0]}
+
+Response Phải Có Lỗi
+    [Arguments]    ${expected_message}
+    ${response_body}=    Convert To String    ${RESPONSE.text}
+    Should Contain    ${response_body}    ${expected_message}    Response không chứa thông báo lỗi "${expected_message}"
 

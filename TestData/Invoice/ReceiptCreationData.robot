@@ -174,4 +174,9 @@ ${BANK_WALLET_ID}  1000000046
 &{DETAILED_PAYMENT}
 ...    Method=${PAYMENT_CASH}
 ...    Amount=${STANDARD_RECEIPT_AMOUNT}
-...    Description=Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME} 
+...    Description=Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
+
+# Dữ liệu voucher
+${VOUCHER_ID}                    1000000025
+${VOUCHER_CAMPAIGN_ID}           1000000010
+${INVALID_VOUCHER_CODE}          INVALID_VOUCHER001 

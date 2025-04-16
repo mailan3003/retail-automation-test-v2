@@ -5,21 +5,137 @@
 ### 1.1 File Organization
 ```
 robotframework-tests/
-├── TestSpecs/
-│   └── API/
-│       └── {Module}/
-│           └── {Feature}Test.robot
-├── TestData/
-│   ├── CommonData.robot
-│   └── {Module}/
-│       └── {Feature}Data.robot
-├── Keywords/
-│   └── {Module}/
-│       └── {Feature}Keywords.robot
-└── Env.robot
+├── Config/                                 # Store configuration files
+├── Env.robot                               # Global environment variables
+├── Keywords/                               # All keywords used in the project
+│   ├── Database/                           # Common keywords for working with Database
+│   ├── Utilities/                          # Common utility keywords
+│   │   ├── RequestHelper.robot             # Utilities for handling requests
+│   │   ├── ResponseHelper.robot            # Utilities for handling responses
+│   │   └── Utilities.robot                 # Other common utilities
+│   └── {API Name}/                           # Each API module has its own folder (eg, Invoice for InvoiceAPI)
+│       └── {Feature}Keywords.robot         # Feature-specific keywords
+├── Resources/                              # External libraries
+│   └── DatabaseLibrary.py                  # Library to execute database query 
+├── TestData/                               # All test data used in the project
+│   ├── CommonData.robot                    # Common test data
+│   └── {API Name}/                           # Each API module has its own test data folder (eg, Invoice for InvoiceAPI)
+│       └── {Feature}Data.robot             # Feature-specific test data
+└── TestSpecs/                              # All test specifications
+    ├── API/                                # API test specifications
+    │   └── {API Name}/                       # Each API module (eg, Invoice for InvoiceAPI)
+    │       └── {Feature}Test.robot         # Feature-specific API tests
+    └── E2E/                                # End-to-end test specifications
+        └── {Feature}Test.robot             # Feature-specific E2E tests
 ```
+### 1.2 Test Case Generation Crititical Rules
 
-### 1.2 Test Case Pattern
+**Before creating a test case, must review `@CommonData.robot`, `@Env.robot`, and all files in the `@Utilities` folder to**
+- Understand the environnment variable, commond data and common keywords
+- Reuse those common data, keywords, variable instead of create new ones
+
+#### Structure and Organization
+- **Test cases must strictly follow the Given-When-Then (GWT) pattern without any preparation or calculation code**
+- **Test cases must be written in Vietnamese**
+- **Each test case ID should follow the format: `RT-{Module}-{Number}`**
+- **Test case description must include test logic with specific example data and clear expected results**
+- Include source code references in documentation when testing specific algorithms or calculations
+- **Similar test case must group into one test case with multiple assert**
+ - For example successful test case with multiple condition should be grouped to 1 test case with multiple assert
+
+#### Grouping Similar Test Cases with Templates
+- **Use templates to group similar test cases that test the same condition with different values**
+  ```robotframework
+  RT-XX-001 Test successful scenarios with multiple conditions
+      [Documentation]    Test successful cases with multiple conditions
+      [Template]    Test Various Successful Conditions
+      # Value   expected_result
+      Value 1    Result 1
+      Value 2    Result 2
+      Value 3    Result 3
+  ```
+- **Define template keywords that follow the Given-When-Then pattern:**
+  ```robotframework
+  Test Various Successful Conditions
+      [Arguments]    ${condition}    ${expected_result}
+      Given Chuẩn Bị Dữ Liệu Với ${condition}
+      When Gửi Yêu Cầu API
+      Then Response Status Code Should Be 200
+      And Xác Thực ${expected_result}
+  ```
+- **For error cases, use a separate template that handles error verification:**
+  ```robotframework
+  RT-XX-002 Test error scenarios with multiple conditions
+      [Documentation]    Test error cases with multiple conditions
+      [Template]    Test Various Error Conditions
+      # condition   expected_error
+      Invalid Input A    Error message A
+      Invalid Input B    Error message B
+  ```
+
+#### Single Given Statement with Multiple Embedded Parameters for multiple conditions
+- **Use a single Given statement with multiple embedded parameters for readability and conciseness:**
+  ```robotframework
+  Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Nhận "${receiver}" Số Điện Thoại "${phone}" Địa Chỉ "${address}"
+  ```
+- **Similarly, use verification steps with multiple embedded parameters:**
+  ```robotframework
+  And Xác Thực Thông Tin Người Nhận "${receiver}" Số Điện Thoại "${phone}" Địa Chỉ "${address}"
+  ```
+- **Create descriptive keywords with embedded parameters for both setup and verification:**
+  ```robotframework
+  Chuẩn Bị Dữ Liệu Hóa Đơn Với Gói Hàng Kích Thước "${dimensions}" Trọng Lượng ${weight} Loại ${type}
+  Xác Thực Thông Tin Kích Thước Gói Hàng "${dimensions}" Trọng Lượng ${weight} Loại ${type}
+  ```
+- **Ensure embedded parameters are clearly named and maintain readability in Vietnamese**
+
+#### Data Management
+- **Must reuse common test data to minimize the number of test data**
+- Each API module should have its own CommonData file (e.g., `InvoiceCommonData.robot`) with:
+  - Standard request body variables
+  - Reusable test data constants
+- **For test data specific for the test case only, or new common test data must use mpc to get the id, code of appropriated records in the database (record has column RetailerId is the value of robot framework variable ${RETAILER_ID})**
+ 
+- **Always use deep copy of standard request body templates when preparing test data:**
+  ```robotframework
+  ${request}=    Evaluate    json.loads(json.dumps(${STANDARD_REQUEST}))    json
+  ```
+
+- **Modify only necessary fields in the copied request body for your specific test case**
+- **Reference environment variables from `Env.robot` for API endpoints and configuration**
+
+#### Keyword Design
+- **Use embedded parameters in keywords to improve readability:**
+  ```robotframework
+  Chuẩn Bị Dữ Liệu Hóa Đơn Với ${product_count} Sản Phẩm Tổng Giá Trị ${total}
+  ```
+- **Create reusable, descriptive keywords that clearly communicate their purpose**
+- **Keep keywords focused on a single responsibility**
+- **Use keyword documentation to explain complex logic**
+- **Keywords must NEVER appear in test specification files** 
+  ✓ Place keywords in the appropriate module/feature keywords file
+  ✗ Do not define keywords in test spec files
+- **Test cases must strictly follow Given-When-Then without preparations**
+- **API Request Handling: All test cases MUST use the Call API keyword defined in Utilities.robot (`@Utilities.robot`) - never implement custom API call methods or place this keyword in other files**
+- **Verification keywords must be clear about what and how it is verified** 
+```robotframework
+  Chuẩn Bị Dữ Liệu Hóa Đơn Với ${product_count} Sản Phẩm Tổng Giá Trị ${total}
+  Xác Thực Mã Sản Phẩm ${product_code} Đã Được Chuẩn Hóa thành ${normalized_product_code}
+  ```
+
+#### Validation
+- Never call APIs to set up test data or validate test results
+- Always verify that expected data is correctly inserted/updated in the database
+- Include verification steps for both API response and database state
+- Use database queries to verify data integrity and consistency
+
+#### Efficiency Tips
+- Group similar test cases with templates when appropriate
+- Follow established patterns for common test scenarios (batch processing, inventory, etc.)
+- Reuse existing utility keywords rather than creating duplicate functionality
+- Organize test data logically with clear naming conventions
+
+### 1.3 Test Case Pattern
 ```robotframework
 RT-{Module}-{Number} {Description}
     [Documentation]    Description of test purpose
@@ -28,6 +144,43 @@ RT-{Module}-{Number} {Description}
     Then {Verify Response Code}
     And {Additional Verification Steps}
 ```
+
+### 1.3 Test Grouping (IMPORTANT)
+
+#### Grouping Similar Test Cases
+Test cases with similar conditions but testing the same feature MUST be grouped into a single test case with multiple assertions.
+
+❌ INCORRECT APPROACH (DO NOT DO THIS):
+```robotframework
+RT-XX-001 Test successful scenario with condition A
+    [Documentation]    Test successful case A
+    Given Prepare Test Data for Condition A
+    When Execute Action
+    Then Verify Result A
+
+RT-XX-002 Test successful scenario with condition B
+    [Documentation]    Test successful case B
+    Given Prepare Test Data for Condition B
+    When Execute Action
+    Then Verify Result B
+```
+
+✅ CORRECT APPROACH (DO THIS):
+```robotframework
+RT-XX-001 Test successful scenarios with multiple conditions
+    [Documentation]    Test successful cases with multiple conditions
+    [Template]    Test Various Successful Conditions
+    # condition   expected_result
+    Condition A    Result A
+    Condition B    Result B
+    Condition C    Result C
+```
+
+#### When to Create Separate Test Cases
+Only create separate test cases when testing:
+1. Fundamentally different features
+2. Error/failure scenarios (each distinct error should have its own test case)
+3. Different API endpoints
 
 ## 2. Test Case Implementation
 
@@ -49,13 +202,19 @@ ${TEST_DATA}    {"key": "value"}
 ### 2.2 Keyword Implementation
 1. Create Keywords (`Keywords/{Module}/{Feature}Keywords.robot`):
 ```robotframework
+Resource          ../Utilities/RequestHelper.robot
+Resource          ../Utilities/ResponseHelper.robot
+Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
+Library           ../../Resources/DatabaseLibrary.py
+
 *** Keywords ***
 Prepare Test Data
     ${request_data}=    Create Test Data
     Set Test Variable    ${REQUEST_DATA}    ${request_data}
 
-Send API Request
-    ${response}=    POST    ${API_URL}    json=${REQUEST_DATA}
+Send API Request    
+    ${response}=    Call API    api_endpoint    ${REQUEST_DATA}    
     Set Test Variable    ${RESPONSE}    ${response}
 ```
 
@@ -101,7 +260,75 @@ Response Should Have Error ${expected_error}
 Response Data Should Match Request    ${expected_data}
 ```
 
-### 3.4 Embedded Parameter Pattern
+### 3.4 Verification Keyword Best Practices
+
+#### 3.4.1 Verification Keyword Naming Guidelines
+Verification keywords must clearly communicate both WHAT is being verified and HOW it is being verified. Follow these patterns:
+
+```robotframework
+Xác Thực [OBJECT] ${parameter} [CONDITION] [EXPECTED_STATE]
+```
+
+Where:
+- **OBJECT**: The specific element or field being verified (e.g., Mã Sản Phẩm, Tên Sản Phẩm)
+- **parameter**: Embedded parameter showing what value is being tested (e.g., ${product_code})
+- **CONDITION**: The context or condition being tested (e.g., Đã Được Chuẩn Hóa)
+- **EXPECTED_STATE**: The expected outcome or state (e.g., Không Chứa Ký Tự Đặc Biệt)
+
+**Examples of GOOD verification keyword names:**
+```robotframework
+Xác Thực Mã Sản Phẩm ${product_code} Đã Được Chuẩn Hóa Thành Mã Không Chứa Ký Tự Đặc Biệt
+Xác Thực Tên Sản Phẩm ${product_name} Đã Được Chuẩn Hóa Theo Định Dạng Unicode NFC
+Xác Thực Mô Tả Sản Phẩm ${product_code} Đã Được Chuẩn Hóa HTML Không Còn Thẻ p Trống
+Xác Thực Lỗi Trùng Tên Đơn Vị Cùng Một Sản Phẩm
+```
+
+**Examples of BAD verification keyword names (too generic):**
+```robotframework
+Kiểm Tra Mã Sản Phẩm     # Không nêu rõ đang xác thực điều gì về mã sản phẩm
+Xác Thực Tên Sản Phẩm     # Không nêu rõ đang xác thực điều gì về tên sản phẩm
+Xác Thực Lỗi              # Quá mơ hồ, không nêu rõ loại lỗi nào
+```
+
+#### 3.4.2 Verification Keyword Implementation Guidelines
+Every verification statement should include:
+1. A clear assertion message explaining what's being checked
+2. Detailed error messages that help diagnose failures
+3. Logging of actual vs. expected values when appropriate
+
+**Example implementation:**
+```robotframework
+Xác Thực Mã Sản Phẩm ${product_code} Đã Được Chuẩn Hóa Thành Mã Không Chứa Ký Tự Đặc Biệt
+    # 1. Fetch the data to verify
+    ${result}=    Fetch One    ${QUERY_GET_PRODUCT_BY_CODE}    ${product_code}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm với mã ${product_code}
+    
+    # 2. Extract the specific field to verify
+    ${db_code}=    Set Variable    ${result[1]}
+    
+    # 3. Perform specific verification with detailed error messages
+    Should Not Contain    ${db_code}    #    Mã sản phẩm vẫn chứa ký tự đặc biệt #
+    Should Not Contain    ${db_code}    @    Mã sản phẩm vẫn chứa ký tự đặc biệt @
+    Should Not Contain    ${db_code}    &    Mã sản phẩm vẫn chứa ký tự đặc biệt &
+    
+    # 4. Log important values for debugging
+    Log    Mã sản phẩm gốc [${product_code}] đã được chuẩn hóa thành [${db_code}]
+```
+
+#### 3.4.3 Error Verification Guidelines
+When verifying error conditions, always include:
+1. The expected HTTP status code
+2. The exact error message expected
+3. A clear description of the error condition
+
+Example:
+```robotframework
+Xác Thực Lỗi Mô Tả Vượt Giới Hạn 30000 Ký Tự
+    Response Status Code Should Be 420    API phải trả về lỗi nghiệp vụ (mã 420) khi mô tả vượt quá 30000 ký tự
+    Response Should Have Error "Mô tả sản phẩm vượt quá giới hạn cho phép"    Thông báo lỗi phải nêu rõ mô tả vượt giới hạn
+```
+
+### 3.5 Embedded Parameter Pattern
 For improved test case readability, prefer using embedded parameters in keywords. This makes test cases more descriptive and self-documenting.
 
 1. Define keywords with embedded parameters:
@@ -223,6 +450,7 @@ ${AUTH_TOKEN}    token_value
 - [ ] Error scenarios covered
 - [ ] Business rules validated
 - [ ] Reuse common test data in CommonData.robot
+- [ ] Ưu tiên embedded param in keywords
 
 ## 8. Common Patterns
 
