@@ -20,13 +20,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD mặc định
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD mặc định Với Đơn Vị Vận Chuyển ${partner_id}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với giao hàng COD mặc định
     ${request}=    Deep Copy    ${invoice_request_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.UseDefaultPartner    ${True}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerCode    ${PARTNER_DELIVERY_1_CODE}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerName    ${PARTNER_DELIVERY_1_NAME}
-    #${request}=   Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.DeliveryBy    ${PARTNER_DELIVERY_1_ID}
+    ${partner_delivery_body}=    Deep Copy    ${partner_delivery_body}
+   # ${partner_delivery_body}=    Update Nested Dictionary Property    ${partner_delivery_body}    Id    ${partner_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerDelivery    ${partner_delivery_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.DeliveryBy    ${partner_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 

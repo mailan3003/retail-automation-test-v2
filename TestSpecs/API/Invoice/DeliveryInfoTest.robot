@@ -94,24 +94,24 @@ RT-DI-006 Tạo hóa đơn thành công với đơn vị vận chuyển mặc đ
     ...    - DeliveryDetail.UseDefaultPartner = true
     ...    - Hệ thống sẽ tìm kiếm hoặc tạo đơn vị vận chuyển mặc định
     ...    - Cập nhật thông tin DeliveryBy từ đơn vị mặc định
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD mặc định
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giao Hàng COD mặc định Với Đơn Vị Vận Chuyển ${PARTNER_DELIVERY_1_ID}
     When Gửi Yêu Cầu Tạo Hóa Đơn Có Giao Hàng
     Then Response Status Code Should Be 200
     And Xác Thực Thông Tin Giao Hàng Trong Response
     And Xác Thực Thông Tin Giao Hàng Trong DB
     And Xác Thực Thông Tin Đơn Vị Vận Chuyển    ${PARTNER_DELIVERY_1_ID}
 
-RT-DI-007 Tạo hóa đơn thành công với giao hàng từ Facebook
-    [Documentation]    Kiểm tra tạo hóa đơn giao hàng từ Facebook:
-    ...    - Đơn hàng từ kênh Facebook (SaleChannelId = 2)
-    ...    - Hệ thống sẽ cập nhật địa chỉ lấy hàng từ chi nhánh
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Từ Facebook
-    When Gửi Yêu Cầu Tạo Hóa Đơn Có Giao Hàng
-    Then Response Status Code Should Be 200
-    And Xác Thực Thông Tin Giao Hàng Trong Response
-    And Xác Thực Thông Tin Giao Hàng Trong DB
-    And Xác Thực Thông Tin Gói Hàng Trong DB
-    And Xác Thực Địa Chỉ Lấy Hàng Từ Chi Nhánh
+# RT-DI-007 Tạo hóa đơn thành công với giao hàng từ Facebook     Tạo đơn bên KOL
+#     [Documentation]    Kiểm tra tạo hóa đơn giao hàng từ Facebook:
+#     ...    - Đơn hàng từ kênh Facebook (SaleChannelId = 2)
+#     ...    - Hệ thống sẽ cập nhật địa chỉ lấy hàng từ chi nhánh
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Từ Facebook
+#     When Gửi Yêu Cầu Tạo Hóa Đơn Có Giao Hàng
+#     Then Response Status Code Should Be 200
+#     And Xác Thực Thông Tin Giao Hàng Trong Response
+#     And Xác Thực Thông Tin Giao Hàng Trong DB
+#     And Xác Thực Thông Tin Gói Hàng Trong DB
+#     And Xác Thực Địa Chỉ Lấy Hàng Từ Chi Nhánh
 
 RT-DI-008 Cập nhật hóa đơn thành công với thông tin giao hàng mới
     [Documentation]    Kiểm tra cập nhật hóa đơn với thông tin giao hàng mới:

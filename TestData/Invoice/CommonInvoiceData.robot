@@ -76,7 +76,6 @@ Resource          ../CommonData.robot
 
 
 
-
 # SoldBy Body
 &{sold_by_body}    CreatedBy=0    CreatedDate=2025-03-27T06:44:21.083Z    GivenName=admin    Id=${DEFAULT_USER_ID}    IsActive=${True}    IsAdmin=${True}    Language=vi-VN    MobilePhone=03322553899    Type=0    UserName=admin    isDeleted=${False}
 
@@ -131,7 +130,7 @@ Resource          ../CommonData.robot
 ...    ServiceAdd=${None}    
 ...    ServiceCode=0    
 ...    PartnerDelivery=${None}    
-...    PartnerCode=${None}    
+...    PartnerCode=${PARTNER_DELIVERY_1_CODE}      
 ...    PartnerName=${None}    
 ...    DeliveryCode=${None}
 
