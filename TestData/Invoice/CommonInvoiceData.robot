@@ -181,3 +181,12 @@ Resource          ../CommonData.robot
 # Invoice body not delivery
 &{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    Discount=0   InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body_not_delivery}    Invoice=&{invoice_body_not_delivery}
+
+# Variables for AI Generated Test Cases
+${PROMOTION_ID_POINT}            1001    # ID Promotion for Point Gift
+${PROMOTION_ID_FIXED}            1002    # ID Promotion for Fixed Discount
+${PROMOTION_ID_FIXED_2}          1003    # ID Promotion for Fixed Discount 2
+${PROMOTION_ID_VOUCHER}          1004    # ID Promotion for Voucher Gift
+${PROMOTION_ID_MIN_QUANTITY}     1005    # ID Promotion for Min Quantity
+${VOUCHER_CAMPAIGN_ID}           101     # Voucher Campaign ID
+${VOUCHER_ID}                    201     # Voucher ID

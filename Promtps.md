@@ -1,36 +1,37 @@
-# Prompt generate test data
-Please look at the data base schema, the test case and 
-- generate sql to generate test data for specific test case that will not exist in the database
-- generate sql to cleanup the generated test data you just generated
+# Prompt Best Practices
+- Provide detail context such as programing language, library, domain..
+- Provide detail requirements extract logic from actual source code, don't provide best practice/common feature from the domain...
+- Provide detail output format such as markdown and in Vietnamese
+- Provide detail structure, pattern, template to generate data such as APITestDesign.md
+- Ask AI to check if it miss somthing after the job done
 
-# Prompt list all api endpoint from source code
+# Prompts
+## Prompt list all api endpoint from source code
 (first attach api source code to copilot (@ProductApI) and then prompt)
 Please don't hallucination, scan this file line by line and list all the api endoint
 
-# Prompt list all logical paths for a method needs to test
-You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, read the files line by line, follow every execution path deeply to completly understand the whole logic of method CreateInvoice. Then please list out all logical path in that method. You must not miss even 1 path since it will be a serious problem.
+## Prompt list all logical paths for a method needs to test
+- You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, read the files line by line, follow every execution path deeply to completly understand the whole logic of method CreateInvoice. Then please list out all logical path in that method. You must not miss even 1 path since it will be a serious problem.
 
-You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, start from the method CreateInvoice, follow every execution path (deeply nested to other methods, file) and give all the methods and files included to the CreateInvoiceDependencies.md
+- You are a senior .net developer, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination, start from the method CreateInvoice, follow every execution path (deeply nested to other methods, file) and give all the methods and files included to the CreateInvoiceDependencies.md
 
-# Prompt summary logic doc
-You are senior .net developer and have deep knowledge about Point Of Sale System. Don't hallucinated, please review the actual code line by line and help me list all the business logic of CreateInvoice methods to a markdown file in vietnamese. Don't imagine or grab the common features in the domain. The logic you list out must found in the actual code
+## Prompt summary logic doc
+- You are senior .net developer and have deep knowledge about Point Of Sale System. Don't hallucinated, please review the actual code line by line and help me list all the business logic of CreateInvoice methods to a markdown file in vietnamese. Don't imagine or grab the common features in the domain. The logic you list out must found in the actual code
 
 ## Add more logic  for each section
-Can you please check the actual code the whole file,follow every execution path (nestedly into other files, methods) to add all detail logic for section "1.1" (don't be hallucinated). Don't update the file, just give me the detail content in markdown format and should be explained in Vietnamese, don't include source code just explain the logic in natural language and domain terms
+- Can you please check the actual code the whole file,follow every execution path (nestedly into other files, methods) to add all detail logic for section "1.1" (don't be hallucinated). Don't update the file, just give me the detail content in markdown format and should be explained in Vietnamese, don't include source code just explain the logic in natural language and domain terms
 
 ## Add more detail description for logic
-Can you please elaborate more about the items in section 1.8 "Xác thực lô/hạn sử dụng" by read the actual code line by line (don't be hallucinated) and keep others section intact
+- Can you please elaborate more about the items in section 1.8 "Xác thực lô/hạn sử dụng" by read the actual code line by line (don't be hallucinated) and keep others section intact
 
 
 
 # Prompt generate test cases
 Please looks at the files, don't hallucination and read the files throughout, and help me write robot framwork test case for the selected code that
-
 - cover all branching logic
 - validate response data and input data
 - test specification is in gherkin format (given when then)
 - using the api endpoint https://api-man.kvpos.com:8443 to call api
-
 
 # Prompt implement test cases
 You are a senior .net developer and master robot framework, gherkin language, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination,generate all api test cases for section 1 "Kiểm tra và xác thực đầu vào" without using mock
@@ -53,3 +54,12 @@ You are a senior .net developer and master robot framework, gherkin language, yo
 - Use pattern init standard data and create more test case data derived from the standard data for simple data management
 - Please write the test case and keywords in Vietnamese
 - Test case description must have describe the test logic with example data
+
+You are a senior .net developer and master robot framework, gherkin language, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination,generate all api test cases for section "**Đánh giá khuyến mãi, voucher và điểm thưởng**" in the @CreateInvoiceAPILogic_Restructured.md  for CreateInvoice method of the @InvoiceApi.cs  that
+- Don't be lazy, miss one case is a serious problem. 
+- Follow the @APIStructure.md  file to understand how API strtucture to read code and generate test case with request body and SQL query for verification.
+- Must strictly all rules, best practices, example in @APITestDesign.md file
+
+# Prompt update test data file to use common data
+- Please follow the rule in @APITestDesign.md to reuse common data. 
+- Please check for undefined variable in this file and search it in @CommonData.robot . If you don't find it please use mcp to create a new record for it in the database and get back its value and use to define it in CommonData.robot

@@ -388,3 +388,137 @@ RT-PR-017: Tạo hóa đơn khuyến mãi hàng hóa giá bán theo số lượn
 #     Status Should Be    200
 #     Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 20000 Đồng
 #     Hóa Đơn Có 1 Khuyến Mãi Được Áp Dụng 
+
+# =====================================================================
+# Đánh giá khuyến mãi, voucher và điểm thưởng
+# =====================================================================
+
+RT-PR-018: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
+    ...                Khuyến mãi: Tặng 10 điểm thưởng (Type 12 - InvoicePointGift)
+    ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
+    ...                Kỳ vọng: Hóa đơn được tạo với tổng 20 điểm (10 điểm cơ bản + 10 điểm khuyến mãi)
+    [Tags]    promotion    reward_point    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Điểm Thưởng Hóa Đơn 20
+    And Thông Tin Khuyến Mãi Có Loại 12
+
+RT-PR-019: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
+    ...                Khuyến mãi: Tặng 20 điểm thưởng cho sản phẩm cụ thể (Type 13 - ProductPointGift)
+    ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
+    ...                Kỳ vọng: Hóa đơn được tạo với tổng 30 điểm (10 điểm cơ bản + 20 điểm khuyến mãi)
+    [Tags]    promotion    reward_point    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sản Phẩm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Điểm Thưởng Hóa Đơn 30
+    And Thông Tin Khuyến Mãi Có Loại 13
+
+RT-PR-020: Tạo hóa đơn với khuyến mãi tặng voucher
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng voucher
+    ...                Khuyến mãi: Tặng voucher trị giá 50,000đ (Type 9 - InvoiceVoucherGift)
+    ...                Kỳ vọng: Hóa đơn được tạo thành công và có voucher kèm theo
+    ...                Voucher được tạo với giá trị 50,000đ
+    [Tags]    promotion    gift_voucher    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Voucher Trị Giá 50000 Đồng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Voucher Được Tạo Với Giá Trị 50000 Đồng
+    And Thông Tin Khuyến Mãi Có Loại 9
+
+RT-PR-021: Tạo hóa đơn với voucher không cho phép kết hợp với khuyến mãi
+    [Documentation]    Kiểm tra khi tạo hóa đơn sử dụng voucher không cho phép kết hợp với khuyến mãi
+    ...                Voucher: Không cho phép kết hợp với khuyến mãi (AllowMergeWithOtherPromotion = false)
+    ...                Khuyến mãi: Giảm giá 10,000đ
+    ...                Kỳ vọng: API trả về lỗi không thể kết hợp voucher với khuyến mãi khác
+    [Tags]    promotion    voucher    negative    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 400
+    And Response Phải Có Lỗi "Voucher không thể kết hợp với khuyến mãi khác"
+
+RT-PR-022: Tạo hóa đơn với khuyến mãi tặng voucher theo sản phẩm
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng voucher theo sản phẩm
+    ...                Khuyến mãi: Tặng voucher trị giá 50,000đ khi mua sản phẩm cụ thể (Type 10 - ProductVoucherGift)
+    ...                Kỳ vọng: Hóa đơn được tạo thành công và có voucher kèm theo
+    ...                Voucher được tạo với giá trị 50,000đ
+    [Tags]    promotion    gift_voucher    product    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Voucher Theo Sản Phẩm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Quà Tặng Voucher Theo Sản Phẩm ${INVOICE_ID} 50000 1
+    And Thông Tin Khuyến Mãi Có Loại 10
+
+RT-PR-023: Tạo hóa đơn với khuyến mãi có giới hạn sử dụng
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi có giới hạn sử dụng cho khách hàng
+    ...                Khuyến mãi: Giảm giá 10,000đ với giới hạn sử dụng (LimitPromotionUsage = true)
+    ...                Khách hàng: Đã vượt quá giới hạn sử dụng khuyến mãi
+    ...                Kỳ vọng: API trả về lỗi khách hàng đã vượt quá giới hạn sử dụng
+    [Tags]    promotion    limit_usage    negative    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giới Hạn Sử Dụng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 400
+    And Response Phải Có Lỗi "Khách hàng đã vượt quá giới hạn sử dụng khuyến mãi"
+
+RT-PR-024: Tạo hóa đơn với kết hợp nhiều loại khuyến mãi
+    [Documentation]    Kiểm tra tạo hóa đơn kết hợp nhiều loại khuyến mãi cùng lúc:
+    ...                - Khuyến mãi 1: Giảm giá cố định 10,000đ
+    ...                - Khuyến mãi 2: Tặng điểm thưởng 10 điểm
+    ...                - Khuyến mãi 3: Tặng voucher 30,000đ
+    ...                Kỳ vọng: Hóa đơn được tạo với chiết khấu, điểm thưởng và voucher đúng
+    [Tags]    promotion    multiple    complex    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kết Hợp Nhiều Loại Khuyến Mãi
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 10000 Đồng
+    And Xác Thực Điểm Thưởng Hóa Đơn 20
+    And Voucher Được Tạo Với Giá Trị 30000 Đồng
+    And Hóa Đơn Có 3 Khuyến Mãi Được Áp Dụng
+
+RT-PR-025: Tạo hóa đơn với voucher có giới hạn chiết khấu tối đa
+    [Documentation]    Kiểm tra tạo hóa đơn với voucher có giới hạn chiết khấu tối đa
+    ...                Voucher: Giá trị tối đa (MaxValue) = 15,000đ, tỷ lệ chiết khấu 20%
+    ...                Tổng tiền: 100,000đ (chiết khấu tính ra là 20,000đ nhưng sẽ chỉ được áp dụng 15,000đ)
+    ...                Kỳ vọng: Chiết khấu voucher được giới hạn ở mức 15,000đ
+    [Tags]    promotion    voucher    max_value    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giới Hạn Chiết Khấu Voucher
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Chiết Khấu Voucher Hóa Đơn ${INVOICE_ID} 15000
+
+RT-PR-026: Tạo hóa đơn với ưu tiên khuyến mãi theo giá trị lớn nhất
+    [Documentation]    Kiểm tra tạo hóa đơn với các khuyến mãi chỉ áp dụng theo giá trị lớn nhất
+    ...                Khuyến mãi 1: Giảm giá 10,000đ
+    ...                Khuyến mãi 2: Giảm giá 20,000đ
+    ...                Chế độ ưu tiên: HIGHEST_VALUE (chỉ áp dụng khuyến mãi có giá trị lớn nhất)
+    ...                Kỳ vọng: Hệ thống chọn khuyến mãi 2 (20,000đ)
+    [Tags]    promotion    priority    highest_value    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chế Độ Ưu Tiên Giá Trị Lớn Nhất
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 20000 Đồng
+    And Hóa Đơn Có 1 Khuyến Mãi Được Áp Dụng
+
+RT-PR-027: Tạo hóa đơn với khuyến mãi có điều kiện về số lượng sản phẩm tối thiểu
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi yêu cầu số lượng sản phẩm tối thiểu
+    ...                Khuyến mãi: Giảm giá 20% cho sản phẩm khi mua từ 5 sản phẩm trở lên
+    ...                Kỳ vọng: Hóa đơn được tạo với giảm giá đúng theo số lượng sản phẩm
+    [Tags]    promotion    min_quantity    api    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Số Lượng Tối Thiểu
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Sản Phẩm ${product_id_promotion} Có Chiết Khấu Khuyến Mãi 20%
+    And Thông Tin Khuyến Mãi Có Loại 7 
