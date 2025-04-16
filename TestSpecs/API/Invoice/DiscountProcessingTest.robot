@@ -11,14 +11,6 @@ ${DB_CONNECTED}    ${TRUE}
 Suite Setup
     [Documentation]    Setup for the test suite
     Set Suite Variable    ${SUITE_NAME}    DiscountProcessingTest
-
-Get From Response
-    [Documentation]    Extrait une valeur de la réponse JSON
-    [Arguments]    ${property_name}
-    ${response_json}=    Evaluate    json.loads('''${RESPONSE.content.decode('utf-8')}''')
-    ${value}=    Get From Dictionary    ${response_json}    ${property_name}
-    RETURN    ${value}
-
 *** Test Cases ***
 RT-DP-001 Tạo hóa đơn với giảm giá cơ bản
     [Documentation]    Kiểm tra tạo hóa đơn với giảm giá cơ bản:
