@@ -188,5 +188,9 @@ ${PROMOTION_ID_FIXED}            1002    # ID Promotion for Fixed Discount
 ${PROMOTION_ID_FIXED_2}          1003    # ID Promotion for Fixed Discount 2
 ${PROMOTION_ID_VOUCHER}          1004    # ID Promotion for Voucher Gift
 ${PROMOTION_ID_MIN_QUANTITY}     1005    # ID Promotion for Min Quantity
-${VOUCHER_CAMPAIGN_ID}           101     # Voucher Campaign ID
+${VOUCHER_CAMPAIGN_ID}           1000000024     # Voucher Campaign ID
 ${VOUCHER_ID}                    201     # Voucher ID
+
+# Voucher Campaign IDs for voucher payment tests
+${VOUCHER_CAMPAIGN_ID_1}    1000000024     # Voucher Campaign with 100,000đ value
+${VOUCHER_CAMPAIGN_ID_2}    102     # Voucher Campaign with 50,000đ value
