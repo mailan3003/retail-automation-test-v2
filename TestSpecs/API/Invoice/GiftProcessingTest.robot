@@ -80,16 +80,16 @@ RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Quà Tặng Voucher    ${INVOICE_ID}    100000    1
+    And Xác Thực Quà Tặng Voucher  ${INVOICE_ID}       
+    And Thông Tin Khuyến Mãi Có Loại 9
 
 RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng voucher theo sản phẩm cụ thể
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
     ...    - Chi tiết sản phẩm:
-    ...      + ProductId=${PRODUCT_1}, Quantity=1, Price=100,000đ
+    ...      + ProductCode=HKM008, Quantity=1, Price=1000,000đ
     ...    - Khuyến mãi: ProductVoucherGift (loại 10)
-    ...    - Voucher: giá trị=50,000đ, số lượng=1, hạn sử dụng=30 ngày
     ...    - Logic xử lý: 
     ...      + InvoiceService.ProcessPromotionGift() 
     ...      + VoucherService.CreateVoucher() tạo voucher mới
@@ -97,34 +97,36 @@ RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản ph�
     ...    - Status code: 200
     ...    - Voucher mới được tạo với giá trị 50,000đ
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Voucher Theo Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Voucher Theo Sản Phẩm    ${INVOICE_ID}    50000    1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_4} Hàng Hóa HKM008 Quà Tặng Voucher
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Quà Tặng Voucher    ${INVOICE_ID}  
+    And Thông Tin Khuyến Mãi Có Loại 10
 
 RT-GP-005 Tạo hóa đơn thành công với quà tặng điểm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng điểm theo hóa đơn
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
-    ...    - Tổng tiền: 100,000đ
+    ...    - Tổng tiền: 100,0000đ
     ...    - Khuyến mãi: InvoicePointGift (loại 4)
-    ...    - Điểm tặng: 20
+    ...    - Điểm tặng: 10
     ...    - Logic xử lý: 
     ...      + InvoiceService.CalculatePromotionPoint() 
     ...      + InvoiceService.ProcessPromotionGift()
-    ...    - Điểm cơ bản từ hóa đơn: 10 điểm
-    ...    - Điểm từ khuyến mãi: 20 điểm
-    ...    - Tổng điểm: 30 điểm
+    ...    - Điểm cơ bản từ hóa đơn: 10 điểm. phần này sẽ đc nếu theo thiết lập điểm theo hóa đơn nếu tích điểm theo hàng hóa thì hàng hóa tích điểm mới đc áp điểm
+    ...    - Điểm từ khuyến mãi: 10 điểm
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Điểm thưởng khuyến mãi được lưu trong bảng InvoicePromotion với giá trị 20
-    ...    - Tổng điểm hóa đơn là 30 điểm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Điểm
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Điểm    ${INVOICE_ID}    20
+    ...    - Điểm thưởng khuyến mãi được lưu trong bảng InvoicePromotion với giá trị 10
+    ...    - Tổng điểm hóa đơn là 10 điểm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_5} Tặng Điểm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Quà Tặng Điểm    ${INVOICE_ID}    10
+    And Thông Tin Khuyến Mãi Có Loại 4
+    And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
 RT-GP-006 Tạo hóa đơn thành công với quà tặng điểm theo sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng điểm theo sản phẩm cụ thể
@@ -141,11 +143,13 @@ RT-GP-006 Tạo hóa đơn thành công với quà tặng điểm theo sản ph�
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Điểm thưởng khuyến mãi được lưu trong bảng InvoicePromotion với giá trị 15
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Điểm Theo Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Quà Tặng Điểm Theo Sản Phẩm    ${INVOICE_ID}    15
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_6} Tặng Điểm Theo Sản Phẩm HKM009 
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Quà Tặng Điểm    ${INVOICE_ID}    10
+    And Thông Tin Khuyến Mãi Có Loại 7
+    And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
 RT-GP-007 Tạo hóa đơn thành công với nhiều quà tặng cùng lúc
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều loại quà tặng cùng lúc
@@ -153,20 +157,23 @@ RT-GP-007 Tạo hóa đơn thành công với nhiều quà tặng cùng lúc
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
     ...    - Tổng tiền: 100,000đ
     ...    - Khuyến mãi 1: InvoiceProductGift (loại 2) - Tặng sản phẩm PRODUCT_2
-    ...    - Khuyến mãi 2: InvoicePointGift (loại 4) - Tặng 20 điểm
+    ...    - Khuyến mãi 2: InvoicePointGift (loại 4) - Tặng 10 điểm
     ...    - Logic xử lý: 
     ...      + InvoiceService.ProcessPromotionGift() xử lý cả 2 loại quà tặng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn
     ...    - Điểm thưởng khuyến mãi được thêm vào hóa đơn
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Quà Tặng
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Nhiều Quà Tặng    ${INVOICE_ID}    ${PRODUCT_2}    20
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID} Tặng Sản Phẩm HKM007 Và Khuyến Mãi Tặng điểm ${PROMOTION_GIFT_ID_5}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id} Với Số Lượng 3
+    And Xác Thực Quà Tặng Điểm Theo ${sale_promotion_id_point} Với Điểm 10
+    And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
-RT-GP-008 Tạo hóa đơn thành công với quà tặng sản phẩm số lượng lớn
+
+RT-GP-008 Tạo hóa đơn thành công với quà tặng nhiều sản phẩm khác nhau
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng sản phẩm số lượng lớn
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT002"
@@ -178,11 +185,12 @@ RT-GP-008 Tạo hóa đơn thành công với quà tặng sản phẩm số lư�
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với số lượng=3
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Quà Tặng Số Lượng Lớn    3
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Số Lượng Quà Tặng    ${INVOICE_ID}    ${PRODUCT_2}    3
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_ID} Tặng 2 Sản Phẩm HTKM03 Và 1 Sản phẩm HTKM04 
+    When Gửi Yêu Cầu Tạo Hóa Đơn 
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id} Với Số Lượng 2
+    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id_1} Với Số Lượng 1
 
 RT-GP-009 Tạo hóa đơn thành công với nhiều voucher quà tặng
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều voucher quà tặng
@@ -198,8 +206,9 @@ RT-GP-009 Tạo hóa đơn thành công với nhiều voucher quà tặng
     ...    - Status code: 200
     ...    - 3 voucher mới được tạo với giá trị 20,000đ mỗi voucher
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Voucher    3
-    When Gửi Yêu Cầu Tạo Hóa Đơn Với Quà Tặng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_9} Với Nhiều Voucher
+    When Gửi Yêu Cầu Tạo Hóa Đơn 
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Xác Thực Số Lượng Voucher    ${INVOICE_ID}    3 
+    And Thông Tin Khuyến Mãi Có Loại 9
