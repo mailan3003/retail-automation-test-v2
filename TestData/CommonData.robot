@@ -192,6 +192,8 @@ ${PAYMENT_COD}     COD
 &{CASH_PAYMENT}
 ...    Method=Cash
 ...    Amount=100000
+${RECEIPT_PREFIX}    TT
+${BANK_WALLET_ID}    1000000046
 
 &{CARD_PAYMENT}
 ...    Method=Card

@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API xử lý thông tin giao hàng
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot        
 Resource          ../../TestData/Invoice/DeliveryProcessingData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot

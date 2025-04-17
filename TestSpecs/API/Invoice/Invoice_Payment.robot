@@ -25,6 +25,7 @@ RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     ...    - Ngày tạo phiếu thu là ngày hiện tại
     ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
     ...    - Công nợ của hóa đơn = 0
+    [Tags]    payment      smoke   apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -48,6 +49,7 @@ RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     ...    - Thanh toán bằng thẻ được ghi nhận trong DB
     ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
     ...    - Công nợ của hóa đơn = 0
+    [Tags]    payment      smoke   apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CARD} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -58,6 +60,7 @@ RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán bằng chuyển khoản
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -80,6 +83,7 @@ RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với nhiều phương thức thanh toán
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -102,6 +106,7 @@ RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-005 Tạo phiếu thu với thanh toán thừa
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thừa tính vào công nợ khách hàng 
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -123,6 +128,7 @@ RT-RC-005 Tạo phiếu thu với thanh toán thừa
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-006 Tạo phiếu thu với thanh toán thiếu
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thiếu
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -193,6 +199,7 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
 #     And Nội dung phản hồi trả về phải tồn tại Id
 #     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_PAYMENT}
 RT-RC-008 Tạo Hóa đơn với thanh toán bằng wallet với tài khoản
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng wallet với tài khoản
     ...    - Dữ liệu đầu vào:
     ...    - Tổng tiền hóa đơn = 100,000đ
@@ -233,6 +240,7 @@ RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm
     ...    - Tiền nợ = 50,000đ
     ...    - Trạng thái thanh toán = 2
     ...    - Khách hàng sử dụng điểm tương ứng (giả sử 50 điểm)
+    [Tags]    payment      smoke   apiinvoice
     Given Chuẩn Bị Hóa Đơn Thanh Toán Số Tiền 50000 Sử Dụng Điểm 50
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -243,6 +251,7 @@ RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm
 
 
 RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -263,6 +272,7 @@ RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     And Xác Thực Công Nợ Của Hóa Đơn 100000
 
 RT-RC-011 Tạo phiếu thu với số tiền lớn
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với số tiền lớn
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -283,6 +293,7 @@ RT-RC-011 Tạo phiếu thu với số tiền lớn
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức khác nhau
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán một phần bằng các phương thức khác nhau
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -305,6 +316,7 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     And Xác Thực Công Nợ Của Hóa Đơn 40000 
 
 RT-RC-009 Tạo Hóa đơn với thanh toán bằng voucher
+    [Tags]    payment      smoke   apiinvoice
     [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng voucher
     ...    - Dữ liệu đầu vào:
     ...    - Tổng tiền hóa đơn = 500,000đ
@@ -333,7 +345,7 @@ RT-RC-013 Kiểm tra thanh toán với số tiền 0 đồng vẫn tạo phiếu
     ...    - Phiếu thu vẫn được tạo với số tiền 0đ
     ...    - Tổng tiền thanh toán của hóa đơn = 0đ
     ...    - Công nợ của hóa đơn = 100,000đ
-    [Tags]    payment    AIGenerated
+    [Tags]    payment    AIGenerated   
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 0
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -354,7 +366,7 @@ RT-RC-014 Thanh toán bằng điểm thưởng kết hợp với tiền mặt
     ...    - Thanh toán bằng điểm được ghi nhận số tiền 25,000đ
     ...    - Thanh toán bằng tiền mặt được ghi nhận số tiền 75,000đ
     ...    - Công nợ của hóa đơn = 0
-    [Tags]    payment    point    combined    AIGenerated
+    [Tags]    payment    point    cash    apiinvoice    smoke
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Điểm Thưởng Và Tiền Mặt
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
