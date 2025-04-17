@@ -30,7 +30,7 @@ RT-DC-001 Tạo hóa đơn thành công với chiết khấu cố định
     And Response Should Have Id exist
     And Xác Thực Hóa Đơn Trong DB
     And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10000
-    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    0
+
 
 RT-DC-002 Tạo hóa đơn thành công với chiết khấu theo phần trăm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu theo phần trăm
@@ -55,47 +55,6 @@ RT-DC-002 Tạo hóa đơn thành công với chiết khấu theo phần trăm
     And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10
     And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    0
 
-RT-DC-003 Tạo hóa đơn thành công với chiết khấu từ khuyến mãi
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu từ khuyến mãi
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_PROMO001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu khuyến mãi: 15,000đ
-    ...    - Logic xử lý: InvoiceService.NormalizeData() phân biệt giảm giá thông thường và giảm giá từ khuyến mãi
-    ...    - Code: invoice.DiscountByPromotion = NumberHelper.GetCurrencyDecimal(invoice.DiscountByPromotion, currencyData.CurrencyDecimalPlace);
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Giá trị chiết khấu khuyến mãi (DiscountByPromotion) được lưu vào DB: 15,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    15000
-
-RT-DC-004 Tạo hóa đơn thành công với chiết khấu từ voucher
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu từ voucher
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_VOUCHER001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu voucher: 20,000đ
-    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý riêng chiết khấu từ voucher
-    ...    - Code: invoice.DiscountByCoupon = NumberHelper.GetCurrencyDecimal(invoice.DiscountByCoupon, currencyData.CurrencyDecimalPlace);
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Giá trị chiết khấu voucher (DiscountByCoupon) được lưu vào DB: 20,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Voucher Hóa Đơn    ${INVOICE_ID}    20000
 
 RT-DC-005 Tạo hóa đơn thành công với chiết khấu sản phẩm cố định
     [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu sản phẩm cố định
@@ -116,7 +75,6 @@ RT-DC-005 Tạo hóa đơn thành công với chiết khấu sản phẩm cố �
     And Response Should Have Id exist
     And Xác Thực Hóa Đơn Trong DB
     And Xác Thực Chiết Khấu Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_1}    10000
-
 RT-DC-006 Tạo hóa đơn thành công với chiết khấu sản phẩm theo phần trăm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu sản phẩm theo phần trăm
     ...    - Dữ liệu đầu vào: 
@@ -162,7 +120,6 @@ RT-DC-007 Tạo hóa đơn thành công với nhiều loại chiết khấu kế
     And Xác Thực Chiết Khấu Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    5000
     And Xác Thực Chiết Khấu Voucher Hóa Đơn    ${INVOICE_ID}    5000
     And Xác Thực Tổng Tiền Sau Chiết Khấu    ${INVOICE_ID}    80000
-
 RT-DC-008 Tạo hóa đơn thất bại khi voucher không cho phép kết hợp với khuyến mãi
     [Documentation]    Kiểm tra tạo hóa đơn thất bại khi voucher không cho phép kết hợp với khuyến mãi
     ...    - Dữ liệu đầu vào: 

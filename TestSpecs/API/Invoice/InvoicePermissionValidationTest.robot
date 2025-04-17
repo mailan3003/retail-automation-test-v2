@@ -130,3 +130,69 @@ RT-INPV-015 Kiểm tra validate ngày tạo hóa đơn phải nhỏ hơn hoặc 
     When Gửi yêu cầu tạo hóa đơn với token admin
     Then Response Status Code Should Be 400
     And Response Should Have Error "Ngày tạo hóa đơn phải nhỏ hơn hoặc bằng ngày hiện tại" 
+    
+
+RT-INPV-016 Kiểm tra quyền phát hành hóa đơn điện tử
+    [Documentation]    Kiểm tra quyền phát hành hóa đơn điện tử với tài khoản không có quyền
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, tài khoản không có quyền phát hành hóa đơn điện tử
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoicePermission kiểm tra quyền phát hành
+    ...    - Kỳ vọng: Trả về lỗi 403 và thông báo không có quyền phát hành
+    [Tags]    invoice    validation    permission    einvoice
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    When Gửi yêu cầu tạo hóa đơn với token user không có quyền phát hành
+    Then Response Status Code Should Be 403
+    And Response Should Have Error "Bạn không có quyền phát hành hóa đơn điện tử"
+
+RT-INPV-017 Kiểm tra xác thực thông tin tài khoản VNPT eInvoice
+    [Documentation]    Kiểm tra xác thực thông tin tài khoản VNPT eInvoice khi phát hành hóa đơn điện tử
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, cấu hình VNPT thiếu username
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceProvider kiểm tra thông tin cấu hình
+    ...    - Kỳ vọng: Trả về lỗi 400 và thông báo thiếu thông tin đăng nhập
+    [Tags]    invoice    validation    einvoice    vnpt
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceProvider=1
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Thiếu thông tin đăng nhập VNPT eInvoice"
+
+RT-INPV-018 Kiểm tra xác thực template hóa đơn điện tử
+    [Documentation]    Kiểm tra xác thực template hóa đơn điện tử khi phát hành
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, template không tồn tại
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceTemplate kiểm tra template
+    ...    - Kỳ vọng: Trả về lỗi 404 và thông báo không tìm thấy template
+    [Tags]    invoice    validation    einvoice    template
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceTemplateNo=INVALID_TEMPLATE
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 404
+    And Response Should Have Error "Không tìm thấy mẫu hóa đơn điện tử"
+
+RT-INPV-019 Kiểm tra xác thực trạng thái hóa đơn khi phát hành lại
+    [Documentation]    Kiểm tra xác thực trạng thái hóa đơn khi phát hành lại hóa đơn điện tử
+    ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành thành công
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceStatus kiểm tra trạng thái
+    ...    - Kỳ vọng: Trả về lỗi 400 và thông báo hóa đơn đã phát hành
+    [Tags]    invoice    validation    einvoice    status
+    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_SAME_UUID}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceStatus=1
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Hóa đơn đã được phát hành thành công"
+
+RT-INPV-020 Kiểm tra quyền hủy hóa đơn điện tử
+    [Documentation]    Kiểm tra quyền hủy hóa đơn điện tử với tài khoản không có quyền
+    ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành, tài khoản không có quyền hủy
+    ...    - Logic kiểm tra: InvoiceService.ValidateCancelEInvoicePermission kiểm tra quyền
+    ...    - Kỳ vọng: Trả về lỗi 403 và thông báo không có quyền hủy
+    [Tags]    invoice    validation    permission    einvoice    cancel
+    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_VOID_CODE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceStatus=1
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    Status=3
+    When Gửi yêu cầu cập nhật hóa đơn với token user không có quyền hủy
+    Then Response Status Code Should Be 403
+    And Response Should Have Error "Bạn không có quyền hủy hóa đơn điện tử"

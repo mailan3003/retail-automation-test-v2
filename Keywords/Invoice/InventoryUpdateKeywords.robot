@@ -1,17 +1,26 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần cập nhật tồn kho
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/InventoryUpdateData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${data}=    Evaluate    json.loads('''${INVENTORY_UPDATE_STANDARD_DATA}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Mã ${ma_hh} có Số Lượng ${quantity}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    Set Test Variable    ${product_id}    ${result[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+        ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Có Số Lượng ${quantity}
     ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
@@ -27,20 +36,35 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Combo
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${SERIAL_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial ${ma_hh} Với Serial ${serial_number}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    Set Test Variable    ${product_id}    ${result[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=     Deep Copy     ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsLotSerialControl   ${true}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    SerialNumbers   ${serial_number}
+        ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${BATCH_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với ${batch_name} số lượng ${quantity}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${query_2}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE BatchName = ? AND ProductId = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    ${result_batch}=    Fetch One    ${query_2}    ${batch_name}    ${result[0]}
+    Set Test Variable    ${product_id}    ${result[0]} 
+    Set Test Variable    ${product_batch_id}    ${result_batch[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsBatchExpireControl   ${true}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductBatchExpireId   ${product_batch_id}
+     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Đơn Vị Chuyển Đổi
     ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
     ${details}=    Create List    ${CONVERSION_PRODUCT_DETAIL}
@@ -65,11 +89,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    ${invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["Id"]}    0
-    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
 Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
@@ -89,7 +108,7 @@ Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị
     Should Be Equal As Numbers    ${new_onhand}    ${expected_onhand}    Số lượng tồn kho không giảm đúng
 
 Xác Thực Lịch Sử Tồn Kho Hóa Đơn Với ${quantity} Đơn Vị Của ${product_id}
-    ${query}=    Set Variable    SELECT DocumentId, DocumentType, ProductId, Value FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 3
+    ${query}=    Set Variable    SELECT DocumentId, DocumentType, ProductId, Quantity FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 1
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy lịch sử tồn kho
     Should Be Equal As Numbers    ${result[0]}    ${INVOICE_ID}    ID hóa đơn không khớp
@@ -117,16 +136,16 @@ Xác Thực Cập Nhật Số Lượng Đặt Hàng
 
 Xác Thực Cập Nhật Trạng Thái Serial
     [Arguments]    ${serial_number}
-    ${query}=    Set Variable    SELECT Status, DocumentId, DocumentType FROM Serial WHERE SerialNumber = ?
+    ${query}=    Set Variable    SELECT Status, DocumentId, DocumentType FROM ProductSerial WHERE SerialNumber = ?
     ${result}=    Fetch One    ${query}    ${serial_number}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin serial
-    Should Be Equal As Numbers    ${result[0]}    2    Trạng thái serial không phải là Sold
+    Should Be Equal As Numbers    ${result[0]}    0    Trạng thái serial không phải là Sold
     Should Be Equal As Numbers    ${result[1]}    ${INVOICE_ID}    ID hóa đơn không khớp
-    Should Be Equal As Numbers    ${result[2]}    3    Loại chứng từ không phải là Invoice
+    Should Be Equal As Numbers    ${result[2]}    1    Loại chứng từ không phải là Invoice
 
 Xác Thực Cập Nhật Số Lượng Lô
     [Arguments]    ${batch_id}    ${quantity}
-    ${query}=    Set Variable    SELECT BatchExpireId, Value FROM BatchExpireTracking WHERE DocumentId = ? AND BatchExpireId = ? AND DocumentType = 3
+    ${query}=    Set Variable    SELECT ProductBatchExpireId, Quantity FROM BatchExpireTracking WHERE DocumentId = ? AND ProductBatchExpireId = ? AND DocumentType = 1
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${batch_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy lịch sử lô
     Should Be Equal As Numbers    ${result[0]}    ${batch_id}    ID lô không khớp
@@ -134,9 +153,9 @@ Xác Thực Cập Nhật Số Lượng Lô
     Should Be Equal As Numbers    ${result[1]}    ${expected_value}    Giá trị thay đổi số lượng lô không khớp
 
 Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo
-    [Arguments]    ${combo_id}
+    [Arguments]    ${combo_id}   ${amount}
     # Lấy danh sách sản phẩm con trong combo
-    ${query}=    Set Variable    SELECT ChildProductId, Quantity FROM ComboProduct WHERE ComboId = ?
+    ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ?
     ${results}=    Fetch All    ${query}    ${combo_id}
     Should Not Be Equal    ${results}    None    Không tìm thấy thông tin sản phẩm con trong combo
     
@@ -151,12 +170,12 @@ Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo
         Should Not Be Equal    ${current_onhand}    None    Không tìm thấy thông tin tồn kho sản phẩm con
         
         # Lấy lịch sử tồn kho để kiểm tra
-        ${query}=    Set Variable    SELECT Value FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 3
+        ${query}=    Set Variable    SELECT Quantity FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 7
         ${tracking}=    Fetch One    ${query}    ${INVOICE_ID}    ${child_product_id}
         Should Not Be Equal    ${tracking}    None    Không tìm thấy lịch sử tồn kho sản phẩm con
         
         # Kiểm tra giá trị âm (xuất kho)
-        ${expected_value}=    Evaluate    -${child_quantity}
+        ${expected_value}=    Evaluate    -${child_quantity}*${amount}
         Should Be Equal As Numbers    ${tracking[0]}    ${expected_value}    Giá trị thay đổi tồn kho sản phẩm con không khớp
     END
 
@@ -166,7 +185,7 @@ Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi
     ${expected_decrease}=    Evaluate    ${quantity} * ${conversion_value}
     
     # Kiểm tra số lượng trong lịch sử tồn kho
-    ${query}=    Set Variable    SELECT Value FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 3
+    ${query}=    Set Variable    SELECT Quantity FROM InventoryTracking WHERE DocumentId = ? AND ProductId = ? AND DocumentType = 1
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy lịch sử tồn kho
     ${expected_value}=    Evaluate    -${expected_decrease}
@@ -183,22 +202,27 @@ Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi
 
 # Keywords với embedded parameters
 Tồn kho sản phẩm ${product_id} đã giảm ${quantity} đơn vị
-    Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị    ${product_id}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị    ${product_id}
 
 Lịch sử tồn kho được tạo với số lượng ${quantity} đơn vị cho sản phẩm ${product_id}
-    Xác Thực Lịch Sử Tồn Kho Hóa Đơn Với ${quantity} Đơn Vị Của ${product_id}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Lịch Sử Tồn Kho Hóa Đơn Với ${quantity} Đơn Vị Của ${product_id}
 
 Số lượng đặt hàng của sản phẩm ${product_id} được giảm ${quantity} đơn vị
     Xác Thực Cập Nhật Số Lượng Đặt Hàng    ${product_id}    ${quantity}
 
-Sản phẩm con trong combo ${combo_id} đã giảm tồn kho
-    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo    ${combo_id}
+Sản phẩm con trong combo ${combo_id} đã giảm tồn kho ${amount} lần số lượng
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo    ${combo_id}    ${amount}
 
 Serial ${serial_number} chuyển sang trạng thái đã bán
-    Xác Thực Cập Nhật Trạng Thái Serial    ${serial_number}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Trạng Thái Serial    ${serial_number}
 
 Số lượng lô ${batch_id} đã giảm ${quantity} đơn vị
-    Xác Thực Cập Nhật Số Lượng Lô    ${batch_id}    ${quantity}
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Số Lượng Lô    ${batch_id}    ${quantity}
 
 Tồn kho sản phẩm ${product_id} đã giảm theo đơn vị chuyển đổi ${quantity} x ${conversion_value}
-    Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi    ${product_id}    ${quantity}    ${conversion_value} 
+    Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Đơn Vị Chuyển Đổi    ${product_id}    ${quantity}    ${conversion_value} 
+
+
+Tear down Delete Hóa Đơn
+    Delete Data    /invoices/${INVOICE_ID}?IsVoidPayment=true
+

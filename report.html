@@ -5,60 +5,16 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="Robot Framework 7.2.2 (Python 3.13.1 on win32)" name="Generator">
+<meta content="Robot Framework 6.1.1 (Python 3.7.2 on win32)" name="Generator">
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
-<style media="all">
-:root {
-    --text-color: black;
-    --background-color: white;
-    --primary-color: #ddd;
-    --secondary-color: #ccc;
-    --link-color: #15c;
-    --link-hover-color: #61c;
-    --highlight-color: #eee;
-    --target-color: #f9f9f9;
-    --pass-color: #97bd61;
-    --fail-color: #ce3e01;
-    --warn-color: #fed84f;
-    --pass-link-color: #098a09;
-    --warn-link-color: #927201;
-    --fail-link-color: #ce3e01;
-    --ascending-icon: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlBWnFr3cnIr0WQOyBmvzp13CpxQAOw==);
-    --descending-icon: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlAWnBr3cnIr0WROyDmvzp13CpxQAOw==);
-}
-@media (prefers-color-scheme: dark) {
-    :root {
-        color-scheme: dark;
-    }
-}
-[data-theme="dark"] {
-    --text-color: #e2e1d7;
-    --background-color: #1c2227;
-    --primary-color: #26373b;
-    --secondary-color: #424f5a;
-    --link-color: #8cc4ff;
-    --link-hover-color: #bb86fc;
-    --highlight-color: #002b36;
-    --target-color: #1a252e;
-    --pass-link-color: #97bd61;
-    --warn-link-color: #fed84f;
-    --fail-link-color: #ff9b8f;
-    --ascending-icon: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAJAgMAAACZCj6+AAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAlQTFRFAAAAfn5+////f/cqYgAAAAN0Uk5TAP//RFDWIQAAACdJREFUeJxjYHBgYGAMYGBgDWFgEA1lAAOtVQwMXCsYGJgWADkNDAA78QP9oKr7vwAAAABJRU5ErkJggg==);
-    --descending-icon: url(data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAJAgMAAACZCj6+AAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAlQTFRFAAAA////fn5+K6jOaAAAAAN0Uk5TAP//RFDWIQAAACdJREFUeJxjYHBgYGAMYGBgDWFgEA1lAAOtVQwMXCsYGJgWADkNDAA78QP9oKr7vwAAAABJRU5ErkJggg==);
-}
+<style media="all" type="text/css">
 /* Generic and misc styles */
 body {
     font-family: Helvetica, sans-serif;
     font-size: 0.8em;
-    color: black; /* Fallback value */
-    color: var(--text-color);
+    color: black;
     padding: 6px;
-    background: white; /* Fallback value */
-    background: var(--background-color);
-    margin-left: 15px;
-}
-body[theme-toggled] {
-    transition: background 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
+    background: white;
 }
 table {
     table-layout: fixed;
@@ -73,37 +29,20 @@ br {
     mso-data-placement: same-cell; /* maintain line breaks in Excel */
 }
 hr {
-    background: #ccc; /* Fallback value */
-    background: var(--secondary-color);
+    background: #ccc;
     height: 1px;
     border: 0;
 }
 a, a:link, a:visited {
     text-decoration: none;
-    color: #15c; /* Fallback value */
-    color: var(--link-color);
+    color: #15c;
 }
 a > img {
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: #15c !important; /* Fallback value */
-    border-color: var(--link-color) !important;
+    border: 1px solid #15c !important;
 }
 a:hover, a:active {
     text-decoration: underline;
-    color: #61c; /* Fallback value */
-    color: var(--link-hover-color);
-}
-select {
-    background-color: white; /* Fallback value */
-    background-color: var(--background-color);
-    color: black; /* Fallback value */
-    color: var(--text-color);
-    border-width: 2px;
-    border-style: solid;
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
-    border-radius: 4px;
+    color: #61c;
 }
 .parent-name {
     font-size: 0.7em;
@@ -116,7 +55,7 @@ select {
 #header {
     width: 65em;
     height: 3em;
-    margin: 20px 0 6px 0;
+    margin: 6px 0;
 }
 h1 {
     float: left;
@@ -144,17 +83,14 @@ h2 {
 }
 /* Status text colors -- !important allows using them in links */
 .fail {
-    color: #ce3e01 !important; /* Fallback value */
-    color: var(--fail-link-color) !important;
+    color: #ce3e01 !important;
     font-weight: bold;
 }
 .pass {
-    color: #098a09 !important; /* Fallback value */
-    color: var(--pass-link-color) !important;
+    color: #098a09 !important;
 }
 .skip {
-    color: #927201 !important; /* Fallback value */
-    color: var(--warn-link-color) !important;
+    color: #927201 !important;
     font-weight: bold;
 }
 .label {
@@ -162,10 +98,8 @@ h2 {
     font-size: 0.75em;
     letter-spacing: 1px;
     white-space: nowrap;
-    color: black; /* Fallback value */
-    color: var(--text-color);
-    background-color: #ddd; /* Fallback value */
-    background-color: var(--primary-color);
+    color: black;
+    background-color: #ddd;
     border-radius: 3px;
 }
 .label.debug, .label.trace, .label.error, .label.keyword {
@@ -175,18 +109,15 @@ h2 {
     font-weight: bold;
 }
 .label.pass {
-    background-color: #97bd61; /* Fallback value */
-    background-color: var(--pass-color);
+    background-color: #97bd61;
     color: #000 !important;
 }
 .label.fail, .label.error {
-    background-color: #ce3e01; /* Fallback value */
-    background-color: var(--fail-color);
+    background-color: #ce3e01;
     color: #fff !important;
 }
 .label.skip, .label.warn {
-    background-color: #fed84f; /* Fallback value */
-    background-color: var(--warn-color);
+    background-color: #fed84f;
     color: #000 !important;
 }
 /* Top right header */
@@ -215,8 +146,7 @@ h2 {
     padding: 0.3em 0;
     font-size: 0.9em;
     border-bottom-left-radius: 4px;
-    background: #ddd; /* Fallback value */
-    background: var(--primary-color);
+    background: #ddd;
 }
 /* Statistics table */
 .statistics {
@@ -226,20 +156,15 @@ h2 {
     margin-bottom: 1em;
 }
 .statistics tr:hover {
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
+    background: #f4f4f4;
     cursor: pointer;
 }
 .statistics th, .statistics td {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
+    border: 1px solid #ccc;
     padding: 0.1em 0.3em;
 }
 .statistics th {
-    background-color: #ddd; /* Fallback value */
-    background-color: var(--primary-color);
+    background-color: #ddd;
     padding: 0.2em 0.3em;
 }
 .statistics td {
@@ -275,33 +200,27 @@ th.stats-col-graph:hover {
 }
 /* Statistics graph */
 .graph, .empty-graph {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
+    border: 1px solid #ccc;
     width: auto;
     height: 7px;
     padding: 0;
+    background: #aaa;
 }
 .empty-graph {
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
+    background: #eee;
 }
 .pass-bar, .fail-bar, .skip-bar {
     float: left;
     height: 100%;
 }
 .fail-bar {
-    background: #ce3e01; /* Fallback value */
-    background: var(--fail-color);
+    background: #ce3e01;
 }
 .pass-bar {
-    background: #97bd61; /* Fallback value */
-    background: var(--pass-color);
+    background: #97bd61;
 }
 .skip-bar {
-    background: #fed84f; /* Fallback value */
-    background: var(--warn-color);
+    background: #fed84f;
 }
 /* Tablesorter - adapted from provided Blue Skin */
 .tablesorter-header {
@@ -311,103 +230,47 @@ th.stats-col-graph:hover {
     cursor: pointer;
 }
 .tablesorter-header:hover {
-    background-color: #ccc; /* Fallback value */
-    background-color: var(--secondary-color);
+    background-color: #ccc;
 }
 .tablesorter-headerAsc {
-    background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlBWnFr3cnIr0WQOyBmvzp13CpxQAOw==); /* Fallback value */
-    background-image: var(--ascending-icon);
-    background-color: #ccc !important; /* Fallback value */
-    background-color: var(--secondary-color) !important;
+    background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlBWnFr3cnIr0WQOyBmvzp13CpxQAOw==);
+    background-color: #ccc !important;
 }
 .tablesorter-headerDesc {
-    background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlAWnBr3cnIr0WROyDmvzp13CpxQAOw==); /* Fallback value */
-    background-image: var(--descending-icon);
-    background-color: #ccc !important; /* Fallback value */
-    background-color: var(--secondary-color) !important;
+    background-image: url(data:image/gif;base64,R0lGODlhCwAJAKEAAAAAAH9/fwAAAAAAACH5BAEAAAIALAAAAAALAAkAAAIUlAWnBr3cnIr0WROyDmvzp13CpxQAOw==);
+    background-color: #ccc !important;
 }
 .sorter-false {
     background-image: none;
     cursor: default;
 }
 .sorter-false:hover {
-    background-color: #ddd; /* Fallback value */
-    background-color: var(--primary-color);
-}
-#theme-toggle {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: 28px;
-    height: 28px;
-    border: none;
-    padding: 4px;
-    z-index: 1000;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    background: var(--highlight-color);
-}
-[data-theme="dark"] .dark-mode-icon,
-[data-theme="light"] .light-mode-icon {
-    display: none;
-}
-[data-theme="dark"] .light-mode-icon,
-[data-theme="light"] .dark-mode-icon {
-    display: block;
-}
-@keyframes highlight {
-    0% {
-        background: var(--primary-color)
-    }
-    100% {
-        background: var(--target-color);
-    }
-}
-:target {
-    background: var(--target-color);
-    transition: background 0.3s;
-    animation: highlight 4s;
+    background-color: #ddd;
 }
 </style>
-<style media="all">
-:root {
-    --col-toggle-color: #6c6c6c; /* same as in sort icon */
-}
-@media (prefers-color-scheme: dark) {
-    :root {
-        --col-toggle-color: #adadad;
-    }
-}
+<style media="all" type="text/css">
 /* Generic table styles */
 table {
     margin: 0 1px;
-    background: white; /* Fallback value */
-    background: var(--background-color);
+    background: white;
 }
 tr {
-    background: white; /* Fallback value */
-    background: var(--background-color);
+    background: white;
 }
 th {
-    background: #ddd; /* Fallback value */
-    background: var(--primary-color);
-    color: black; /* Fallback value */
-    color: var(--text-color);
+    background: #ddd;
+    color: black;
 }
 /* Summary and total/tag/suite details */
 .details {
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
-    border-width: 1px;
-    border-style: solid;
+    border: 1px solid #ccc;
     border-spacing: 0.2em;
     clear: both;
     width: 65em;
     margin-bottom: 1em;
 }
 .details th {
-    background: white; /* Fallback value */
-    background: var(--background-color);
+    background: white;
     width: 11em;
     text-align: left;
     vertical-align: top;
@@ -434,30 +297,8 @@ th {
     display: none;
 }
 /* Search */
-input[type='submit'], input[type='button'] {
-    background-color: #ddd; /* Fallback value */
-    background-color: var(--primary-color);
-    border-radius: 4px;
-    border: 0;
-    padding: 4px 6px 4px 6px;
-    color: black; /* Fallback value */
-    color: var(--text-color);
-}
-input[type='submit']:hover, input[type='button']:hover {
-    background-color: #ccc; /* Fallback value */
-    background-color: var(--secondary-color);
-}
 #search-suite, #search-test, #search-include, #search-exclude {
     width: 25em;
-    background-color: white; /* Fallback value */
-    background-color: var(--background-color);
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 2px;
-    color: black; /* Fallback value */
-    color: var(--text-color);
 }
 #search a:hover {
     text-decoration: none;
@@ -465,12 +306,8 @@ input[type='submit']:hover, input[type='button']:hover {
 #search-help div {
     margin: 0.5em 0.5em 0.7em 0;
     padding: 0.7em;
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
-    border-width: 1px;
-    border-style: solid;
+    background: #eee;
+    border: 1px solid #ccc;
     border-radius: 3px;
 }
 #search-help h3, #search-help p {
@@ -505,24 +342,18 @@ input[type='submit']:hover, input[type='button']:hover {
 }
 .detail-tab {
     float: left;
-    background: #ddd; /* Fallback value */
-    background: var(--primary-color);
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
-    border-width: 1px;
-    border-style: solid;
+    background: #ddd;
+    border: 1px solid #ccc;
     border-bottom-width: 0;
     margin: 0 0.5em 0 0;
     padding-top: 0.1em;
     border-radius: 3px 3px 0 0;
 }
 .detail-tab:hover {
-    background: #ccc; /* Fallback value */
-    background: var(--secondary-color);
+    background: #ccc;
 }
 .detail-tab a {
-    color: black; /* Fallback value */
-    color: var(--text-color);
+    color: black;
     text-decoration: none;
     font-weight: bold;
     padding: 0 1em;
@@ -530,23 +361,19 @@ input[type='submit']:hover, input[type='button']:hover {
 .detail-tab-selected {
     position: relative;
     top: 1px;
-    background: white; /* Fallback value */
-    background: var(--background-color);
+    background: white;
 }
 .detail-tab-selected:hover {
-    background: white; /* Fallback value */
-    background: var(--background-color);
+    background: white;
 }
 /* Test details table */
 #test-details {
     width: 100%;
     border-spacing: 1px;
-    background-color: #ccc; /* Fallback value */
-    background-color: var(--secondary-color);
+    background-color: #ccc;
 }
 #test-details > tbody > tr:hover {
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
+    background: #f4f4f4;
     cursor: pointer;
 }
 #test-details th, #test-details td {
@@ -561,13 +388,11 @@ input[type='submit']:hover, input[type='button']:hover {
 }
 .details-col-toggle {
     float: left;
-    color: #6c6c6c; /* Fallback value */
-    color: var(--col-toggle-color);
+    color: #6c6c6c; /* same as in sort icon */
     cursor: pointer;
 }
 .details-col-toggle:hover {
-    color: black; /* Fallback value */
-    color: var(--text-color);
+    color: black;
 }
 .details-col-name {
     min-width: 20em;
@@ -608,18 +433,10 @@ input[type='submit']:hover, input[type='button']:hover {
     background-image: none;
 }
 th.hidden:hover {
-    background-color: #ddd; /* Fallback value */
-    background-color: var(--primary-color);
-}
-#status-bar {
-    height: 100%;
-    width: 10px;
-    position: fixed;
-    top: 0;
-    left: 0;
+    background-color: #ccc;
 }
 </style>
-<style media="print">
+<style media="print" type="text/css">
 body {
     background: white !important;
     padding: 0;
@@ -659,7 +476,7 @@ a:link, a:visited {
     background: #ddd !important;
 }
 </style>
-<style media="all">
+<style media="all" type="text/css">
 #javascript-disabled {
     width: 600px;
     margin: 100px auto 0 auto;
@@ -682,7 +499,7 @@ a:link, a:visited {
     font-style: italic;
 }
 </style>
-<style media="all">
+<style media="all" type="text/css">
 .doc > * {
     margin: 0.7em 1em 0.1em 1em;
     padding: 0;
@@ -694,12 +511,14 @@ a:link, a:visited {
     margin-top: 0.1em;
 }
 .doc table {
+    border: 1px solid #ccc;
     background: transparent;
     border-collapse: collapse;
     empty-cells: show;
     font-size: 0.9em;
 }
 .doc table th, .doc table td {
+    border: 1px solid #ccc;
     background: transparent;
     padding: 0.1em 0.3em;
     height: 1.2em;
@@ -709,32 +528,24 @@ a:link, a:visited {
     letter-spacing: 0.1em;
 }
 .doc pre {
-    border-radius: 2px;
     font-size: 1.1em;
     letter-spacing: 0.05em;
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
+    background: #f4f4f4;
 }
 .doc code {
-    border-radius: 2px;
     padding: 0 0.2em;
     letter-spacing: 0.05em;
-    background: #eee; /* Fallback value */
-    background: var(--highlight-color);
+    background: #eee;
 }
 .doc li {
     list-style-position: inside;
     list-style-type: square;
 }
-.doc img, .doc table, .doc table th, .doc table td {
-    border-width: 1px;
-    border-style: solid;
-    border-color: #ccc; /* Fallback value */
-    border-color: var(--secondary-color);
+.doc img {
+    border: 1px solid #ccc;
 }
 .doc hr {
-    background: #ccc; /* Fallback value */
-    background: var(--secondary-color);
+    background: #ccc;
     height: 1px;
     border: 0;
 }
@@ -831,6 +642,7 @@ window.model = (function () {
         suite.populateSuites = createIterablePopulator('Suite');
         suite.childrenNames = ['keyword', 'suite', 'test'];
         suite.callWhenChildrenReady = function (callable) { callable(); };
+        suite.message = data.message;
         suite.children = function () {
             return suite.keywords().concat(suite.tests()).concat(suite.suites());
         };
@@ -921,7 +733,6 @@ window.model = (function () {
             name: data.name,
             doc: data.doc,
             status: data.status,
-            message: data.message,
             times: data.times,
             id: data.parent ? data.parent.id + '-' + data.id : data.id
         };
@@ -942,6 +753,7 @@ window.model = (function () {
                 return test.keywords();
         };
         test.tags = data.tags;
+        test.message = data.message;
         test.matchesTagPattern = function (pattern) {
             return containsTagPattern(test.tags, pattern);
         };
@@ -952,12 +764,13 @@ window.model = (function () {
     }
     function Keyword(data) {
         var kw = createModelObject(data);
+        var flatTypes = ['RETURN', 'BREAK', 'CONTINUE'];
         kw.libname = data.libname;
         kw.fullName = (kw.libname ? kw.libname + '.' : '') + kw.name;
         kw.type = data.type;
         kw.template = 'keywordTemplate';
         kw.arguments = data.args;
-        kw.assign = data.assign + (data.assign ? ' =  ' : '');
+        kw.assign = data.assign + (data.assign ? ' =' : '');
         kw.tags = data.tags;
         kw.timeout = data.timeout;
         kw.populateKeywords = createIterablePopulator('Keyword');
@@ -1068,48 +881,58 @@ window.stats = (function () {
             });
     }
     function calculatePercents(total, passed, failed, skipped) {
-        if (total == 0)
+        if (total == 0) {
             return [0.0, 0.0, 0.0];
+        }
         var pass = 100.0 * passed / total;
         var skip = 100.0 * skipped / total;
         var fail = 100.0 * failed / total;
         if (pass > 0 && pass < 0.1)
-            pass = 0.1;
+            pass = 0.1
         if (fail > 0 && fail < 0.1)
-            fail = 0.1;
+            fail = 0.1
         if (skip > 0 && skip < 0.1)
-            skip = 0.1;
+            skip = 0.1
         if (pass > 99.95 && pass < 100)
-            pass = 99.9;
+            pass = 99.9
         if (fail > 99.95 && fail < 100)
-            fail = 99.9;
+            fail = 99.9
         if (skip > 99.95 && skip < 100)
-            skip = 99.9;
-        return [round1(pass), round1(skip), round1(fail)];
+            skip = 99.9
+        return [Math.round(pass*10)/10, Math.round(skip*10)/10, Math.round(fail*10)/10];
     }
     function calculateWidths(num1, num2, num3) {
         if (num1 + num2 + num3 === 0)
             return [0.0, 0.0, 0.0];
         // Make small percentages better visible
         if (num1 > 0 && num1 < 1)
-            num1 = 1.0;
+            num1 = 1
         if (num2 > 0 && num2 < 1)
-            num2 = 1.0;
+            num2 = 1
         if (num3 > 0 && num3 < 1)
-            num3 = 1.0;
+            num3 = 1
         // Handle situation where some are rounded up
         while (num1 + num2 + num3 > 100) {
-            if (num1 >= num2 && num1 >= num3)
-                num1 = round1(num1 - 0.1);
-            else if (num2 >= num1 && num2 >= num3)
-                num2 = round1(num2 - 0.1);
-            else
-                num3 = round1(num3 - 0.1);
+            if (num1 > num2 && num1 > num3)
+                num1 -= 0.1;
+            else if (num2 > num1 && num2 > num3)
+                num2 -= 0.1;
+            else if (num3 > num1 && num3 > num2)
+                num3 -= 0.1;
+            else if (num1 > num3 && num1 == num2) {
+                num1 -= 0.1;
+                num2 -= 0.1;
+            }
+            else if (num1 > num2 && num1 == num3) {
+                num1 -= 0.1;
+                num3 -= 0.1;
+            }
+            else if (num2 > num1 && num2 == num3) {
+                num2 -= 0.1;
+                num3 -= 0.1;
+            }
         }
-        return [num1, num2, num3];
-    }
-    function round1(num) {
-        return Math.round(num*10) / 10;
+        return [Math.ceil(num1*10)/10, Math.ceil(num2*10)/10, Math.ceil(num3*10)/10];
     }
     return {
         Statistics: Statistics
@@ -1326,9 +1149,8 @@ window.testdata = function () {
     var _statistics = null;
     var LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FAIL', 'SKIP'];
     var STATUSES = ['FAIL', 'PASS', 'SKIP', 'NOT RUN'];
-    var KEYWORD_TYPES = ['KEYWORD', 'SETUP', 'TEARDOWN', 'FOR', 'ITERATION', 'IF',
-                         'ELSE IF', 'ELSE', 'RETURN', 'VAR', 'TRY', 'EXCEPT', 'FINALLY',
-                         'WHILE', 'GROUP', 'CONTINUE', 'BREAK', 'ERROR'];
+    var KEYWORD_TYPES = ['KEYWORD', 'SETUP', 'TEARDOWN', 'FOR', 'ITERATION', 'IF', 'ELSE IF', 'ELSE', 'RETURN',
+                         'TRY', 'EXCEPT', 'FINALLY', 'WHILE', 'CONTINUE', 'BREAK', 'ERROR'];
     function addElement(elem) {
         if (!elem.id)
             elem.id = uniqueId();
@@ -1371,7 +1193,6 @@ window.testdata = function () {
         return createKeyword(parent, element, strings, index - messages.length);
     }
     function createKeyword(parent, element, strings, index) {
-        var status = element[8];
         var kw = model.Keyword({
             parent: parent,
             type: KEYWORD_TYPES[element[0]],
@@ -1387,12 +1208,7 @@ window.testdata = function () {
                 this.doc = function () { return doc; };
                 return doc;
             },
-            status: parseStatus(status),
-            message: function () {
-                var msg = status.length == 4 ? strings.get(status[3]) : '';
-                this.message = function () { return msg; };
-                return msg;
-            },
+            status: parseStatus(element[8], strings),
             times: model.Times(times(element[8])),
             isChildrenLoaded: typeof(element[9]) !== 'number'
         });
@@ -1603,20 +1419,6 @@ window.testdata = function () {
 }();
 </script>
 <script type="text/javascript">
-const lightModeIcon = `
-<svg class="light-mode-icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
-    viewBox="0 0 24 24" fill="var(--text-color)">
-    <rect fill="none" height="24" width="24" />
-    <path
-        d="M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0 c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2 c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1 C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06 c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41 l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41 c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36 c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z" />
-</svg>`
-const darkModeIcon = `
-<svg class="dark-mode-icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
-    viewBox="0 0 24 24" fill="var(--text-color)">
-    <rect fill="none" height="24" width="24" />
-    <path
-        d="M11.01,3.05C6.51,3.54,3,7.36,3,12c0,4.97,4.03,9,9,9c4.63,0,8.45-3.5,8.95-8c0.09-0.79-0.78-1.42-1.54-0.95 c-0.84,0.54-1.84,0.85-2.91,0.85c-2.98,0-5.4-2.42-5.4-5.4c0-1.06,0.31-2.06,0.84-2.89C12.39,3.94,11.9,2.98,11.01,3.05z" />
-</svg>`
 function removeJavaScriptDisabledWarning() {
     // Not using jQuery here for maximum speed
     document.getElementById('javascript-disabled').style.display = 'none';
@@ -1652,10 +1454,6 @@ function setTitle(suiteName, type) {
 function addHeader() {
     var generated = util.timestamp(window.output.generated);
     $.tmpl('<h1>${title}</h1>' +
-           '<button id=theme-toggle>' +
-             lightModeIcon +
-             darkModeIcon +
-           '</button>' +
            '<div id="generated">' +
              '<span>Generated<br>${generated}</span><br>' +
              '<span id="generated-ago">${ago} ago</span>' +
@@ -1667,7 +1465,6 @@ function addHeader() {
         ago: util.createGeneratedAgoString(generated),
         title: document.title
     }).appendTo($('#header'));
-    document.getElementById('theme-toggle')?.addEventListener('click', theme.onClick);
 }
 function addReportOrLogLink(myType) {
     var url;
@@ -1796,65 +1593,13 @@ function stopPropagation(event) {
     if (event.stopPropagation)
         event.stopPropagation();
 }
-const theme = function () {
-    const storageKey = 'theme-preference';
-    const urlParams = new URLSearchParams(window.location.search);
-    var storage;
-    var theme;
-    function init(givenStorage) {
-        storage = givenStorage;
-        theme = { value: getPreference() };
-        document.body.setAttribute('data-theme', theme.value);
-        reflectPreference();
-        window.matchMedia('(prefers-color-scheme: dark)')
-            .addEventListener('change', ({matches:isDark}) => {
-                theme.value = isDark ? 'dark' : 'light';
-                setPreference();
-            });
-        window.addEventListener('storage', ({key, newValue}) => {
-            if (key === storage.fullKey(storageKey)) {
-                theme.value = newValue === 'dark' ? 'dark' : 'light';
-                setPreference();
-            }
-        });
-    }
-    function getPreference() {
-        if (urlParams.has('theme')) {
-            var urlTheme = urlParams.get('theme') === 'dark' ? 'dark' : 'light';
-            storage.set(storageKey, urlTheme);
-            urlParams.delete('theme');
-            return urlTheme;
-        }
-        if (storage.get(storageKey))
-            return storage.get(storageKey) === 'dark' ? 'dark' : 'light';
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function setPreference() {
-        storage.set(storageKey, theme.value);
-        reflectPreference();
-    }
-    function reflectPreference() {
-        document.body.setAttribute('data-theme', theme.value);
-        document.querySelector('#theme-toggle')?.setAttribute('aria-label', theme.value);
-        const event = new Event('theme-change', {value: theme.value});
-        document.dispatchEvent(event);
-    }
-    function onClick() {
-        theme.value = theme.value === 'light' ? 'dark' : 'light';
-        document.body.setAttribute('theme-toggled', "");
-        setPreference();
-    }
-    return {init: init, getPreference: getPreference, setPreference: setPreference,
-        reflectPreference: reflectPreference, onClick: onClick};
-}();
 </script>
 <script type="text/javascript">
 storage = function () {
     var prefix = 'robot-framework-';
     var storage;
     function init(user) {
-        if (user)
-            prefix += user + '-';
+        prefix += user + '-';
         storage = getStorage();
     }
     function getStorage() {
@@ -1868,41 +1613,38 @@ storage = function () {
             return {};
         }
     }
-    function get(key, defaultValue) {
-        var value = storage[fullKey(key)];
+    function get(name, defaultValue) {
+        var value = storage[prefix + name];
         if (typeof value === 'undefined')
             return defaultValue;
         return value;
     }
-    function set(key, value) {
-        storage[fullKey(key)] = value;
+    function set(name, value) {
+        storage[prefix + name] = value;
     }
-    function fullKey(key) {
-        return prefix + key;
-    }
-    return {init: init, get: get, set: set, fullKey: fullKey};
+    return {init: init, get: get, set: set};
 }();
 </script>
 <script type="text/javascript">
 window.output = {};
 </script>
 <script type="text/javascript">
-window.output["suite"] = [1,2,3,4,[],[0,0,6286],[],[[5,0,6,[],[1,1375,965],[]],[7,0,8,[],[0,2341,482,9],[]],[10,0,11,[],[0,2824,494,12],[]],[13,0,14,[],[0,3319,600,15],[]],[16,0,17,[],[1,3921,551],[]],[18,0,19,[],[0,4473,554,20],[]],[21,0,22,[],[0,5027,192,20],[]],[23,0,24,[],[1,5219,537],[]],[25,0,26,[],[1,5757,528],[]]],[],[9,4,5,0]];
+window.output["suite"] = [1,2,3,4,[],[0,0,10069],[],[[5,0,6,[7,8,9],[1,295,694],[]],[10,0,11,[7,8,9],[1,994,543],[]],[12,0,13,[7,8,9],[1,1543,704],[]],[14,0,15,[7,8,9],[1,2248,557],[]],[16,0,17,[7,8,9],[1,2806,674],[]],[18,0,19,[7,8,9],[1,3482,571],[]],[20,0,21,[7,8,9],[1,4055,592],[]],[22,0,23,[7,8,9],[1,4648,572],[]],[24,0,25,[7,8,9],[1,5222,550],[]],[26,0,27,[7,8,9],[1,5773,497],[]],[28,0,29,[7,8,9],[1,6271,504],[]],[30,0,31,[7,8,9],[1,6776,805],[]],[32,0,33,[34,7,8],[0,7582,240,35],[]],[36,0,37,[7,38,8,39,9],[1,7824,568],[]],[40,0,41,[34,42,8,43],[0,8394,16,44],[]],[45,0,46,[34,47,48,8],[0,8414,12,44],[]],[49,0,50,[34,51,8,52],[0,8426,18,44],[]],[53,0,54,[34,55,8],[0,8444,19,44],[]],[56,0,57,[34,8,39],[0,8464,247,35],[]],[58,0,59,[34,60,8,61],[0,8712,268,62],[]],[63,0,64,[34,8,39,61],[0,8993,370,65],[]],[66,0,67,[34,8,61,43],[0,9365,176,68],[]],[69,0,70,[34,71,72,8],[0,9543,524,73],[]]],[],[23,13,10,0]];
 </script>
 <script type="text/javascript">
 window.output["strings"] = [];
 </script>
 <script type="text/javascript">
-window.output["strings"] = window.output["strings"].concat(["*","*DiscountProcessingTest","*D:\\AutomationWithAI\\retail-automation-test-v2\\TestSpecs\\API\\Invoice\\DiscountProcessingTest.robot","*TestSpecs/API/Invoice/DiscountProcessingTest.robot","*<p>Test cases API cho phần xử lý giảm giá hóa đơn\x3c/p>","*RT-DP-001 Tạo hóa đơn với giảm giá cơ bản","*<p>Kiểm tra tạo hóa đơn với giảm giá cơ bản:\x3c/p>\n<ul>\n<li>Giá trị giảm giá: 10.000đ\x3c/li>\n<li>Tỷ lệ giảm giá: 10%\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Giảm giá được lưu chính xác trong CSDL theo cấu hình tiền tệ\x3c/li>\n<li>Chuẩn hóa: Giảm giá được làm tròn theo cấu hình số chữ số thập phân\x3c/li>\n\x3c/ul>","*RT-DP-002 Tạo hóa đơn với giảm giá thập phân","*<p>Kiểm tra tạo hóa đơn với giảm giá có số thập phân:\x3c/p>\n<ul>\n<li>Giá trị giảm giá: 10.500,75đ\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Giảm giá được làm tròn theo CURRENCY_DECIMAL_PLACE (2 chữ số)\x3c/li>\n<li>Chuẩn hóa: Từ 10.500,75đ thành 10.500,75đ nếu cấu hình là 2 chữ số thập phân\x3c/li>\n\x3c/ul>","*Giá trị giảm giá không đúng: 10501.0 != 10500.75","*RT-DP-003 Tạo hóa đơn với tỷ lệ giảm giá thập phân","*<p>Kiểm tra tạo hóa đơn với tỷ lệ giảm giá có số thập phân:\x3c/p>\n<ul>\n<li>Tỷ lệ giảm giá: 10,5678%\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Tỷ lệ giảm giá được làm tròn theo CURRENCY_DECIMAL_PLACE_FOR_PRODUCT (4 chữ số)\x3c/li>\n<li>Chuẩn hóa: Từ 10,5678% thành 10,5678% nếu cấu hình là 4 chữ số thập phân\x3c/li>\n\x3c/ul>","*Tỷ lệ giảm giá không đúng: 10.57 != 10.5678","*RT-DP-004 Tạo hóa đơn với nhiều sản phẩm và giảm giá","eNp9kb1KxEAUhXuf4pQqkr+BCCGm3WKbhfUF1iBJIJkEN7u9WFiIRQorG+NWdsIWQqac4HvMm3gThmxCwGYG7nz33HPP+EWwTJR4ylA+bFCqps4Ry+MGbfVbc+yVeE/AY0Ied9iq5sBRxKr5yrCXH4gSqmR0ydrzzSI483cpHWkSLKhEkkq8TCDYlmFZVlv5JkE9uR6L2h76Ttv6n3M058y5WyXeeNSP0wbGtj2wectSiWO36iuPOt3BbhfCtxKHkJrlJ8cdSSOMc4SyDqdplPF9TvGJH6RKPI+mn6asBg0P65WNGx0GLnGu9zW1uQt6ZAZjrK2uiHUmrDNnXcN1r4eNTPqEP8/7uRQ=","*Tổng giảm giá phân bổ cho sản phẩm không khớp với giảm giá hóa đơn (chênh 10000.0)","*RT-DP-005 Tạo hóa đơn với giảm giá 0 đồng","*<p>Kiểm tra tạo hóa đơn với giảm giá 0 đồng:\x3c/p>\n<ul>\n<li>Giá trị giảm giá: 0đ\x3c/li>\n<li>Tỷ lệ giảm giá: 0%\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Giá trị giảm giá và tỷ lệ giảm giá được lưu là 0\x3c/li>\n\x3c/ul>","*RT-DP-006 Tạo hóa đơn với giảm giá từ khuyến mãi","*<p>Kiểm tra tạo hóa đơn với giảm giá từ khuyến mãi:\x3c/p>\n<ul>\n<li>Giá trị giảm giá khuyến mãi: 20.000đ\x3c/li>\n<li>Khuyến mãi ID: 1001\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Giảm giá khuyến mãi được lưu riêng biệt trong trường DiscountByPromotion\x3c/li>\n<li>Thông tin khuyến mãi được lưu trong bảng InvoicePromotion\x3c/li>\n\x3c/ul>","*500 != 200","*RT-DP-007 Tạo hóa đơn với giảm giá từ khuyến mãi nhiều sản phẩm","*<p>Kiểm tra tạo hóa đơn với giảm giá từ khuyến mãi nhiều sản phẩm:\x3c/p>\n<ul>\n<li>Giá trị giảm giá khuyến mãi: 20.000đ\x3c/li>\n<li>Khuyến mãi ID: 1001\x3c/li>\n<li>Sản phẩm 1: Giá 100.000đ\x3c/li>\n<li>Sản phẩm 2: Giá 200.000đ\x3c/li>\n<li>Kỳ vọng: Giảm giá khuyến mãi được phân bổ cho các sản phẩm theo tỷ lệ giá trị\x3c/li>\n\x3c/ul>","*RT-DP-008 Tạo hóa đơn với giảm giá giá trị lớn","*<p>Kiểm tra tạo hóa đơn với giảm giá giá trị lớn:\x3c/p>\n<ul>\n<li>Giá trị giảm giá: 150.000đ (lớn hơn giá trị sản phẩm)\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Giảm giá được chấp nhận và lưu đúng vào CSDL\x3c/li>\n\x3c/ul>","*RT-DP-009 Tạo hóa đơn với tỷ lệ giảm giá 100%","*<p>Kiểm tra tạo hóa đơn với tỷ lệ giảm giá 100%:\x3c/p>\n<ul>\n<li>Tỷ lệ giảm giá: 100%\x3c/li>\n<li>Giá trị giảm giá: 100.000đ (bằng giá trị sản phẩm)\x3c/li>\n<li>Sản phẩm: 1 sản phẩm với giá 100.000đ\x3c/li>\n<li>Kỳ vọng: Tỷ lệ giảm giá 100% được chấp nhận và lưu đúng vào CSDL\x3c/li>\n\x3c/ul>"]);
+window.output["strings"] = window.output["strings"].concat(["*","*Invoice Payment","*E:\\automation_api\\retail-automation-test-v2\\TestSpecs\\API\\Invoice\\Invoice_Payment.robot","*TestSpecs/API/Invoice/Invoice_Payment.robot","*<p>Test cases API cho phần tạo phiếu thu khi tạo hóa đơn\x3c/p>","*RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn","eNptUj9Lw0AU3/0Uj85CTscQM2gHoSiF9gvEKLnD9BLaS8FRHJwcMji5JHQoTi1UEHKDw5V+j/dNfAlNk0CGXIbfn/u93zsndkcC9dsM1NwDhUUeQcwFFn8JKE4fga8SZlj8Knjm4kjhZufBPj3k0rFi98xJQjpC4Q5RbyAkzXtCMBbrBJYmi2zHIrBi3J6U4Jsd2elPGdTXXMEFY+eMsX3aKMb8sCU6kTjqb59+nuSgIpNLu5OvkUxQpzXUoffYj1DvYIn6QwatmBPlqWQBfvT4ZMMlY+04TTs0xxb1yj+2ouYRxRxel3ZfAhatFD0X35lVp+oHLDbq1FrlUI9QGg3G00Ejvg9M9tKzr9BkICuMl1uQFUU0ummn71Y34KNee63F9i/jxvyQXNLQfYK6Jovewz+eHAOI","*apiinvoice","*payment","*smoke","*RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ","eNp1Uj1PwzAQ3fkVNzAi1TBGIVI/BlClgkSZqxBQbFHsqnVYEANiYGLIwMTS0qFiQLQqUzwwuOr/uH/CtWoaVwqLZfnee/funf1e0BRonu9A90PQmI0U9LjA7DcBzRO4R/Mu6BZKDlrZkYQrzGYypifMjF/pBXt+0qWjK4IGmm/oktpLAosUswnR7VB5foWKa8SJnYdUWpJMZOfUzrytpIjyJOEYDhk7YIwt0oJxzpdTgq/7mc/IdeLlHnLsBZo0F9vBlei27VDALVeYjSXI2H5I4HYoYw/2H2rVVrNTrdfPLlvtzmnjsWA10cxXkbwS0OmrQ50MIFLXNx4cMea6L5KksadoxtEmZN1XNFWjtkl44Hgvs/vPAgrVmAuQ9PQlt9IOfSdod5sRmklIo2/3UrqFuv0huqRGZYR84Ap9hD+upfiv","*RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản","eNqFUj9Lw0AU3/0Ub3AUcjqGGGibQQlUwTqXGCUXjJfQXgQRB3Fwcsjg5JLaoTiIlTjlBocr/R7vm/iUpkkh4HIc3O/f+72zEtsNUT1cgRx5ILGcxJDwEMvvFCRP4RrVS0g3T3CQsZ4IOMPyUwTg8/SGeAIueYzlVFhGYm9ZaURHFNoOqg+ISPgxhUWG5YyUdB6blkGPf4gDXXj0tCRFXxfkrJ5JVRLlXsA+7DK2wxhbZDXjmC/nBCcQR/XmN0OZLXEq2gmqrNLdoLRYDHQeVgogAv0qgOtcBCZs33Y7fXfY6fWOTvuD4aFzV7NcVMVvUU8EbPhKT6Zj8OPzCxP2GGsOUvdLDcxRTf1V9XIU04BOd9X7uJG9Le7/a6kNAh6C4Fi+i7VLQ2mj/ua6fVQzj1pYb6t1Nz39RXRBRm2EanaDvscPNAUIJA==","*RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán","eNqdUrFKxEAQ7f2K+YCD7B3YhJhCrxCuEfQHQpQkkNsNd7v2YmFlkcLKxmBxWIgHEYTdwiLH/cf8ibNHQvYgcmizCzP73pv3ZoMinGVo7ucgFxFI1JWAIs1QfyuQqYJbNM8ZcKqYO0Wd7Xpb8YRaaN5iuiKeghRNxQOvCI8CldORZ+EUzQfkBHpQsClRr4ipeRF+4FFz9+K8qSNqERvETU3K5snyWh0OJzBmbMQY25Q94uJ3cRj7HXSO+kuOYImm7ErHf6Ka+LaqzSGOGZraxvPIE8fWpYykWkIsrm98mDDmavapku81mte4DVwuBM0yPW3TbrNw5QfiuHJmdr335ElqN4f6nR+wskdlvf+HY2+BbqAxmlUEab/vwe2eNZ8E5yQ6BOhy9OiD/QAgAyo1","*RT-RC-005 Tạo phiếu thu với thanh toán thừa","eNptkTFLw0AUx3c/xRsVhFwdQ5pBOwhdhPoFwim5YHsJ7V13cXByyODk0uBQRMRCBCE3OFzp93jfxGdIeilmOY57/9+7//u/IAvHCZqHGah5BAqrIoVMJFj9aFBCwxLNS0K3SApQqS0k3dG8k9R+0NPSrlLg9kvGING8wp2wBRcg7ErGgZeFR4Ge0jFNwhGaT5jSV48atjlWa13DfuBRsVZc2jKi0o7+4LYkL+aZ2ipC7iUMYcDYKWNsmzviSuw2JI9rT2+8a9NvwRlW38ohEzR5WzqQD86a9nDcTNg+nDh6jKb8i+RJxh3jExUpvQCe3tz6RLGuQZckTbahiHgTspqnZHx03iS86PjaW3GNrg/C6K6Do1lHFPg+u2Ev34L1ZD3Mf+TCbbVH3w7p0X5/ASpX9Sw=","*RT-RC-006 Tạo phiếu thu với thanh toán thiếu","eNptkbFqwzAQhvc+xY0pFKxkCsbx0GYoZCmkL2DcEhkc2Thy99KhUwcPnbrUdAidGnChYA0dFPIe9ya9GhnJJIsQuv+/++9TkIeLBNXTGmQRgcS2ziDnCba/JUhewgOqt4RukeAgM10LunfVwMvDs6BM6UiTcI7qC1Jq9FzCvsJ2S079nvmBR8VOca2biEoH6hDrhiapV7ECSZZHATMYM3bBGNtX1nHDDzuSk4ij+ozdEH5vXGP7I61liarqSwP51HSHkYkPE/Nybt0LVM3/wi9i5QRfykiWG4izu3ufXMwNaDnRZjtUH7FBKIuMgs8vDb+Nk2t6tOjtgIXLOka1jYBbdLMT9iv9TW5B00/pJ8fjCorYYdV1MsQ0hlH3Ofatx+PRT/8BFt7oJw==","*RT-RC-008 Tạo Hóa đơn với thanh toán bằng wallet với tài khoản","eNqVkr9Lw0AUx3f/ijdWUHIRcShpQNCpHYQWnGMsuaPxUuqlzuLgIIIdnFxaOhSHYqVbbrzQ/+P9J76mKUmkKt5w3N373Pf9dPpuU6B+uAE18ECZueQQCDOhK+onUNyjBxWZiYQeF5X7FSafMoA7Lwy7Coao38huxoLACJOpdKy+u+fEIW2hcM9Qf0BIrh5jSEeYzGIYmnFUdywyZkQH9SvpKWLuJXCz9AhckaMG2IwdMMbSUUFf8NWCjMRz1O9+JbIGXGZBFXQb9WirXCV3SHdKSWzTI8nTVuu8w5hdgK0oEH5etExvRzZ/OtsEJVFPCSAT1KqFOITfpQgozpnCfkl9gMmmSGYivimkL2ZaeaK26BnU7NL/JurlurXPMijl1laeim/Bj667dThi7Kce/j/5kqn0N+8BTcOCSB8CmkTJMZnLHWO39pOt45NczaIZ/AKrsSf/","*RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm","eNqdkr9KA0EQxnufYsoIStZAmnB3VbpYCMkLnBe5XUz2jmQvvVhYiGAKCysTgohFUEl3U27Ie8ybONzlzx2JIjYLu/Ob75uZHSf2Worwtg9m4IOxcy0hVHbKV8J7MNLnBxPZqYZrqUr3S0q/dAjL8Tpfrj4JX3ToVGPvyEl6fPSU1yT8gB4jdwmjlL4lMLKTqOFUOZgRHcIn1jHM3GiQduEzuGIDF86EOBFCLMc7+oJtOMi8JHwPShW5sHzMitnhbcLxRvqX4l2o7zmdR6EK1iPJkg7UXDLfl+jkxppwVohDpdzyKRyU2zbPwDZ1p3JcsBlQmo/ETtXeROys9NQnfDYQS/4KDZVaQaZFuIAR4YMOC622jW+SIQRR96oBNSF++rj/zeJvTdQKRXI4kLwmE2aHhHPoEr4W93C9H7wdfFZCReksB+tiA22arvKWfgN7azsZ","*RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng","*<p>Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: tiền mặt\x3c/li>\n<li>Số tiền thanh toán: 0đ\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 200\x3c/li>\n<li>Không có phiếu thu nào được tạo\x3c/li>\n<li>Tổng tiền thanh toán của hóa đơn = 0đ\x3c/li>\n<li>Công nợ của hóa đơn = 100,000đ\x3c/li>\n\x3c/ul>","*RT-RC-011 Tạo phiếu thu với số tiền lớn","eNp1kTFLw0AUx3c/xRsVCrk6mZBm0A5CF6F+gSNKL5BeQnpxFwcnhwxOLgaRIg4WIgi5wSGh3+N9kz5rw10xDncH9/6/d//3Pz8NJhHquzmojIPCukwgFRHW3zkokcMN6qcIFqgLUKS7lRDTjfSdNDjw85i2OArGqD8gpvJ9Dm2B9ZK45jnxfIeKW8V5U3EqrUsJYVPRO/pRzrqOIxgyNmCMtYUhLsR6RXISCdRvIR1cClBJU0qvA+dYfymDTC2Xe3J34Lrb1RZwmGH9qn6nODLsBHX1M+yDnFm2p4qrfAFhcnXtwTFjtj2TEc21Qv0S7uJTWUK2x6c92VlGTKvLvTAs4xCiXnIQJrvRPx06FPU776dO/lJnzSc9K8l5H9LN6tAnbwD8IegJ","*RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức khác nhau","eNqdUr1KxEAQ7n2KeYCD7J1iEXIp9ArhGkFfIEbJBpNNuNvYi4WVRQoLsTFYHBbiSQRht7gix73HvIkTNWSjB4c2y+78fN98862TuuMQ9VUMcuKBRFUkkPIQ1SIDyTO4QH0f0s0THGRSFQJi1HeSalDNBJygehUB+FXhU2g1XxX0khz1kw/nvI4K7mWOlbpbThbREYXuCPULRER6ncEyJxhiqR4S27Eo+VlxUJUepQiMkEuaSt/WsNRyKWAIfcZ6jLFl3nYc/uA2B+7bTWuM6l32YIo6b0Lbf4Ia2HVU6U0YY9RlvbobERiyjqQnsyn4yemZDQPGTM5246R7jvrR/zZDThKaZbTXOPG1C5N+9xf9sTGyKb3FDnhIzqB6FhuUdKBq6f/B6Phn7tNHPfOAt3YP16jZr96oWxDnuvqdbr1Fv+wDWyk5fA==","*RT-RC-009 Tạo Hóa đơn với thanh toán bằng voucher","*<p>Kiểm tra tính giá trị thanh toán khi thanh toán bằng voucher\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Tổng tiền hóa đơn = 500,000đ\x3c/li>\n<li>Phương thức thanh toán 1 = Voucher, Số tiền = 100,000đ\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 200\x3c/li>\n<li>Tổng tiền thanh toán = 100,000đ\x3c/li>\n<li>Tiền nợ = 400,000đ\x3c/li>\n<li>Voucher được sử dụng với giá trị 100,000đ\x3c/li>\n\x3c/ul>","*RT-RC-013 Kiểm tra thanh toán với số tiền 0 đồng vẫn tạo phiếu thu","*<p>Kiểm tra khi thanh toán 0 đồng vẫn tạo phiếu thu với số tiền 0\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: tiền mặt\x3c/li>\n<li>Số tiền thanh toán: 0đ\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 200\x3c/li>\n<li>Phiếu thu vẫn được tạo với số tiền 0đ\x3c/li>\n<li>Tổng tiền thanh toán của hóa đơn = 0đ\x3c/li>\n<li>Công nợ của hóa đơn = 100,000đ\x3c/li>\n\x3c/ul>","*AIGenerated","*420 != 200","*RT-RC-014 Thanh toán bằng điểm thưởng kết hợp với tiền mặt","eNqVUsFKw0AQvfsV8wGFbAMihJiLHoReBPMDMUo2NN0Eu+ldPHgSzMGzSg/FQ1GJIGQPHjb0P+ZPHCVtNjZQvCy7O/Pem/d23cwbxahuJiCvApB6KTjIVD8LkDzY7Mc8hjFWXxI4qnkGddFg+OoN1aOIYKafQNLltYAJVp/StTJvz80TWpLYO0b1CgmVb3PCYrXIfwCp41pU/O040WVApRWJhboEieqBWBvGQxgyNmCM1UWLOCVtaqcmmukl7Mw7dKC+/zPiAKaois3o9n5z0WjQ+R8CtgO+4bZLdbBFNUJVwgzVnYgMz2cykPkUwvTi0gGbsbbid+ybwiGqRQC8Tas3G99AnGP1Tlxr34SiPOYhRPSmgmO1FDty6CEzX3on43YcR/qDSASB+vysc7Do93wDYSclMw==","*cash","*point","*RT-RC-015 Thanh toán bằng voucher kết hợp với phương thức khác","eNqVUj9PwkAU3/0U7wM06YGDSVNZ0ISEQaOVvZ6EayjXBq7djYOTQwcnFwkDcSBicOoNDkf4Hu+b+NCUFiEhLpdL3vv9vXPjRjtA/TAANfRBmZkUoCIzlqCEv7n3RQB9zL8UCNSTGNIo4aI7hBT1SwCxWM1XY9kjCOo3TttmzF07bhy5SUhHGDTOUL9DSEKPCSwzzKcJpOY1clybhj8bLbPwaUQ8wM0CFOrnNSNB7iWcQo0xizG2zErE5R/ZquGaA51fjxYMzGRjuHNx02ydXzFWs2CEOisEjv/FXnfAE5jrbY6THY426sW6oyfZqyS9Vr5KRsCju64DdcbKibcVuqrIUU99EGVHexvxKohbzD+IqwhOqDk9HYcePaUk8zN5oIA9ZGod+iDVbg9N80loSaB9QYoCbPos3yQMFJc=","*combined","*voucher","*Variable '${BANK_ACCOUNT_ID}' not found.","*RT-RC-016 Tạo phiếu thu với tiền thừa khi thanh toán thẻ","*<p>Kiểm tra tạo phiếu thu với thanh toán thẻ thừa tính vào công nợ khách hàng\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: thẻ\x3c/li>\n<li>Số tiền thanh toán: 120,000đ (thừa 20,000đ)\x3c/li>\n<li>Tài khoản thẻ: ${BANK_ACCOUNT_ID}\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 200\x3c/li>\n<li>Phiếu thu được tạo trong DB với số tiền 120,000đ\x3c/li>\n<li>Tổng tiền thanh toán của hóa đơn = 120,000đ\x3c/li>\n<li>Công nợ của hóa đơn = 0\x3c/li>\n\x3c/ul>","*card","*overpayment","*RT-RC-017 Thanh toán chuyển khoản với nhiều tài khoản","eNqdUs1Kw0AQvvsU8wCFbAJeQsylHoReBPsCYSvZYNwUu1vwKB48ecjBe6VI8RAsxFP2uKXvMW/ipBCTSCXoZVl25vuZbyeYh5MEzeMtqLsIlC2kAJXZVwlKRN/3G5HAAk0BMzRvMgYpCPOgqX+VUDHDai2BC31PTLJ5CJx5eBLolI40Cc/RfEBKsCcNuxyrjYalXWV+4FDx0HFhy4hKe9LjtgSF5oWkVK0k4QxcxkaMsV3eIi7Ffkvt1CTQvPOeZdeH8Q9Do75fd1TPlDcKp3+i9wbpvSH6CZoSlmieZdxJ4UpFSi+AZ7NrHzzG2sq0F0jXDEeziUC0+R1Na9pB9IOoUVs0aw4xfbQUWBVywPyvZN4/yMb2s14qAh0bpYnAoVX6Aik5Jgo=","*multiple_accounts","*transfer","*RT-RC-018 Thanh toán kết hợp ba phương thức thanh toán","eNqdksFKw0AQhu8+xTxAIdvGU4i51IPQi2BeYF0lG9pugt0UPIoHTx5y8G7poXgoFiII2YOHlL7HvEknSk0i1VAvy8LM/w18M27sDUI092PQNxx0sVQSdFTMFGjJv/9DGcIQ8w8NEs08hksOsdysNjMVUB+aF1Fvd63YO3KTET2j0DtF8wojmvGQwDrFfJHAtHiOHNei4mfHWZFxKhENRJGBRvNUcilyp+AEuox1GGPrtEqc/z4cug74X9Ex5u+6AxM06Y52fBCqRyiJuWky7IMYtgN9mdyS4lJjhPlcteEGaDKYonlUQc3SheY6mYCIrq4d6DFWVfyGsPpwgWbBQVZ+99r0awldU1dmVrRvAQHtX5GJpWqx2UCV6loZ9p8M8UPdP3D94o3kKArt07HTaNG5bgG7z072","*multiple_methods","*RT-RC-019 Tạo phiếu thu với tất cả số tiền thanh toán bằng điểm thưởng","eNptUr1Kw1AU3n2K8wBComOIGbSD0KVQXyCmkhuIN6G9cRcHJ8EMDuJgi0hxKCpxyh0cEvoe5038Iom9tlnucr7z/Zzvuqk3jFjfXJKa+qS4XCSUiojL74yUyOiK9VNEKqnmks5ZP9KMdU4KK9cSAF+KZrhohuWnDKnOWzax/mD9LEPXSr09N4vxxJE3YP1OMSC3GaBcLqFQzRPHtTD8RZxWhY/RGpRBVcCRfgBtK3hEB7a9b9t2nW82RpACHCDB+i0wXTlU3+/46fbGTZLOL2KtaML6VYZOI7IF2w3s9FkZsi6ak92BxWBQvspmFCSTC4cOTe6RcWlkhsOXoC1BTRNEGhy3DZhn7xE+M5roIv0RhiIiKbhcyZYMBB3KoPh3abPagPXSJ7EppreGk+oL6xKKfQtdaAs/4QdgzBFF","*RT-RC-020 Tạo hóa đơn với số dư nợ lớn hơn công nợ cho phép","*<p>Kiểm tra xử lý khi tạo hóa đơn có số dư nợ vượt quá công nợ cho phép\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Khách hàng có giới hạn công nợ 50,000đ\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: tiền mặt\x3c/li>\n<li>Số tiền thanh toán: 20,000đ (còn nợ 80,000đ &gt; giới hạn 50,000đ)\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 400\x3c/li>\n<li>Response có thông báo lỗi về giới hạn công nợ\x3c/li>\n\x3c/ul>","*debt_limit","*validation","*420 != 400","*RT-RC-021 Tạo hóa đơn với điểm khách hàng không đủ","*<p>Kiểm tra xử lý khi tạo hóa đơn thanh toán bằng điểm nhưng điểm không đủ\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Khách hàng có 50 điểm (tương đương 50,000đ)\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: Điểm thưởng\x3c/li>\n<li>Số điểm sử dụng: 100 (&gt; số điểm hiện có)\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 400\x3c/li>\n<li>Response có thông báo lỗi về điểm không đủ\x3c/li>\n\x3c/ul>","*200 != 400","*RT-RC-022 Tạo hóa đơn với mã voucher không hợp lệ","*<p>Kiểm tra xử lý khi tạo hóa đơn thanh toán bằng voucher không hợp lệ\x3c/p>\n<ul>\n<li>Dữ liệu đầu vào:\x3c/li>\n<li>Hóa đơn có tổng tiền = 100,000đ\x3c/li>\n<li>Phương thức thanh toán: Voucher\x3c/li>\n<li>Mã voucher: INVALID_VOUCHER (không tồn tại)\x3c/li>\n<li>Kỳ vọng:\x3c/li>\n<li>Status code: 400\x3c/li>\n<li>Response có thông báo lỗi về voucher không hợp lệ\x3c/li>\n\x3c/ul>","*500 != 400","*RT-RC-023 Tạo hóa đơn và cập nhật thông tin công nợ khách hàng","eNplUbFKxEAQ7f2KKRWErMI1IabRQrhGuC9YV7kNl0yCbq4XCyuLFPYXLA4F8TCCkC33uP+YP3GIxiSm2dmd997MvJ0gC6cR2fsEzI0ERfVbBqg5GDDafeIcTISgmhuSfYaFdqXSoN2KMwsdgaG6TPldSdgWuxIDLwv3gjzmI47CM7LvEHOHh5xhqtc5LN0q9QOPwYYx7RdUruo3u5TYqk5AbItOdf7Xr9EYsk/NrGTvkLlHQhwKMVBc6N2G6UzSZF8UB4kaTOpK9FthQvWX6SQzskULDeiT3+qwr9wH/sza5g561shWsCT7iPOe4ZmRJr8FlV5d+3AsRIecds4V2bXs/Sp7mowsjfiD5bBuw5AabfU1+V/L43V9A3W03vo=","*customer","*debt","*Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable"]);
 </script>
 <script type="text/javascript">
-window.output["stats"] = [[{"elapsed":"00:00:05","fail":5,"label":"All Tests","pass":4,"skip":0}],[],[{"elapsed":"00:00:06","fail":5,"id":"s1","label":"DiscountProcessingTest","name":"DiscountProcessingTest","pass":4,"skip":0}]];
+window.output["stats"] = [[{"elapsed":"00:00:10","fail":10,"label":"All Tests","pass":13,"skip":0}],[{"elapsed":"00:00:02","fail":10,"label":"AIGenerated","pass":0,"skip":0},{"elapsed":"00:00:08","fail":1,"label":"apiinvoice","pass":13,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"card","pass":0,"skip":0},{"elapsed":"00:00:01","fail":0,"label":"cash","pass":1,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"combined","pass":0,"skip":0},{"elapsed":"00:00:01","fail":1,"label":"customer","pass":0,"skip":0},{"elapsed":"00:00:01","fail":1,"label":"debt","pass":0,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"debt_limit","pass":0,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"multiple_accounts","pass":0,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"multiple_methods","pass":0,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"overpayment","pass":0,"skip":0},{"elapsed":"00:00:10","fail":10,"label":"payment","pass":13,"skip":0},{"elapsed":"00:00:01","fail":2,"label":"point","pass":1,"skip":0},{"elapsed":"00:00:08","fail":0,"label":"smoke","pass":13,"skip":0},{"elapsed":"00:00:00","fail":1,"label":"transfer","pass":0,"skip":0},{"elapsed":"00:00:01","fail":3,"label":"validation","pass":0,"skip":0},{"elapsed":"00:00:00","fail":2,"label":"voucher","pass":0,"skip":0}],[{"elapsed":"00:00:10","fail":10,"id":"s1","label":"Invoice Payment","name":"Invoice Payment","pass":13,"skip":0}]];
 </script>
 <script type="text/javascript">
-window.output["baseMillis"] = 1743760242069;
+window.output["baseMillis"] = 1744856599556;
 </script>
 <script type="text/javascript">
-window.output["generated"] = 6344;
+window.output["generated"] = 10227;
 </script>
 <script type="text/javascript">
 window.output["expand_keywords"] = null;
@@ -1912,7 +1654,7 @@ window.settings = {"background":{"fail":"#f66","pass":"#9e9","skip":"#fed84f"},"
 </script>
 <title></title>
 </head>
-<body data-theme="dark">
+<body>
 <div id="javascript-disabled">
   <h1>Opening Robot Framework report failed</h1>
   <ul>
@@ -1922,15 +1664,13 @@ window.settings = {"background":{"fail":"#f66","pass":"#9e9","skip":"#fed84f"},"
   </ul>
 </div>
 <script type="text/javascript">removeJavaScriptDisabledWarning();</script>
-<div id="status-bar"></div>
+
 <div id="header"></div>
 <div id="statistics-container"></div>
 <div id="test-details-container"></div>
 
 <script type="text/javascript">
 $(document).ready(function () {
-    storage.init();
-    theme.init(storage);
     try {
         var topsuite = window.testdata.suite();
     } catch (error) {
@@ -1938,37 +1678,24 @@ $(document).ready(function () {
         return;
     }
     window.prevLocationHash = '';
+    setBackground(topsuite);
     initLayout(topsuite.name, 'Report');
-    setStatusColor(topsuite);
+    storage.init('report');
     addSummary(topsuite);
     addStatistics();
     addDetails();
     window.onhashchange = showDetailsByHash;
-    document.addEventListener("theme-change", () => {
-        setStatusColor(topsuite);
-    });
 });
 
-function setStatusColor(topsuite) {
+function setBackground(topsuite) {
     var color;
-    let fail = Boolean(topsuite.fail);
-    let pass = Boolean(!topsuite.fail && topsuite.pass);
-    let skip = Boolean(!topsuite.fail && !topsuite.pass);
-    if (theme.getPreference() === 'dark') {
-        $('#status-bar').toggleClass("fail-bar", fail);
-        $('#status-bar').toggleClass("pass-bar", pass);
-        $('#status-bar').toggleClass("skip-bar", skip);
-        $('body').css('background-color', "#1c2227");
-        return;
-    }
-    if (fail)
+    if (topsuite.fail)
         color = window.settings.background.fail;
-    else if (pass)
+    else if (topsuite.pass)
         color = window.settings.background.pass;
     else
         color = window.settings.background.skip;
     $('body').css('background-color', color);
-    $('#status-bar').toggleClass("fail-bar pass-bar skip-bar", false);
 }
 
 function addSummary(topsuite) {
@@ -2354,7 +2081,7 @@ function hideHiddenDetailsColumns(elem) {
 
 <script type="text/x-jquery-tmpl" id="tagStatisticsRowTemplate">
   <tr onclick="tagDetailSelected('${label}')" class="row-${$item.index}">
-    <td class="stats-col-name" title="${doc}">
+    <td class="stats-col-name" title="{{html doc}}">
       <div class="stat-name">
         <a href="#tags?${label}">{{html label}}</a>
         {{if info}}(${info}){{/if}}

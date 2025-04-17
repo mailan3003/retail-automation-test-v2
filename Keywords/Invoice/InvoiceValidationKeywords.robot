@@ -2,6 +2,7 @@
 Resource    ../Utilities/Utilities.robot
 Resource    ../Utilities/RequestHelper.robot
 Resource    ../Utilities/ResponseHelper.robot
+Res
 Resource    ../../TestData/Invoice/InvoiceValidationData.robot
 Library     Collections
 Library     String
@@ -13,7 +14,10 @@ Resource    Env.robot
 *** Keywords ***
 Prepare Standard Invoice Request
     [Arguments]    ${invoice_details}=${None}    ${payments}=${None}
-    ${data}=    Evaluate    dict(${STANDARD_INVOICE_DATA})
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.UseDefaultPartner    ${True}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerCode    ${PARTNER_DELIVERY_1_CODE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerName    ${PARTNER_DELIVERY_1_NAME}
     
     # Add invoice details if provided, otherwise use standard details
     ${details}=    Run Keyword If    '${invoice_details}' == '${None}'    
@@ -278,8 +282,3 @@ Prepare Invoice With Insufficient Payment
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Send Create Invoice Request
-    ${headers}=    Create Auth Headers
-    ${response}=    POST    ${API_URL}/invoices    json=${REQUEST_DATA}    headers=${headers}
-    Set Test Variable    ${RESPONSE}    ${response}
-    RETURN    ${response}

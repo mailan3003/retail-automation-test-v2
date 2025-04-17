@@ -17,14 +17,31 @@ Resource          ../CommonData.robot
 ...    SoldById=${DEFAULT_USER_ID}
 ...    CustomerId=${DEFAULT_CUSTOMER_ID}
 ...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
-...    PurchaseDate=2024-05-05
 
 # Template dữ liệu cho request
 &{STANDARD_INVOICE_REQUEST}
 ...    Invoice=${STANDARD_INVOICE}
 ...    Payments=@{EMPTY}
 
+@{STANDARD_PAYMENT_BODY}
+...    &{payment_body} 
 
+&{payment_body} 
+...    Method=Cash
+...    Amount=100000
+
+
+# promotion
+@{invoice_promotion_body}    
+...    &{promotion_body}
+
+&{promotion_body}
+...    Type=1
+...    SalePromotionId=24747
+...    PromotionId=${VALID_PROMOTION_ID}   
+...    Discount=10000
+...    DiscountRatio=null
+...    PromotionInfo=Chương trình khuyến mại giảm giá hóa đơn VNĐ
 
 # Surcharge details
 &{surcharge_item_body}    
@@ -55,7 +72,6 @@ Resource          ../CommonData.robot
 ...    ProductId=${COMBO_PRODUCT_1_MATTERIAL_2_ID}
 ...    Quantity=1
 ...    Price=150000
-
 
 
 
@@ -114,7 +130,7 @@ Resource          ../CommonData.robot
 ...    ServiceAdd=${None}    
 ...    ServiceCode=0    
 ...    PartnerDelivery=${None}    
-...    PartnerCode=${None}    
+...    PartnerCode=${PARTNER_DELIVERY_1_CODE}      
 ...    PartnerName=${None}    
 ...    DeliveryCode=${None}
 
@@ -155,6 +171,25 @@ Resource          ../CommonData.robot
 
 
 
+
+
 # Invoice Body
 &{invoice_body}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{invoices_detail_body}    InvoiceOrderSurcharges=@{invoice_order_surcharges_body}    InvoicePromotions=@{Empty}    InvoiceSupplierPromotions=@{Empty}    DeliveryDetail=&{default_delivery_detail_body}    UsingCod=1    Payments=@{Empty}    Status=3    Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body}     Invoice=&{invoice_body}
+
+# Invoice body not delivery
+&{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    Discount=0   InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
+&{invoice_request_body_not_delivery}    Invoice=&{invoice_body_not_delivery}
+
+# Variables for AI Generated Test Cases
+${PROMOTION_ID_POINT}            1001    # ID Promotion for Point Gift
+${PROMOTION_ID_FIXED}            1002    # ID Promotion for Fixed Discount
+${PROMOTION_ID_FIXED_2}          1003    # ID Promotion for Fixed Discount 2
+${PROMOTION_ID_VOUCHER}          1004    # ID Promotion for Voucher Gift
+${PROMOTION_ID_MIN_QUANTITY}     1005    # ID Promotion for Min Quantity
+${VOUCHER_CAMPAIGN_ID}           1000000024     # Voucher Campaign ID
+${VOUCHER_ID}                    201     # Voucher ID
+
+# Voucher Campaign IDs for voucher payment tests
+${VOUCHER_CAMPAIGN_ID_1}    1000000024     # Voucher Campaign with 100,000đ value
+${VOUCHER_CAMPAIGN_ID_2}    102     # Voucher Campaign with 50,000đ value

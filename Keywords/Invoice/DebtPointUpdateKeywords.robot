@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần cập nhật công nợ và điểm thưởng
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/DebtPointUpdateData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot

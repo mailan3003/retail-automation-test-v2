@@ -56,6 +56,74 @@ Remove Nested Dictionary Property
     
     RETURN    ${dictionary}
 
+Update Value Item
+    [Documentation]    Updates an value in a specified index and path in a dictionary
+    [Arguments]    ${dictionary}    ${list_path}     ${property_name}    ${property_value}
+    @{parts}=    Split String    ${list_path}    .
+    ${parts_count}=    Get Length    ${parts}
+    ${current}=    Set Variable    ${dictionary}
+    
+    # Navigate to the correct level
+    FOR    ${i}    IN RANGE    0    ${parts_count}
+        ${part}=    Get From List    ${parts}    ${i}
+        ${current}=    Get From Dictionary    ${current}    ${part}
+        Log    ${current}
+    END
+    
+    # Get the item at the specified index
+ 
+    # Update the property in the item
+    Set To Dictionary    ${current}    ${property_name}=${property_value}
+    
+    RETURN    ${dictionary}
+
+Update List Item By Property
+    [Documentation]    Updates an item in a list by finding it using a property value and then updating another property
+    [Arguments]    ${dictionary}    ${list_path}    ${search_property}    ${search_value}    ${update_property}    ${update_value}
+    @{parts}=    Split String    ${list_path}    .
+    ${parts_count}=    Get Length    ${parts}
+    ${current}=    Set Variable    ${dictionary}
+    
+    # Navigate to the correct level
+    FOR    ${i}    IN RANGE    0    ${parts_count}
+        ${part}=    Get From List    ${parts}    ${i}
+        ${current}=    Get From Dictionary    ${current}    ${part}
+    END
+    
+    # Find the item with the matching property
+    ${list_length}=    Get Length    ${current}
+    FOR    ${i}    IN RANGE    0    ${list_length}
+        ${item}=    Get From List    ${current}    ${i}
+        ${item_value}=    Get From Dictionary    ${item}    ${search_property}
+        IF    $item_value == $search_value
+            # Update the property in the found item
+            Set To Dictionary    ${item}    ${update_property}=${update_value}
+            RETURN    ${dictionary}
+        END
+    END
+    
+    # If no matching item was found
+    Log    Warning: No item found with ${search_property}=${search_value} in ${list_path}    WARN
+    RETURN    ${dictionary}
+
+Remove List Item
+    [Documentation]    Removes an item from a list at a specified index and path in a dictionary
+    [Arguments]    ${dictionary}    ${list_path}    ${index}
+    @{parts}=    Split String    ${list_path}    .
+    ${parts_count}=    Get Length    ${parts}
+    ${current}=    Set Variable    ${dictionary}
+    
+    # Navigate to the correct level
+    FOR    ${i}    IN RANGE    0    ${parts_count}
+        ${part}=    Get From List    ${parts}    ${i}
+        ${current}=    Get From Dictionary    ${current}    ${part}
+    END
+    
+    # Remove the item at the specified index
+    Remove From List    ${current}    ${index}
+    
+    RETURN    ${dictionary}
+
 Add List Item
     [Documentation]    Adds an item to a list at a specified path in a dictionary
     [Arguments]    ${dictionary}    ${list_path}    ${item}

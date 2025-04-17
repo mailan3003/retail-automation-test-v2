@@ -1,12 +1,10 @@
 *** Settings ***
-Resource        Env.robot 
 Documentation     Utility keywords for API testing
 Library           Collections
 Library           String
 Library           RequestsLibrary
 Library           OperatingSystem
-Library           json
-
+Resource          ../../Config/Env.robot
 *** Keywords ***
 Create Auth Headers
     [Arguments]    ${token}=${AUTH_TOKEN}
@@ -28,3 +26,9 @@ Should Have Nested Property
     END
     Run Keyword If    '${expected_value}' != '${None}'    Should Be Equal    ${current}    ${expected_value}
     RETURN    ${current}
+
+Delete Data
+    [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
+    ${headers}=    Create Auth Headers    ${token}
+    ${response}=    DELETE    ${API_URL}${endpoint}    headers=${headers}    
+    RETURN    ${response}
