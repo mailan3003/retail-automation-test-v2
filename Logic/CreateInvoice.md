@@ -264,9 +264,25 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
       - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng
 
 ### 10. Kiểm tra thời gian giao hàng dự kiến
-- Nếu invoice.DeliveryDetail?.ExpectedDelivery <= invoice.PurchaseDate, ném ngoại lệ KvValidateDeliveryInfoException
-- Thông báo lỗi yêu cầu thời gian giao hàng dự kiến phải sau thời gian mua hàng
-- Đảm bảo tính logic về mặt thời gian trong quy trình giao hàng
+- **Quy trình xác thực thời gian giao hàng**:
+  - **Điều kiện kiểm tra**:
+    - Hệ thống chỉ kiểm tra khi `isValid = false` (bỏ qua kiểm tra khi đã xác thực ở nơi khác)
+    - Hóa đơn có thông tin giao hàng (`invoice.DeliveryDetail != null`)
+    - Thời gian giao hàng dự kiến được thiết lập (`invoice.DeliveryDetail.ExpectedDelivery != null`)
+    - Thời gian giao hàng dự kiến không hợp lệ (`invoice.DeliveryDetail.ExpectedDelivery <= invoice.PurchaseDate`)
+  
+  - **Xử lý và thông báo lỗi**:
+    - Khi thời gian giao hàng không hợp lệ, hệ thống:
+      - Ném ngoại lệ `KvValidateDeliveryInfoException`
+      - Hiển thị thông báo: "Thời gian giao hàng phải sau thời gian hóa đơn" (`Labels.cod_invalidExpecteDeliveryInvoice`)
+    - Mã nguồn thực hiện:
+      ```csharp
+      if (!isValid && invoice.DeliveryDetail != null && invoice.DeliveryDetail.ExpectedDelivery != null && 
+          invoice.DeliveryDetail.ExpectedDelivery <= invoice.PurchaseDate)
+      {
+          throw new KvValidateDeliveryInfoException(Labels.cod_invalidExpecteDeliveryInvoice);
+      }
+      ```
 
 ### 11. Kiểm tra giới hạn sử dụng khuyến mãi
 - Lọc các khuyến mãi có LimitPromotionUsage = true và LimitPromotionUsageType = Blocking
