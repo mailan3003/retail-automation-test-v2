@@ -117,6 +117,10 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
 - **Quy trình xác minh trạng thái khuyến mãi**:
   - Trích xuất danh sách ID khuyến mãi: `promotionIds = newPromotions.Select(p => (long)p.PromotionId).ToList()`
   - Kiểm tra với hệ thống khuyến mãi: `validateResult = await KvPromotionService.CheckIsDeletedCampaignByIds(promotionIds)`
+    - API khuyến mãi sẽ kiểm tra danh sách ID khuyến mãi với cơ sở dữ liệu
+    - Trả về danh sách ID hợp lệ (ValidIdList) và danh sách ID đã bị xóa (DeletedIdList)
+    - Một ID được coi là hợp lệ nếu tìm thấy chiến dịch khuyến mãi tương ứng trong cơ sở dữ liệu
+    - Một ID được coi là đã bị xóa nếu không tìm thấy chiến dịch khuyến mãi tương ứng
   - Xác định các khuyến mãi đã bị xóa: `deletedPromotions = newPromotions.Where(p => validateResult.DeletedIdList.Contains((long)p.PromotionId)).ToList()`
 
 - **Xử lý thông báo lỗi khuyến mãi**:
@@ -157,24 +161,30 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
 
 ### 7. Xử lý thông tin giao hàng COD
 - **Xác thực thông tin giao hàng COD**:
-  - Hệ thống kiểm tra các điều kiện: `invoice.UsingCod == 1 && invoice.DeliveryDetail != null && invoice.Status != (byte)InvoiceState.Issued && invoice.DeliveryDetail.UseDefaultPartner && (invoice.IsChangeNormalToShippingDelivery || !isUpdateInvoice)`
-  - Nếu thỏa mãn, hệ thống sẽ xác thực đối tác vận chuyển (carrier) thông qua mã đối tác: `currentCarrierCom = await KvPartnerDeliveryService.GetAll().FirstOrDefaultAsyncWithTracking(p => p.Code.Equals(req.Invoice.DeliveryDetail.PartnerCode), ExecutionContext)`
+  - Hệ thống kiểm tra các điều kiện cần thiết:
+    - Hóa đơn sử dụng COD (`invoice.UsingCod == 1`)
+    - Có thông tin chi tiết giao hàng (`invoice.DeliveryDetail != null`)
+    - Hóa đơn chưa được phát hành (`invoice.Status != (byte)InvoiceState.Issued`)
+    - Sử dụng đối tác vận chuyển mặc định (`invoice.DeliveryDetail.UseDefaultPartner`)
+    - Đang chuyển từ hóa đơn thường sang hóa đơn giao hàng hoặc không phải cập nhật hóa đơn (`invoice.IsChangeNormalToShippingDelivery || !isUpdateInvoice`)
 
-- **Kiểm tra tính hợp lệ của đối tác vận chuyển**:
-  - Đối tác phải đang hoạt động: `currentCarrierCom?.IsActive ?? false`
-  - Đối tác phải hỗ trợ nhà bán hàng hiện tại: `!string.IsNullOrEmpty(currentCarrierCom.Scope) && !currentCarrierCom.Scope.Contains(CurrentRetailerCode)`
-  - Cấu hình hệ thống phải cho phép sử dụng COD qua đối tác KiotViet: `!PosSetting.UseCodByKvCarrier`
-  - Nếu không thỏa mãn các điều kiện trên, hệ thống sẽ hiển thị thông báo lỗi: `throw new KvValidatePartnerDeliveryException(KVMessage.delivery_invalidCarrierCompany)`
+  - **Xác thực đối tác vận chuyển**:
+    - Lấy thông tin đối tác vận chuyển từ mã đối tác: `currentCarrierCom = await KvPartnerDeliveryService.GetAll().FirstOrDefaultAsyncWithTracking(p => p.Code.Equals(req.Invoice.DeliveryDetail.PartnerCode), ExecutionContext)`
+    - Kiểm tra tính hợp lệ của đối tác:
+      - Đối tác phải đang hoạt động: `currentCarrierCom?.IsActive ?? false`
+      - Đối tác phải hỗ trợ nhà bán hàng hiện tại: `!string.IsNullOrEmpty(currentCarrierCom.Scope) && !currentCarrierCom.Scope.Contains(CurrentRetailerCode)`
+      - Thiết lập của nhà bán hàng phải cho phép sử dụng COD qua đối tác KiotViet: `!PosSetting.UseCodByKvCarrier`
+    - Nếu không thỏa mãn, hiển thị thông báo: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại." (`throw new KvValidatePartnerDeliveryException(KVMessage.delivery_invalidCarrierCompany)`)
 
-- **Kiểm tra thông tin dịch vụ bổ sung**:
-  - Hệ thống yêu cầu phải có thông tin dịch vụ bổ sung: `string.IsNullOrEmpty(invoice.DeliveryDetail.ServiceAdd)`
-  - Nếu không có, hệ thống sẽ hiển thị thông báo lỗi: `throw new KvValidatePartnerDeliveryException(KVMessage.delivery_InvalidPaymentBy)`
+  - **Kiểm tra thông tin bên trả phí vận chuyển**:
+    - Yêu cầu phải có thông tin dịch vụ mở rộng: `string.IsNullOrEmpty(invoice.DeliveryDetail.ServiceAdd)`
+    - Nếu thiếu thông tin, hiển thị thông báo: "Vui lòng chọn bên trả phí" (`throw new KvValidatePartnerDeliveryException(KVMessage.delivery_InvalidPaymentBy)`)
 
-- **Xử lý trạng thái vận đơn**:
-  - Hệ thống kiểm tra và điều chỉnh trạng thái vận đơn cho hóa đơn mới: `invoice.Id <= 0 && invoice.UsingCod == 1 && invoice.DeliveryDetail != null && (invoice.DeliveryDetail.Status == 3 || invoice.DeliveryDetail.Status == 4)`
-  - Nếu trạng thái là 3, chuyển thành trạng thái Pending: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Pending`
-  - Nếu trạng thái là 4, chuyển thành trạng thái Delivering: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Delivering`
-  - Việc này đảm bảo tính nhất quán giữa trạng thái vận đơn và hóa đơn
+  - **Xử lý trạng thái vận đơn**:
+    - Áp dụng cho hóa đơn mới với điều kiện: `invoice.Id <= 0 && invoice.UsingCod == 1 && invoice.DeliveryDetail != null && (invoice.DeliveryDetail.Status == 3 || invoice.DeliveryDetail.Status == 4)`
+    - Chuẩn hóa trạng thái:
+      - Nếu trạng thái là 3, chuyển thành trạng thái Pending: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Pending`
+      - Nếu trạng thái là 4, chuyển thành trạng thái Delivering: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Delivering`
 
 - **Lợi ích của cơ chế xử lý COD**:
   - Đảm bảo thông tin vận chuyển và thanh toán COD được xác thực đầy đủ
@@ -183,46 +193,75 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
   - Tăng tính minh bạch và độ tin cậy trong quá trình giao hàng và thu tiền hộ
 
 ### 8. Xử lý thông tin địa chỉ giao hàng
-- **Kiểm tra thông tin địa chỉ**:
-  - Hệ thống kiểm tra nếu `invoice.DeliveryDetail` không null và có chứa thông tin `LocationName` và `WardName`
-  - Xác định liệu thông tin địa chỉ có đầy đủ ID tương ứng hay không (`LocationId` và `WardId`)
-  - Nếu có tên địa chỉ nhưng thiếu ID, hệ thống sẽ tự động tìm kiếm và bổ sung thông tin này
+- **Quy trình xác định và cập nhật thông tin địa chỉ**:
+  - **Điều kiện kiểm tra**:
+    - Hệ thống chỉ xử lý khi `invoice.DeliveryDetail` không null
+    - Thông tin địa chỉ phải có đầy đủ tên địa điểm (`LocationName`) và tên phường/xã (`WardName`)
+  
+  - **Quy trình tìm kiếm và ánh xạ ID địa chỉ**:
+    - Gọi phương thức `LocationService.GetLocationIdAndWardId(locationName, wardName)` để lấy thông tin ID
+    - Phương thức này thực hiện hai bước chính:
+      1. **Tìm kiếm thông tin tỉnh/thành phố**:
+         - Ưu tiên tìm trong Redis cache (nếu được cấu hình)
+         - Nếu không tìm thấy trong cache, truy vấn từ cơ sở dữ liệu bằng câu lệnh:
+           ```sql
+           SELECT l.Id, l.Name, l.KmsId AS LocationKmsId, w.Id AS WardId, w.KmsId AS WardKmsId
+           FROM KvLocations l
+           LEFT JOIN KvWards w ON w.LocationId = l.Id
+           WHERE LOWER(l.Name) = LOWER(@locationName) AND LOWER(w.Name) = LOWER(@wardName)
+           ```
+         - So khớp tên địa điểm không phân biệt hoa thường
+      
+      2. **Tìm kiếm thông tin phường/xã**:
+         - Lấy danh sách phường/xã thuộc tỉnh/thành phố đã tìm thấy
+         - So khớp tên phường/xã không phân biệt hoa thường
+         - Nếu không tìm thấy chính xác, sử dụng phường/xã đầu tiên trong danh sách
+    
+    - **Kết quả trả về** bao gồm:
+      - `LocationId`: ID tỉnh/thành phố trong hệ thống
+      - `LocationKmsId`: Mã tỉnh/thành phố để ánh xạ với hệ thống KMS
+      - `WardId`: ID phường/xã trong hệ thống
+      - `WardKmsId`: Mã phường/xã để ánh xạ với hệ thống KMS
 
-- **Xử lý tìm kiếm ID từ tên địa chỉ**:
-  - Gọi `LocationService.GetLocationIdAndWardId(invoice.DeliveryDetail.LocationName, invoice.DeliveryDetail.WardName)` để lấy thông tin ID
-  - Phương thức này thực hiện tìm kiếm trong cơ sở dữ liệu để khớp tên địa điểm với ID tương ứng
-  - Kết quả trả về bao gồm `LocationId` (mã tỉnh/thành phố) và `WardId` (mã phường/xã)
+  - **Cập nhật thông tin địa chỉ trong hóa đơn**:
+    - **Cập nhật WardId** khi:
+      - Tìm thấy thông tin phường/xã hợp lệ (`kvReceiver != null && kvReceiver.WardId > 0`)
+      - Mã phường/xã tìm được khác với mã hiện tại (`kvReceiver.WardId != invoice.DeliveryDetail.WardId`)
+      - Thực hiện cập nhật: `invoice.DeliveryDetail.WardId = kvReceiver.WardId`
+    
+    - **Cập nhật LocationId** khi:
+      - Tìm thấy thông tin tỉnh/thành phố hợp lệ (`kvReceiver != null && kvReceiver.LocationId > 0`)
+      - Hóa đơn chưa có mã tỉnh/thành phố hoặc mã không hợp lệ (`invoice.DeliveryDetail.LocationId.GetValueOrDefault() <= 0`)
+      - Thực hiện cập nhật: `invoice.DeliveryDetail.LocationId = kvReceiver.LocationId`
 
-- **Cập nhật thông tin WardId**:
-  - Nếu `kvReceiver != null && kvReceiver.WardId > 0 && kvReceiver.WardId != invoice.DeliveryDetail.WardId`
-  - Hệ thống sẽ cập nhật `invoice.DeliveryDetail.WardId = kvReceiver.WardId`
-  - Việc này đảm bảo sử dụng mã phường/xã chính xác từ cơ sở dữ liệu, tránh lỗi do nhập liệu thủ công
+- **Lợi ích của cơ chế xử lý địa chỉ**:
+  - Tự động bổ sung thông tin ID từ tên địa chỉ, giúp chuẩn hóa dữ liệu
+  - Hỗ trợ tìm kiếm thông minh không phân biệt hoa thường
+  - Tối ưu hiệu suất bằng cách sử dụng Redis cache
+  - Đảm bảo tính nhất quán của dữ liệu địa chỉ trong hệ thống
 
-- **Cập nhật thông tin LocationId**:
-  - Nếu `kvReceiver != null && kvReceiver.LocationId > 0 && invoice.DeliveryDetail.LocationId.GetValueOrDefault() <= 0`
-  - Hệ thống sẽ cập nhật `invoice.DeliveryDetail.LocationId = kvReceiver.LocationId`
-  - Điều kiện này đảm bảo chỉ cập nhật khi LocationId hiện tại không hợp lệ hoặc chưa được thiết lập
+### 9. Kiểm tra thông tin khách hàng và kênh bán hàng
+- **Quy trình xác thực thông tin khách hàng và kênh bán hàng**:
+  - **Xác thực thông tin khách hàng**:
+    - Khi khách hàng có ID không hợp lệ (điều kiện `invoice.CustomerId != null && invoice.CustomerId < -0.0000001`): 
+      - Hệ thống ném ngoại lệ `KvValidateCustomerException`
+      - Thông báo lỗi: `KVMessage.invoiceError_updateInvoiceInfo` ("Có lỗi trong quá trình ghi nhận thông tin. Xin vui lòng Lưu lại thông tin khách hàng một lần nữa.")
+      - Đây là cơ chế bảo vệ ngăn chặn việc sử dụng ID khách hàng không hợp lệ
 
-- **Xử lý trường hợp không tìm thấy địa chỉ**:
-  - Nếu không tìm thấy thông tin địa chỉ trong cơ sở dữ liệu, hệ thống vẫn giữ nguyên thông tin tên địa chỉ
-  - Trong trường hợp này, hệ thống có thể hiển thị cảnh báo cho người dùng về việc địa chỉ không được xác thực
-  - Tùy thuộc vào cấu hình, hệ thống có thể cho phép tiếp tục hoặc yêu cầu cung cấp địa chỉ hợp lệ
+  - **Xác thực kênh bán hàng**:
+    - Khi hóa đơn có chỉ định kênh bán hàng (trường `invoice.SaleChannelId` có giá trị và lớn hơn 0):
+      - Hệ thống truy vấn thông tin kênh bán hàng: `await SaleChannelService.GetByIdAsync(invoice.SaleChannelId ?? 0)`
+      - Kiểm tra các điều kiện:
+        1. Kênh bán hàng tồn tại: `saleChannelInDB != null`
+        2. Kênh bán hàng thuộc về cửa hàng hiện tại: `saleChannelInDB.RetailerId == CurrentRetailerId`
+        3. Kênh bán hàng đang hoạt động: `saleChannelInDB.IsActive == true`
+      - Nếu không thỏa mãn bất kỳ điều kiện nào, hệ thống ném ngoại lệ `KvValidateSaleChannelException` với thông báo `KVMessage.sc_kenh_ban_khong_ton_tai` ("Kênh bán không tồn tại")
 
-- **Kiểm tra phạm vi giao hàng**:
-  - Sau khi xác định được LocationId và WardId chính xác, hệ thống kiểm tra xem địa chỉ có nằm trong phạm vi giao hàng không
-  - Việc kiểm tra dựa trên cấu hình phạm vi giao hàng của cửa hàng và đối tác vận chuyển (nếu có)
-  - Nếu địa chỉ nằm ngoài phạm vi giao hàng, hệ thống có thể hiển thị cảnh báo hoặc từ chối tạo đơn hàng
-
-- **Tính toán phí vận chuyển**:
-  - Dựa trên thông tin địa chỉ đã xác thực, hệ thống có thể tính toán phí vận chuyển chính xác
-  - Phí vận chuyển được tính dựa trên khoảng cách, trọng lượng đơn hàng và các chính sách của đối tác vận chuyển
-  - Thông tin này được cập nhật vào `invoice.DeliveryDetail.ShippingFee` để hiển thị cho khách hàng
-
-### 9. Kiểm tra khách hàng
-- Nếu CustomerId < 0, ném ngoại lệ KvValidateCustomerException với thông báo phù hợp
-- Nếu CustomerId > 0, kiểm tra khách hàng có tồn tại và đang hoạt động không
-- Kiểm tra kênh bán hàng (SaleChannelId) có tồn tại và đang hoạt động không thông qua SaleChannelService
-- Xác thực các thông tin liên quan đến khách hàng như nhóm khách hàng, bảng giá áp dụng, điểm tích lũy
+  - **Xác thực thông tin giao hàng**:
+    - Khi hóa đơn có thông tin giao hàng và thời gian giao hàng dự kiến được thiết lập, nhưng thời gian này sớm hơn hoặc bằng thời gian mua hàng (tức là `invoice.DeliveryDetail != null && invoice.DeliveryDetail.ExpectedDelivery != null && invoice.DeliveryDetail.ExpectedDelivery <= invoice.PurchaseDate`):
+      - Hệ thống ném ngoại lệ `KvValidateDeliveryInfoException`
+      - Thông báo lỗi: `Labels.cod_invalidExpecteDeliveryInvoice` ("Thời gian giao hàng phải sau thời gian hóa đơn")
+      - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng
 
 ### 10. Kiểm tra thời gian giao hàng dự kiến
 - Nếu invoice.DeliveryDetail?.ExpectedDelivery <= invoice.PurchaseDate, ném ngoại lệ KvValidateDeliveryInfoException
