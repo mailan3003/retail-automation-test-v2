@@ -31,4 +31,4 @@ deploy to nomad agent:
     - develop-ci
   script:
     - echo "Deploying to Nomad agent"
-    - cp deloy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
+    - cp deploy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
