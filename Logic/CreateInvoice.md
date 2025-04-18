@@ -85,161 +85,138 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
     - Hệ thống sẽ ném ngoại lệ với thông báo "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
 
 ### 4. Kiểm tra xung đột phiên bản
-- **Xác định hóa đơn cập nhật hiện có**:
-  - Hệ thống kiểm tra điều kiện `invoice.Id > 0` để xác định đây là một yêu cầu cập nhật hóa đơn đã tồn tại trong hệ thống
-  - Khi cập nhật hóa đơn hiện có, cần thực hiện các kiểm tra để đảm bảo không ghi đè lên các thay đổi mới hơn đã được thực hiện bởi người dùng khác
-
-- **Truy xuất thông tin giao hàng hiện tại**:
-  - Hệ thống gọi phương thức bất đồng bộ: `di = await DeliveryInfoService.GetLastByInvoiceIdAsync(invoice.Id)`
-  - Phương thức này lấy thông tin giao hàng mới nhất của hóa đơn từ cơ sở dữ liệu
-  - Thông tin này sẽ được sử dụng để so sánh với thông tin giao hàng trong yêu cầu cập nhật
+- **Kiểm tra xung đột phiên bản khi cập nhật hóa đơn**:
+  - Hệ thống kiểm tra điều kiện `invoice.Id > 0` để xác định đây là yêu cầu cập nhật hóa đơn đã tồn tại
+  - Khi cập nhật hóa đơn hiện có, hệ thống thực hiện các kiểm tra để đảm bảo không ghi đè lên thay đổi mới hơn từ người dùng khác
 
 - **Kiểm tra xung đột thông tin giao hàng**:
-  - Hệ thống kiểm tra điều kiện: `di?.UseDefaultPartner == true` (hóa đơn hiện tại đang sử dụng đối tác vận chuyển mặc định)
-  - Đồng thời kiểm tra xem trong yêu cầu cập nhật: `invoice.DeliveryDetail == null` (không có thông tin giao hàng) hoặc `invoice.DeliveryDetail.UseDefaultPartner == false` (không sử dụng đối tác vận chuyển mặc định)
-  - Nếu điều kiện này đúng, có nghĩa là đang có sự thay đổi không nhất quán về cấu hình đối tác vận chuyển
+  - Hệ thống truy xuất thông tin giao hàng mới nhất: `di = await DeliveryInfoService.GetLastByInvoiceIdAsync(invoice.Id)`
+  - Nếu phát hiện xung đột cấu hình đối tác vận chuyển:
+    - Hóa đơn hiện tại sử dụng đối tác vận chuyển mặc định (`di?.UseDefaultPartner == true`)
+    - Nhưng yêu cầu cập nhật không sử dụng đối tác vận chuyển mặc định (không có thông tin giao hàng hoặc `UseDefaultPartner == false`)
+    - Hệ thống sẽ ném ra ngoại lệ `KvValidateException` với thông báo "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới" (`OverwriteNewerCopyNotAllowed`)
 
 - **Kiểm tra xung đột trạng thái hóa đơn**:
-  - Hệ thống so sánh trạng thái hiện tại của hóa đơn với trạng thái trong yêu cầu cập nhật: `inv.Status != invoice.Status`
-  - Nếu trạng thái đã thay đổi, có thể có người dùng khác đã cập nhật hóa đơn này (ví dụ: đã hoàn thành hoặc đã hủy)
-  - Việc ghi đè lên trạng thái mới có thể gây ra mất dữ liệu hoặc xung đột logic nghiệp vụ
-
-- **Xử lý khi phát hiện xung đột**:
-  - Nếu phát hiện bất kỳ xung đột nào (về thông tin giao hàng hoặc trạng thái), hệ thống sẽ ném ra ngoại lệ `KvValidateException`
-  - Thông báo lỗi sẽ là `"OverwriteNewerCopyNotAllowed"` (Không được phép ghi đè phiên bản mới hơn)
-  - Người dùng sẽ được thông báo để tải lại dữ liệu mới nhất và thực hiện lại các thay đổi của họ
-  - Cơ chế này đảm bảo tính toàn vẹn dữ liệu trong môi trường nhiều người dùng đồng thời cập nhật cùng một hóa đơn
+  - Hệ thống truy xuất hóa đơn hiện tại: `inv = await InvoiceService.GetByIdAsync(invoice.Id)`
+  - So sánh trạng thái hiện tại với trạng thái trong yêu cầu cập nhật: `inv.Status != invoice.Status`
+  - Nếu trạng thái đã thay đổi, hệ thống ném ra ngoại lệ `KvValidateException` với thông báo "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới" (`OverwriteNewerCopyNotAllowed`)
 
 - **Lợi ích của cơ chế kiểm tra xung đột**:
-  - Ngăn chặn việc vô tình ghi đè lên các thay đổi mới hơn
-  - Đảm bảo tính nhất quán của dữ liệu trong hệ thống
+  - Ngăn chặn việc vô tình ghi đè lên thay đổi mới hơn từ người dùng khác
+  - Đảm bảo tính nhất quán của dữ liệu trong hệ thống đa người dùng
   - Giảm thiểu rủi ro mất dữ liệu do cập nhật đồng thời
-  - Cung cấp thông báo rõ ràng cho người dùng khi xảy ra xung đột
+  - Cung cấp thông báo rõ ràng cho người dùng khi xảy ra xung đột, hướng dẫn họ tải lại dữ liệu mới nhất
+
 
 ### 5. Kiểm tra khuyến mãi
-- **Lọc các khuyến mãi mới**:
-  - Hệ thống thực hiện truy vấn: `newPromotions = invoice.InvoicePromotions?.Where(p => p.Id == 0 && p.PromotionId != null)`
-  - Chỉ lấy các khuyến mãi có Id = 0 (chưa được lưu vào cơ sở dữ liệu) và có PromotionId không null
-  - Điều này giúp xác định các khuyến mãi mới được thêm vào hóa đơn trong quá trình tạo hoặc cập nhật
+- **Quy trình xác thực khuyến mãi**:
+  - Hệ thống kiểm tra danh sách khuyến mãi trong hóa đơn: `invoice.InvoicePromotions != null && invoice.InvoicePromotions.Any()`
+  - Chỉ xử lý các khuyến mãi mới (chưa có Id): `newPromotions = invoice.InvoicePromotions.Where(p => p.Id == 0 && p.PromotionId != null).ToList()`
+  - Nếu có khuyến mãi mới, hệ thống sẽ tiến hành kiểm tra tính hợp lệ
 
-- **Xác thực tính hợp lệ của từng khuyến mãi**:
-  - Với mỗi khuyến mãi mới, hệ thống gọi phương thức bất đồng bộ: `PromotionService.GetByIdAsync(promotion.PromotionId.Value)`
-  - Phương thức này truy vấn cơ sở dữ liệu để lấy thông tin chi tiết về chương trình khuyến mãi
-  - Hệ thống kiểm tra xem khuyến mãi có tồn tại trong hệ thống không (promotionDb != null)
-  - Đồng thời kiểm tra trạng thái hoạt động của khuyến mãi (promotionDb.Status == (int)PromotionStatus.Active)
+- **Quy trình xác minh trạng thái khuyến mãi**:
+  - Trích xuất danh sách ID khuyến mãi: `promotionIds = newPromotions.Select(p => (long)p.PromotionId).ToList()`
+  - Kiểm tra với hệ thống khuyến mãi: `validateResult = await KvPromotionService.CheckIsDeletedCampaignByIds(promotionIds)`
+  - Xác định các khuyến mãi đã bị xóa: `deletedPromotions = newPromotions.Where(p => validateResult.DeletedIdList.Contains((long)p.PromotionId)).ToList()`
 
-- **Xử lý khuyến mãi không hợp lệ**:
-  - Nếu khuyến mãi không tồn tại, hệ thống ném ra ngoại lệ `KvValidateException` với thông báo: `KVMessage.PromotionNotFound`
-  - Nếu khuyến mãi đã bị vô hiệu hóa, hệ thống ném ra ngoại lệ `KvValidateException` với thông báo: `KVMessage.PromotionInactive`
-  - Nếu khuyến mãi đã bị xóa, hệ thống ném ra ngoại lệ `KvValidateException` với thông báo: `KVMessage.PromotionDeleted`
-  - Các thông báo lỗi này giúp người dùng hiểu rõ lý do tại sao không thể áp dụng khuyến mãi
+- **Xử lý thông báo lỗi khuyến mãi**:
+  - Khi phát hiện khuyến mãi đã bị xóa, hệ thống sẽ:
+    - Trích xuất tên khuyến mãi từ thông tin chi tiết (lấy phần trước dấu ":")
+    - Tổng hợp danh sách tên khuyến mãi không hợp lệ: `deletedPromotionNamesString = string.Join(", ", deletedPromotionNames)`
+    - Hiển thị thông báo lỗi rõ ràng cho người dùng: `throw new KvValidateException(string.Format(KVMessage.PromotionsAreDeletedNotification, deletedPromotionNamesString))` với nội dung "Chương trình khuyến mại {0} ngừng hoạt động, vui lòng áp dụng khuyến mại khác!"
 
-- **Kiểm tra thời gian áp dụng khuyến mãi**:
-  - Hệ thống so sánh thời gian hiện tại với thời gian bắt đầu và kết thúc của khuyến mãi
-  - Nếu thời gian hiện tại < thời gian bắt đầu, ném ra ngoại lệ với thông báo: `KVMessage.PromotionNotStarted`
-  - Nếu thời gian hiện tại > thời gian kết thúc, ném ra ngoại lệ với thông báo: `KVMessage.PromotionExpired`
-  - Điều này đảm bảo khuyến mãi chỉ được áp dụng trong khoảng thời gian hợp lệ
-
-- **Kiểm tra giới hạn sử dụng khuyến mãi**:
-  - Hệ thống kiểm tra xem khuyến mãi có giới hạn số lần sử dụng không (promotionDb.LimitUsage == true)
-  - Nếu có, hệ thống gọi phương thức: `PromotionService.CheckLimitUsage(promotionDb, invoice.CustomerId)`
-  - Phương thức này kiểm tra số lần khách hàng đã sử dụng khuyến mãi và so sánh với giới hạn cho phép
-  - Nếu vượt quá giới hạn, ném ra ngoại lệ với thông báo chi tiết về số lần đã sử dụng và giới hạn
-
-- **Kiểm tra đối tượng áp dụng khuyến mãi**:
-  - Hệ thống xác thực xem khuyến mãi có áp dụng cho khách hàng hiện tại không
-  - Kiểm tra điều kiện về nhóm khách hàng: `PromotionService.CheckCustomerGroup(promotionDb, invoice.CustomerId)`
-  - Kiểm tra điều kiện về kênh bán hàng: `PromotionService.CheckSaleChannel(promotionDb, invoice.SaleChannelId)`
-  - Nếu không thỏa mãn các điều kiện, ném ra ngoại lệ với thông báo phù hợp
-
-- **Kiểm tra điều kiện áp dụng khuyến mãi**:
-  - Hệ thống xác thực các điều kiện như giá trị đơn hàng tối thiểu, số lượng sản phẩm tối thiểu
-  - Kiểm tra xem các sản phẩm trong hóa đơn có thuộc danh sách sản phẩm được áp dụng khuyến mãi không
-  - Nếu không thỏa mãn điều kiện, ném ra ngoại lệ với thông báo chi tiết về điều kiện áp dụng
-
-- **Lợi ích của việc kiểm tra khuyến mãi**:
-  - Đảm bảo tính hợp lệ của các khuyến mãi được áp dụng
-  - Ngăn chặn việc lạm dụng hoặc áp dụng sai khuyến mãi
-  - Cung cấp thông báo rõ ràng cho người dùng khi khuyến mãi không thể áp dụng
-  - Duy trì tính nhất quán trong chính sách khuyến mãi của doanh nghiệp
+- **Lợi ích của cơ chế kiểm tra khuyến mãi**:
+  - Đảm bảo tính nhất quán trong chính sách khuyến mãi
+  - Ngăn chặn việc áp dụng khuyến mãi đã hết hạn hoặc bị hủy
+  - Cung cấp thông báo chi tiết giúp người dùng hiểu rõ vấn đề
+  - Tăng tính minh bạch trong quá trình xử lý hóa đơn
 
 ### 6. Kiểm tra UUID
-- **Xác thực tính duy nhất của UUID**:
-  - Hệ thống gọi phương thức bất đồng bộ `CheckUuidAsync(invoice)` để kiểm tra và xử lý UUID của hóa đơn
-  - Phương thức này kiểm tra xem UUID đã tồn tại trong hệ thống hay chưa thông qua truy vấn cơ sở dữ liệu
-  - Nếu UUID đã tồn tại và thuộc về hóa đơn khác, hệ thống sẽ ném ra ngoại lệ `KvValidateInvoiceException` với thông báo `KVMessage.invoiceLog_OnlineInvoiceCodeIsDup`
-
-- **Xử lý UUID trong trường hợp đặc biệt**:
-  - Nếu `InvoiceProcessingToggle` được bật và `invoice.Id <= 0` (hóa đơn mới)
-  - Hệ thống kiểm tra thêm điều kiện: UUID không rỗng (`!string.IsNullOrEmpty(invoice.Uuid)`) và mã hóa đơn không bắt đầu bằng tiền tố offline (`!invoice.Code.StartsWith(Invoice.OffCodePrefix)`)
-  - Trong trường hợp này, hệ thống sẽ kiểm tra UUID trong bộ nhớ cache Redis thông qua `InvoiceService.CheckCachRedisUUID(invoice.Uuid)`
-  - Nếu UUID đã tồn tại trong cache, hệ thống ném ra ngoại lệ với thông báo trùng lặp kèm theo thời gian tạo
-
-- **Lưu trữ UUID mới vào cache**:
-  - Sau khi xác nhận UUID chưa tồn tại, hệ thống lưu UUID mới vào Redis cache thông qua `InvoiceService.SaveCachRedisUUID(invoice.Uuid)`
-  - Việc này giúp ngăn chặn các yêu cầu tạo hóa đơn trùng lặp trong khoảng thời gian ngắn, đặc biệt hữu ích trong môi trường có nhiều người dùng đồng thời
-
-- **Tạo UUID mới nếu cần thiết**:
-  - Nếu hóa đơn không có UUID (`string.IsNullOrEmpty(invoice.Uuid)`), hệ thống sẽ tự động tạo một UUID mới
-  - UUID mới được tạo theo định dạng chuẩn sử dụng `Guid.NewGuid().ToString()`
-  - Điều này đảm bảo mỗi hóa đơn đều có một định danh duy nhất trên toàn hệ thống
-
-- **Xử lý UUID trong trường hợp cập nhật hóa đơn**:
-  - Khi cập nhật hóa đơn (invoice.Id > 0), hệ thống kiểm tra xem UUID có thay đổi không
-  - Nếu UUID mới khác với UUID cũ, hệ thống sẽ thực hiện kiểm tra tính duy nhất của UUID mới
-  - Trong trường hợp UUID mới đã tồn tại, hệ thống sẽ giữ nguyên UUID cũ và ghi log cảnh báo
-
-- **Lợi ích của việc kiểm tra UUID**:
-  - Ngăn chặn việc tạo các hóa đơn trùng lặp, đặc biệt quan trọng trong môi trường đa người dùng
-  - Hỗ trợ đồng bộ dữ liệu giữa các hệ thống khác nhau thông qua định danh duy nhất
-  - Đảm bảo tính toàn vẹn dữ liệu trong cơ sở dữ liệu
-  - Tạo điều kiện thuận lợi cho việc truy xuất và tham chiếu hóa đơn trong các quy trình nghiệp vụ khác
+- **Kiểm tra UUID để tránh hóa đơn trùng lặp**:
+  - Hệ thống sử dụng phương thức `CheckUuidAsync(invoice)` để xác minh UUID của hóa đơn
+  - Hệ thống bỏ qua việc kiểm tra UUID trong các trường hợp sau:
+    - Hóa đơn không tồn tại (null)
+    - Hóa đơn đã được lưu trong hệ thống (Id > 0)
+    - Tính năng kiểm tra UUID trùng lặp đang tắt
+    - Hóa đơn không có UUID
+    - Hóa đơn là đơn hàng offline (mã bắt đầu bằng tiền tố "HDO")
+  
+  - Quy trình kiểm tra UUID:
+    - Sử dụng transaction với mức cô lập ReadUncommitted
+    - Tìm kiếm hóa đơn có UUID giống nhau trong khoảng thời gian 7 ngày trước và sau ngày mua hàng
+    - Nếu ngày mua hàng không hợp lệ, sử dụng thời gian hiện tại làm mốc
+  
+  - Xử lý khi phát hiện UUID trùng lặp:
+    - Nếu cả thông tin khách hàng và tổng tiền đều trùng khớp:
+      - Ném ngoại lệ với thông báo "Mã hóa đơn online bị trùng: {mã hóa đơn hiện tại} - {mã hóa đơn mới}"
+    
+    - Nếu tổng tiền khác nhau hoặc thông tin khách hàng khác nhau:
+      - Tạo UUID mới với định dạng "WN" + Guid mới
+      - Ghi log thông tin về việc phát hiện và xử lý UUID trùng lặp
+      - Tiếp tục xử lý hóa đơn với UUID mới
 
 ### 7. Xử lý thông tin giao hàng COD
-- **Kiểm tra điều kiện sử dụng COD**:
-  - Hệ thống kiểm tra thuộc tính `invoice.DeliveryDetail?.UsingCod == 1` để xác định hóa đơn có sử dụng dịch vụ thu hộ (COD - Cash On Delivery) hay không
-  - Nếu sử dụng COD, hệ thống sẽ thực hiện các bước xác thực bổ sung để đảm bảo thông tin giao hàng hợp lệ
-  - Trường hợp `UsingCod != 1`, hệ thống bỏ qua các bước xác thực liên quan đến COD
+- **Xác thực thông tin giao hàng COD**:
+  - Hệ thống kiểm tra các điều kiện: `invoice.UsingCod == 1 && invoice.DeliveryDetail != null && invoice.Status != (byte)InvoiceState.Issued && invoice.DeliveryDetail.UseDefaultPartner && (invoice.IsChangeNormalToShippingDelivery || !isUpdateInvoice)`
+  - Nếu thỏa mãn, hệ thống sẽ xác thực đối tác vận chuyển (carrier) thông qua mã đối tác: `currentCarrierCom = await KvPartnerDeliveryService.GetAll().FirstOrDefaultAsyncWithTracking(p => p.Code.Equals(req.Invoice.DeliveryDetail.PartnerCode), ExecutionContext)`
 
-- **Xác thực đối tác vận chuyển**:
-  - Hệ thống kiểm tra `PartnerDeliveryId` thông qua `PartnerDeliveryService.GetByIdAsync(invoice.DeliveryDetail.PartnerDeliveryId)`
-  - Xác nhận đối tác vận chuyển tồn tại trong hệ thống và có trạng thái hoạt động (`IsActive == true`)
-  - Nếu đối tác vận chuyển không tồn tại hoặc không hoạt động, hệ thống sẽ ném ra ngoại lệ `KvValidateDeliveryInfoException` với thông báo lỗi phù hợp
-  - Kiểm tra thêm điều kiện đối tác vận chuyển có hỗ trợ dịch vụ COD không thông qua thuộc tính `SupportCod`
+- **Kiểm tra tính hợp lệ của đối tác vận chuyển**:
+  - Đối tác phải đang hoạt động: `currentCarrierCom?.IsActive ?? false`
+  - Đối tác phải hỗ trợ nhà bán hàng hiện tại: `!string.IsNullOrEmpty(currentCarrierCom.Scope) && !currentCarrierCom.Scope.Contains(CurrentRetailerCode)`
+  - Cấu hình hệ thống phải cho phép sử dụng COD qua đối tác KiotViet: `!PosSetting.UseCodByKvCarrier`
+  - Nếu không thỏa mãn các điều kiện trên, hệ thống sẽ hiển thị thông báo lỗi: `throw new KvValidatePartnerDeliveryException(KVMessage.delivery_invalidCarrierCompany)`
 
-- **Kiểm tra dịch vụ vận chuyển**:
-  - Hệ thống xác thực `ServiceId` thông qua `DeliveryServiceService.GetByIdAsync(invoice.DeliveryDetail.ServiceId)`
-  - Kiểm tra dịch vụ vận chuyển có thuộc về đối tác vận chuyển đã chọn không (`service.PartnerDeliveryId == invoice.DeliveryDetail.PartnerDeliveryId`)
-  - Xác nhận dịch vụ vận chuyển đang hoạt động (`IsActive == true`) và hỗ trợ COD (`SupportCod == true`)
-  - Nếu dịch vụ vận chuyển không hợp lệ, hệ thống sẽ ném ra ngoại lệ với thông báo chi tiết về lỗi
+- **Kiểm tra thông tin dịch vụ bổ sung**:
+  - Hệ thống yêu cầu phải có thông tin dịch vụ bổ sung: `string.IsNullOrEmpty(invoice.DeliveryDetail.ServiceAdd)`
+  - Nếu không có, hệ thống sẽ hiển thị thông báo lỗi: `throw new KvValidatePartnerDeliveryException(KVMessage.delivery_InvalidPaymentBy)`
 
-- **Xử lý giá trị COD**:
-  - Hệ thống tính toán giá trị COD dựa trên tổng giá trị hóa đơn trừ đi số tiền đã thanh toán: `invoice.Total - invoice.TotalPayment`
-  - Cập nhật giá trị `OriginalCod` trong thông tin giao hàng để lưu trữ giá trị COD ban đầu
-  - Kiểm tra giá trị COD không vượt quá giới hạn cho phép của đối tác vận chuyển (nếu có)
+- **Xử lý trạng thái vận đơn**:
+  - Hệ thống kiểm tra và điều chỉnh trạng thái vận đơn cho hóa đơn mới: `invoice.Id <= 0 && invoice.UsingCod == 1 && invoice.DeliveryDetail != null && (invoice.DeliveryDetail.Status == 3 || invoice.DeliveryDetail.Status == 4)`
+  - Nếu trạng thái là 3, chuyển thành trạng thái Pending: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Pending`
+  - Nếu trạng thái là 4, chuyển thành trạng thái Delivering: `invoice.DeliveryDetail.Status = (byte)DeliveryStatus.Delivering`
+  - Việc này đảm bảo tính nhất quán giữa trạng thái vận đơn và hóa đơn
 
-- **Xử lý trạng thái vận đơn theo trạng thái hóa đơn**:
-  - Hệ thống tự động cập nhật trạng thái vận đơn (`ShippingStatus`) dựa trên trạng thái hiện tại của hóa đơn (`invoice.Status`)
-  - Nếu `invoice.Status == (int)InvoiceStatus.Completed`, hệ thống đặt `ShippingStatus = (int)ShippingStatus.Delivered` để đánh dấu vận đơn đã giao thành công
-  - Nếu `invoice.Status == (int)InvoiceStatus.Cancelled`, hệ thống đặt `ShippingStatus = (int)ShippingStatus.Cancelled` để đánh dấu vận đơn đã hủy
-  - Trong các trường hợp khác (như đang xử lý, đang giao hàng), hệ thống giữ nguyên `ShippingStatus` hiện tại
-  - Việc đồng bộ trạng thái này đảm bảo tính nhất quán giữa hóa đơn và thông tin giao hàng
-
-- **Cập nhật thông tin giao hàng trong cơ sở dữ liệu**:
-  - Sau khi xác thực và xử lý, hệ thống lưu thông tin giao hàng vào bảng `DeliveryInfo` với thuộc tính `IsCurrent = true`
-  - Nếu đang cập nhật hóa đơn, hệ thống sẽ đánh dấu các thông tin giao hàng cũ là `IsCurrent = false`
-  - Hệ thống ghi log các thay đổi trong thông tin giao hàng để phục vụ mục đích kiểm tra và theo dõi
-
-- **Xử lý thông báo cho đối tác vận chuyển**:
-  - Nếu cấu hình cho phép, hệ thống sẽ tự động gửi thông tin đơn hàng COD đến đối tác vận chuyển
-  - Thông tin gửi đi bao gồm địa chỉ giao hàng, giá trị COD, thông tin người nhận và các yêu cầu đặc biệt
-  - Hệ thống lưu trữ mã vận đơn (`TrackingCode`) được trả về từ đối tác vận chuyển để theo dõi
+- **Lợi ích của cơ chế xử lý COD**:
+  - Đảm bảo thông tin vận chuyển và thanh toán COD được xác thực đầy đủ
+  - Ngăn chặn việc sử dụng đối tác vận chuyển không hợp lệ hoặc không được hỗ trợ
+  - Chuẩn hóa trạng thái vận đơn để phù hợp với quy trình xử lý của hệ thống
+  - Tăng tính minh bạch và độ tin cậy trong quá trình giao hàng và thu tiền hộ
 
 ### 8. Xử lý thông tin địa chỉ giao hàng
-- Kiểm tra nếu có thông tin LocationName và WardName nhưng không có LocationId và WardId
-- Gọi các service tương ứng để lấy LocationId từ LocationName và WardId từ WardName
-- Cập nhật WardId và LocationId cho thông tin giao hàng
-- Xử lý các trường hợp đặc biệt như địa chỉ không tìm thấy, địa chỉ không thuộc phạm vi giao hàng
+- **Kiểm tra thông tin địa chỉ**:
+  - Hệ thống kiểm tra nếu `invoice.DeliveryDetail` không null và có chứa thông tin `LocationName` và `WardName`
+  - Xác định liệu thông tin địa chỉ có đầy đủ ID tương ứng hay không (`LocationId` và `WardId`)
+  - Nếu có tên địa chỉ nhưng thiếu ID, hệ thống sẽ tự động tìm kiếm và bổ sung thông tin này
+
+- **Xử lý tìm kiếm ID từ tên địa chỉ**:
+  - Gọi `LocationService.GetLocationIdAndWardId(invoice.DeliveryDetail.LocationName, invoice.DeliveryDetail.WardName)` để lấy thông tin ID
+  - Phương thức này thực hiện tìm kiếm trong cơ sở dữ liệu để khớp tên địa điểm với ID tương ứng
+  - Kết quả trả về bao gồm `LocationId` (mã tỉnh/thành phố) và `WardId` (mã phường/xã)
+
+- **Cập nhật thông tin WardId**:
+  - Nếu `kvReceiver != null && kvReceiver.WardId > 0 && kvReceiver.WardId != invoice.DeliveryDetail.WardId`
+  - Hệ thống sẽ cập nhật `invoice.DeliveryDetail.WardId = kvReceiver.WardId`
+  - Việc này đảm bảo sử dụng mã phường/xã chính xác từ cơ sở dữ liệu, tránh lỗi do nhập liệu thủ công
+
+- **Cập nhật thông tin LocationId**:
+  - Nếu `kvReceiver != null && kvReceiver.LocationId > 0 && invoice.DeliveryDetail.LocationId.GetValueOrDefault() <= 0`
+  - Hệ thống sẽ cập nhật `invoice.DeliveryDetail.LocationId = kvReceiver.LocationId`
+  - Điều kiện này đảm bảo chỉ cập nhật khi LocationId hiện tại không hợp lệ hoặc chưa được thiết lập
+
+- **Xử lý trường hợp không tìm thấy địa chỉ**:
+  - Nếu không tìm thấy thông tin địa chỉ trong cơ sở dữ liệu, hệ thống vẫn giữ nguyên thông tin tên địa chỉ
+  - Trong trường hợp này, hệ thống có thể hiển thị cảnh báo cho người dùng về việc địa chỉ không được xác thực
+  - Tùy thuộc vào cấu hình, hệ thống có thể cho phép tiếp tục hoặc yêu cầu cung cấp địa chỉ hợp lệ
+
+- **Kiểm tra phạm vi giao hàng**:
+  - Sau khi xác định được LocationId và WardId chính xác, hệ thống kiểm tra xem địa chỉ có nằm trong phạm vi giao hàng không
+  - Việc kiểm tra dựa trên cấu hình phạm vi giao hàng của cửa hàng và đối tác vận chuyển (nếu có)
+  - Nếu địa chỉ nằm ngoài phạm vi giao hàng, hệ thống có thể hiển thị cảnh báo hoặc từ chối tạo đơn hàng
+
+- **Tính toán phí vận chuyển**:
+  - Dựa trên thông tin địa chỉ đã xác thực, hệ thống có thể tính toán phí vận chuyển chính xác
+  - Phí vận chuyển được tính dựa trên khoảng cách, trọng lượng đơn hàng và các chính sách của đối tác vận chuyển
+  - Thông tin này được cập nhật vào `invoice.DeliveryDetail.ShippingFee` để hiển thị cho khách hàng
 
 ### 9. Kiểm tra khách hàng
 - Nếu CustomerId < 0, ném ngoại lệ KvValidateCustomerException với thông báo phù hợp
