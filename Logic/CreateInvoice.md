@@ -285,10 +285,51 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
       ```
 
 ### 11. Kiểm tra giới hạn sử dụng khuyến mãi
-- Lọc các khuyến mãi có LimitPromotionUsage = true và LimitPromotionUsageType = Blocking
-- Với mỗi khuyến mãi, kiểm tra xem khách hàng đã sử dụng khuyến mãi này chưa thông qua PromotionService
-- Nếu khách hàng đã sử dụng khuyến mãi vượt quá giới hạn, ném ngoại lệ KvValidateCustomerException
-- Thông báo chi tiết về giới hạn sử dụng và số lần đã sử dụng
+- **Mục đích**: Đảm bảo khách hàng không sử dụng một khuyến mãi quá số lần cho phép
+- **Điều kiện áp dụng**:
+  - Chỉ kiểm tra khi hóa đơn có khuyến mãi (`invoice.InvoicePromotions != null && invoice.InvoicePromotions.Any()`)
+  - Chỉ áp dụng cho khách hàng đã đăng ký (`invoice.CustomerId > 0`)
+  - Không áp dụng cho khách vãng lai hoặc khách hàng không có ID
+
+- **Quy trình kiểm tra chi tiết**:
+  - **Bước 1: Lọc khuyến mãi cần kiểm tra**
+    - Hệ thống lọc ra các khuyến mãi có thiết lập giới hạn sử dụng (`LimitPromotionUsage = true`)
+    - Chỉ xét các khuyến mãi có chế độ chặn (`LimitPromotionUsageType = (int)EnumLimitPromotionUsageTypes.Blocking`)
+    - Mã thực hiện:
+      ```csharp
+      var listPType = invoice.InvoicePromotions.Where(p => 
+          p.LimitPromotionUsage.HasValue && p.LimitPromotionUsage == true &&
+          p.LimitPromotionUsageType.HasValue && p.LimitPromotionUsageType == (int)EnumLimitPromotionUsageTypes.Blocking
+      ).ToList();
+      ```
+
+  - **Bước 2: Truy vấn lịch sử sử dụng khuyến mãi**
+    - Nếu có khuyến mãi cần kiểm tra (`listPType != null && listPType.Any()`):
+      - Gọi service để lấy lịch sử sử dụng khuyến mãi của khách hàng:
+        ```csharp
+        var invPromo = await InvoicePromotionService.GetUsePromotionByCustomer(
+            invoice.RetailerId,
+            invoice.CustomerId.Value,
+            listPType.Select(a => a.PromotionId.Value).ToList()
+        );
+        ```
+      - Service truy vấn cơ sở dữ liệu để lấy tất cả các khuyến mãi đã sử dụng của khách hàng:
+        - Lọc theo cửa hàng hiện tại (`RetailerId == retailId`)
+        - Lọc theo khách hàng (`Invoice.CustomerId == customerId`)
+        - Chỉ xét các hóa đơn hợp lệ (không bị hủy hoặc thất bại: `Invoice.Status != InvoiceState.Void && Invoice.Status != InvoiceState.Failed`)
+        - Chỉ xét các khuyến mãi nằm trong danh sách cần kiểm tra (`WhereIn(listPromotionUse, p => p.PromotionId.Value)`)
+      - Kết quả trả về là danh sách các khuyến mãi khách hàng đã sử dụng vượt quá giới hạn cho phép
+
+  - **Bước 3: Xử lý vi phạm giới hạn**
+    - Nếu phát hiện khách hàng đã sử dụng khuyến mãi vượt quá giới hạn (`invPromo != null && invPromo.Any()`):
+      - Hệ thống tạo thông báo lỗi chi tiết bao gồm tên các khuyến mãi vi phạm:
+        ```csharp
+        throw new KvValidateCustomerException(
+            string.Format(KVMessage.customerError_promotionBlock, 
+            invPromo.Select(p => p.PromotionInfo).Distinct().Join(","))
+        );
+        ```
+      - Thông báo lỗi sẽ liệt kê tên các khuyến mãi đã vượt giới hạn, ví dụ: "Khách hàng đã được hưởng các khuyến mại: Giảm 10%, Mua 1 tặng 1, vui lòng kiểm tra lại."
 
 ### 12. Xử lý thông tin đơn thuốc (nếu là nhà thuốc GPP)
 - Kiểm tra nếu CurrentIndustryId == (int)IndustryList.Pharmacy và invoice.ClinicInfo != null
