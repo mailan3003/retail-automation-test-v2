@@ -21,3 +21,14 @@ build docker image:
     - docker push $DOCKER_IMAGE
     - docker tag $DOCKER_IMAGE $DOCKER_IMAGE_BASE
     - docker push $DOCKER_IMAGE_BASE
+
+deploy to nomad agent:
+  tags:
+    - retail-deploy
+    - retail-dev
+  stage: deploy
+  only:
+    - develop-ci
+  script:
+    - echo "Deploying to Nomad agent"
+    - cp deloy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
