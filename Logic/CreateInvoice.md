@@ -699,7 +699,26 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
            - Cập nhật thông tin giao hàng thông qua DeliveryInfoService
            - Nếu ngày thay đổi, cập nhật ngày sử dụng voucher, ngày trả hàng, ngày sử dụng coupon
            - Cập nhật kênh bán hàng cho các đơn trả hàng liên quan nếu kênh bán hàng thay đổi
-           - Cập nhật thanh toán nếu có và được yêu cầu cập nhật
+           - Cập nhật thông tin thanh toán liên quan đến hóa đơn:
+             * Hệ thống kiểm tra tham số `isUpdatePayment` để xác định có cần cập nhật thông tin thanh toán hay không:
+               - Nếu `isUpdatePayment = true`: Hệ thống sẽ tiến hành cập nhật thông tin thanh toán liên quan đến hóa đơn
+               - Nếu `isUpdatePayment = false`: Hệ thống sẽ bỏ qua việc cập nhật thông tin thanh toán, giữ nguyên các thông tin thanh toán hiện tại
+               - Tham số này thường được truyền vào từ API gọi hàm cập nhật hóa đơn (như trong `InvoiceApi.cs`)
+             * Nếu có thanh toán liên quan đến hóa đơn (invoice.Payments không rỗng):
+               - Hệ thống sẽ duyệt qua từng thanh toán trong danh sách invoice.Payments
+               - Cập nhật ngày giao dịch (TransDate) của mỗi thanh toán để đồng bộ với ngày mua hàng mới của hóa đơn:
+                 + Đảm bảo tính nhất quán về thời gian giữa hóa đơn và các giao dịch thanh toán
+                 + Điều này giúp báo cáo tài chính chính xác theo thời gian thực tế
+               - Cập nhật thông tin người thanh toán (CreatedBy) nếu có sự thay đổi:
+                 + Gán lại thông tin người thực hiện thanh toán theo dữ liệu mới
+                 + Đảm bảo thông tin truy vết chính xác về người thực hiện giao dịch
+               - Cập nhật phương thức thanh toán (Method) nếu có thay đổi:
+                 + Ví dụ: thay đổi từ "Tiền mặt" sang "Chuyển khoản" hoặc các phương thức khác
+                 + Hệ thống sẽ lưu lại phương thức thanh toán mới cho mỗi giao dịch
+               - Lưu lại tất cả các thay đổi này vào cơ sở dữ liệu để đảm bảo dữ liệu thanh toán luôn đồng bộ với thông tin hóa đơn
+               - Đảm bảo các thanh toán vẫn hợp lệ sau khi cập nhật (ví dụ: không được thanh toán bằng voucher khi offline)
+             * Nếu có thanh toán COD (thu hộ), hệ thống sẽ cập nhật thông tin thanh toán tương ứng
+             * Ghi nhận lịch sử thay đổi thanh toán vào nhật ký hệ thống
            - Cập nhật ngày hết hạn bảo hành nếu có
            - Tính toán lại tổng tiền hóa đơn
            - Cập nhật PaymentTrack nếu trạng thái hoặc ngày thay đổi
