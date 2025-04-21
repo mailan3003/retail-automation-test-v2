@@ -639,27 +639,120 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                    * Thông báo lỗi hiển thị: "Không thể thay đổi phí giao hàng với vận đơn đã thanh toán phí giao hàng" (Labels.cannotChangeDeliveryFeeHasPayment)
                    * Quy tắc này đảm bảo rằng sau khi đã thanh toán phí giao hàng, giá trị phí không thể thay đổi, tránh sự không nhất quán giữa số tiền đã thanh toán và phí giao hàng trên vận đơn
                * Kiểm tra tính duy nhất của mã vận đơn trong cùng một hóa đơn:
-                 - Đảm bảo không có hai chi tiết giao hàng nào có cùng mã vận đơn
-                 - Nếu phát hiện trùng lặp, hệ thống sẽ hiển thị thông báo lỗi "Mã vận đơn ứng với từng hóa đơn không được trùng nhau" (KVMessage.deliveryCodeMustUniquePerInvoice)
-               * Không cho phép thay đổi trạng thái giao hàng nếu đã ở trạng thái cuối:
-                 - Các trạng thái cuối bao gồm: "Đã giao", "Đã trả hàng" hoặc "Đã hủy"
-                 - Nếu cố gắng thay đổi, hệ thống sẽ hiển thị thông báo lỗi "Trạng thái vận đơn không hợp lệ" (KVMessage.deliveyStatusInvalid)
-               * Ngày dự kiến giao hàng không được nhỏ hơn ngày mua hàng:
-                 - Hệ thống so sánh `DeliveryDetail.ExpectedDeliveryDate` với `invoice.PurchaseDate`
-                 - Nếu ngày dự kiến giao hàng nhỏ hơn ngày mua hàng, hệ thống sẽ hiển thị thông báo lỗi "Thời gian giao hàng phải sau thời gian hóa đơn" (KVMessage.cod_invalidExpecteDeliveryInvoice)
+                 - Khi cập nhật thông tin giao hàng (isUpdateDeliveryInfo = true), hệ thống kiểm tra mã vận đơn mới có bị trùng không
+                 - Quy trình kiểm tra:
+                   * So sánh mã vận đơn cũ và mới (deliveryInfoExist.DeliveryCode và invoice.DeliveryInfo.DeliveryCode)
+                   * Nếu mã vận đơn đã thay đổi và mã mới không trống, hệ thống sẽ kiểm tra trùng lặp
+                   * Tìm tất cả thông tin giao hàng thuộc cùng hóa đơn (x.InvoiceId == deliveryInfoExist.InvoiceId)
+                   * Kiểm tra xem mã vận đơn mới đã được sử dụng chưa (sau khi chuẩn hóa bằng cách bỏ khoảng trắng và chuyển thành chữ thường)
+                   * Nếu tìm thấy mã trùng lặp, biến codeExist sẽ là true
+                 - Nếu phát hiện trùng lặp (codeExist = true):
+                   * Hệ thống sẽ hiển thị thông báo lỗi: "Mã vận đơn ứng với từng hóa đơn không được trùng nhau"
+                   * Ngăn người dùng lưu thông tin bằng cách ném ra ngoại lệ KvValidateDeliveryInfoException
+               * Kiểm tra trạng thái giao hàng:
+                 - Hệ thống không cho phép thay đổi trạng thái vận đơn nếu vận đơn đã ở một trong các trạng thái cuối:
+                   * Đã giao hàng (DeliveryStatus.Delivered)
+                   * Đã trả hàng (DeliveryStatus.Returned)
+                   * Đã hủy (DeliveryStatus.Void)
+                 - Nếu người dùng cố gắng thay đổi trạng thái của vận đơn đã ở trạng thái cuối (trừ khi hóa đơn đang ở trạng thái hủy):
+                   * Hệ thống sẽ hiển thị thông báo lỗi: "Trạng thái vận đơn không hợp lệ" (KVMessage.deliveyStatusInvalid)
+               * Kiểm tra tính hợp lý của ngày giao hàng:
+                 - Hệ thống kiểm tra xem ngày dự kiến giao hàng (`DeliveryDetail.ExpectedDelivery`) có sau ngày mua hàng (`invoice.PurchaseDate`) không
+                 - Nếu ngày dự kiến giao hàng sớm hơn ngày mua hàng, hệ thống sẽ hiển thị thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn" (KVMessage.cod_invalidExpecteDeliveryInvoice)
              
-             + Kiểm tra ràng buộc về thời gian với các đơn trả hàng liên quan:
-               * Hệ thống truy vấn tất cả các đơn trả hàng liên quan đến hóa đơn hiện tại
-               * Ngày mua hàng không được lớn hơn ngày trả hàng của bất kỳ đơn trả hàng nào:
-                 - So sánh `invoice.PurchaseDate` với `returnInvoice.PurchaseDate` của mỗi đơn trả hàng
-                 - Nếu ngày mua hàng lớn hơn, hệ thống sẽ hiển thị thông báo lỗi "Ngày mua hàng không được lớn hơn ngày trả hàng"
-             
-             + Kiểm tra ràng buộc về thời gian với các thanh toán liên quan:
-               * Hệ thống truy vấn tất cả các thanh toán liên quan đến hóa đơn hiện tại
-               * Ngày mua hàng không được lớn hơn ngày thanh toán của bất kỳ thanh toán nào:
-                 - So sánh `invoice.PurchaseDate` với `payment.TransactionDate` của mỗi thanh toán
-                 - Nếu ngày mua hàng lớn hơn, hệ thống sẽ hiển thị thông báo lỗi "Ngày mua hàng không được lớn hơn ngày thanh toán"
-             
+             + Kiểm tra thời gian hợp lệ với phiếu trả hàng:
+               * Nguyên tắc cơ bản:
+                 - Ngày mua hàng phải sớm hơn hoặc bằng ngày trả hàng (logic thông thường: không thể trả hàng trước khi mua)
+                 - Khi thay đổi ngày mua hàng, cần đảm bảo không vi phạm ràng buộc thời gian với các phiếu trả hàng liên quan
+
+               * Kiểm tra với phiếu trả hàng hiện có:
+                 - Hệ thống tìm tất cả phiếu trả hàng liên quan đến hóa đơn hiện tại (obj.Returns)
+                 - Chỉ xét các phiếu trả hàng còn hiệu lực (không ở trạng thái Void/Hủy)
+                 - Nếu có phiếu trả hàng liên quan:
+                   + Xác định ngày trả hàng sớm nhất (minDate) từ tất cả phiếu trả hàng
+                   + So sánh ngày mua hàng mới (invoice.PurchaseDate) với ngày trả hàng sớm nhất
+                   + Nếu ngày mua hàng muộn hơn ngày trả hàng → Không hợp lệ (r = false)
+                 - Xử lý khi thời gian không hợp lệ (khi aggressive = true):
+                   + Hiển thị thông báo: "Thời gian hóa đơn không được trước đơn hàng, sau phiếu trả hàng, sau phiếu thanh toán"
+                   + Ngăn chặn việc lưu thay đổi bằng cách ném ra ngoại lệ KvValidateInvoiceException
+
+               * Kiểm tra với đơn trả hàng mới:
+                 - Hệ thống kiểm tra xem ngày mua hàng có thay đổi không (so sánh invoice.PurchaseDate với obj.PurchaseDate)
+                 - Nếu ngày mua hàng thay đổi (dateChanged = true):
+                   + Tìm kiếm đơn trả hàng mới liên quan đến hóa đơn hiện tại (ret.NewInvoiceId == obj.Id)
+                   + Lấy thông tin về mã đơn trả hàng, ngày mua hàng của hóa đơn gốc và các thanh toán liên quan
+                 - Nếu tìm thấy đơn trả hàng mới liên quan:
+                   + Kiểm tra quyền người dùng:
+                     * Người dùng phải có quyền đọc (Return._Read) và cập nhật (Return._Update) đơn trả hàng
+                     * Nếu không có đủ quyền và đơn trả hàng có mã:
+                       - Hiển thị thông báo: "Bạn cần được cấp quyền Trả hàng - Xem danh sách và Trả hàng - Cập nhật để đổi thời gian cho phiếu trả hàng {0} tương ứng."
+                       - Ném ra ngoại lệ KvUnauthorizedException
+                   + Kiểm tra ràng buộc về thời gian:
+                     * Ngày mua hàng mới không được muộn hơn ngày thanh toán sớm nhất của đơn trả hàng
+                     * Ngày mua hàng mới không được sớm hơn ngày mua hàng của hóa đơn gốc (nếu đơn trả hàng liên kết với hóa đơn gốc)
+                     * Nếu vi phạm các điều kiện trên và aggressive = true:
+                       - Hiển thị thông báo: "Thời gian trả hàng không được trước hóa đơn, sau phiếu thanh toán"
+                       - Ném ra ngoại lệ KvValidateInvoiceException
+             + Kiểm tra cấu hình bỏ qua xác thực IMEI/Serial:
+               * Hệ thống xem xét cài đặt `AppServiceConfigInfo.IsValidateImei`:
+                 - Cài đặt này quyết định có cần kiểm tra IMEI/Serial khi tạo hoặc cập nhật hóa đơn hay không
+                 - Khi `IsValidateImei = false` (tắt kiểm tra): 
+                   + Hệ thống bỏ qua mọi kiểm tra về IMEI/Serial
+                   + Trả về kết quả xác thực hiện tại (biến `r`)
+                   + Người dùng có thể tạo hóa đơn mà không cần lo lắng về tính hợp lệ của IMEI/Serial
+                 - Khi `IsValidateImei = true` (bật kiểm tra):
+                   + Hệ thống sẽ kiểm tra kỹ lưỡng tính hợp lệ của IMEI/Serial
+                   + Kiểm tra bao gồm: xung đột với kiểm kê kho, trùng lặp giữa các chi nhánh, và tính khả dụng tại thời điểm mua hàng
+                 - Tùy chọn này giúp cửa hàng linh hoạt trong việc quản lý IMEI/Serial theo nhu cầu riêng
+             + Kiểm tra tính hợp lệ của số serial/IMEI trong hóa đơn:
+               * Quy trình kiểm tra:
+                 - Thu thập tất cả số serial từ các chi tiết hóa đơn (InvoiceDetails)
+                 - Nếu không có số serial nào, bỏ qua kiểm tra và trả về kết quả xác thực hiện tại
+                 - Xác định chi nhánh cần kiểm tra:
+                   + Sử dụng chi nhánh của hóa đơn (invoice.BranchId) nếu có
+                   + Nếu không có, sử dụng chi nhánh của người dùng hiện tại (AuthService.Context.BranchId)
+                 - Xác định thời điểm kiểm tra:
+                   + Sử dụng ngày mua hàng của hóa đơn (invoice.PurchaseDate) nếu có
+                   + Nếu không có, sử dụng thời gian hiện tại (DateTime.Now)
+
+               * Kiểm tra từng số serial trong hóa đơn:
+                 - Đối với mỗi sản phẩm có số serial trong hóa đơn:
+                   + Tách các số serial riêng lẻ (nếu có nhiều số được phân cách bằng dấu phẩy)
+                   + Thực hiện 3 loại kiểm tra cho mỗi số serial:
+
+                 - Kiểm tra xung đột với phiếu kiểm kho:
+                   + Gọi phương thức `StockTakeService.IsHaveStockTakeNewer()` để kiểm tra xem có phiếu kiểm kho nào mới hơn không
+                   + Phương thức này kiểm tra:
+                     * Khi tạo hoặc xóa hóa đơn (newTransDate = null):
+                       - Tìm phiếu kiểm kho đã duyệt (Status = Approval) tại chi nhánh của hóa đơn
+                       - Phiếu kiểm kho phải có ngày điều chỉnh (AdjustmentDate) >= ngày giao dịch của hóa đơn
+                       - Phiếu kiểm kho phải chứa sản phẩm có IMEI/Serial đang kiểm tra
+                     * Khi cập nhật hóa đơn (thay đổi ngày giao dịch):
+                       - Nếu ngày giao dịch mới = ngày giao dịch cũ: bỏ qua kiểm tra
+                       - Nếu ngày giao dịch mới > ngày giao dịch cũ: kiểm tra khoảng thời gian từ ngày cũ đến ngày mới
+                       - Nếu ngày giao dịch mới < ngày giao dịch cũ: kiểm tra khoảng thời gian từ ngày mới đến ngày cũ
+                       - Kiểm tra xem có giao dịch kiểm kho khác trong khoảng thời gian đó không
+                       - Kiểm tra xem có phiếu kiểm kho đã duyệt nào trong khoảng thời gian đó không
+                   + Nếu có xung đột (kết quả trả về false):
+                     * Hiển thị thông báo lỗi: "Hàng hóa {0} IMEI {1}: Không được phép chuyển thời gian giao dịch về trước hoặc sau phiếu kiểm kho {2}"
+                     * Trong đó: {0} là mã sản phẩm, {1} là số serial, {2} là mã phiếu kiểm kho xung đột
+                     * Ngăn chặn việc lưu hóa đơn bằng cách ném ra ngoại lệ KvValidateInvoiceException
+
+                 - Kiểm tra xung đột giữa các chi nhánh:
+                   + Gọi phương thức `ImeiTrackingService.IsExistsMultiBranch()` để kiểm tra xem số serial có tồn tại ở nhiều chi nhánh không
+                   + Nếu có xung đột (kết quả trả về false):
+                     * Lấy thông tin chi nhánh hiện tại
+                     * Hiển thị thông báo lỗi: "Không thực hiện được thao tác này vì sẽ làm Hàng hóa {0} Serial {1} còn hàng trên nhiều chi nhánh ({2}, {3})"
+                     * Trong đó: {0} là mã sản phẩm, {1} là số serial, {2} là tên chi nhánh hiện tại, {3} là thông tin chi nhánh xung đột
+                     * Ngăn chặn việc lưu hóa đơn bằng cách ném ra ngoại lệ KvValidateInvoiceException
+
+                 - Kiểm tra tính khả dụng của số serial tại thời điểm mua hàng:
+                   + Gọi phương thức `ImeiTrackingService.IsAvailable()` để kiểm tra xem số serial có khả dụng tại thời điểm mua hàng không
+                   + Nếu không khả dụng (kết quả trả về false):
+                     * Hiển thị thông báo lỗi: "Sản phẩm {0} IMEI {1} hết hàng tại thời gian bạn vừa chọn"
+                     * Trong đó: {0} là mã sản phẩm, {1} là số serial
+                     * Ngăn chặn việc lưu hóa đơn bằng cách ném ra ngoại lệ KvValidateInvoiceException
+---------------------             
              + Nếu hóa đơn được tạo từ đơn đặt hàng:
                * Hệ thống kiểm tra xem hóa đơn có `DocumentId` không (liên kết với đơn đặt hàng)
                * Ngày mua hàng phải lớn hơn hoặc bằng ngày đặt hàng:
