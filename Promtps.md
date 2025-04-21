@@ -63,3 +63,14 @@ You are a senior .net developer and master robot framework, gherkin language, yo
 # Prompt update test data file to use common data
 - Please follow the rule in @APITestDesign.md to reuse common data. 
 - Please check for undefined variable in this file and search it in @CommonData.robot . If you don't find it please use mcp to create a new record for it in the database and get back its value and use to define it in CommonData.robot
+
+
+# Prompts add more test case
+You are a senior .net developer and master robot framework, gherkin language, you have deep knowledge about Poin of Sale and ERP domain. Please don't hallucination,generate all api test cases for section "**Xử lý thanh toán**" in @CreateInvoiceAPILogic_Restructured.md  for CreateInvoice method of the @InvoiceApi.cs  that
+- Don't be lazy, miss one case is a serious problem.  
+- Please compare with @PromotionTest.robot  for curent test cases, look detail in the actual code @InvoiceApi.cs  and edit the @PromotionTest.robot  to add more test cases, test data and keywords 
+- Don't create new file or modify/remove the current test case, reuse current keywords, test data and only append the new ones at the end of its file
+- Follow the @APIStructure.md  file to understand how API strtucture to read code and generate test case with request body and SQL query for verification. 
+- Add a tag AIGenerated to the test new case
+- Must strictly all rules, best practices, example in @APITestDesign.md file
+- 
