@@ -539,20 +539,22 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
            - Thời gian khóa dựa trên cấu hình RedisLockUpdateDeliveryReturnedTimeout (tính bằng phút)
         7. Gọi `ProcessUpdateInvoiceAsync()` để thực hiện cập nhật hóa đơn với các tham số đã truyền vào:
            - Kiểm tra tiền tệ hiện tại thông qua `NumberHelper.GetCurrentCurrency()`
-           - Kiểm tra tính hợp lệ của hóa đơn COD: 
-             + Nếu UsingCod = 1 (hóa đơn sử dụng COD)
-             + DeliveryDetail không null (có thông tin giao hàng)
-             + DeliveryBy = null (chưa chọn đối tác giao hàng)
-             + Trạng thái giao hàng thuộc một trong các trạng thái sau:
-               * Delivering (2) - Đang giao hàng
-               * DeliveringRetry (10) - Đang thử giao lại
-               * Delivered (3) - Đã giao hàng
-               * Returning (4) - Đang trả hàng
-               * ReturnRetry (12) - Đang thử trả lại
-               * Returned (5) - Đã trả hàng
-               * WaitingReturn (13) - Đang chờ trả hàng
-             + Hệ thống sẽ hiển thị thông báo lỗi "Chưa nhập đối tác giao hàng" (KVMessage.DeliveryPartner_Empty)
-             + Việc kiểm tra này đảm bảo rằng các hóa đơn COD đang trong quá trình vận chuyển hoặc đã hoàn thành vận chuyển phải có thông tin đối tác giao hàng
+           - Kiểm tra tính hợp lệ của hóa đơn COD (thu tiền khi giao hàng): 
+             + Hệ thống sẽ kiểm tra các điều kiện sau:
+               * Hóa đơn có sử dụng COD (UsingCod = 1)
+               * Có thông tin giao hàng (DeliveryDetail không null)
+               * Chưa chọn đối tác giao hàng (DeliveryBy = null)
+               * Hóa đơn đang ở một trong các trạng thái vận chuyển sau:
+                 - Đang giao hàng (Delivering - 2)
+                 - Đang thử giao lại (DeliveringRetry - 10)
+                 - Đã giao hàng (Delivered - 3)
+                 - Đang trả hàng (Returning - 4)
+                 - Đang thử trả lại (ReturnRetry - 12)
+                 - Đã trả hàng (Returned - 5)
+                 - Đang chờ trả hàng (WaitingReturn - 13)
+             + Nếu tất cả các điều kiện trên được thỏa mãn, hệ thống sẽ hiển thị thông báo lỗi:
+               "Chưa nhập đối tác giao hàng" (KVMessage.DeliveryPartner_Empty)
+             + Mục đích: Đảm bảo rằng tất cả các hóa đơn COD đang trong quá trình vận chuyển hoặc đã hoàn thành vận chuyển đều phải có thông tin đối tác giao hàng
            - Kiểm tra xem hóa đơn có phải từ OmniChannel không thông qua phương thức `PosOnlineHelper.IsInvoiceOmni()`, phương thức này xác định hóa đơn có nguồn gốc từ kênh bán hàng trực tuyến dựa vào mã hóa đơn:
              + Phương thức kiểm tra mã hóa đơn có bắt đầu bằng các tiền tố của các sàn thương mại điện tử hay không:
                * DHSPE: Shopee
@@ -564,7 +566,127 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
            - Lấy thông tin hóa đơn hiện tại từ cơ sở dữ liệu và kiểm tra sự thay đổi về tổng tiền
            - Tạo bản sao tách rời của hóa đơn gốc để so sánh sau này
            - Xác định có cập nhật thông tin giao hàng không dựa trên UsingCod và UseDefaultPartner
-           - Thực hiện kiểm tra tính hợp lệ của hóa đơn trước khi cập nhật
+           - Thực hiện kiểm tra tính hợp lệ của hóa đơn trước khi cập nhật:
+           - Gọi phương thức `ValidateUpdateInvoiceAsync()` để kiểm tra tính hợp lệ của hóa đơn trước khi cập nhật:
+             + Kiểm tra ngày mua hàng không được lớn hơn thời gian hiện tại:
+               * Hệ thống so sánh `invoice.PurchaseDate` với thời gian hiện tại
+               * Nếu ngày mua hàng lớn hơn, hệ thống sẽ hiển thị thông báo lỗi "Vượt quá thời gian hiện tại" (GreaterThanNow)
+               * Điều này ngăn chặn việc tạo hóa đơn với ngày trong tương lai
+             
+             + Xác thực thời gian giao dịch với `KvTransactionTimeHelper.Validate()`:
+               * Kiểm tra xem thời gian giao dịch có hợp lệ không dựa trên cấu hình của cửa hàng
+               * Nếu tính năng kiểm tra thời gian được bật (ValidateUpdatePurchaseDateToggle):
+                 - Hệ thống sẽ áp dụng giới hạn thời gian dựa trên cấu hình MaxMonthUpdatePurchaseDateInvoice (số tháng tối đa)
+                 - Các quy tắc kiểm tra thời gian:
+                   > Khi tạo hóa đơn mới: Không cho phép tạo hóa đơn có ngày quá xa so với hiện tại
+                     Thông báo: "Bạn chỉ được tạo giao dịch trong vòng {0} tháng."
+                   
+                   > Khi cập nhật hóa đơn: Không cho phép thay đổi ngày nếu ngày cũ hoặc ngày mới vượt quá giới hạn
+                     Thông báo: "Bạn chỉ được cập nhật giao dịch trong vòng {0} tháng."
+                   
+                   > Khi xóa hóa đơn: Không cho phép xóa hóa đơn có ngày quá xa so với hiện tại
+                     Thông báo: "Bạn chỉ có thể hủy giao dịch trong vòng {0} tháng."
+                   
+                   > Khi đồng bộ hóa đơn: Không cho phép đồng bộ hóa đơn có ngày quá xa
+                     Thông báo: "Giao dịch có thời gian quá {0} tháng so với hiện tại."
+                 
+                 - Trong tất cả các thông báo, {0} sẽ được thay thế bằng số tháng tối đa được cấu hình
+             
+             + Kiểm tra kênh bán hàng:
+               * Nếu hóa đơn có kênh bán hàng được chọn (invoice.SaleChannelId > 0):
+                 - Hệ thống kiểm tra sự tồn tại của kênh bán hàng trong cơ sở dữ liệu
+                 - Nếu kênh bán hàng không tồn tại hoặc đã bị xóa, hiển thị thông báo:
+                   "Kênh không tồn tại hoặc đã bị xóa" (KVMessage.channelNotExistorDeleted)
+                 - Nếu kênh bán hàng đã bị vô hiệu hóa (IsActive = false), hiển thị thông báo:
+                   "Kênh {0} đã bị ngừng hoạt động" (KVMessage.channelIsDown), với {0} là tên kênh
+             
+             + Kiểm tra trạng thái hóa đơn:
+               * Hệ thống không cho phép thay đổi trạng thái nếu hóa đơn đã ở một trong các trạng thái sau:
+                 - Đã phát hành (InvoiceState.Issued)
+                 - Đã hủy (InvoiceState.Cancelled)
+                 - Thất bại (InvoiceState.Failed)
+               * Nếu cố gắng thay đổi trạng thái của hóa đơn đã phát hành/hủy/thất bại, hệ thống sẽ hiển thị thông báo lỗi "Trạng thái cập nhật không hợp lệ" (KVMessage.StatusUpdateInvalid)
+             
+             + Xác thực thông tin giao hàng (nếu có):
+               * Kiểm tra sự tồn tại của thông tin giao hàng trong `invoice.DeliveryDetail`
+                 - Nếu không tìm thấy thông tin giao hàng trong cơ sở dữ liệu (khi DeliveryInfo.Id > 0 nhưng không tồn tại bản ghi tương ứng), hệ thống sẽ kiểm tra bằng cách gọi DeliveryInfoService.GetByIdAsync(). Nếu kết quả trả về là null, hệ thống sẽ hiển thị thông báo lỗi "Vận đơn gắn với hóa đơn không tồn tại" (Labels.notExistDeliveryInInvoice). Điều này ngăn người dùng cập nhật hóa đơn với thông tin vận đơn không hợp lệ hoặc đã bị xóa khỏi hệ thống.
+               * Không cho phép thay đổi đối tác giao hàng nếu đã có thanh toán phí giao hàng:
+                 - Hệ thống kiểm tra xem đã có thanh toán phí giao hàng chưa bằng cách:
+                   * Truy vấn bảng DeliveryPaymentService để tìm các bản ghi liên quan đến vận đơn hiện tại
+                   * Cụ thể, tìm các bản ghi có DeliveryInfoId trùng với ID của vận đơn đang xét
+                   * Kiểm tra xem trong các bản ghi này có bản ghi nào đã được thanh toán (có PurchasePaymentId và trạng thái là PaymentStatus.Paid)
+                   * Nếu tìm thấy ít nhất một bản ghi đã thanh toán, biến hasPayment sẽ được đặt thành true
+                 
+                 - Hệ thống xác định người dùng đang muốn thay đổi đối tác giao hàng khi:
+                   * Cả vận đơn cũ và vận đơn mới đều có chỉ định đối tác giao hàng (DeliveryBy > 0)
+                   * Đối tác giao hàng trong vận đơn cũ (deliveryInfoExist.DeliveryBy) khác với đối tác giao hàng trong vận đơn mới (invoice.DeliveryInfo.DeliveryBy)
+                   * Biến changePartner sẽ được đặt thành true nếu cả hai điều kiện trên đều đúng
+                 
+                 - Nếu đã có thanh toán phí giao hàng (hasPayment = true) VÀ người dùng đang cố gắng thay đổi đối tác giao hàng (changePartner = true):
+                   * Hệ thống sẽ ngăn chặn thao tác này bằng cách ném ra ngoại lệ KvValidateDeliveryInfoException
+                   * Thông báo lỗi hiển thị: "Không đổi được đối tác giao hàng đã phát sinh phiếu chi phí giao hàng" (Labels.cannotChangePartnerHasFeePayment)
+                   * Điều này đảm bảo tính nhất quán trong dữ liệu và ngăn chặn việc thay đổi đối tác giao hàng sau khi đã phát sinh thanh toán
+
+               * Không cho phép thay đổi phí giao hàng nếu đã có thanh toán:
+                 - Hệ thống sử dụng cùng một biến hasPayment đã kiểm tra ở trên để xác định xem đã có thanh toán phí giao hàng chưa
+                 - Hệ thống phát hiện người dùng đang cố gắng thay đổi phí giao hàng bằng cách so sánh:
+                   * Phí giao hàng trong vận đơn cũ (deliveryInfoExist.Price hoặc 0 nếu null)
+                   * Phí giao hàng trong vận đơn mới (invoice.DeliveryInfo.Price hoặc 0 nếu null)
+                   * Nếu hai giá trị này khác nhau, người dùng đang cố gắng thay đổi phí giao hàng
+                 
+                 - Nếu đã có thanh toán phí giao hàng (hasPayment = true) VÀ phí giao hàng đã thay đổi:
+                   * Hệ thống sẽ ngăn chặn thao tác này bằng cách ném ra ngoại lệ KvValidateDeliveryInfoException
+                   * Thông báo lỗi hiển thị: "Không thể thay đổi phí giao hàng với vận đơn đã thanh toán phí giao hàng" (Labels.cannotChangeDeliveryFeeHasPayment)
+                   * Quy tắc này đảm bảo rằng sau khi đã thanh toán phí giao hàng, giá trị phí không thể thay đổi, tránh sự không nhất quán giữa số tiền đã thanh toán và phí giao hàng trên vận đơn
+               * Kiểm tra tính duy nhất của mã vận đơn trong cùng một hóa đơn:
+                 - Đảm bảo không có hai chi tiết giao hàng nào có cùng mã vận đơn
+                 - Nếu phát hiện trùng lặp, hệ thống sẽ hiển thị thông báo lỗi "Mã vận đơn ứng với từng hóa đơn không được trùng nhau" (KVMessage.deliveryCodeMustUniquePerInvoice)
+               * Không cho phép thay đổi trạng thái giao hàng nếu đã ở trạng thái cuối:
+                 - Các trạng thái cuối bao gồm: "Đã giao", "Đã trả hàng" hoặc "Đã hủy"
+                 - Nếu cố gắng thay đổi, hệ thống sẽ hiển thị thông báo lỗi "Trạng thái vận đơn không hợp lệ" (KVMessage.deliveyStatusInvalid)
+               * Ngày dự kiến giao hàng không được nhỏ hơn ngày mua hàng:
+                 - Hệ thống so sánh `DeliveryDetail.ExpectedDeliveryDate` với `invoice.PurchaseDate`
+                 - Nếu ngày dự kiến giao hàng nhỏ hơn ngày mua hàng, hệ thống sẽ hiển thị thông báo lỗi "Thời gian giao hàng phải sau thời gian hóa đơn" (KVMessage.cod_invalidExpecteDeliveryInvoice)
+             
+             + Kiểm tra ràng buộc về thời gian với các đơn trả hàng liên quan:
+               * Hệ thống truy vấn tất cả các đơn trả hàng liên quan đến hóa đơn hiện tại
+               * Ngày mua hàng không được lớn hơn ngày trả hàng của bất kỳ đơn trả hàng nào:
+                 - So sánh `invoice.PurchaseDate` với `returnInvoice.PurchaseDate` của mỗi đơn trả hàng
+                 - Nếu ngày mua hàng lớn hơn, hệ thống sẽ hiển thị thông báo lỗi "Ngày mua hàng không được lớn hơn ngày trả hàng"
+             
+             + Kiểm tra ràng buộc về thời gian với các thanh toán liên quan:
+               * Hệ thống truy vấn tất cả các thanh toán liên quan đến hóa đơn hiện tại
+               * Ngày mua hàng không được lớn hơn ngày thanh toán của bất kỳ thanh toán nào:
+                 - So sánh `invoice.PurchaseDate` với `payment.TransactionDate` của mỗi thanh toán
+                 - Nếu ngày mua hàng lớn hơn, hệ thống sẽ hiển thị thông báo lỗi "Ngày mua hàng không được lớn hơn ngày thanh toán"
+             
+             + Nếu hóa đơn được tạo từ đơn đặt hàng:
+               * Hệ thống kiểm tra xem hóa đơn có `DocumentId` không (liên kết với đơn đặt hàng)
+               * Ngày mua hàng phải lớn hơn hoặc bằng ngày đặt hàng:
+                 - So sánh `invoice.PurchaseDate` với `order.PurchaseDate`
+                 - Nếu ngày mua hàng nhỏ hơn ngày đặt hàng, hệ thống sẽ hiển thị thông báo lỗi
+             
+             + Kiểm tra đặc biệt khi thay đổi ngày mua hàng:
+               * Xác thực quyền truy cập nếu hóa đơn liên quan đến đơn trả hàng:
+                 - Kiểm tra xem người dùng có quyền thay đổi ngày mua hàng của hóa đơn có đơn trả hàng không
+                 - Nếu không có quyền, hệ thống sẽ hiển thị thông báo lỗi về quyền truy cập
+               * Đảm bảo ngày mua hàng mới không xung đột với các thanh toán của đơn trả hàng:
+                 - Kiểm tra tất cả các thanh toán liên quan đến đơn trả hàng
+                 - Ngày mua hàng mới không được lớn hơn ngày thanh toán của bất kỳ thanh toán nào
+               * Đảm bảo ngày mua hàng mới không xung đột với ngày mua hàng của đơn trả hàng gốc:
+                 - Nếu hóa đơn hiện tại là đơn trả hàng, ngày mua hàng không được nhỏ hơn ngày mua hàng của hóa đơn gốc
+                 - Nếu xung đột, hệ thống sẽ hiển thị thông báo lỗi tương ứng
+             
+             + Kiểm tra tính hợp lệ của số serial/IMEI (nếu có):
+               * Xác thực số serial không xung đột với kiểm kê kho:
+                 - Hệ thống kiểm tra xem số serial có bị ảnh hưởng bởi các phiếu kiểm kê kho không
+                 - Nếu có xung đột, hệ thống sẽ hiển thị thông báo lỗi "Số serial đã bị kiểm kê"
+               * Đảm bảo số serial không tồn tại ở nhiều chi nhánh:
+                 - Kiểm tra xem số serial có xuất hiện ở chi nhánh khác với chi nhánh của hóa đơn không
+                 - Nếu có, hệ thống sẽ hiển thị thông báo lỗi về xung đột chi nhánh
+               * Kiểm tra tính khả dụng của số serial tại thời điểm mua hàng:
+                 - Hệ thống xác minh xem số serial có sẵn để bán tại thời điểm ngày mua hàng không
+                 - Nếu không khả dụng, hệ thống sẽ hiển thị thông báo lỗi "Số serial không có sẵn tại thời điểm mua hàng"
            - Kiểm tra ngày đóng sổ để đảm bảo không cập nhật hóa đơn trước ngày đóng sổ
            - Lưu trữ ngày mua hàng và người bán cũ để so sánh
            - Cập nhật các thông tin cơ bản: ngày mua hàng, người bán, mô tả, UsingCod, kênh bán hàng
