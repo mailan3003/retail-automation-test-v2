@@ -19,9 +19,6 @@ Resource          ../CommonData.robot
 ...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
 
 # Template dữ liệu cho request
-&{STANDARD_INVOICE_REQUEST}
-...    Invoice=${STANDARD_INVOICE}
-...    Payments=@{EMPTY}
 
 @{STANDARD_PAYMENT_BODY}
 ...    &{payment_body} 
@@ -105,7 +102,7 @@ Resource          ../CommonData.robot
 &{surcharge_2}    Code=TK002    CreatedDate=2025-03-28T02:47:38.940Z    Name=Phí VAT2    Order=2    Price=0    RetailerId=19809    SurValue=0    SurchargeBranches=@{Empty}    SurchargeId=${SURCHARGE_2_ID}    UsageFlag=${True}    Value=0    isAuto=${True}    isReturnAuto=${True}
 
 # DeliveryDetail Body
-&{delivery_detail_body}    Type=0    TypeName=    Status=1    Address=${None}    ContactNumber=0988673523    Receiver=Hung    DeliveryBy=${PARTNER_DELIVERY_1_ID}    LocationId=1    LocationName=An Giang - Huyện Chợ Mới    WardName=Thị trấn Chợ Mới    CustomerId=${None}    CustomerCode=${None}    BranchTakingAddressId=${None}    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"    AdministrativeAreaId=${None}    WardId=10548    Weight=500    Height=10    Width=10    Length=10    IsChangeGBH=${False}    PackageType=0    Paymenter=0    ServiceCode=0    UseDefaultPartner=${False}    UsingOfBilling=${False}    UsingPriceCod=1    ChangeExpectedDelivery=${False}    WeightInput=500    LastLocation=An Giang - Huyện Chợ Mới    LastWard=Thị trấn Chợ Mới    PackageTypeObj=&{package_type_body}
+&{delivery_detail_body}    Type=0    TypeName=    Status=1    Address=${None}    ContactNumber=0988673523    Receiver=Hung  Address=1B  DeliveryBy=${PARTNER_DELIVERY_1_ID}    LocationId=1    LocationName=An Giang - Huyện Chợ Mới    WardName=Thị trấn Chợ Mới    CustomerId=${None}    CustomerCode=${None}    BranchTakingAddressId=${None}    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"    AdministrativeAreaId=${None}    WardId=10548    Weight=500    Height=10    Width=10    Length=10    IsChangeGBH=${False}   Price=${DEFAULT_DELIVERY_PRICE}    PackageType=0    Paymenter=0    ServiceCode=0    UseDefaultPartner=${False}    UsingOfBilling=${False}    UsingPriceCod=1    ChangeExpectedDelivery=${False}    WeightInput=500    LastLocation=An Giang - Huyện Chợ Mới    LastWard=Thị trấn Chợ Mới    PackageTypeObj=&{package_type_body}
 
 &{default_delivery_detail_body}    
 ...    Type=0    
@@ -185,27 +182,19 @@ Resource          ../CommonData.robot
 ...    PartnerDeliveryGroupDetails=@{Empty}    
 ...    CustomName=Phạm Anh Tú - 01679089901
 
+@{standard_invoice_detail_tax_body}
+...    &{invoice_detail_tax_body}
 
-
+&{invoice_detail_tax_body}
+...    TaxId=2
+...    DetailTax=3500
 
 
 # Invoice Body
-&{invoice_body}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{invoices_detail_body}    InvoiceOrderSurcharges=@{invoice_order_surcharges_body}    InvoicePromotions=@{Empty}    InvoiceSupplierPromotions=@{Empty}    DeliveryDetail=&{default_delivery_detail_body}    UsingCod=1    Payments=@{Empty}    Status=3    Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
+&{invoice_body}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}   InvoiceOrderSurcharges=@{invoice_order_surcharges_body}    InvoicePromotions=@{Empty}    InvoiceSupplierPromotions=@{Empty}    DeliveryDetail=&{default_delivery_detail_body}    UsingCod=1    Payments=@{Empty}    Status=3    Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body}     Invoice=&{invoice_body}
 
 # Invoice body not delivery
 &{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    Discount=0   InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body_not_delivery}    Invoice=&{invoice_body_not_delivery}
 
-# Variables for AI Generated Test Cases
-${PROMOTION_ID_POINT}            1001    # ID Promotion for Point Gift
-${PROMOTION_ID_FIXED}            1002    # ID Promotion for Fixed Discount
-${PROMOTION_ID_FIXED_2}          1003    # ID Promotion for Fixed Discount 2
-${PROMOTION_ID_VOUCHER}          1004    # ID Promotion for Voucher Gift
-${PROMOTION_ID_MIN_QUANTITY}     1005    # ID Promotion for Min Quantity
-${VOUCHER_CAMPAIGN_ID}           1000000024     # Voucher Campaign ID
-${VOUCHER_ID}                    201     # Voucher ID
-
-# Voucher Campaign IDs for voucher payment tests
-${VOUCHER_CAMPAIGN_ID_1}    1000000024     # Voucher Campaign with 100,000đ value
-${VOUCHER_CAMPAIGN_ID_2}    102     # Voucher Campaign with 50,000đ value

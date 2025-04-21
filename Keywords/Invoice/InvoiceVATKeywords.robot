@@ -1,92 +1,129 @@
 *** Settings ***
 Documentation     Keywords for handling VAT-related invoice operations
-Library           ../Libraries/API/InvoiceAPI.py
+
 Library           ../Libraries/Database/DatabaseLibrary.py
-Library           ../Libraries/Common/CommonLibrary.py
-
+Resource          ../Utilities/DataUtilities.robot
+Resource          ../Utilities/RequestHelper.robot    
+Resource          ../Utilities/ResponseHelper.robot
+Resource          ../Utilities/Utilities.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../../Keywords/Invoice/GiftProcessingKeywords.robot
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Mặc Định
-    [Documentation]    Prepares invoice data with default VAT rate (10%)
-    Set Suite Variable    ${PRODUCT_CODE}    SP040943
-    Set Suite Variable    ${QUANTITY}    1
-    Set Suite Variable    ${PRICE}    100000
-    Set Suite Variable    ${VAT_RATE}    10
-    ${invoice_data}=    Create Dictionary
-    ...    product_code=${PRODUCT_CODE}
-    ...    quantity=${QUANTITY}
-    ...    price=${PRICE}
-    Set Suite Variable    ${INVOICE_DATA}    ${invoice_data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Mặc Định Với Sản Phẩm ${product_code}
+    [Documentation]    Prepares invoice data with default VAT rate (5%)
+    ${product_info}=    Thông tin hàng hóa    ${product_code}
+    ${price}=    Convert To Number    ${product_info[2]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${invoice_detail_tax_body}=    Deep Copy    ${invoice_detail_tax_body}
+    ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_info[0]}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    ${price}
+    ${tax_value}=    Evaluate    ${price} * 5 / 100
+    ${tax_value}=    Evaluate    round(${tax_value}, 0)
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body}   DetailTax    ${tax_value}
+    ${invoice_detail_tax_body}  Create List    ${invoice_detail_tax_body}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    InvoiceDetailTaxs    ${invoice_detail_tax_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${invoice_data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${tax_value}
+    Log    ${request}
+    Set Test Variable    ${TOTAL_TAX}    ${tax_value}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Tùy Chỉnh
-    [Arguments]    ${vat_rate}
-    [Documentation]    Prepares invoice data with custom VAT rate
-    Set Suite Variable    ${PRODUCT_CODE}    SP040943
-    Set Suite Variable    ${QUANTITY}    1
-    Set Suite Variable    ${PRICE}    100000
-    Set Suite Variable    ${VAT_RATE}    ${vat_rate}
-    ${invoice_data}=    Create Dictionary
-    ...    product_code=${PRODUCT_CODE}
-    ...    quantity=${QUANTITY}
-    ...    price=${PRICE}
-    ...    vat_rate=${VAT_RATE}
-    Set Suite Variable    ${INVOICE_DATA}    ${invoice_data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Hàng Hóa ${product_code} Giảm Giá ${discount_value}
+    [Documentation]    Prepares invoice data with a product having a discount
+    ${product_info}=    Thông tin hàng hóa    ${product_code}
+    ${price}=    Convert To Number    ${product_info[2]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${invoice_detail_tax_body}=    Deep Copy    ${invoice_detail_tax_body}
+    ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_info[0]}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    ${price}
+    ${discount_value}=    Convert To Number    ${discount_value}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Discount    ${discount_value}
+    ${tax_value}=    Evaluate    (${price} - ${discount_value}) * 5 / 100
+    ${tax_value}=    Evaluate    round(${tax_value}, 0)
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body}   DetailTax    ${tax_value}
+    ${invoice_detail_tax_body}  Create List    ${invoice_detail_tax_body}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    InvoiceDetailTaxs    ${invoice_detail_tax_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${invoice_data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${tax_value}
+    Log    ${request}
+    Set Test Variable    ${TOTAL_TAX}    ${tax_value}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm Thuế Khác Nhau
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} có ${number_line} Dòng
+    [Documentation]    Prepares invoice data with a product having a discount
+    ${product_info}=    Thông tin hàng hóa    ${product_code}
+    ${price}=    Convert To Number    ${product_info[2]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${invoice_detail_tax_body_master}=    Deep Copy    ${invoice_detail_tax_body}
+    ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_info[0]}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    ${price}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    IsMaster    ${TRUE}
+    ${tax_value}=    Evaluate    ${price} * 5 / 100
+    ${tax_value}=    Evaluate    round(${tax_value}, 0)
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body_master}  DetailTax    ${tax_value}
+    ${invoice_detail_tax_body_list}  Create List    ${invoice_detail_tax_body}
+    ${data_product_list}=    Create List    ${invoice_data}
+    FOR  ${item_number_line}    IN RANGE    ${number_line}
+        ${data_product_new}=    Deep Copy    ${invoice_data}
+        ${invoice_detail_tax_body_new}=    Deep Copy    ${invoice_detail_tax_body}
+        ${data_product_new}=    Update Nested Dictionary Property    ${data_product_new}    IsMaster    ${FALSE}
+        ${tax_value_new}=    Evaluate    ${price} * 5 / 100
+        ${tax_value_new}=    Evaluate    round(${tax_value_new}, 0)
+        ${tax_value}=    Evaluate    ${tax_value_new} + ${tax_value}
+        ${invoice_detail_tax_body_new}=    Update Nested Dictionary Property  ${invoice_detail_tax_body_new}   DetailTax   ${tax_value_new}
+        Append To List    ${data_product_list}    ${data_product_new}
+        Append To List    ${invoice_detail_tax_body_list}    ${invoice_detail_tax_body_new}
+    END
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${tax_value}
+    Set Test Variable    ${TOTAL_TAX}    ${tax_value}
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Và ${product_code_2} Có Thuế VAT Khác Nhau
     [Documentation]    Prepares invoice data with multiple products having different VAT rates
-    Set Suite Variable    ${PRODUCT_1}    SP040943
-    Set Suite Variable    ${PRODUCT_2}    SP040944
-    ${product1}=    Create Dictionary
-    ...    product_code=${PRODUCT_1}
-    ...    quantity=1
-    ...    price=100000
-    ...    vat_rate=10
-    ${product2}=    Create Dictionary
-    ...    product_code=${PRODUCT_2}
-    ...    quantity=1
-    ...    price=200000
-    ...    vat_rate=5
-    ${products}=    Create List    ${product1}    ${product2}
-    ${invoice_data}=    Create Dictionary    products=${products}
-    Set Suite Variable    ${INVOICE_DATA}    ${invoice_data}
+    ${product_info}=    Thông tin hàng hóa    ${product_code}
+    ${product_info_2}=    Thông tin hàng hóa    ${product_code_2}
+    ${price}=    Convert To Number    ${product_info[2]}
+    ${price_2}=    Convert To Number    ${product_info_2[2]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${invoice_data_2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_info[0]}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    ${price}
+    ${invoice_data_2}=    Update Nested Dictionary Property    ${invoice_data_2}    ProductId    ${product_info_2[0]}
+    ${invoice_data_2}=    Update Nested Dictionary Property    ${invoice_data_2}    Price    ${price_2}
+    ${tax_value}=    Evaluate    ${price} * 10 / 100
+    ${tax_value_2}=    Evaluate    ${price_2} * 5 / 100
+    ${invoice_detail_tax_body_master}=    Deep Copy    ${invoice_detail_tax_body}
+    ${invoice_detail_tax_body_2}=    Deep Copy    ${invoice_detail_tax_body}
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property    ${invoice_detail_tax_body}    DetailTax    ${tax_value}
+    ${invoice_detail_tax_body_2}=    Update Nested Dictionary Property    ${invoice_detail_tax_body_2}    DetailTax    ${tax_value_2}
+    ${invoice_detail_tax_body_list}  Create List    ${invoice_detail_tax_body}
+    ${invoice_detail_tax_body_list_2}  Create List    ${invoice_detail_tax_body_2}
+    ${data_product_list}=    Create List    ${invoice_data}    ${invoice_data_2}
+    ${invoice_detail_tax_body_list}=    Create List    ${invoice_detail_tax_body}    ${invoice_detail_tax_body_2}
+    ${total_tax_value}=    Evaluate    ${tax_value} + ${tax_value_2}
+    ${total_tax_value}=    Evaluate    round(${total_tax_value}, 0)
+    ${request}=        Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetailTaxs    ${invoice_detail_tax_body_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${total_tax_value}
+    Set Test Variable    ${TOTAL_TAX}    ${total_tax_value}
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    [Documentation]    Sends request to create invoice
-    ${response}=    Create Invoice    ${INVOICE_DATA}
-    Set Suite Variable    ${RESPONSE}    ${response}
-    Set Suite Variable    ${INVOICE_ID}    ${response.json()['id']}
 
-Response Status Code Should Be
-    [Arguments]    ${expected_status}
-    [Documentation]    Verifies response status code
-    Should Be Equal As Strings    ${RESPONSE.status_code}    ${expected_status}
 
-Response Should Have Id exist
-    [Documentation]    Verifies response contains invoice ID
-    Dictionary Should Contain Key    ${RESPONSE.json()}    id
 
-Response Should Have Error
-    [Arguments]    ${expected_error}
-    [Documentation]    Verifies response contains expected error message
-    Dictionary Should Contain Key    ${RESPONSE.json()}    error
-    Should Be Equal As Strings    ${RESPONSE.json()['error']}    ${expected_error}
-
-Xác Thực Hóa Đơn Trong CSDL
-    [Documentation]    Verifies invoice exists in database
-    ${db_invoice}=    Get Invoice From Database    ${INVOICE_ID}
-    Should Not Be Empty    ${db_invoice}
-
-Xác Thực Thông Tin Thuế
-    [Arguments]    ${invoice_id}    ${vat_rate}    ${subtotal}    ${vat_amount}    ${total}
+Xác Thực Thông Tin Thuế ${tax_value}
     [Documentation]    Verifies VAT information in invoice
-    ${db_invoice}=    Get Invoice From Database    ${invoice_id}
-    Should Be Equal As Numbers    ${db_invoice['vat_rate']}    ${vat_rate}
-    Should Be Equal As Numbers    ${db_invoice['subtotal']}    ${subtotal}
-    Should Be Equal As Numbers    ${db_invoice['vat_amount']}    ${vat_amount}
-    Should Be Equal As Numbers    ${db_invoice['total']}    ${total}
-
-Xác Thực Chi Tiết Thuế Sản Phẩm
-    [Arguments]    ${invoice_id}    ${product_code}    ${vat_rate}    ${vat_amount}
-    [Documentation]    Verifies VAT information for specific product in invoice
-    ${db_invoice_detail}=    Get Invoice Detail From Database    ${invoice_id}    ${product_code}
-    Should Be Equal As Numbers    ${db_invoice_detail['vat_rate']}    ${vat_rate}
-    Should Be Equal As Numbers    ${db_invoice_detail['vat_amount']}    ${vat_amount} 
+    ${query}=    Set Variable    SELECT TotalTax FROM Invoice WHERE Id= ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${tax_value}

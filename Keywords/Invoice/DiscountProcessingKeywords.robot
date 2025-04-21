@@ -21,52 +21,6 @@ ${PRODUCT_PRICE_100K}          100000
 ${CURRENCY_DECIMAL_PLACE}      2
 ${CURRENCY_DECIMAL_PLACE_FOR_PRODUCT}    4
 
-# Chi tiết sản phẩm chuẩn
-&{INVOICE_DETAIL_100K}    
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    Discount=0
-
-&{INVOICE_DETAIL_200K}    
-...    ProductId=${PRODUCT_2}
-...    Quantity=1
-...    Price=200000
-...    Discount=0
-
-# Request chuẩn cho hóa đơn
-&{DISCOUNT_INVOICE_REQUEST}
-...    Invoice=&{DISCOUNT_INVOICE}
-
-&{DISCOUNT_INVOICE}    
-...    BranchId=${DEFAULT_BRANCH_ID}
-...    SoldById=${DEFAULT_USER_ID}
-...    Code=HD_DISCOUNT_TEST
-...    Discount=${STANDARD_DISCOUNT_AMOUNT}
-...    DiscountRatio=${STANDARD_DISCOUNT_RATIO}
-...    InvoiceDetails=@{EMPTY}
-
-# Request chuẩn cho khuyến mãi
-&{PROMOTION_DISCOUNT_INVOICE_REQUEST}
-...    Invoice=&{PROMOTION_INVOICE}
-
-&{PROMOTION_INVOICE}    
-...    BranchId=${DEFAULT_BRANCH_ID}
-...    SoldById=${DEFAULT_USER_ID}
-...    Code=HD_PROMOTION_TEST
-...    Discount=${PROMOTION_DISCOUNT_AMOUNT}
-...    DiscountByPromotion=${PROMOTION_DISCOUNT_AMOUNT}
-...    InvoiceDetails=@{EMPTY}
-...    InvoicePromotions=@{EMPTY}
-
-# Thông tin khuyến mãi
-&{PROMOTION_INFO_1}
-...    PromotionId=${PROMOTION_ID_1}
-...    SalePromotionId=24747
-...    Discount=${PROMOTION_DISCOUNT_AMOUNT}
-...    Type=1
-...    PromotionInfo=Chương trình khuyến mãi giảm giá hóa đơn
-
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá ${discount_amount}

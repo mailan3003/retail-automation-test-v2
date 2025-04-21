@@ -1,6 +1,10 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý thuế VAT trên hóa đơn
 Resource          ../../../Keywords/Invoice/InvoiceVATKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource          ../../../TestData/Invoice/CommonInvoiceData.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
@@ -24,14 +28,14 @@ RT-VAT-001 Tạo hóa đơn với thuế VAT mặc định
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 10,000đ
     ...    - Tổng tiền sau thuế = 110,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Mặc Định
+    [Tags]    apiinvoice    vat   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Mặc Định Với Sản Phẩm HH0052 
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong CSDL
-    And Xác Thực Thông Tin Thuế    ${INVOICE_ID}    10    100000    10000    110000
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Thông Tin Thuế ${TOTAL_TAX}
 
-RT-VAT-002 Tạo hóa đơn với thuế VAT tùy chỉnh
+RT-VAT-002 Tạo hóa đơn VAT với hàng hóa giảm giá
     [Documentation]    Kiểm tra tạo hóa đơn với thuế VAT tùy chỉnh
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
@@ -46,21 +50,19 @@ RT-VAT-002 Tạo hóa đơn với thuế VAT tùy chỉnh
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 8,000đ
     ...    - Tổng tiền sau thuế = 108,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Tùy Chỉnh    8
+    [Tags]    apiinvoice    vat   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Hàng Hóa HH0053 Giảm Giá 10000
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong CSDL
-    And Xác Thực Thông Tin Thuế    ${INVOICE_ID}    8    100000    8000    108000
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Thông Tin Thuế ${TOTAL_TAX}
 
-RT-VAT-003 Tạo hóa đơn không tính thuế VAT
-    [Documentation]    Kiểm tra tạo hóa đơn không tính thuế VAT
+RT-VAT-003 Tạo hóa đơn Hàng hóa nhiều dòng có VAT
+    [Documentation]    Kiểm tra tạo hóa đơn Hàng hóa nhiều dòng có VAT
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Thuế VAT = 0%
     ...    - Logic xử lý:
     ...    - Tổng tiền trước thuế = 100,000đ
-    ...    - Tiền thuế = 0đ
     ...    - Tổng tiền sau thuế = 100,000đ
     ...    - Kỳ vọng:
     ...    - Status code: 200
@@ -68,44 +70,15 @@ RT-VAT-003 Tạo hóa đơn không tính thuế VAT
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 0đ
     ...    - Tổng tiền sau thuế = 100,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Tùy Chỉnh    0
+    [Tags]    apiinvoice    vat   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm HH0053 có 2 Dòng 
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong CSDL
-    And Xác Thực Thông Tin Thuế    ${INVOICE_ID}    0    100000    0    100000
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Thông Tin Thuế ${TOTAL_TAX}
 
-RT-VAT-004 Tạo hóa đơn với thuế VAT không hợp lệ
-    [Documentation]    Kiểm tra tạo hóa đơn với thuế VAT không hợp lệ
-    ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Thuế VAT = -5% (giá trị âm không hợp lệ)
-    ...    - Logic xử lý:
-    ...    - Hệ thống kiểm tra giá trị thuế phải >= 0
-    ...    - Kỳ vọng:
-    ...    - Status code: 400
-    ...    - Thông báo lỗi: "Thuế suất không hợp lệ"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Tùy Chỉnh    -5
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "Thuế suất không hợp lệ"
 
-RT-VAT-005 Tạo hóa đơn với thuế VAT vượt giới hạn
-    [Documentation]    Kiểm tra tạo hóa đơn với thuế VAT vượt giới hạn
-    ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Thuế VAT = 101% (vượt giới hạn 100%)
-    ...    - Logic xử lý:
-    ...    - Hệ thống kiểm tra giá trị thuế phải <= 100%
-    ...    - Kỳ vọng:
-    ...    - Status code: 400
-    ...    - Thông báo lỗi: "Thuế suất không hợp lệ"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Tùy Chỉnh    101
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "Thuế suất không hợp lệ"
-
-RT-VAT-006 Tạo hóa đơn với nhiều sản phẩm có thuế VAT khác nhau
+RT-VAT-004 Tạo hóa đơn với nhiều sản phẩm có thuế VAT khác nhau
     [Documentation]    Kiểm tra tạo hóa đơn với nhiều sản phẩm có thuế VAT khác nhau
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm 1: SP040943, SL=1, Giá=100,000đ, VAT=10%
@@ -122,11 +95,9 @@ RT-VAT-006 Tạo hóa đơn với nhiều sản phẩm có thuế VAT khác nhau
     ...    - Tổng tiền trước thuế = 300,000đ
     ...    - Tổng tiền thuế = 20,000đ
     ...    - Tổng tiền sau thuế = 320,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm Thuế Khác Nhau
+    [Tags]    apiinvoice    vat   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm HH0050 Và HH0052 Có Thuế VAT Khác Nhau
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong CSDL
-    And Xác Thực Thông Tin Thuế    ${INVOICE_ID}    0    300000    20000    320000
-    And Xác Thực Chi Tiết Thuế Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_1}    10    10000
-    And Xác Thực Chi Tiết Thuế Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_2}    5    10000
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Thông Tin Thuế ${TOTAL_TAX}

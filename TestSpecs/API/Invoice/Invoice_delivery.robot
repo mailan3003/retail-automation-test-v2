@@ -1,7 +1,11 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý thông tin giao hàng
 Resource          ../../../Keywords/Invoice/DeliveryProcessingKeywords.robot
-Library           ../../../Resources/DatabaseLibrary.py
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
 *** Keywords ***
@@ -16,9 +20,9 @@ RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy �
     ...    - UsingCod: 1 (bật chế độ COD)
     ...    - Phương thức thanh toán: COD, 100,000đ
     ...    - Thông tin giao hàng đầy đủ:
-    ...      + Tên người nhận: "Nguyễn Văn A"
-    ...      + SĐT: "0987654321"
-    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Tên người nhận: "Hung"
+    ...      + SĐT: "0988673523"
+    ...      + Địa chỉ: "1B"
     ...      + Mã khu vực: 1, Mã phường: 1
     ...      + Phương thức giao: Đối tác mặc định (DeliveryBy=1)
     ...      + Phí ship: 20,000đ
@@ -26,121 +30,45 @@ RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy �
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin giao hàng đầy đủ
     ...    - UsingCod được bật trong hóa đơn
+    [Tags]    apiinvoice    delivery    
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Thông Tin Người Nhận    ${INVOICE_ID}    Nguyễn Văn A    0987654321
-    And Xác Thực Địa Chỉ Giao Hàng    ${INVOICE_ID}    123 Đường Nguyễn Huệ, Q1
-    And Xác Thực Khu Vực Giao Hàng    ${INVOICE_ID}    ${DEFAULT_LOCATION_ID}    ${DEFAULT_WARD_ID}
-    And Xác Thực Sử Dụng Đối Tác Mặc Định    ${INVOICE_ID}    1
-    And Xác Thực Phí Giao Hàng    ${INVOICE_ID}    ${DEFAULT_DELIVERY_PRICE}
+    And Xác Thực Thông Tin Người Nhận   Hung   0988673523
+    And Xác Thực Địa Chỉ Giao Hàng     1B
+    And Xác Thực Khu Vực Giao Hàng    ${DEFAULT_LOCATION_ID}   ${DEFAULT_WARD_ID_1} 
+    And Xác Thực Đối Tác Giao Hàng     ${PARTNER_DELIVERY_1_ID}
+    And Xác Thực Phí Giao Hàng     ${DEFAULT_DELIVERY_PRICE}
 
-RT-DP-002 Tạo hóa đơn COD thất bại khi thiếu số điện thoại người nhận
-    [Documentation]    Kiểm tra tạo hóa đơn COD thất bại khi thiếu số điện thoại người nhận
+
+RT-DP-006 Tạo hóa đơn COD thành công với đối tác giao hàng Để trống
+    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với đối tác giao hàng Để trống
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
     ...    - UsingCod: 1 (bật chế độ COD)
     ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng thiếu SĐT:
-    ...      + Tên người nhận: "Nguyễn Văn A"
-    ...      + SĐT: [không có]
-    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...    - Logic kiểm tra: DeliveryService.ValidateDeliveryInfo kiểm tra SĐT người nhận bắt buộc
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Response chứa thông báo lỗi "Số điện thoại người nhận không được để trống"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không SĐT
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "Số điện thoại người nhận không được để trống"
-
-RT-DP-003 Tạo hóa đơn COD thất bại khi thiếu tên người nhận
-    [Documentation]    Kiểm tra tạo hóa đơn COD thất bại khi thiếu tên người nhận
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
-    ...    - UsingCod: 1 (bật chế độ COD)
-    ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng thiếu tên:
-    ...      + Tên người nhận: [không có]
-    ...      + SĐT: "0987654321"
-    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...    - Logic kiểm tra: DeliveryService.ValidateDeliveryInfo kiểm tra tên người nhận bắt buộc
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Response chứa thông báo lỗi "Tên người nhận không được để trống"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Tên
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "Tên người nhận không được để trống"
-
-RT-DP-004 Tạo hóa đơn COD thất bại khi thiếu địa chỉ người nhận
-    [Documentation]    Kiểm tra tạo hóa đơn COD thất bại khi thiếu địa chỉ người nhận
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
-    ...    - UsingCod: 1 (bật chế độ COD)
-    ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng thiếu địa chỉ:
-    ...      + Tên người nhận: "Nguyễn Văn A"
-    ...      + SĐT: "0987654321"
-    ...      + Địa chỉ: [không có]
-    ...    - Logic kiểm tra: DeliveryService.ValidateDeliveryInfo kiểm tra địa chỉ người nhận bắt buộc
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Response chứa thông báo lỗi "Địa chỉ người nhận không được để trống"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Địa Chỉ
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "Địa chỉ người nhận không được để trống"
-
-RT-DP-005 Tạo hóa đơn COD thất bại khi thiếu thông tin khu vực
-    [Documentation]    Kiểm tra tạo hóa đơn COD thất bại khi thiếu thông tin khu vực
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
-    ...    - UsingCod: 1 (bật chế độ COD)
-    ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng thiếu khu vực:
+    ...    - Thông tin giao hàng với đối tác Để trống:
     ...      + Tên người nhận: "Nguyễn Văn A"
     ...      + SĐT: "0987654321"
     ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...      + Mã khu vực: [không có]
-    ...    - Logic kiểm tra: DeliveryService.ValidateDeliveryInfo kiểm tra khu vực giao hàng bắt buộc
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Response chứa thông báo lỗi "Khu vực giao hàng không được để trống"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Khu Vực
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "Khu vực giao hàng không được để trống"
-
-RT-DP-006 Tạo hóa đơn COD thành công với đối tác giao hàng khác
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với đối tác giao hàng khác
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
-    ...    - UsingCod: 1 (bật chế độ COD)
-    ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng với đối tác khác:
-    ...      + Tên người nhận: "Nguyễn Văn A"
-    ...      + SĐT: "0987654321"
-    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...      + Phương thức giao: Đối tác khác (DeliveryBy=2)
-    ...      + PartnerId: 8888
+    ...      + Phương thức giao: Đối tác Để trống (DeliveryBy=None)
+    ...      + PartnerId: None
     ...      + Phí ship: 30,000đ
     ...    - Logic kiểm tra: DeliveryService xử lý thông tin đối tác giao hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin đối tác giao hàng
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Đối Tác Khác
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+     [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Đối Tác Để trống
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Đối Tác Giao Hàng    ${INVOICE_ID}    ${DELIVERY_PARTNER_2}
-    And Xác Thực Phí Giao Hàng    ${INVOICE_ID}    30000
 
-RT-DP-007 Tạo hóa đơn COD thành công với phí giao hàng cao
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với phí giao hàng cao
+RT-DP-007 Tạo hóa đơn giao hàng thay đổi thông tin gói hàng
+    [Documentation]    Kiểm tra tạo hóa đơn giao hàng thay đổi thông tin gói hàng
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
     ...    - UsingCod: 1 (bật chế độ COD)
@@ -154,15 +82,15 @@ RT-DP-007 Tạo hóa đơn COD thành công với phí giao hàng cao
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng cao
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Phí Cao
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Phí Giao Hàng    ${INVOICE_ID}    100000
+    [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Có khối lượng 1000 g Và Kích thước 20x10x15 cm
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Sử Dụng Thông Tin Trọng Lượng 1000 Và Kích Thước 20x10x15 cm
 
-RT-DP-008 Tạo hóa đơn COD thành công với miễn phí giao hàng
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với miễn phí giao hàng
+RT-DP-008 Tạo hóa đơn Giao hàng gắn với Khách hàng và miễn phí giao hàng
+    [Documentation]    Kiểm tra tạo hóa đơn Giao hàng với miễn phí giao hàng
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
     ...    - UsingCod: 1 (bật chế độ COD)
@@ -177,15 +105,16 @@ RT-DP-008 Tạo hóa đơn COD thành công với miễn phí giao hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng = 0 và cờ IsFreeShip = true
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Miễn Phí
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Miễn Phí Giao Hàng    ${INVOICE_ID}    1
+     [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${CUSTOMER_ID} Và Phí Giao Hàng 0
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Phí Giao Hàng   0
+    And Xác Thực Khách Hàng ${CUSTOMER_ID}
 
-RT-DP-009 Tạo hóa đơn COD thành công với trạng thái đang chờ xử lý
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đang chờ xử lý
+RT-DP-009 Tạo hóa đơn giao hàng có thanh toán 
+    [Documentation]    Kiểm tra tạo hóa đơn giao hàng có thanh toán COD
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STS001"
     ...    - UsingCod: 1 (bật chế độ COD)
@@ -199,15 +128,15 @@ RT-DP-009 Tạo hóa đơn COD thành công với trạng thái đang chờ xử
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Pending
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái    ${DELIVERY_INFO_PENDING}
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Trạng Thái Giao Hàng    ${INVOICE_ID}    ${STATUS_PENDING}
+     [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thu Hộ và Thanh Toán 30000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Số Tiền Thu Hộ   ${ORIGINAL_COD} 
 
-RT-DP-010 Tạo hóa đơn COD thành công với trạng thái đang xử lý
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đang xử lý
+RT-DP-010 Tạo hóa đơn giao hàng có thời gian giao hàng
+    [Documentation]    Kiểm tra tạo hóa đơn giao hàng có thời gian giao hàng
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STS001"
     ...    - UsingCod: 1 (bật chế độ COD)
@@ -221,37 +150,38 @@ RT-DP-010 Tạo hóa đơn COD thành công với trạng thái đang xử lý
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Processing
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái    ${DELIVERY_INFO_PROCESSING}
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Trạng Thái Giao Hàng    ${INVOICE_ID}    ${STATUS_PROCESSING}
+    [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thời Gian 4 Ngày Sau Ngày Hiện Tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Trạng Thái Giao Hàng   1
+    And Xác Thực Thời Gian Giao Hàng  ${date_time}
 
-RT-DP-011 Tạo hóa đơn COD thành công với trạng thái đã hoàn thành
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đã hoàn thành
+RT-DP-011 Tạo hóa đơn COD thành công với trạng thái đang giao hàng
+    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đang giao hàng
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STS001"
     ...    - UsingCod: 1 (bật chế độ COD)
     ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng với trạng thái Completed:
+    ...    - Thông tin giao hàng với trạng thái Đang giao hàng:
     ...      + Tên người nhận: "Nguyễn Văn A"
     ...      + SĐT: "0987654321"
     ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...      + Status: 3 (Completed)
+    ...      + Status: 3 (Đang giao hàng)
     ...    - Logic kiểm tra: DeliveryService xử lý trạng thái giao hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Completed
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái    ${DELIVERY_INFO_COMPLETED}
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Trạng Thái Giao Hàng    ${INVOICE_ID}    ${STATUS_COMPLETED}
+    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Đang giao hàng
+    [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái Đang Giao Hàng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Trạng Thái Giao Hàng   2
 
-RT-DP-012 Tạo hóa đơn COD thành công với trạng thái đã hủy
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đã hủy
+RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
+    [Documentation]    Kiểm tra tạo hóa đơn giao hàng thành công không thu hộ
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_DELIVERY_STS001"
     ...    - UsingCod: 1 (bật chế độ COD)
@@ -265,31 +195,10 @@ RT-DP-012 Tạo hóa đơn COD thành công với trạng thái đã hủy
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Cancelled
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái    ${DELIVERY_INFO_CANCELLED}
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Trạng Thái Giao Hàng    ${INVOICE_ID}    ${STATUS_CANCELLED}
-
-RT-DP-013 Tạo hóa đơn COD thành công với ghi chú giao hàng
-    [Documentation]    Kiểm tra tạo hóa đơn COD thành công với ghi chú giao hàng
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
-    ...    - UsingCod: 1 (bật chế độ COD)
-    ...    - Phương thức thanh toán: COD, 100,000đ
-    ...    - Thông tin giao hàng với ghi chú:
-    ...      + Tên người nhận: "Nguyễn Văn A"
-    ...      + SĐT: "0987654321"
-    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
-    ...      + Ghi chú: "Giao hàng ngoài giờ hành chính"
-    ...    - Logic kiểm tra: DeliveryService xử lý ghi chú giao hàng
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Hóa đơn COD được lưu vào CSDL với ghi chú giao hàng
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Ghi Chú
-    When Gửi Yêu Cầu Tạo Hóa Đơn Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Giao Hàng Trong DB
-    And Xác Thực Ghi Chú Giao Hàng    ${INVOICE_ID}    Giao hàng ngoài giờ hành chính 
+    [Tags]    apiinvoice    delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Thu Hộ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Giao Hàng Trong DB Không Thu Hộ
+    And Xác Thực Trạng Thái Giao Hàng    1

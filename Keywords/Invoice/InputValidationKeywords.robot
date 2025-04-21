@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API của InputValidationTest
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/InputValidationData.robot
+Resource          ../../TestData/Invoice/Invoice_Validation_Data.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot

@@ -1,97 +1,9 @@
 *** Settings ***
-Documentation     Test cases API cho phần tính điểm thưởng
+Documentation     Test cases API cho phần tính điểm thưởng hàng hóa
 Resource          ../../../Keywords/Invoice/RewardPointKeywords.robot
-Resource          ../../../TestData/Invoice/RewardPointData.robot
-Suite Setup       Suite Setup
-Suite Teardown    Suite Teardown
-Test Setup        Test Setup
-Test Teardown     Test Teardown
 
 *** Keywords ***
-Suite Setup
-    [Documentation]    Khởi tạo cấu hình môi trường test
-    Set Suite Variable    ${SUITE_NAME}    RewardPointTest
-    #Connect To Database    retailer_${RETAILER_ID}    
-
-Suite Teardown
-    [Documentation]    Dọn dẹp môi trường sau khi chạy test
-    #Disconnect From Database
-    Log     Nothing
-
-Test Setup
-    [Documentation]    Khởi tạo môi trường cho mỗi test case
-    Log    Bắt đầu test case    console=True
-
-Test Teardown
-    [Documentation]    Dọn dẹp môi trường sau mỗi test case  
-    Log    Kết thúc test case    console=True
-
 *** Test Cases ***
-RT-RP-001 Tính điểm thưởng theo hóa đơn
-    [Documentation]    Kiểm tra tính điểm thưởng theo hóa đơn:
-    ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
-    ...    - Logic: Tổng điểm = (Tổng tiền - Phụ phí - Thuế) / Tỷ lệ tiền/điểm
-    ...    - Tổng tiền: 100,000đ
-    ...    - Tỷ lệ: 10,000đ = 1 điểm
-    ...    - Điểm dự kiến: 10 điểm
-    [Tags]    api    invoice    reward-point    positive
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo hóa đơn
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng tương ứng
-    Response Status Code Should Be 200
-    Xác Thực Điểm Thưởng Hóa Đơn    10
-    Xác Thực Bản Ghi Điểm Thưởng Được Tạo    10
-
-RT-RP-002 Tính điểm thưởng theo hóa đơn có chiết khấu trên giá đã giảm
-    [Documentation]    Kiểm tra tính điểm thưởng theo hóa đơn có chiết khấu với cấu hình tính điểm trên giá sau khi giảm:
-    ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
-    ...    - Logic: Tổng điểm = (Tổng tiền sau giảm - Phụ phí - Thuế) / Tỷ lệ tiền/điểm
-    ...    - Tổng tiền trước giảm: 100,000đ
-    ...    - Chiết khấu: 10,000đ
-    ...    - Tổng tiền sau giảm: 90,000đ
-    ...    - Tỷ lệ: 10,000đ = 1 điểm
-    ...    - Điểm dự kiến: 9 điểm
-    [Tags]    api    invoice    reward-point    positive
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo hóa đơn có chiết khấu
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn Có Chiết Khấu
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng tương ứng
-    Response Status Code Should Be 200
-    Xác Thực Điểm Thưởng Hóa Đơn    9
-    Xác Thực Bản Ghi Điểm Thưởng Được Tạo    9
-
-RT-RP-003 Tính điểm thưởng theo hóa đơn có chiết khấu trên giá gốc
-    [Documentation]    Kiểm tra tính điểm thưởng theo hóa đơn có chiết khấu với cấu hình tính điểm trên giá trước giảm:
-    ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
-    ...    - Logic: Tổng điểm = (Tổng tiền trước giảm - Phụ phí - Thuế) / Tỷ lệ tiền/điểm
-    ...    - Tổng tiền trước giảm: 100,000đ
-    ...    - Chiết khấu: 10,000đ
-    ...    - Tổng tiền sau giảm: 90,000đ
-    ...    - Cấu hình IsRewardPointUsingPriceAfterDiscount = False
-    ...    - Tỷ lệ: 10,000đ = 1 điểm
-    ...    - Điểm dự kiến: 10 điểm (tính trên giá chưa giảm)
-    [Tags]    api    invoice    reward-point    positive
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn có chiết khấu nhưng tính điểm trên giá gốc
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn Có Chiết Khấu Tính Trên Giá Gốc
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng tương ứng
-    Response Status Code Should Be 200
-    Xác Thực Điểm Thưởng Hóa Đơn    10
-    Xác Thực Bản Ghi Điểm Thưởng Được Tạo    10
-
 RT-RP-004 Tính điểm thưởng theo sản phẩm có điểm cố định
     [Documentation]    Kiểm tra tính điểm thưởng theo sản phẩm có điểm cố định:
     ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
@@ -152,25 +64,6 @@ RT-RP-006 Tính điểm thưởng theo sản phẩm hỗn hợp
     Xác Thực Điểm Thưởng Hóa Đơn    0
     Xác Thực Không Có Bản Ghi Điểm Thưởng
 
-RT-RP-007 Không tích điểm khi cấu hình tắt tích điểm
-    [Documentation]    Kiểm tra không tích điểm khi cấu hình đã tắt tích điểm:
-    ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
-    ...    - Logic: Nếu RewardPointType = 0, không tích điểm
-    ...    - Cấu hình: RewardPointType = 0 (tắt tích điểm)
-    ...    - Điểm dự kiến: 0 điểm
-    [Tags]    api    invoice    reward-point    negative
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn có cấu hình không tích điểm
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Không Tích Điểm
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng bằng 0
-    Response Status Code Should Be 200
-    Xác Thực Không Có Điểm Thưởng
-    Xác Thực Không Có Bản Ghi Điểm Thưởng
-
 RT-RP-008 Không tích điểm cho hóa đơn không có khách hàng
     [Documentation]    Kiểm tra không tích điểm cho hóa đơn không có khách hàng:
     ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
@@ -209,49 +102,6 @@ RT-RP-009 Tính điểm thưởng khi có khuyến mãi tặng điểm theo hóa
     Response Status Code Should Be 200
     Xác Thực Điểm Thưởng Hóa Đơn    20
     Xác Thực Bản Ghi Điểm Thưởng Được Tạo    20
-
-RT-RP-010 Tính điểm thưởng khi có khuyến mãi tặng điểm theo sản phẩm
-    [Documentation]    Kiểm tra tính điểm thưởng khi có khuyến mãi tặng điểm theo sản phẩm:
-    ...    - Source: InvoiceService.cs > CalculatePromotionPoint() line ~4815
-    ...    - Logic: Điểm khuyến mãi theo sản phẩm được cộng vào tổng điểm
-    ...    - Tổng tiền: 100,000đ (Điểm cơ bản: 10 điểm)
-    ...    - Khuyến mãi: Type=13 (ProductPointGift), Value=20 (điểm), ProductId=${PRODUCT_1}
-    ...    - Điểm dự kiến: 30 điểm (10 điểm cơ bản + 20 điểm khuyến mãi sản phẩm)
-    [Tags]    api    invoice    reward-point    promotion    positive
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn với khuyến mãi tặng điểm theo sản phẩm
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sản Phẩm
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng tương ứng
-    Response Status Code Should Be 200
-    Xác Thực Điểm Thưởng Hóa Đơn    30
-    Xác Thực Bản Ghi Điểm Thưởng Được Tạo    30
-
-RT-RP-011 Tính điểm thưởng không tính phụ phí và thuế
-    [Documentation]    Kiểm tra tính điểm thưởng không tính phần phụ phí và thuế:
-    ...    - Source: InvoiceService.cs > CalculatePoint() line ~8295
-    ...    - Logic: Tổng điểm = (Tổng tiền - Phụ phí - Thuế) / Tỷ lệ tiền/điểm
-    ...    - Tổng tiền hóa đơn: 115,000đ
-    ...    - Phụ phí: 10,000đ
-    ...    - Thuế: 5,000đ
-    ...    - Tổng tiền tính điểm: 100,000đ
-    ...    - Tỷ lệ: 10,000đ = 1 điểm
-    ...    - Điểm dự kiến: 10 điểm
-    [Tags]    api    invoice    reward-point    positive
-    
-    # GIVEN: Chuẩn bị dữ liệu hóa đơn với phụ phí và thuế
-    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Phụ Phí Và Thuế
-    
-    # WHEN: Gửi yêu cầu tạo hóa đơn
-    Gửi Yêu Cầu Tạo Hóa Đơn
-    
-    # THEN: Hóa đơn được tạo thành công với điểm thưởng tương ứng
-    Response Status Code Should Be 200
-    Xác Thực Điểm Thưởng Hóa Đơn    10
-    Xác Thực Bản Ghi Điểm Thưởng Được Tạo    10
 
 RT-RP-012 Tích điểm thưởng với số lẻ được làm tròn xuống
     [Documentation]    Kiểm tra cách xử lý điểm thưởng khi tính toán ra số lẻ:

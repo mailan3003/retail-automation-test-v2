@@ -2,41 +2,30 @@
 Resource    ../Utilities/Utilities.robot
 Resource    ../Utilities/RequestHelper.robot
 Resource    ../Utilities/ResponseHelper.robot
-Res
-Resource    ../../TestData/Invoice/InvoiceValidationData.robot
+Resource    ../Utilities/DataUtilities.robot
+Resource    ../../TestData/Invoice/CommonInvoiceData.robot
+Resource    ../../TestData/Invoice/Invoice_Validation_Data.robot
 Library     Collections
 Library     String
 Library     DateTime
 
-Resource    Env.robot
-
 
 *** Keywords ***
-Prepare Standard Invoice Request
-    [Arguments]    ${invoice_details}=${None}    ${payments}=${None}
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.UseDefaultPartner    ${True}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerCode    ${PARTNER_DELIVERY_1_CODE}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail.PartnerName    ${PARTNER_DELIVERY_1_NAME}
-    
-    # Add invoice details if provided, otherwise use standard details
-    ${details}=    Run Keyword If    '${invoice_details}' == '${None}'    
-    ...    Create List    ${STANDARD_INVOICE_DETAIL}
-    ...    ELSE    Set Variable    ${invoice_details}
-    
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    # Add payments if provided
-    ${payment_list}=    Run Keyword If    '${payments}' == '${None}'    
-    ...    Create List    ${STANDARD_PAYMENT}
-    ...    ELSE    Set Variable    ${payments}
-    
-    Set To Dictionary    ${data}    Payments=${payment_list}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+Chuẩn Bị Hóa Đơn Tiêu Chuẩn Với Sản Phẩm ${product_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=     Update Nested Dictionary Property     ${data_product}    ProductId=${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${DEFAULT_CUSTOMER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Prepare Invoice With No Details
+Chuẩn Bị Hóa Đơn Tiêu Chuẩn Với A ${product_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=     Update Nested Dictionary Property     ${data_product}    ProductId=${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${DEFAULT_CUSTOMER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
     ${data}=    Evaluate    dict(${NO_DETAILS_INVOICE_DATA})
     ${empty_details}=    Create List
     Set To Dictionary    ${data}    InvoiceDetails=${empty_details}

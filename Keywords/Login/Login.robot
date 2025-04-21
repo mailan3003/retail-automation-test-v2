@@ -1,4 +1,6 @@
 *** Settings ***
+Resource          ../Utilities/RequestHelper.robot
+
 Library           StringFormat
 Library           SeleniumLibrary
 Library           Collections
