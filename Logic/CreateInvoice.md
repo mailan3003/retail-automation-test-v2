@@ -400,76 +400,216 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
         - Trong trường hợp này, hệ thống sẽ hiển thị thông báo lỗi: "Số tài khoản {số tài khoản} không được áp dụng cho thanh toán tại chi nhánh {tên chi nhánh}" (`KVMessage.BankAccountNotInBranch`)
     - Việc xác thực này đảm bảo tài khoản ngân hàng hợp lệ và được phép sử dụng tại chi nhánh hiện tại trước khi xử lý thanh toán
 
-### 15. Xử lý thông tin giao hàng hiện tại
-- **Lấy thông tin giao hàng hiện tại**:
-  - Nếu đang cập nhật hóa đơn (`invoice.Id > 0`):
-    - Sử dụng `DeliveryService.GetByInvoiceId(invoice.Id)` để lấy thông tin giao hàng hiện tại
-    - Lưu thông tin giao hàng cũ để so sánh với thông tin mới
-    - Kiểm tra trạng thái giao hàng hiện tại có cho phép cập nhật không
-
-- **Kiểm tra sự thay đổi trong thông tin giao hàng**:
-  - So sánh thông tin giao hàng mới (`invoice.DeliveryDetail`) với thông tin giao hàng cũ
-  - Kiểm tra các thay đổi về địa chỉ giao hàng, người nhận, số điện thoại
-  - Kiểm tra thay đổi về đối tác vận chuyển (`PartnerDeliveryId`) và dịch vụ vận chuyển (`ServiceId`)
-  - Kiểm tra thay đổi về phương thức thanh toán phí vận chuyển (`PaymentTypeId`)
-  - Ghi lại các thay đổi vào log hệ thống để theo dõi
-
-- **Xử lý chuyển đổi phương thức giao hàng**:
-  - Trường hợp chuyển từ tự giao sang giao bởi đối tác:
-    - Kiểm tra và xác thực thông tin đối tác vận chuyển mới
-    - Tạo vận đơn mới với đối tác vận chuyển đã chọn
-    - Cập nhật trạng thái giao hàng thành "Chờ giao hàng"
-    - Tính toán phí vận chuyển dựa trên đối tác và dịch vụ mới
-  
-  - Trường hợp chuyển từ giao bởi đối tác sang tự giao:
-    - Kiểm tra trạng thái vận đơn hiện tại có cho phép hủy không
-    - Gọi API hủy vận đơn với đối tác vận chuyển
-    - Cập nhật trạng thái giao hàng thành "Tự giao hàng"
-    - Xóa thông tin vận đơn và phí vận chuyển
-
-- **Xử lý các trường hợp đặc biệt**:
-  - Nếu hóa đơn đã hoàn thành thanh toán và đang trong quá trình giao hàng:
-    - Hạn chế các thay đổi có thể thực hiện (chỉ cho phép thay đổi thông tin người nhận)
-    - Hiển thị cảnh báo nếu có thay đổi quan trọng
-  - Nếu hóa đơn đã giao hàng thành công:
-    - Không cho phép thay đổi thông tin giao hàng
-    - Hiển thị thông báo: "Không thể thay đổi thông tin giao hàng của hóa đơn đã giao thành công"
-
+### 15. Kiểm tra thông tin khách hàng và xử lý thông tin giao hàng
+- **Xử lý thông tin giao hàng**:
+  - Hệ thống lấy thông tin hóa đơn cũ (nếu có) thông qua `InvoiceService.GetByIdAsync(invoice.Id)`
+  - Tạo đối tượng `oldInvInfo` từ hóa đơn cũ (nếu có) bằng `InvoiceInfo.InstantFrom(oldInv)`
+  - Khởi tạo đối tượng `existDeliveryInfo` mới để lưu thông tin giao hàng
+  - Nếu hóa đơn cũ tồn tại, có thông tin giao hàng và đang cập nhật hóa đơn (`oldInv != null && oldInv.DeliveryInfoes.Any() && invoice.Id > 0`):
+    - Lấy thông tin giao hàng hiện tại từ hóa đơn cũ bằng cách tìm bản ghi có `RetailerId` trùng với người dùng hiện tại và `IsCurrent = true`
+    - Tách thông tin giao hàng khỏi đối tượng gốc để tránh ảnh hưởng đến dữ liệu gốc bằng `DeliveryInfoService.DetachByClone()`
+  - Lưu trạng thái giao hàng cũ (`oldDeliveryStatus`) và tên kênh bán hàng cũ (`oldSaleChannelName`) để sử dụng sau này
+  - Nếu hóa đơn có thông tin giao hàng (`invoice.DeliveryDetail != null`), sử dụng đối tác giao hàng mặc định (`UseDefaultPartner`) và mã hóa đơn bắt đầu bằng mã offline (`Invoice.OffCodePrefix`):
+    - Xóa thông tin đối tác giao hàng (`PartnerDelivery = null`)
+    - Xóa mã đối tác (`PartnerCode = string.Empty`)
+    - Xóa tên đối tác (`PartnerName = string.Empty`)
+- **Xử lý ID khách hàng**:
+  - Hệ thống kiểm tra ID khách hàng trong hóa đơn (`invoice.CustomerId`)
+  - Nếu ID khách hàng > 0, giữ nguyên giá trị ID khách hàng
+  - Nếu ID khách hàng ≤ 0, gán giá trị null cho ID khách hàng (`invoice.CustomerId = null`)
+  - Điều này giúp phân biệt giữa hóa đơn có khách hàng cụ thể và hóa đơn bán lẻ cho khách vãng lai
+  - Đoạn code thực hiện: `invoice.CustomerId = invoice.CustomerId > 0 ? invoice.CustomerId : null;`
+- **Xác thực khách hàng**:
+  - Nếu hóa đơn có thông tin khách hàng (`invoice.CustomerId > 0`):
+    - Hệ thống lấy thông tin công nợ hiện tại của khách hàng thông qua `CustomerService.GetByIdsAsync(new[] { invoice.CustomerId ?? 0 }).Select(c => c.Debt).FirstOrDefaultWithTracking(ExecutionContext) ?? 0`
+    - Đồng thời lấy thông tin chi tiết của khách hàng thông qua `CustomerService.GetByIdAsync(invoice.CustomerId.Value)`
+    - Kiểm tra trạng thái khách hàng:
+      - Nếu đang tạo hóa đơn mới (`invoice.Id <= 0`) và khách hàng không tồn tại (`customer == null`) hoặc không còn hoạt động (`customer.IsActive != true`) hoặc đã bị xóa (`customer.isDeleted == true`):
+        - Hệ thống sẽ ném ngoại lệ `KvValidateCustomerException` với thông báo `KVMessage._customer_UnActive` (Khách hàng không còn hoạt động trong hệ thống)
+    - Thông tin công nợ hiện tại của khách hàng (`customerOldDebt`) sẽ được sử dụng sau này để tính toán công nợ mới sau khi tạo/cập nhật hóa đơn
+  - Nếu không có thông tin khách hàng (`invoice.CustomerId <= 0`):
+    - Hóa đơn sẽ được xử lý như hóa đơn bán lẻ cho khách vãng lai
+    - Không cần kiểm tra thêm thông tin khách hàng
 ### 16. Kiểm tra kho hàng
-- **Xác thực trạng thái kho hàng**:
-  - Sử dụng `WarehouseService.ValidateStatusOfWarehouse(invoice.BranchId)` để kiểm tra trạng thái kho
-  - Kiểm tra kho hàng có đang hoạt động (`IsActive == true`) và không bị khóa (`IsLocked == false`)
-  - Kiểm tra kho hàng không bị xóa (`IsDeleted == false`)
-  - Nếu kho hàng không hợp lệ, ném ngoại lệ `KvValidateWarehouseException` với thông báo: "Kho hàng không tồn tại hoặc đã bị vô hiệu hóa"
-
-- **Kiểm tra quyền truy cập kho hàng**:
-  - Sử dụng `AuthorizationService.CheckWarehouseAccess(currentUserId, invoice.BranchId)` để kiểm tra quyền
-  - Xác minh người dùng hiện tại có quyền truy cập vào kho hàng được chọn
-  - Kiểm tra người dùng có quyền tạo/sửa hóa đơn trong kho hàng này
-  - Nếu không có quyền, ném ngoại lệ `KvAuthorizationException` với thông báo: "Bạn không có quyền truy cập vào kho hàng này"
-
-- **Kiểm tra tồn kho**:
-  - Đối với mỗi sản phẩm trong hóa đơn, kiểm tra số lượng tồn kho tại kho hàng được chọn
-  - Sử dụng `InventoryService.CheckInventory(invoice.BranchId, productIds)` để kiểm tra tồn kho
-  - So sánh số lượng yêu cầu với số lượng tồn kho hiện có
-  - Nếu số lượng yêu cầu vượt quá tồn kho và cấu hình không cho phép bán âm:
-    - Tổng hợp danh sách sản phẩm không đủ tồn kho
-    - Hiển thị thông báo chi tiết: "Sản phẩm [mã sản phẩm] không đủ số lượng trong kho. Tồn kho hiện tại: [số lượng]"
-
-- **Xử lý các trường hợp đặc biệt**:
-  - Nếu là hóa đơn trả hàng: Kiểm tra kho hàng có cho phép nhận hàng trả về
-  - Nếu là hóa đơn xuất chuyển kho: Kiểm tra quyền truy cập cả kho nguồn và kho đích
-  - Nếu kho hàng đang trong thời gian kiểm kê: Hiển thị cảnh báo hoặc ngăn chặn tạo hóa đơn tùy theo cấu hình
-  - Nếu kho hàng đã đóng cửa (ngoài giờ làm việc): Kiểm tra cấu hình cho phép bán hàng ngoài giờ
+- **Xác định và kiểm tra trạng thái kho hàng**:
+  - Hệ thống xác định ID kho hàng (`whId`) dựa trên thông tin trong hóa đơn:
+    ```csharp
+    var whId = invoice.WareHouse != null && invoice.WareHouse.Type != (byte)WarehouseType.DefaultDirectSale 
+               ? invoice.WareHouse.Id 
+               : invoice.BranchId;
+    ```
+  - Hệ thống sử dụng một trong hai giá trị:
+    - ID của kho hàng được chỉ định (`invoice.WareHouse.Id`) nếu hóa đơn có thông tin kho hàng và không phải kho bán hàng mặc định
+    - ID chi nhánh (`invoice.BranchId`) nếu không có kho hàng cụ thể hoặc là kho bán hàng mặc định
+  
+  - Sau khi xác định kho hàng, hệ thống gọi `WarehouseService.ValidateStatusOfWarehouse(whId)` để kiểm tra tính hợp lệ của kho hàng
+  
+  - Quy trình kiểm tra kho hàng bao gồm:
+    1. Kiểm tra xem cửa hàng có đang sử dụng hoặc đã từng sử dụng tính năng quản lý kho không
+    2. Nếu có, tiếp tục kiểm tra trạng thái kho hàng hiện tại
+    3. Lấy thông tin kho hàng từ cơ sở dữ liệu dựa trên ID kho hàng
+    4. Kiểm tra các điều kiện về trạng thái kho:
+       - Nếu kho hàng không còn hoạt động: Hiển thị thông báo "{tên kho} không hợp lệ" (KVMessage.WarehouseIsDeleted)
+       - Nếu kho hàng bị hạn chế truy cập: Hiển thị thông báo "{tên kho} đã ngừng hoạt động" (KVMessage.WarehouseIsDeactived)
+  
+  - Việc kiểm tra này đảm bảo rằng:
+    - Kho hàng được sử dụng trong hóa đơn phải tồn tại
+    - Kho hàng đang hoạt động (không bị xóa)
+    - Kho hàng không bị hạn chế truy cập (không bị vô hiệu hóa)
+  
+  - Nếu kho hàng không đáp ứng các điều kiện trên, quá trình tạo/cập nhật hóa đơn sẽ bị dừng lại và hiển thị thông báo lỗi tương ứng
 
 ### 17. Lưu hoặc cập nhật hóa đơn
-- Nếu invoice.Id > 0, gọi UpdateInvoiceAsync(invoice) để cập nhật hóa đơn hiện có
-- Nếu invoice.Id <= 0, gọi MakeInvoiceAsync(invoice) để tạo hóa đơn mới
-- Xử lý các trường hợp đặc biệt:
-  - Hóa đơn kết hợp (invoice.IsCombo = true): Xử lý các sản phẩm combo
-  - Hóa đơn trùng lặp: Kiểm tra và xử lý trùng lặp mã hóa đơn
-  - Hóa đơn từ đơn đặt hàng: Cập nhật trạng thái đơn đặt hàng gốc
-  - Hóa đơn từ kênh bán hàng online: Xử lý đồng bộ trạng thái với kênh bán hàng
+- **Cập nhật hóa đơn hiện có**:
+  - Nếu hóa đơn đã tồn tại (`invoice.Id > 0`):
+    - Kiểm tra xem hóa đơn có đang được xử lý bởi tác vụ vận chuyển không thông qua `ShippingTaskService.ValidateProcessingInvoice(invoice.Id)`
+      - Phương thức này kiểm tra xem hóa đơn có đang được xử lý bởi tác vụ vận chuyển nào không:
+        - Nếu `invoiceId = 0`, ném ngoại lệ với thông báo "Request không có dữ liệu" (KVMessage.request_DataNull)
+        - Lấy thời gian chờ từ cấu hình hệ thống `AppServiceConfigInfo.ShippingTaskTimeOut`
+        - Tìm tất cả các tác vụ vận chuyển liên quan đến hóa đơn từ `ShippingTaskOrderDetailService`
+        - Nếu có tác vụ vận chuyển liên quan, gọi phương thức `CheckFailedTask` để kiểm tra các tác vụ đã quá thời gian chờ:
+          - Lấy danh sách tác vụ vận chuyển từ cơ sở dữ liệu dựa trên các ID tác vụ
+          - Xử lý các tác vụ vận chuyển quá hạn:
+            1. **Xác định tác vụ quá hạn**: Lọc các tác vụ có trạng thái "Processing" và thời gian xử lý vượt quá thời gian chờ cấu hình
+            2. **Xử lý thông tin giao hàng**:
+               - Lấy danh sách chi tiết tác vụ vận chuyển chưa hoàn thành
+               - Tìm các thông tin giao hàng liên quan đến các tác vụ này
+               - Xóa thông tin đối tác vận chuyển (đặt DeliveryBy = null, UseDefaultPartner = null) cho các thông tin giao hàng chưa hoàn thành
+               - Đánh dấu các tác vụ quá hạn thành "Error"
+               - Thêm thông báo lỗi với nội dung "Lỗi do thời gian tạo vận đơn hàng loạt vượt quá ngưỡng cho phép ({0} phút). Xin vui lòng thử lại." (KVMessage.shippingTaskTimeOutMsg)
+               - Cập nhật thông tin người sửa đổi và thời gian sửa đổi
+               - Thực hiện SQL query để cập nhật trạng thái:
+                 ```sql
+                 UPDATE ShippingTask 
+                 SET Status = 'Error', 
+                     ErrorMessage = N'Lỗi do thời gian tạo vận đơn hàng loạt vượt quá ngưỡng cho phép (' + @timeoutMinutes + ' phút). Xin vui lòng thử lại.',
+                     ModifiedBy = @currentUserId,
+                     ModifiedDate = GETDATE()
+                 WHERE Id IN (@taskIds) AND Status = 'Processing'
+                 ```
+               - Thực hiện SQL query để lấy các hóa đơn bị ảnh hưởng:
+                 ```sql
+                 SELECT i.Code AS InvoiceCode, st.Id AS TaskId
+                 FROM ShippingTaskOrderDetail stod
+                 JOIN ShippingTask st ON stod.ShippingTaskId = st.Id
+                 JOIN Invoice i ON stod.InvoiceId = i.Id
+                 WHERE st.Id IN (@taskIds) AND st.Status = 'Error'
+                 ```
+            4. **Xử lý thông báo và hủy đơn**:
+               - Nếu cấu hình `ShippingUseConfirmMultipleOrderTimeout` được bật:
+                 + Tạo thông điệp xác nhận hết thời gian chờ với thông tin chi tiết về các hóa đơn bị ảnh hưởng
+                 + Gửi thông điệp qua RabbitMQ đến hàng đợi `mq.ConfirmMultiOrderRequestTimeoutMq.inq`
+               - Nếu cấu hình `ShippingUseCancelMultipleOrderTimeout` được bật:
+                 + Lấy thông tin mã hóa đơn và mã đối tác vận chuyển
+                 + Gửi yêu cầu hủy đơn hàng vận chuyển qua RabbitMQ đến hàng đợi `mq.VoidOrderRequestMq.inq`
+            5. **Ghi log**: Lưu thông tin chi tiết về quá trình xử lý, bao gồm:
+               - Mã người bán lẻ, hành động thực hiện
+               - Trạng thái các thao tác (đã xóa thông tin đối tác, đã hủy đơn hàng, đã xác nhận hết thời gian chờ)
+               - Danh sách ID tác vụ, ID thông tin giao hàng, ID hóa đơn
+               - Thông tin mã hóa đơn và mã đối tác vận chuyển
+    - Cập nhật hóa đơn bằng cách gọi `InvoiceService.UpdateInvoiceAsync()` với các tham số phù hợp:
+      - Phương thức này nhận vào các tham số:
+        - `invoice`: Đối tượng hóa đơn cần cập nhật
+        - `isUpdatePayment`: Xác định có cập nhật thông tin thanh toán hay không
+        - `isVoidDeliveryPayment`: Xác định có hủy thanh toán giao hàng hay không (mặc định là false)
+        - `isForceUpdateBranchTakingAddr`: Xác định có bắt buộc cập nhật địa chỉ chi nhánh nhận hàng hay không (mặc định là false)
+        - `isSkipUpdateShippingDelivery`: Xác định có bỏ qua cập nhật thông tin giao hàng hay không (mặc định là true)
+        - `deliveryReturnedDate`: Ngày trả hàng (mặc định là giá trị mặc định của DateTime)
+      - Quy trình xử lý:
+        1. Kiểm tra hóa đơn có tồn tại không, nếu không sẽ ném ngoại lệ với thông báo "Dữ liệu này không còn tồn tại trên hệ thống. Vui lòng kiểm tra lại" (KVMessage.NotFound)
+        2. Chuẩn hóa chi tiết hóa đơn thông qua `NormalizeInvoiceDetail()`:
+           - Nếu danh sách chi tiết hóa đơn trống hoặc không tồn tại, kết thúc xử lý
+           - Tạo một danh sách (HashSet<string>) để lưu trữ và kiểm tra các UUID đã xuất hiện
+           - Xử lý từng dòng chi tiết hóa đơn:
+             - Bỏ qua những dòng không có UUID
+             - Kiểm tra trùng lặp UUID: Nếu UUID đã tồn tại trong danh sách, thêm chữ "U" vào cuối UUID cho đến khi tạo được UUID duy nhất
+             - Ghi nhận UUID vào danh sách để tránh trùng lặp trong các dòng tiếp theo
+        3. Cập nhật trạng thái cũ của hóa đơn thông qua `UpdateInvoiceOldStatus()`:
+           - Nếu hóa đơn sử dụng COD (UsingCod = 1) và có trạng thái là 4:
+             + Đặt lại trạng thái hóa đơn thành "Chờ xử lý" (InvoiceState.Pending)
+             + Nếu có thông tin giao hàng (DeliveryDetail), cập nhật trạng thái giao hàng thành "Đang giao" (DeliveryStatus.Delivering)
+           - Đây là bước xử lý đặc biệt cho hóa đơn COD để đảm bảo trạng thái phù hợp trong quá trình giao hàng
+        4. Chuyển đổi thông tin giao hàng của hóa đơn thông qua `ConvertInvoiceDelivery()`
+        5. Gán đối tác giao hàng mặc định thông qua `AssignPartnerDeliveryDefault()`
+        6. Xử lý đặc biệt cho hóa đơn COD bị trả hàng:
+           - Nếu hóa đơn đã tồn tại (Id > 0), sử dụng COD (UsingCod = 1), có thông tin giao hàng và trạng thái giao hàng là "Đã trả hàng"
+           - Và cấu hình thời gian khóa Redis cho cập nhật trả hàng > 0
+           - Sử dụng khóa Redis để đảm bảo chỉ một tiến trình cập nhật hóa đơn tại một thời điểm
+           - Khóa có định dạng: "DeliveryInfoService.DoConfirmStatusReturned_{RetailerId}_{InvoiceId}"
+           - Thời gian khóa dựa trên cấu hình RedisLockUpdateDeliveryReturnedTimeout (tính bằng phút)
+        7. Gọi `ProcessUpdateInvoiceAsync()` để thực hiện cập nhật hóa đơn với các tham số đã truyền vào:
+           - Kiểm tra tiền tệ hiện tại thông qua `NumberHelper.GetCurrentCurrency()`
+           - Kiểm tra tính hợp lệ của hóa đơn COD: 
+             + Nếu UsingCod = 1 (hóa đơn sử dụng COD)
+             + DeliveryDetail không null (có thông tin giao hàng)
+             + DeliveryBy = null (chưa chọn đối tác giao hàng)
+             + Trạng thái giao hàng thuộc một trong các trạng thái sau:
+               * Delivering (2) - Đang giao hàng
+               * DeliveringRetry (10) - Đang thử giao lại
+               * Delivered (3) - Đã giao hàng
+               * Returning (4) - Đang trả hàng
+               * ReturnRetry (12) - Đang thử trả lại
+               * Returned (5) - Đã trả hàng
+               * WaitingReturn (13) - Đang chờ trả hàng
+             + Hệ thống sẽ hiển thị thông báo lỗi "Chưa nhập đối tác giao hàng" (KVMessage.DeliveryPartner_Empty)
+             + Việc kiểm tra này đảm bảo rằng các hóa đơn COD đang trong quá trình vận chuyển hoặc đã hoàn thành vận chuyển phải có thông tin đối tác giao hàng
+           - Kiểm tra xem hóa đơn có phải từ OmniChannel không thông qua phương thức `PosOnlineHelper.IsInvoiceOmni()`, phương thức này xác định hóa đơn có nguồn gốc từ kênh bán hàng trực tuyến dựa vào mã hóa đơn:
+             + Phương thức kiểm tra mã hóa đơn có bắt đầu bằng các tiền tố của các sàn thương mại điện tử hay không:
+               * DHSPE: Shopee
+               * DHTTS/DHTTL: TikTok
+               * DHLZD: Lazada
+               * DHTIKI: Tiki
+               * DHSDO: Sendo
+             + Nếu mã hóa đơn bắt đầu bằng một trong các tiền tố trên, hóa đơn được xác định là từ OmniChannel
+           - Lấy thông tin hóa đơn hiện tại từ cơ sở dữ liệu và kiểm tra sự thay đổi về tổng tiền
+           - Tạo bản sao tách rời của hóa đơn gốc để so sánh sau này
+           - Xác định có cập nhật thông tin giao hàng không dựa trên UsingCod và UseDefaultPartner
+           - Thực hiện kiểm tra tính hợp lệ của hóa đơn trước khi cập nhật
+           - Kiểm tra ngày đóng sổ để đảm bảo không cập nhật hóa đơn trước ngày đóng sổ
+           - Lưu trữ ngày mua hàng và người bán cũ để so sánh
+           - Cập nhật các thông tin cơ bản: ngày mua hàng, người bán, mô tả, UsingCod, kênh bán hàng
+           - Nếu là hóa đơn từ OmniChannel, cập nhật phụ phí
+           - Nếu ngày thay đổi, cập nhật ngày nhập
+           - Tính toán lại điểm tích lũy nếu tính năng RewardPoint được bật
+           - Cập nhật thông tin giao hàng và xử lý trạng thái trả hàng
+           - Cập nhật hóa đơn với theo dõi thay đổi
+           - Đồng bộ với hệ thống dược quốc gia nếu cần
+           - Cập nhật thông tin giao hàng thông qua DeliveryInfoService
+           - Nếu ngày thay đổi, cập nhật ngày sử dụng voucher, ngày trả hàng, ngày sử dụng coupon
+           - Cập nhật kênh bán hàng cho các đơn trả hàng liên quan nếu kênh bán hàng thay đổi
+           - Cập nhật thanh toán nếu có và được yêu cầu cập nhật
+           - Cập nhật ngày hết hạn bảo hành nếu có
+           - Tính toán lại tổng tiền hóa đơn
+           - Cập nhật PaymentTrack nếu trạng thái hoặc ngày thay đổi
+           - Gửi sự kiện cập nhật đến Elasticsearch
+           - Nếu ngày thay đổi hoặc là hóa đơn OmniChannel với tổng tiền thay đổi, xây dựng danh sách theo dõi và thêm vào hàng đợi theo dõi
+           - Trả về đối tượng hóa đơn đã cập nhật
+    - Nếu tính năng KShipV4 đang được kích hoạt và thông tin giao hàng tồn tại với `UseDefaultPartner = false`:
+      - Cập nhật thông tin đơn hàng tự giao thông qua `DeliveryInfoService.UpdateSelfDeliveryOrder()`
+- **Tạo hóa đơn mới**:
+  - Nếu đang tạo hóa đơn mới (`invoice.Id <= 0`):
+    - Nếu là hóa đơn cập nhật (`invoice.UpdateInvoiceId > 0`):
+      - Kiểm tra xem hóa đơn gốc có đang được xử lý bởi tác vụ vận chuyển không
+    - Xử lý hủy vận đơn cũ nếu chuyển từ giao hàng bởi đối tác sang tự giao:
+      - Nếu là hóa đơn cập nhật, thông tin giao hàng cũ sử dụng đối tác mặc định, có mã giao hàng, và thông tin giao hàng mới không sử dụng đối tác mặc định
+      - Gọi API `DeliveryClient.VoidOrderV3()` để hủy vận đơn với đối tác vận chuyển
+      - Nếu tính năng KShip bị tắt, hiển thị thông báo lỗi tương ứng
+    - Lưu trữ ID đơn hàng đã hoàn thành (nếu có) để xử lý sau này
+    - Tạo hóa đơn mới thông qua `InvoiceService.MakeInvoiceAsync()`
+    - Nếu là hóa đơn kết hợp (`req.IsFormCombine`):
+      - Cập nhật mô tả hóa đơn bằng cách thay thế "---" bằng mã hóa đơn
+      - Cập nhật thông tin chung của hóa đơn
+    - Xử lý thông tin giao hàng:
+      - Nếu có thông tin giao hàng và là hóa đơn cập nhật, chuyển đổi thông tin giao hàng sang định dạng phù hợp
+    - Xử lý trạng thái hóa đơn COD:
+      - Nếu là hóa đơn cập nhật, sử dụng COD, có thông tin giao hàng và trạng thái giao hàng là "Đã giao":
+        - Kiểm tra điều kiện thanh toán và cập nhật trạng thái hóa đơn từ "Chờ xử lý" sang "Đã phát hành" nếu thỏa mãn
+        - Gửi thông báo cập nhật trạng thái đến hệ thống tìm kiếm
+    - Cập nhật thông tin khách hàng và công nợ nếu có ID khách hàng
+    - Xử lý trường hợp hóa đơn trùng lặp:
+      - Nếu `invoice.IsDuplicated = true`, tạo bản sao hóa đơn và trả về kết quả
+    - Lấy thông tin thanh toán và tạo chi tiết dòng tiền
+    - Xử lý thông tin đơn hàng liên quan (nếu có)
 
 ### 18. Cập nhật thông tin sau khi lưu
 - Cập nhật thông tin khách hàng: Cập nhật điểm tích lũy, lịch sử mua hàng
