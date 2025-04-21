@@ -82,8 +82,8 @@ ${PARTNER_DELIVERY_2_NAME}      Giao hàng nhanh
 ${CATEGORY_1_ID}        1000000717
 
 #Surcharge Data
-${SURCHARGE_1_ID}       1000000047
-${SURCHARGE_2_ID}       1000000046
+${SURCHARGE_1_ID}       1000000049
+${SURCHARGE_2_ID}       1000000045
 
 # Additional product data
 ${product_batch}    1000016309
@@ -219,6 +219,9 @@ ${DELIVERY_PARTNER_3}        7777
 ...    UseDefaultPartner=true
 ...    Status=0
 
+${DEFAULT_DELIVERY_PRICE}    20000
+${DEFAULT_IS_FREE_SHIP}    false
+${DEFAULT_NOTE}    Giao hàng tiêu chuẩn
 # Status codes
 ${STATUS_PENDING}        1
 ${STATUS_PROCESSING}     2

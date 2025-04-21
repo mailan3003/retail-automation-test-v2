@@ -47,6 +47,7 @@ Resource          ../CommonData.robot
 &{surcharge_item_body}    
 ...    SurchargeId=${SURCHARGE_1_ID}
 ...    Price=10000
+...    Value=10000
 ...    ValueRatio=0
 
 
@@ -73,6 +74,21 @@ Resource          ../CommonData.robot
 ...    Quantity=1
 ...    Price=150000
 
+
+&{invoice_warranty_body}
+...    Description=Toàn bộ sản phẩm
+...    NumberTime=50
+...    TimeType=2
+...    WarrantyType=1
+...    ProductId=${PRODUCT_1}
+...    RetailerId=${RETAILER_ID}
+...    CreatedBy=${DEFAULT_USER_ID}
+...    ModifiedBy=${None}
+...    ModifiedDate=${None}
+...    IsDeleted=${None}
+...    ExpireDate=${None}
+...    Status=3
+...    InvoiceDetailUuid=
 
 
 

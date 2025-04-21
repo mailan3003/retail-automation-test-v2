@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần tạo phiếu thu khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
+Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
@@ -124,7 +125,6 @@ RT-RC-005 Tạo phiếu thu với thanh toán thừa
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 120000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 120000
-    #And Xác Thực Tiền Thừa Của Hóa Đơn    None    20000   không có mục lưu DB tính tiền thừa 
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-006 Tạo phiếu thu với thanh toán thiếu
@@ -267,7 +267,6 @@ RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-   # And Xác Thực Không Có Phiếu Thu Được Tạo    # payment k để null nên vẫn sinh ra phiêu thanh toán 0 dồng trong D
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 0   
     And Xác Thực Công Nợ Của Hóa Đơn 100000
 
@@ -556,3 +555,4 @@ RT-RC-023 Tạo hóa đơn và cập nhật thông tin công nợ khách hàng
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 50000
     And Xác Thực Công Nợ Của Hóa Đơn 50000
     And Xác Thực Công Nợ Khách Hàng Tăng 50000
+

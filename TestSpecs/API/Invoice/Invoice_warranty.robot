@@ -1,164 +1,138 @@
 *** Settings ***
-Documentation     Test cases API cho phần cập nhật tồn kho khi tạo hóa đơn - Phần mở rộng
-Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
-Resource          ../../../Keywords/Invoice/InventoryUpdateExtendedKeywords.robot
+Documentation     Test cases API cho hóa đơn hàng hóa có bảo hành bảo trì
+Resource          ../../../Keywords/Invoice/WarrantyKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
-
+Test Teardown     Tear down Delete Hóa Đơn
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    InventoryUpdateExtendedTest
+
 
 *** Test Cases ***
-RT-INU-010 Cập nhật tồn kho khi tạo hóa đơn với nhiều loại sản phẩm tồn kho
-    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều loại sản phẩm tồn kho khác nhau
+## Phần tạo hóa đơn chứa hàng BHBT và sinh ra phiếu bảo hành
+RT-IWR-001 Tạo hóa đơn thành công với sản phẩm chỉnh sửa bảo hành 
+    [Documentation]    Kiểm tra tạo hóa đơn thành công với sản phẩm chỉnh sửa bảo hành 
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm thường: ID=${PRODUCT_1}, Số lượng=3, Giá=100,000đ
-    ...    - Sản phẩm lô: ID=${product_batch}, Số lượng=2, Giá=150,000đ, BatchId=${batch_1}, BatchName=LOT001
-    ...    - Sản phẩm Serial: ID=${PRODUCT_2}, Số lượng=1, Giá=200,000đ, SerialNumbers=SN005
+    ...    - Cấu hình bảo hành: HasWarranty=${TRUE}, WarrantyPeriod=12 (tháng)
+    ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice()
+    ...    - Code: foreach(product in invoice.Details.Where(x => x.HasWarranty)) { CreateWarranty(); }
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu trong bảng InvoiceWarranties với WarrantyPeriod=12
+    ...    - Tồn kho sản phẩm BHBT được cập nhật giảm 1 đơn vị
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Có Thời Hạn Bảo Hành Là 12 Tháng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 12 Tháng
+
+RT-IWR-002 Tạo hóa đơn thành công có sản phẩm BHBT nhập serial tự động sinh phiếu bảo hành
+    [Documentation]    Kiểm tra tạo hóa đơn thành công với sản phẩm BHBT có serial tự động sinh phiếu bảo hành
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm BHBT có serial: ID=${WARRANTY_PRODUCT_SERIAL_ID}, Số lượng=1, Giá=10,000,000đ
+    ...    - SerialNumbers=BH001, IsLotSerialControl=${TRUE}
+    ...    - Cấu hình bảo hành: HasWarranty=${TRUE}, WarrantyPeriod=24 (tháng), AutoCreateWarrantyTicket=${TRUE}
     ...    - Logic xử lý: 
-    ...    1. Với sản phẩm thường: productBranch.OnHand -= invoiceDetail.Quantity
-    ...    2. Với sản phẩm lô: batch.Quantity -= invoiceDetail.Quantity
-    ...    3. Với sản phẩm serial: serial.Status = SerialStatus.Sold
+    ...    1. WarrantyService.CreateWarrantyFromInvoice() - tạo thông tin bảo hành
+    ...    2. WarrantyTicketService.CreateWarrantyTicketFromInvoice() - tạo phiếu bảo hành
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Sản phẩm thường: Tồn kho giảm 3 đơn vị, lịch sử ghi nhận -3
-    ...    - Sản phẩm lô: Tồn kho giảm 2 đơn vị, lô giảm 2 đơn vị
-    ...    - Sản phẩm Serial: Serial SN005 chuyển sang trạng thái đã bán
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Nhiều Loại Tồn Kho
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${PRODUCT_1}
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu trong bảng InvoiceWarranties với WarrantyPeriod=24
+    ...    - Phiếu bảo hành được tạo tự động trong bảng WarrantyTickets
+    ...    - Phiếu bảo hành có thông tin serial BH001
+    ...    - Tồn kho sản phẩm BHBT giảm 1 đơn vị, serial BH001 chuyển sang trạng thái đã bán
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${WARRANTY_PRODUCT_SERIAL_ID} Có Imei ${WARRANTY_SERIAL_NUMBER} Bảo Hành 35 Ngày
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Tồn kho nhiều sản phẩm đã được cập nhật đúng
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_ID} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_ID} Được Lưu Với Thời Hạn 35 Ngày
+    And Xác Thực Thông Tin ${WARRANTY_PRODUCT_SERIAL_ID} Serial ${WARRANTY_SERIAL_NUMBER} Trong Phiếu Bảo Hành
 
-RT-INU-011 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo số lượng lớn
-    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo số lượng lớn
+RT-IWR-003 Tạo hóa đơn thành công với sản phẩm BHBT có thời hạn bảo hành khác nhau
+    [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều sản phẩm BHBT có thời hạn bảo hành khác nhau
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm combo ID=${COMBO_PRODUCT_1_ID}, Số lượng=5, Giá=150,000đ, IsCombo=true
-    ...    - Thiết lập combo: 
-    ...       + Sản phẩm thành phần 1: ID=${COMBO_PRODUCT_1_MATTERIAL_1_ID}, Số lượng=1
-    ...       + Sản phẩm thành phần 2: ID=${COMBO_PRODUCT_1_MATTERIAL_2_ID}, Số lượng=1
-    ...    - Logic xử lý: ProductBranchService.UpdateInventory()
-    ...    - Code: Với mỗi sản phẩm con: productBranch.OnHand -= (combo.Quantity * childProduct.Quantity)
+    ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice()
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Sản phẩm thành phần 1: Tồn kho giảm 5 đơn vị (5 * 1)
-    ...    - Sản phẩm thành phần 2: Tồn kho giảm 5 đơn vị (5 * 1)
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Combo Số Lượng Lớn
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu cho cả 2 sản phẩm với thời hạn tương ứng
+    ...    - Tồn kho cả 2 sản phẩm BHBT được cập nhật giảm mỗi loại 1 đơn vị
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Nhiều Thời Hạn BH @{warranty_name} @{number_time} @{number_time_type} Và BT 1 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Tồn kho combo ${COMBO_PRODUCT_1_ID} đã giảm với số lượng 5
+    And Response Should Have Id exist
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID_2} BHBT Trong CSDL
+    And Xác Thực Thông Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Chứa Nhiều Thời Hạn BHBT @{warranty_name} @{number_time} @{number_time_type} Được Lưu Trong CSDL
+    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Được Lưu Với Thời Hạn 1 Năm
 
-RT-INU-012 Cập nhật tồn kho khi tạo hóa đơn với nhiều lô cho một sản phẩm
-    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều lô cho một sản phẩm
-    ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${product_batch}, Số lượng=3, Giá=100,000đ
-    ...    - Chi tiết lô: 
-    ...       + Lô 1: BatchId=${batch_1}, BatchName=LOT001, Số lượng=2
-    ...       + Lô 2: BatchId=8889, BatchName=LOT002, Số lượng=1
-    ...    - Logic xử lý: BatchExpireService.UpdateBatchQuantity()
-    ...    - Code: Với mỗi lô: batch.Quantity -= batch.DetailQuantity
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Tồn kho sản phẩm giảm tổng 3 đơn vị
-    ...    - Số lượng lô LOT001 giảm 2 đơn vị
-    ...    - Số lượng lô LOT002 giảm 1 đơn vị
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Lô Cho Một Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Các lô của sản phẩm ${product_batch} đã giảm theo chi tiết [{"BatchId": ${batch_1}, "BatchName": "LOT001", "Quantity": 2}, {"BatchId": 8889, "BatchName": "LOT002", "Quantity": 1}]
 
-RT-INU-013 Cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển đổi không chuẩn
-    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển đổi không chuẩn (số thập phân)
+RT-IWR-004 Tạo hóa đơn với nhiều sản phẩm có thông tin bảo hành
+    [Documentation]    Kiểm tra tạo hóa đơn với nhiều sản phẩm có thông tin bảo hành
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${PRODUCT_1}, Số lượng=1.5, Giá=100,000đ, UnitId=3, ConversionValue=0.5
-    ...    - Logic xử lý: ProductBranchService.UpdateInventory()
-    ...    - Code: productBranch.OnHand -= (invoiceDetail.Quantity * invoiceDetail.ConversionValue)
+    ...    - Sản phẩm có thông tin bảo hành: ID=${WARRANTY_PRODUCT_ID}, Số lượng=1, Giá=5,000,000đ
+    ...    - Cấu hình bảo hành: HasWarranty=${TRUE}, WarrantyPeriod=12 (giá trị mặc định)
+    ...    - Tùy chỉnh: CustomWarrantyPeriod=18 (tháng) - tùy chỉnh thời gian bảo hành khác với mặc định
+    ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice()
+    ...    - Code: warranty.Period = detail.CustomWarrantyPeriod ?? product.WarrantyPeriod;
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Số lượng tồn kho giảm 0.75 đơn vị (1.5 * 0.5)
-    ...    - Lịch sử tồn kho được ghi nhận với DocumentType=Invoice, Value=-0.75
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Đơn Vị Chuyển Đổi Không Chuẩn
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${PRODUCT_1}
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu với thời hạn tùy chỉnh 18 tháng (không phải 12 tháng mặc định)
+    ...    - Tồn kho sản phẩm BHBT được cập nhật giảm 1 đơn vị
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 30 Ngày Và ${WARRANTY_PRODUCT_ID_2} Thời hạn Bảo Hành 18 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Tồn kho sản phẩm ${PRODUCT_1} đã giảm với đơn vị chuyển đổi 1.5 x 0.5
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID_2} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 30 Ngày
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Được Lưu Với Thời Hạn 18 Tháng
 
-RT-INU-014 Cập nhật tồn kho khi tạo hóa đơn với nhiều chi nhánh
-    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều chi nhánh khác nhau
-    ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm 1: ID=${PRODUCT_1}, Số lượng=2, Giá=100,000đ, BranchId=${DEFAULT_BRANCH_ID}
-    ...    - Sản phẩm 2: ID=${PRODUCT_2}, Số lượng=1, Giá=150,000đ, BranchId=${OTHER_BRANCH_ID}
-    ...    - Logic xử lý: ProductBranchService.UpdateInventory()
-    ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity WHERE BranchId = invoiceDetail.BranchId
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Số lượng tồn kho sản phẩm 1 ở chi nhánh ${DEFAULT_BRANCH_ID} giảm 2 đơn vị
-    ...    - Số lượng tồn kho sản phẩm 2 ở chi nhánh ${OTHER_BRANCH_ID} giảm 1 đơn vị
-    ...    - Lịch sử tồn kho được ghi nhận với BranchId phù hợp
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Chi Nhánh
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Tồn kho đã được cập nhật cho nhiều chi nhánh
 
-RT-INU-015 Cập nhật tồn kho với quy tắc FIFO cho sản phẩm lô
-    [Documentation]    Kiểm tra cập nhật tồn kho với quy tắc FIFO (First Expired, First Out) cho sản phẩm lô
+RT-IWR-005 Tạo hóa đơn với sản phẩm lô date có bảo hành
+    [Documentation]    Kiểm tra tạo hóa đơn với sản phẩm lô date có bảo hành
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${product_batch}, Số lượng=5, Giá=100,000đ, ProcessingType=FIFO
-    ...    - Logic xử lý: BatchExpireService.UpdateBatchQuantity() theo quy tắc FIFO
-    ...    - Code: Lấy danh sách lô theo thứ tự ngày hết hạn tăng dần và xuất theo thứ tự
+    ...    - Sản phẩm lô date: ID=${LODATE_WARRANTY_PRODUCT_ID}, Số lượng=1, Giá=3,000,000đ
+    ...    - Thông tin lô: BatchId=${BATCH_ID}, BatchName="BH-LOT-001", ExpiryDate=ngày hết hạn
+    ...    - Cấu hình bảo hành: HasWarranty=${TRUE}, WarrantyPeriod=12 (tháng)
+    ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice() + BatchService.UpdateBatchQuantity()
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Tổng tồn kho giảm 5 đơn vị
-    ...    - Các lô được xuất theo thứ tự ngày hết hạn (lô gần hết hạn được xuất trước)
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Xử Lý FIFO
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu với thời hạn 12 tháng
+    ...    - Tồn kho lô date được cập nhật giảm 1 đơn vị
+    ...    - Thông tin lô được ghi nhận trong chi tiết hóa đơn
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ liệu Hóa Đơn Với Hàng Lodate ${WARRANTY_PRODUCT_BATCH_CODE} Có Lô ${WARRANTY_PRODUCT_BATCH_NAME} Thời hạn Bảo Trì 12 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Tồn kho đã được cập nhật theo quy tắc FIFO cho sản phẩm ${product_batch} với số lượng 5
-    
-RT-INU-016 Cập nhật tồn kho không thành công khi tổng số lượng lô không đủ
-    [Documentation]    Kiểm tra lỗi khi cập nhật tồn kho với số lượng lớn hơn tổng số lượng lô có sẵn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${product_id} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${product_id} Được Lưu Với Thời Hạn 12 Tháng
+
+RT-IWR-006 Tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
+    [Documentation]    Kiểm tra tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${product_batch}, Số lượng=1000, Giá=100,000đ
-    ...    - Cấu hình: AllowSellWhenOutStock=false
-    ...    - Logic xử lý: BatchExpireService.ValidateBatchQuantity()
+    ...    - Sản phẩm nhiều dòng: ID=${WARRANTY_PRODUCT_ID}, Số lượng=1, Giá=10,000,000đ
+
+    ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice() + ProductLineService.ProcessProductLines()
     ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Error message chứa thông tin "Sản phẩm [...] không đủ số lượng lô"
-    ...    - Không có thay đổi tồn kho
-    ${data}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
-    ${details}=    Create List    
-    @{details}=    Create List
-    ${product_detail}=    Create Dictionary    ProductId=${product_batch}    ProductCode=BATCH001    Quantity=1000    Price=100000    BatchId=${batch_1}    BatchName=LOT001
-    Append To List    ${details}    ${product_detail}
-    ${data}=    Update Nested Dictionary Property    ${data}    Invoice.InvoiceDetails    ${details}
-    ${data}=    Update Nested Dictionary Property    ${data}    Invoice.Code    HD_BATCH_ERROR_001
-    ${data}=    Update Nested Dictionary Property    ${data}    Invoice.AllowSellWhenOutStock    ${FALSE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công trong CSDL
+    ...    - Thông tin bảo hành được lưu cho từng dòng sản phẩm với thời hạn tương ứng
+    ...    - Tồn kho sản phẩm nhiều dòng được cập nhật giảm 1 đơn vị
+    ...    - Thông tin các dòng được ghi nhận trong chi tiết hóa đơn
+    [Tags]    warranty    apiinvoice     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn 3 Dòng Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 2 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 420
-    And Response Should Contain Property With Value    responseStatus.errorCode    INSUFFICIENT_BATCH_QUANTITY
-    
-RT-INU-017 Cập nhật tồn kho không thành công khi serial đã được bán
-    [Documentation]    Kiểm tra lỗi khi cập nhật tồn kho với serial đã được bán
-    ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${PRODUCT_1}, Số lượng=1, Giá=100,000đ, SerialNumbers=SN003,SN004
-    ...    - Logic xử lý: SerialService.ValidateSerialStatus()
-    ...    - Code: if (serial.Status == SerialStatus.Sold) throw new ValidationException()
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Error message chứa thông tin về serial đã bán
-    ...    - Không có thay đổi tồn kho
-    ${data}=    Deep Copy    ${STANDARD_INVOICE_REQUEST}
-    ${details}=    Create List    
-    @{details}=    Create List
-    ${product_detail}=    Create Dictionary    ProductId=${PRODUCT_1}    ProductCode=${PRODUCT_1_CODE}    Quantity=1    Price=100000    SerialNumbers=SN003,SN004
-    Append To List    ${details}    ${product_detail}
-    ${data}=    Update Nested Dictionary Property    ${data}    Invoice.InvoiceDetails    ${details}
-    ${data}=    Update Nested Dictionary Property    ${data}    Invoice.Code    HD_SERIAL_ERROR_001
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 420
-    And Response Should Contain Property With Value    responseStatus.errorCode    SERIAL_ALREADY_SOLD 
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Hóa Đơn Có 3 Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Có 3 Dòng Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 2 Năm

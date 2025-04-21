@@ -105,17 +105,6 @@ Thiết Lập Cấu Hình Chuyển Tiền Thừa Thành Công Nợ Là ${value}
     
     Thiết Lập Cấu Hình ChangeToDebt    ${bool_value}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    ${headers}=    Create Auth Headers
-    ${response}=    POST    ${API_URL}/invoices    ${REQUEST_DATA}    ${headers}
-    Set Suite Variable    ${RESPONSE}    ${response}
-
-Response Status Code Should Be ${expected_status}
-    Status Should Be    ${expected_status}    ${RESPONSE}
-
-Response Should Have Id exist
-    Response Should Contain Property With Value    Id    not_empty    ${RESPONSE}
-
 Xác Thực Hóa Đơn Được Tạo Thành Công
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     

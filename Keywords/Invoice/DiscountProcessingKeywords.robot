@@ -2,7 +2,6 @@
 Documentation     Keywords cho test cases API xử lý giảm giá hóa đơn
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../../TestData/Invoice/DiscountProcessingData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -12,182 +11,122 @@ Library           Collections
 Library           String
 Library           json
 
+*** Variables ***
+# Các biến cố định cho test cases
+${STANDARD_DISCOUNT_AMOUNT}    10000
+${STANDARD_DISCOUNT_RATIO}     10
+${PROMOTION_DISCOUNT_AMOUNT}   20000
+${PROMOTION_ID_1}              1001
+${PRODUCT_PRICE_100K}          100000
+${CURRENCY_DECIMAL_PLACE}      2
+${CURRENCY_DECIMAL_PLACE_FOR_PRODUCT}    4
+
+# Chi tiết sản phẩm chuẩn
+&{INVOICE_DETAIL_100K}    
+...    ProductId=${PRODUCT_1}
+...    Quantity=1
+...    Price=100000
+...    Discount=0
+
+&{INVOICE_DETAIL_200K}    
+...    ProductId=${PRODUCT_2}
+...    Quantity=1
+...    Price=200000
+...    Discount=0
+
+# Request chuẩn cho hóa đơn
+&{DISCOUNT_INVOICE_REQUEST}
+...    Invoice=&{DISCOUNT_INVOICE}
+
+&{DISCOUNT_INVOICE}    
+...    BranchId=${DEFAULT_BRANCH_ID}
+...    SoldById=${DEFAULT_USER_ID}
+...    Code=HD_DISCOUNT_TEST
+...    Discount=${STANDARD_DISCOUNT_AMOUNT}
+...    DiscountRatio=${STANDARD_DISCOUNT_RATIO}
+...    InvoiceDetails=@{EMPTY}
+
+# Request chuẩn cho khuyến mãi
+&{PROMOTION_DISCOUNT_INVOICE_REQUEST}
+...    Invoice=&{PROMOTION_INVOICE}
+
+&{PROMOTION_INVOICE}    
+...    BranchId=${DEFAULT_BRANCH_ID}
+...    SoldById=${DEFAULT_USER_ID}
+...    Code=HD_PROMOTION_TEST
+...    Discount=${PROMOTION_DISCOUNT_AMOUNT}
+...    DiscountByPromotion=${PROMOTION_DISCOUNT_AMOUNT}
+...    InvoiceDetails=@{EMPTY}
+...    InvoicePromotions=@{EMPTY}
+
+# Thông tin khuyến mãi
+&{PROMOTION_INFO_1}
+...    PromotionId=${PROMOTION_ID_1}
+...    SalePromotionId=24747
+...    Discount=${PROMOTION_DISCOUNT_AMOUNT}
+...    Type=1
+...    PromotionInfo=Chương trình khuyến mãi giảm giá hóa đơn
+
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá Cơ Bản
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá ${discount_amount}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá cơ bản
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá ${discount_amount} Và Tỷ Lệ Giảm ${discount_ratio}
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giá trị và tỷ lệ giảm giá tùy chỉnh
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật giá trị giảm giá và tỷ lệ giảm
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount_amount}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá Tỷ Lệ ${discount_ratio} %
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giá trị và tỷ lệ giảm giá tùy chỉnh
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${discount}     Evaluate    ${PRODUCT_PRICE_100K} * ${discount_ratio} / 100
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    ${discount_ratio}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm Và Giảm Giá
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với nhiều sản phẩm và giảm giá
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${detail_2}=    Deep Copy    ${INVOICE_DETAIL_200K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_2}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá 0 Và Tỷ Lệ Giảm 0
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá 0 đồng và tỷ lệ 0%
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật giá trị giảm giá và tỷ lệ giảm thành 0
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    0
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    0
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá Khuyến Mãi
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá từ khuyến mãi
-    ${request}=    Deep Copy    ${PROMOTION_DISCOUNT_INVOICE_REQUEST}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    # Thêm thông tin khuyến mãi
-    ${promotion_1}=    Deep Copy    ${PROMOTION_INFO_1}
-    ${request}=    Add List Item    ${request}    Invoice.InvoicePromotions    ${promotion_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá Khuyến Mãi Nhiều Sản Phẩm
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá từ khuyến mãi và nhiều sản phẩm
-    ${request}=    Deep Copy    ${PROMOTION_DISCOUNT_INVOICE_REQUEST}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${detail_2}=    Deep Copy    ${INVOICE_DETAIL_200K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_2}
-    
-    # Thêm thông tin khuyến mãi
-    ${promotion_1}=    Deep Copy    ${PROMOTION_INFO_1}
-    ${request}=    Add List Item    ${request}    Invoice.InvoicePromotions    ${promotion_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá Thập Phân
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá có giá trị thập phân
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật giá trị giảm giá thập phân
-    ${discount_decimal}=    Set Variable    10500.75
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount_decimal}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tỷ Lệ Giảm Giá Thập Phân
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với tỷ lệ giảm giá có giá trị thập phân
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật tỷ lệ giảm giá thập phân
-    ${discount_ratio_decimal}=    Set Variable    10.5678
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    ${discount_ratio_decimal}
-    
-    # Tính lại giá trị giảm giá dựa trên tỷ lệ mới
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    ${new_discount}=    Evaluate    ${PRODUCT_PRICE_100K} * ${discount_ratio_decimal} / 100
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${new_discount}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá 150000 Và Tỷ Lệ Giảm 150
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá lớn hơn giá trị sản phẩm
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật giá trị giảm giá và tỷ lệ giảm
-    ${large_discount}=    Set Variable    150000
-    ${large_ratio}=    Set Variable    150
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${large_discount}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    ${large_ratio}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá 100000 Và Tỷ Lệ Giảm 100
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá bằng 100% giá trị sản phẩm
-    ${request}=    Deep Copy    ${DISCOUNT_INVOICE_REQUEST}
-    
-    # Cập nhật giá trị giảm giá và tỷ lệ giảm
-    ${full_discount}=    Set Variable    100000
-    ${full_ratio}=    Set Variable    100
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${full_discount}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    ${full_ratio}
-    
-    # Thêm chi tiết sản phẩm vào hóa đơn
-    ${detail_1}=    Deep Copy    ${INVOICE_DETAIL_100K}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${detail_1}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-# Keywords thực thi API
-Gửi Yêu Cầu Tạo Hóa Đơn Với Giảm Giá
-    [Documentation]    Gửi yêu cầu tạo hóa đơn với giảm giá
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    RETURN    ${response}
 
 # Keywords xác thực
-Xác Thực Giảm Giá Hóa Đơn Trong CSDL
+Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Giảm Giá ${expected_discount}
     [Documentation]    Kiểm tra giá trị giảm giá hóa đơn trong CSDL
-    [Arguments]    ${invoice_id}    ${expected_discount}
-    
     ${query}=    Set Variable    SELECT Discount FROM Invoice WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
     
     # Làm tròn giá trị mong đợi theo cấu hình số chữ số thập phân
+    ${expected_discount}=    Convert To Number    ${expected_discount}
     ${expected_discount_rounded}=    Evaluate    round(${expected_discount}, ${CURRENCY_DECIMAL_PLACE})
     ${actual_discount}=    Convert To Number    ${result[0]}
     
     Should Be Equal    ${actual_discount}    ${expected_discount_rounded}    Giá trị giảm giá không đúng
     RETURN    ${actual_discount}
+
+Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Tỷ Lệ Giảm Giá ${expected_discount_ratio}
+    [Documentation]    Kiểm tra giá trị giảm giá hóa đơn trong CSDL
+    ${query}=    Set Variable    SELECT DiscountRatio FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
+    
+    # Làm tròn giá trị mong đợi theo cấu hình số chữ số thập phân
+    ${expected_discount_ratio}=    Convert To Number    ${expected_discount_ratio}
+    ${actual_discount_ratio}=    Convert To Number    ${result[0]}
+    
+    Should Be Equal    ${actual_discount_ratio}    ${expected_discount_ratio}    Tỷ lệ giảm giá không đúng
+    RETURN    ${actual_discount_ratio}
+
+Tổng tiền hóa đơn phải bằng ${expected_total}
+    [Documentation]    Kiểm tra tổng tiền hóa đơn trong CSDL
+    ${query}=    Set Variable    SELECT Total FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
+    
+    ${actual_total}=    Convert To Number    ${result[0]}
+    ${expected_total}=    Convert To Number    ${expected_total}
+    
+    # So sánh với biên độ sai số nhỏ do làm tròn
+    ${diff}=    Evaluate    abs(${actual_total} - ${expected_total})
+    ${epsilon}=    Set Variable    0.01
+    Should Be True    ${diff} < ${epsilon}    Tổng tiền hóa đơn không đúng, kỳ vọng ${expected_total} nhưng nhận được ${actual_total}
 
 Xác Thực Tỷ Lệ Giảm Giá Trong CSDL
     [Documentation]    Kiểm tra tỷ lệ giảm giá hóa đơn trong CSDL
@@ -263,3 +202,268 @@ Xác Thực Phân Bổ Giảm Giá Sản Phẩm Trong CSDL
     
     # Nếu có giảm giá, tất cả sản phẩm phải được phân bổ
     Run Keyword If    ${total_discount} > 0    Should Be Equal    ${count_result[0]}    ${total_count_result[0]}    Không phải tất cả sản phẩm đều được phân bổ giảm giá 
+
+# Thêm các keywords mới (AIgen) cho việc kiểm tra tính tổng tiền hàng
+# Các keywords chuẩn bị dữ liệu
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    
+    # Thêm chi tiết sản phẩm
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Giảm Giá ${discount} Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá, giảm giá và số lượng tùy chỉnh
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+
+    # Thêm chi tiết sản phẩm
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Discount    ${discount}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm Và Giảm Giá Hóa Đơn ${discount}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với hai sản phẩm và giảm giá hóa đơn
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
+    
+    # Thêm chi tiết sản phẩm 1
+    ${product_detail1}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Price    100000
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Quantity    1
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail1}
+    
+    # Thêm chi tiết sản phẩm 2
+    ${product_detail2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${PRODUCT_2}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Price    200000
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Quantity    1
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail2}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Cố Định ${surcharge}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có giảm giá và phụ phí cố định
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
+    ${surcharge_item_body}=    Deep Copy    ${surcharge_item_body}
+    ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_item_body}    Price    ${surcharge}
+    ${invoice_surcharges}=    Create List    ${surcharge_item_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Phần Trăm ${surcharge_ratio}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có giảm giá và phụ phí tính theo phần trăm
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
+    ${surcharge_item_body}=    Deep Copy    ${surcharge_percent_item_body}
+    ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_percent_item_body}   ValueRatio    ${surcharge_ratio}    
+    ${invoice_surcharges}=    Create List    ${surcharge_item_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+# Keywords xác thực
+Xác Thực Tổng Tiền Hóa Đơn Trong CSDL
+    [Documentation]    Kiểm tra tổng tiền hóa đơn trong CSDL
+    [Arguments]    ${invoice_id}    ${expected_total}
+    
+    ${query}=    Set Variable    SELECT Total FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
+    
+    # Làm tròn giá trị mong đợi theo cấu hình số chữ số thập phân
+    ${expected_total_rounded}=    Evaluate    round(float(${expected_total}), ${CURRENCY_DECIMAL_PLACE})
+    ${actual_total}=    Convert To Number    ${result[0]}
+    
+    # So sánh với biên độ sai số nhỏ do làm tròn
+    ${diff}=    Evaluate    abs(${actual_total} - ${expected_total_rounded})
+    ${epsilon}=    Set Variable    0.01
+    Should Be True    ${diff} < ${epsilon}    Tổng tiền hóa đơn không đúng, kỳ vọng ${expected_total_rounded} nhưng nhận được ${actual_total}
+    
+    RETURN    ${actual_total}
+    
+Xác Thực Phụ Phí Trong CSDL
+    [Documentation]    Kiểm tra phụ phí hóa đơn trong CSDL
+    [Arguments]    ${invoice_id}    ${expected_surcharge}
+    
+    ${query}=    Set Variable    SELECT Surcharge FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
+    
+    # Làm tròn giá trị mong đợi theo cấu hình số chữ số thập phân
+    ${expected_surcharge_rounded}=    Evaluate    round(float(${expected_surcharge}), ${CURRENCY_DECIMAL_PLACE})
+    ${actual_surcharge}=    Convert To Number    ${result[0]}
+    
+    # So sánh với biên độ sai số nhỏ do làm tròn
+    ${diff}=    Evaluate    abs(${actual_surcharge} - ${expected_surcharge_rounded})
+    ${epsilon}=    Set Variable    0.01
+    Should Be True    ${diff} < ${epsilon}    Phụ phí hóa đơn không đúng, kỳ vọng ${expected_surcharge_rounded} nhưng nhận được ${actual_surcharge}
+    
+    RETURN    ${actual_surcharge}
+    
+Xác Thực Thuế VAT Trong CSDL
+    [Documentation]    Kiểm tra thuế VAT hóa đơn trong CSDL
+    [Arguments]    ${invoice_id}    ${expected_tax}
+    
+    ${query}=    Set Variable    SELECT TotalTax FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
+    
+    # Kiểm tra nếu giá trị là NULL
+    Run Keyword If    ${result[0]} == ${None}    Fail    Thuế VAT không được tính cho hóa đơn
+    
+    # Làm tròn giá trị mong đợi theo cấu hình số chữ số thập phân
+    ${expected_tax_rounded}=    Evaluate    round(float(${expected_tax}), ${CURRENCY_DECIMAL_PLACE})
+    ${actual_tax}=    Convert To Number    ${result[0]}
+    
+    # So sánh với biên độ sai số nhỏ do làm tròn
+    ${diff}=    Evaluate    abs(${actual_tax} - ${expected_tax_rounded})
+    ${epsilon}=    Set Variable    0.01
+    Should Be True    ${diff} < ${epsilon}    Thuế VAT hóa đơn không đúng, kỳ vọng ${expected_tax_rounded} nhưng nhận được ${actual_tax}
+    
+    RETURN    ${actual_tax}
+
+# Keywords chuẩn bị dữ liệu mới cho các test case thêm
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế VAT
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với thuế VAT
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.EnableVATToggle    ${TRUE}
+    
+    # Thêm chi tiết sản phẩm
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
+    
+    # Thêm thuế VAT cho sản phẩm
+    ${tax_detail}=    Deep Copy    ${tax_detail_body}
+    ${tax_details}=    Create List    ${tax_detail}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    InvoiceDetailTaxs    ${tax_details}
+    
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Combo
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm combo
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    
+    # Thêm sản phẩm combo
+    ${combo_detail}=    Deep Copy    ${combo_product_detail_body}
+    ${combo_material_1}=    Deep Copy    ${combo_product_1_matterial_1_body}
+    ${combo_material_2}=    Deep Copy    ${combo_product_1_matterial_2_body}
+    
+    # Tạo danh sách thành phần combo
+    ${combo_materials}=    Create List    ${combo_material_1}    ${combo_material_2}
+    ${combo_detail}=    Update Dictionary Property    ${combo_detail}    ComboProducts    ${combo_materials}
+    
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${combo_detail}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Phụ Phí Âm
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với phụ phí âm (chiết khấu)
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    
+    # Thêm chi tiết sản phẩm
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    
+    # Thêm phụ phí âm
+    ${surcharge_negative}=    Deep Copy    ${surcharge_item_body}
+    ${surcharge_negative}=    Update Dictionary Property    ${surcharge_negative}    Price    -10000
+    ${invoice_surcharges}=    Create List    ${surcharge_negative}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá Thập Phân
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá thập phân
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    
+    # Thêm chi tiết sản phẩm với giá thập phân
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000.678
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với tất cả các thành phần
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${empty_list} =    Create List
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
+    
+    # Cập nhật giảm giá hóa đơn
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    20000
+    
+    # Thêm sản phẩm 1 (có giảm giá)
+    ${product_detail1}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Price    100000
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Discount    10000
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Quantity    1
+    
+    # Thêm sản phẩm 2 (không giảm giá)
+    ${product_detail2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${PRODUCT_2}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Price    200000
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Quantity    1
+    
+    # Thêm thuế VAT cho cả hai sản phẩm
+    ${tax_detail}=    Deep Copy    ${tax_detail_body}
+    ${tax_details1}=    Create List    ${tax_detail}
+    ${tax_details2}=    Create List    ${tax_detail}
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    InvoiceDetailTaxs    ${tax_details1}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    InvoiceDetailTaxs    ${tax_details2}
+    
+    # Bật VAT cho hóa đơn
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.EnableVATToggle    ${TRUE}
+    
+    # Thêm sản phẩm vào request
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail1}
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail2}
+    
+    # Thêm phụ phí 
+    ${surcharge}=    Deep Copy    ${surcharge_item_body}
+    ${invoice_surcharges}=    Create List    ${surcharge}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+
+
