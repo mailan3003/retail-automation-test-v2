@@ -291,73 +291,176 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
   - Chỉ áp dụng cho khách hàng đã đăng ký (`invoice.CustomerId > 0`)
   - Không áp dụng cho khách vãng lai hoặc khách hàng không có ID
 
-- **Quy trình kiểm tra chi tiết**:
-  - **Bước 1: Lọc khuyến mãi cần kiểm tra**
-    - Hệ thống lọc ra các khuyến mãi có thiết lập giới hạn sử dụng (`LimitPromotionUsage = true`)
-    - Chỉ xét các khuyến mãi có chế độ chặn (`LimitPromotionUsageType = (int)EnumLimitPromotionUsageTypes.Blocking`)
-    - Mã thực hiện:
-      ```csharp
-      var listPType = invoice.InvoicePromotions.Where(p => 
-          p.LimitPromotionUsage.HasValue && p.LimitPromotionUsage == true &&
-          p.LimitPromotionUsageType.HasValue && p.LimitPromotionUsageType == (int)EnumLimitPromotionUsageTypes.Blocking
-      ).ToList();
-      ```
+- **Quy trình kiểm tra**:
+  1. **Lọc khuyến mãi cần kiểm tra**:
+     - Hệ thống chỉ xét các khuyến mãi có:
+       - Thiết lập giới hạn sử dụng (`LimitPromotionUsage = true`)
+       - Chế độ chặn được bật (`LimitPromotionUsageType = (int)EnumLimitPromotionUsageTypes.Blocking`)
+     ```csharp
+     var listPType = invoice.InvoicePromotions.Where(p => 
+         p.LimitPromotionUsage.HasValue && p.LimitPromotionUsage == true &&
+         p.LimitPromotionUsageType.HasValue && p.LimitPromotionUsageType == (int)EnumLimitPromotionUsageTypes.Blocking
+     ).ToList();
+     ```
 
-  - **Bước 2: Truy vấn lịch sử sử dụng khuyến mãi**
-    - Nếu có khuyến mãi cần kiểm tra (`listPType != null && listPType.Any()`):
-      - Gọi service để lấy lịch sử sử dụng khuyến mãi của khách hàng:
-        ```csharp
-        var invPromo = await InvoicePromotionService.GetUsePromotionByCustomer(
-            invoice.RetailerId,
-            invoice.CustomerId.Value,
-            listPType.Select(a => a.PromotionId.Value).ToList()
-        );
-        ```
-      - Service truy vấn cơ sở dữ liệu để lấy tất cả các khuyến mãi đã sử dụng của khách hàng:
-        - Lọc theo cửa hàng hiện tại (`RetailerId == retailId`)
-        - Lọc theo khách hàng (`Invoice.CustomerId == customerId`)
-        - Chỉ xét các hóa đơn hợp lệ (không bị hủy hoặc thất bại: `Invoice.Status != InvoiceState.Void && Invoice.Status != InvoiceState.Failed`)
-        - Chỉ xét các khuyến mãi nằm trong danh sách cần kiểm tra (`WhereIn(listPromotionUse, p => p.PromotionId.Value)`)
-      - Kết quả trả về là danh sách các khuyến mãi khách hàng đã sử dụng vượt quá giới hạn cho phép
+  2. **Kiểm tra lịch sử sử dụng**:
+     - Nếu có khuyến mãi cần kiểm tra, hệ thống truy vấn lịch sử sử dụng của khách hàng:
+     ```csharp
+     var invPromo = await InvoicePromotionService.GetUsePromotionByCustomer(
+         invoice.RetailerId,
+         invoice.CustomerId.Value,
+         listPType.Select(a => a.PromotionId.Value).ToList()
+     );
+     ```
+     - Hệ thống lọc theo:
+       - Cửa hàng hiện tại
+       - Khách hàng đang xét
+       - Chỉ tính các hóa đơn hợp lệ (không bị hủy hoặc thất bại)
+       - Chỉ xét các khuyến mãi trong danh sách cần kiểm tra
 
-  - **Bước 3: Xử lý vi phạm giới hạn**
-    - Nếu phát hiện khách hàng đã sử dụng khuyến mãi vượt quá giới hạn (`invPromo != null && invPromo.Any()`):
-      - Hệ thống tạo thông báo lỗi chi tiết bao gồm tên các khuyến mãi vi phạm:
-        ```csharp
-        throw new KvValidateCustomerException(
-            string.Format(KVMessage.customerError_promotionBlock, 
-            invPromo.Select(p => p.PromotionInfo).Distinct().Join(","))
-        );
-        ```
-      - Thông báo lỗi sẽ liệt kê tên các khuyến mãi đã vượt giới hạn, ví dụ: "Khách hàng đã được hưởng các khuyến mại: Giảm 10%, Mua 1 tặng 1, vui lòng kiểm tra lại."
+  3. **Xử lý vi phạm**:
+     - Nếu phát hiện khách hàng đã sử dụng khuyến mãi vượt giới hạn:
+     ```csharp
+     throw new KvValidateCustomerException(
+         string.Format(KVMessage.customerError_promotionBlock, 
+         invPromo.Select(p => p.PromotionInfo).Distinct().Join(","))
+     );
+     ```
+     - Thông báo lỗi sẽ hiển thị: "Khách hàng đã được hưởng các khuyến mại: [Tên các khuyến mãi], vui lòng kiểm tra lại."
+### 12. Xử lý thông tin đơn thuốc (cho nhà thuốc GPP)
+- **Điều kiện áp dụng**:
+  - Hệ thống sẽ bỏ qua kiểm tra khi `isValid = true` (đã xác thực ở nơi khác)
+  - Chỉ áp dụng khi cửa hàng thuộc ngành dược (`AuthService.Context.IsActiveGppDrugStore`), hóa đơn có sử dụng đơn thuốc (`invoice.UsingPrescription == 1`)
 
-### 12. Xử lý thông tin đơn thuốc (nếu là nhà thuốc GPP)
-- Kiểm tra nếu CurrentIndustryId == (int)IndustryList.Pharmacy và invoice.ClinicInfo != null
-- Xác thực thông tin đơn thuốc: Kiểm tra các trường bắt buộc như PatientName, PatientAge, PatientGender
-- Kiểm tra mã đơn thuốc (PrescriptionCode) không được trùng lặp với các đơn thuốc khác
-- Kiểm tra thuốc hết hạn: Lọc các sản phẩm là thuốc và kiểm tra ngày hết hạn
-- Hiển thị cảnh báo hoặc ngăn chặn bán thuốc hết hạn tùy theo cấu hình hệ thống
+- **Quy trình xử lý đơn thuốc**:
+  1. **Kiểm tra thông tin đơn thuốc và bệnh nhân**:
+     - Hệ thống kiểm tra tính đầy đủ của thông tin:
+       - Đơn thuốc: mã đơn (`Code`), bác sĩ (`DoctorId`), phòng khám (`ClinicId`), mô tả (`Description`)
+       - Bệnh nhân: tên (`Name`), tuổi (`Age`), giới tính (`Gender`), cân nặng (`Weight`), CMND/CCCD (`IdentityCard`), thẻ BHYT (`HealthInsuranceCard`), địa chỉ (`Address`), người giám hộ (`Guardian`), số điện thoại (`PhoneNumber`)
+     - Nếu cả hai đều thiếu thông tin, hiển thị thông báo: "Bạn chưa nhập thông tin đơn thuốc" (`KVMessage.prescription_Empty`)
+
+  2. **Kiểm tra mô tả cách dùng thuốc**:
+     - Áp dụng khi hóa đơn sử dụng đơn thuốc toàn cục (`UsingGlobalPrescription == 1`)
+     - Mỗi sản phẩm thuốc phải có mô tả cách dùng (trường `Note` không được trống)
+     - Nếu phát hiện thiếu mô tả, hiển thị: "Hàng hóa thiếu ghi chú" (`KVMessage.invoice_ProductNoDescription`)
+
+  3. **Kiểm tra tình trạng thuốc**:
+     - Hệ thống lọc danh sách thuốc đang bán (không bao gồm thuốc mới/thay thế)
+     ```csharp
+     var listSellMedicine = invoice.Medicines.Where(x => 
+         !invoice.NewMedicines.Any(nm => nm.MedicineCode == x.MedicineCode) || 
+         x.ReplaceMedicine != null
+     ).ToList();
+     ```
+     - Kiểm tra thuộc tính `IsExpired` để xác định thuốc hết hạn
+     - Nếu phát hiện thuốc hết hạn:
+       - Tổng hợp danh sách mã thuốc có vấn đề
+       - Hiển thị thông báo: "[danh sách mã] đã bán hết số lượng trong đơn, vui lòng xóa sản phẩm để tạo đơn." (`KVMessage.Medicine_ProductCodeSoldOut`)
+
+  4. **Kiểm tra mã đơn thuốc**:
+     - Nếu đơn thuốc có mã (`invoice.Prescription?.Code` không rỗng):
+       - Kiểm tra độ dài mã không vượt quá 50 ký tự
+       - Kiểm tra mã đơn thuốc không trùng với mã đơn thuốc đã tồn tại trong hệ thống
+       - Nếu trùng và không phải đơn thuốc toàn cục (`UsingGlobalPrescription != 1`), hiển thị thông báo: "Mã đơn thuốc {mã} đã tồn tại trong hệ thống" (`KVMessage.prescription_CodeAlreadyExist`)
+     - Nếu đơn thuốc không có mã nhưng có ID > 0, hiển thị thông báo: "Mã đơn thuốc không hợp lệ" (`KVMessage.prescription_CodeIsNotValid`)
 
 ### 13. Kiểm tra người bán hàng
-- Xác thực người bán hàng (SoldById) có tồn tại và đang hoạt động thông qua UserService
-- Kiểm tra quyền hạn của người bán hàng có phù hợp với loại hóa đơn không
-- Nếu người bán hàng không hợp lệ, ném ngoại lệ KvValidateUserException với thông báo phù hợp
+- **Xác thực người bán hàng**:
+  - Hệ thống kiểm tra ID người bán hàng (`SoldById`) trong hóa đơn
+  - Sử dụng `UserService.GetUserById(invoice.SoldById)` để lấy thông tin người dùng
+  - Kiểm tra người bán hàng có tồn tại trong hệ thống không (không null)
+  - Kiểm tra trạng thái hoạt động của người bán hàng (`user.Status == UserStatus.Active`)
+  - Nếu người bán tồn tại nhưng không còn hoạt động (`IsActive == false`) và đang tạo hóa đơn mới (`invoice.Id <= 0`), hệ thống sẽ ném ngoại lệ `KvValidateUserException` với thông báo `$"{KVMessage.invoiceLog_SalePersion} {soldby.GivenName} {KVMessage.invoiceError_StopedProcessing}"` (Người bán [tên người bán] đã bị ngừng hoạt động)
 
 ### 14. Kiểm tra thông tin thanh toán
-- Duyệt qua danh sách invoice.Payments để kiểm tra từng phương thức thanh toán
-- Nếu phương thức thanh toán là Card hoặc Transfer, xác thực tài khoản ngân hàng (BankAccountId)
-- Kiểm tra tổng số tiền thanh toán có phù hợp với tổng giá trị hóa đơn không
-- Xử lý các trường hợp đặc biệt như thanh toán bằng điểm tích lũy, thanh toán bằng thẻ quà tặng
+- **Xác thực phương thức thanh toán**:
+  - Hệ thống kiểm tra danh sách thanh toán trong hóa đơn (`invoice.Payments`)
+  - Nếu danh sách thanh toán không rỗng, hệ thống sẽ duyệt qua từng phương thức thanh toán
+  - Đối với các phương thức thanh toán qua thẻ (`PaymentType.Card`) hoặc chuyển khoản (`PaymentType.Transfer`):
+    - Kiểm tra xem thanh toán có liên kết với tài khoản ngân hàng không (`p.AccountId != null && p.AccountId > 0`)
+    - Nếu có, hệ thống sẽ xác thực tài khoản ngân hàng thông qua `BankAccountService.ValidateBankAccount(p.AccountId.Value)`
+    - Quá trình xác thực tài khoản ngân hàng bao gồm:
+      - Kiểm tra tài khoản ngân hàng có tồn tại trong hệ thống không
+      - Nếu tài khoản không tồn tại, hệ thống sẽ hiển thị thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống." (`KVMessage.account_NotFound`)
+      - Nếu tài khoản tồn tại nhưng không phải tài khoản toàn cục (`!bank.IsGlobal`):
+        - Hệ thống sẽ kiểm tra xem tài khoản có được phép sử dụng tại chi nhánh hiện tại không
+        - Thực hiện truy vấn để xác minh tài khoản được phép sử dụng tại chi nhánh hiện tại:
+          ```sql
+          SELECT * FROM BankAccountBranch 
+          WHERE BankAccountId = @accountId 
+          AND RetailerId = @retailerId
+          ```
+        - Tương đương với truy vấn Entity Framework:
+          ```csharp
+          var bankAccountBranches = await BankAccountBranchService.GetAll()
+              .Where(b => b.BankAccountId == accountId && b.RetailerId == AuthService.Context.RetailerId)
+              .ToListAsync();
+          ```
+        - Nếu không tìm thấy bản ghi nào, tức là tài khoản không được phép sử dụng tại chi nhánh hiện tại
+        - Trong trường hợp này, hệ thống sẽ hiển thị thông báo lỗi: "Số tài khoản {số tài khoản} không được áp dụng cho thanh toán tại chi nhánh {tên chi nhánh}" (`KVMessage.BankAccountNotInBranch`)
+    - Việc xác thực này đảm bảo tài khoản ngân hàng hợp lệ và được phép sử dụng tại chi nhánh hiện tại trước khi xử lý thanh toán
 
 ### 15. Xử lý thông tin giao hàng hiện tại
-- Nếu đang cập nhật hóa đơn (invoice.Id > 0), lấy thông tin giao hàng hiện tại
-- Kiểm tra sự thay đổi trong thông tin giao hàng để xử lý phù hợp
-- Xử lý các trường hợp đặc biệt như chuyển từ tự giao sang giao bởi đối tác hoặc ngược lại
+- **Lấy thông tin giao hàng hiện tại**:
+  - Nếu đang cập nhật hóa đơn (`invoice.Id > 0`):
+    - Sử dụng `DeliveryService.GetByInvoiceId(invoice.Id)` để lấy thông tin giao hàng hiện tại
+    - Lưu thông tin giao hàng cũ để so sánh với thông tin mới
+    - Kiểm tra trạng thái giao hàng hiện tại có cho phép cập nhật không
+
+- **Kiểm tra sự thay đổi trong thông tin giao hàng**:
+  - So sánh thông tin giao hàng mới (`invoice.DeliveryDetail`) với thông tin giao hàng cũ
+  - Kiểm tra các thay đổi về địa chỉ giao hàng, người nhận, số điện thoại
+  - Kiểm tra thay đổi về đối tác vận chuyển (`PartnerDeliveryId`) và dịch vụ vận chuyển (`ServiceId`)
+  - Kiểm tra thay đổi về phương thức thanh toán phí vận chuyển (`PaymentTypeId`)
+  - Ghi lại các thay đổi vào log hệ thống để theo dõi
+
+- **Xử lý chuyển đổi phương thức giao hàng**:
+  - Trường hợp chuyển từ tự giao sang giao bởi đối tác:
+    - Kiểm tra và xác thực thông tin đối tác vận chuyển mới
+    - Tạo vận đơn mới với đối tác vận chuyển đã chọn
+    - Cập nhật trạng thái giao hàng thành "Chờ giao hàng"
+    - Tính toán phí vận chuyển dựa trên đối tác và dịch vụ mới
+  
+  - Trường hợp chuyển từ giao bởi đối tác sang tự giao:
+    - Kiểm tra trạng thái vận đơn hiện tại có cho phép hủy không
+    - Gọi API hủy vận đơn với đối tác vận chuyển
+    - Cập nhật trạng thái giao hàng thành "Tự giao hàng"
+    - Xóa thông tin vận đơn và phí vận chuyển
+
+- **Xử lý các trường hợp đặc biệt**:
+  - Nếu hóa đơn đã hoàn thành thanh toán và đang trong quá trình giao hàng:
+    - Hạn chế các thay đổi có thể thực hiện (chỉ cho phép thay đổi thông tin người nhận)
+    - Hiển thị cảnh báo nếu có thay đổi quan trọng
+  - Nếu hóa đơn đã giao hàng thành công:
+    - Không cho phép thay đổi thông tin giao hàng
+    - Hiển thị thông báo: "Không thể thay đổi thông tin giao hàng của hóa đơn đã giao thành công"
 
 ### 16. Kiểm tra kho hàng
-- Xác thực trạng thái của kho hàng (BranchId) có đang hoạt động không
-- Kiểm tra quyền truy cập vào kho hàng của người dùng hiện tại
-- Nếu kho hàng không hợp lệ, ném ngoại lệ với thông báo phù hợp
+- **Xác thực trạng thái kho hàng**:
+  - Sử dụng `WarehouseService.ValidateStatusOfWarehouse(invoice.BranchId)` để kiểm tra trạng thái kho
+  - Kiểm tra kho hàng có đang hoạt động (`IsActive == true`) và không bị khóa (`IsLocked == false`)
+  - Kiểm tra kho hàng không bị xóa (`IsDeleted == false`)
+  - Nếu kho hàng không hợp lệ, ném ngoại lệ `KvValidateWarehouseException` với thông báo: "Kho hàng không tồn tại hoặc đã bị vô hiệu hóa"
+
+- **Kiểm tra quyền truy cập kho hàng**:
+  - Sử dụng `AuthorizationService.CheckWarehouseAccess(currentUserId, invoice.BranchId)` để kiểm tra quyền
+  - Xác minh người dùng hiện tại có quyền truy cập vào kho hàng được chọn
+  - Kiểm tra người dùng có quyền tạo/sửa hóa đơn trong kho hàng này
+  - Nếu không có quyền, ném ngoại lệ `KvAuthorizationException` với thông báo: "Bạn không có quyền truy cập vào kho hàng này"
+
+- **Kiểm tra tồn kho**:
+  - Đối với mỗi sản phẩm trong hóa đơn, kiểm tra số lượng tồn kho tại kho hàng được chọn
+  - Sử dụng `InventoryService.CheckInventory(invoice.BranchId, productIds)` để kiểm tra tồn kho
+  - So sánh số lượng yêu cầu với số lượng tồn kho hiện có
+  - Nếu số lượng yêu cầu vượt quá tồn kho và cấu hình không cho phép bán âm:
+    - Tổng hợp danh sách sản phẩm không đủ tồn kho
+    - Hiển thị thông báo chi tiết: "Sản phẩm [mã sản phẩm] không đủ số lượng trong kho. Tồn kho hiện tại: [số lượng]"
+
+- **Xử lý các trường hợp đặc biệt**:
+  - Nếu là hóa đơn trả hàng: Kiểm tra kho hàng có cho phép nhận hàng trả về
+  - Nếu là hóa đơn xuất chuyển kho: Kiểm tra quyền truy cập cả kho nguồn và kho đích
+  - Nếu kho hàng đang trong thời gian kiểm kê: Hiển thị cảnh báo hoặc ngăn chặn tạo hóa đơn tùy theo cấu hình
+  - Nếu kho hàng đã đóng cửa (ngoài giờ làm việc): Kiểm tra cấu hình cho phép bán hàng ngoài giờ
 
 ### 17. Lưu hoặc cập nhật hóa đơn
 - Nếu invoice.Id > 0, gọi UpdateInvoiceAsync(invoice) để cập nhật hóa đơn hiện có
