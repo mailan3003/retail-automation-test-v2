@@ -841,14 +841,15 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
     - **Tạo và cập nhật hóa đơn**:
       - Tạo hóa đơn mới thông qua `InvoiceService.MakeInvoiceAsync()`:
         * Kiểm tra xem hóa đơn có sử dụng lô/hạn sử dụng hoặc IMEI không
-        * Nếu hóa đơn đang cập nhật (có UpdateInvoiceId > 0) và mã bắt đầu bằng Invoice.UpdatePrefix:
-          - Sử dụng khóa Redis để đảm bảo không có xử lý đồng thời
-          - Kiểm tra xem hóa đơn đã được xử lý chưa, nếu đã xử lý thì hiển thị lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-        * Nếu hóa đơn sử dụng lô/hạn sử dụng hoặc IMEI:
-          - Sử dụng khóa Redis theo chi nhánh để đảm bảo xử lý tuần tự
-        * Nếu hóa đơn được tạo từ đơn hàng hoặc có UUID:
-          - Sử dụng khóa Redis theo OrderId hoặc UUID để tránh tạo trùng lặp
-          - Hiển thị thông báo lỗi nếu đang có yêu cầu tạo hóa đơn đang xử lý
+        * Xử lý khóa đồng bộ Redis để tránh xử lý đồng thời:
+          - Nếu hóa đơn đang cập nhật (có UpdateInvoiceId > 0) và mã bắt đầu bằng Invoice.UpdatePrefix:
+            + Sử dụng khóa Redis để đảm bảo không có xử lý đồng thời
+            + Kiểm tra xem hóa đơn đã được xử lý chưa, nếu đã xử lý thì hiển thị lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+          - Nếu hóa đơn sử dụng lô/hạn sử dụng hoặc IMEI:
+            + Sử dụng khóa Redis theo chi nhánh để đảm bảo xử lý tuần tự
+          - Nếu hóa đơn được tạo từ đơn hàng hoặc có UUID:
+            + Sử dụng khóa Redis theo OrderId hoặc UUID để tránh tạo trùng lặp
+            + Hiển thị thông báo lỗi nếu đang có yêu cầu tạo hóa đơn đang xử lý
         * Thực hiện tạo hóa đơn thông qua DoMakeInvoiceAsync với các tham số:
           - updateOnHand: cập nhật số lượng tồn kho
           - isNewInvoice: đánh dấu là hóa đơn mới
@@ -882,13 +883,30 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
           - Có thông tin giao hàng và trạng thái giao hàng là "Đã giao" (DeliveryStatus.Delivered)
         * Quy trình xử lý:
           - Lấy thông tin hóa đơn hiện tại từ cơ sở dữ liệu
-          - Kiểm tra điều kiện thanh toán:
-            + Nếu tổng tiền hóa đơn <= số tiền đã thanh toán (i.Total <= i.PayingAmount), hoặc
-            + Nếu không sử dụng thu hộ (invoice.DeliveryDetail.UsingPriceCod = 0)
-          - Nếu hóa đơn đang ở trạng thái "Chờ xử lý" (InvoiceState.Pending):
-            + Cập nhật trạng thái hóa đơn thành "Đã phát hành" (InvoiceState.Issued)
-            + Lưu thay đổi vào cơ sở dữ liệu
-            + Gửi thông báo cập nhật trạng thái đến hệ thống tìm kiếm (Elasticsearch)
+          - Kiểm tra điều kiện thanh toán (tổng tiền ≤ số tiền đã thanh toán hoặc không sử dụng thu hộ)
+          - Nếu hóa đơn đang ở trạng thái "Chờ xử lý":
+            + Cập nhật trạng thái thành "Đã phát hành"
+            + Lưu thay đổi và gửi thông báo cập nhật đến Elasticsearch
+      
+      - Xử lý thông tin khách hàng và công nợ:
+        * Nếu hóa đơn có ID khách hàng:
+          - Lấy thông tin khách hàng từ cơ sở dữ liệu
+          - Cập nhật thông tin công nợ khách hàng từ dữ liệu khách hàng
+      
+      - Xử lý hóa đơn trùng lặp:
+        * Nếu hóa đơn được đánh dấu là trùng lặp (invoice.IsDuplicated = true):
+          - Tạo bản sao hóa đơn thông qua InvoiceService.DetachByClone()
+          - Thiết lập thông tin thuế cho chi tiết hóa đơn nếu sử dụng thuế VAT
+          - Trả về bản sao hóa đơn và kết thúc quy trình
+      
+      - Xử lý thanh toán và dòng tiền:
+        - Lấy thông tin thanh toán của hóa đơn thông qua PaymentService.GetByInvoiceId()
+        - Tạo chi tiết dòng tiền liên quan đến hóa đơn thông qua CreateCashflowDetailsAsync()
+      
+      - Xử lý thông tin đơn hàng:
+        * Nếu hóa đơn được tạo từ đơn hàng:
+          - Kiểm tra trạng thái đơn hàng
+          - Lưu lại ID đơn hàng để xử lý sau nếu đơn hàng đã hoàn thành
 
     - **Xử lý trạng thái hóa đơn COD**:
       - Điều kiện áp dụng:
