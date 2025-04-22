@@ -845,95 +845,87 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
     - Lấy thông tin thanh toán và tạo chi tiết dòng tiền
     - Xử lý thông tin đơn hàng liên quan (nếu có)
 ### 17. Kiểm tra tồn kho khi bán hàng
-- **Kiểm tra điều kiện bỏ qua kiểm tra tồn kho**:
-  - Nếu cấu hình `PosSetting.AllowSellWhenOutStock = true`: Cho phép bán hàng khi hết tồn kho
-  - Nếu `skipValidate = true`: Bỏ qua kiểm tra (áp dụng cho hóa đơn offline)
-  - Nếu `invoice.UpdateInvoiceId > 0`: Đang cập nhật hóa đơn cũ
-  - Nếu `fromCombine = true`: Đang tạo hóa đơn từ việc kết hợp nhiều hóa đơn
-  - Nếu `invoice.AllowSellWhenOutStock = true`: Hóa đơn cụ thể này được phép bán khi hết tồn kho
+- **Điều kiện bỏ qua kiểm tra tồn kho** (nếu một trong các điều kiện sau đúng, hệ thống sẽ không kiểm tra tồn kho):
+  - Cấu hình hệ thống cho phép bán khi hết hàng (`PosSetting.AllowSellWhenOutStock = true`)
+  - Đang xử lý hóa đơn offline (`skipValidate = true`)
+  - Đang cập nhật hóa đơn đã tồn tại (`invoice.UpdateInvoiceId > 0`)
+  - Đang tạo hóa đơn từ việc kết hợp nhiều hóa đơn (`fromCombine = true`)
+  - Hóa đơn hiện tại được đánh dấu cho phép bán khi hết hàng (`invoice.AllowSellWhenOutStock = true`)
+
 - **Quy trình kiểm tra tồn kho**:
-  - Lấy danh sách ID sản phẩm mua vào (ProductType = Purchased) từ hóa đơn:
-    - Lọc các sản phẩm có ProductType = (int)ProductType.Purchased từ dictionary products
-    - Tạo mảng purchasedProductIds chứa ID của các sản phẩm mua vào
-  - Truy vấn thông tin tồn kho của các sản phẩm tại chi nhánh hiện tại:
-    - Sử dụng ProductBranchService.GetByIds() để lấy thông tin tồn kho
-    - Lấy các thông tin chi tiết:
-      + OnHand: Số lượng tồn kho hiện tại
-      + OnOrder: Số lượng đang đặt hàng
-      + Reserved: Số lượng đã đặt trước
-      + ConversionValue: Hệ số chuyển đổi giữa đơn vị cơ bản và đơn vị hiện tại
-      + MasterUnitId: ID của đơn vị cơ bản
-    - Nếu đang sử dụng nhiều kho (isUsingWarehouse = true):
-      + Lấy ID chi nhánh chính (branchId = WarehouseService.GetMasterIdByWarehouseIdAsync(warehouseId))
-      + Lấy tổng tồn kho từ tất cả các kho (TotalOnHand) thay vì chỉ OnHand
-      + Nếu TotalOnHand là null, sử dụng OnHand làm giá trị mặc định
-  - Xử lý các sản phẩm không có thông tin tồn kho:
-    - Tìm các sản phẩm có trong hóa đơn nhưng không có trong kết quả truy vấn tồn kho (missingProductIdHasOnhand)
-    - Tạo thông tin tồn kho mặc định cho các sản phẩm này với OnHand = 0, OnOrder = 0, Reserved = 0
-    - Nếu sản phẩm có trong dictionary products, lấy ConversionValue và MasterUnitId từ đó
-    - Nếu không, gán ConversionValue = 1 và MasterUnitId = null
-    - Kết hợp danh sách sản phẩm có thông tin tồn kho và danh sách sản phẩm không có thông tin tồn kho thành dictProductInfos
-  - Tính toán tổng số lượng sản phẩm theo đơn vị cơ bản:
-    - Với mỗi sản phẩm trong hóa đơn, chuyển đổi số lượng về đơn vị cơ bản:
-      + Nếu sản phẩm có MasterUnitId, sử dụng ProductId của đơn vị cơ bản, ngược lại sử dụng ProductId gốc
-      + Nhân số lượng với ConversionValue để chuyển đổi về đơn vị cơ bản
-    - Gom nhóm theo ProductId và tính tổng số lượng để tạo dictTotalUsingByUnit
-  - Lấy thông tin tồn kho theo đơn vị cơ bản từ cơ sở dữ liệu:
-    - Truy vấn ProductBranchService.GetByIds() với danh sách ID đơn vị cơ bản
-    - Nếu đang sử dụng nhiều kho, lấy TotalOnHand, ngược lại lấy OnHand
-    - Xử lý các đơn vị cơ bản không có thông tin tồn kho, gán OnHand = 0
-    - Tạo dictOnHandByUnit chứa thông tin tồn kho theo đơn vị cơ bản
-    - Tạo bản sao dictOnHandByUnitUnChange để sử dụng sau này khi cần khôi phục giá trị ban đầu
-  - Nếu không cho phép bán khi đặt hàng hết tồn (`!PosSetting.AllowSellWhenOrderOutStock`):
-    - Lấy thông tin Reserved (số lượng đã đặt) cho mỗi sản phẩm
-    - Trừ số lượng đã đặt khỏi tồn kho hiện tại: dictOnHandByUnit[item.Key] = dictOnHandByUnit[item.Key] - item.Value
-    - Nếu hóa đơn được tạo từ đơn đặt hàng (invoice.OrderId >= 0 và order != null):
-      + Cộng lại số lượng đã đặt trong đơn hàng đó vào tồn kho hiện tại
-      + Đảm bảo tồn kho sau khi cộng lại không vượt quá tồn kho ban đầu: returnTheNumberOfQuantity > dictOnHandByUnitUnChange[orderUnitId] ? dictOnHandByUnitUnChange[orderUnitId] : returnTheNumberOfQuantity
-  - Kiểm tra từng sản phẩm trong hóa đơn:
-    - Tạo danh sách lsProductFail để lưu các sản phẩm không đủ tồn kho
-    - Với mỗi sản phẩm trong hóa đơn:
-      + Bỏ qua sản phẩm cho phép bán âm (ProductAllowSellWhenOutStock = true)
-      + Lấy thông tin sản phẩm từ dictProductInfos
-      + Tính toán số lượng theo đơn vị cơ bản: eachLineQty = inv.Quantity * ConversionValue
-      + Kiểm tra tồn kho có đủ không sử dụng ValidateOnhandHelper.ValidateOnhandWithTolerance():
-        * Phương thức này kiểm tra số lượng đặt mua có vượt quá tồn kho hiện tại cộng với dung sai cho phép
-        * Công thức: quantity > (onHand + (KVConst.ToleranceOnHand * conversionValue))
-        * Nếu conversionValue < 1, sẽ được gán giá trị mặc định là 1
-        * Nếu kết quả trả về true, nghĩa là số lượng đặt mua vượt quá tồn kho cho phép
-      + Nếu không đủ tồn kho: Thêm vào danh sách sản phẩm lỗi (lsProductFail)
-      + Nếu đang sử dụng nhiều kho, kiểm tra thêm tồn kho tại kho cụ thể
-      + Trừ số lượng đã bán khỏi tồn kho hiện tại: dictOnHandByUnit[obj.MasterUnitId ?? obj.ProductId] -= eachLineQty
-  - Nếu có sản phẩm lỗi (lsProductFail.Count > 0):
-    - Lấy thông tin chi tiết của các sản phẩm lỗi thông qua ProductService.GetByIdsAsync()
-    - Tạo chuỗi thông báo lỗi với tên đầy đủ của các sản phẩm không đủ tồn kho
-    - Ném ngoại lệ KvValidateProductException với thông báo "Không đủ số lượng tồn kho cho sản phẩm {0}" (invalid_Onhand) và thông tin bổ sung:
-      + TypeMessage = OmniMessageType.ErrorOnHand
-      + ProductIds = danh sách ID sản phẩm lỗi
-  - Kiểm tra tồn kho cho sản phẩm combo (nếu có) thông qua phương thức ValidateComboProduct():
-    - Lấy branchId từ hóa đơn hoặc từ context hiện tại
-    - Lọc ra các sản phẩm combo (ProductType = Manufactured) từ dictionary products
-    - Tạo dictionary comboProductFormulaHistories để lưu ID công thức sản phẩm combo
-    - Với mỗi sản phẩm combo trong hóa đơn:
-      + Nếu có ProductFormulaHistoryId và chưa có trong dictionary, thêm vào comboProductFormulaHistories
-    - Lấy thông tin nguyên liệu của các sản phẩm combo từ ProductService.GetMaterialByHistories()
-    - Thu thập tất cả ID nguyên liệu (materialId) từ các công thức
-    - Lấy thông tin sản phẩm nguyên liệu từ ProductService.GetAll() với điều kiện là sản phẩm mua (ProductType = Purchased)
-    - Lấy thông tin tồn kho của tất cả sản phẩm (cả combo và nguyên liệu) từ ProductBranchService
-    - Kiểm tra từng sản phẩm combo trong hóa đơn:
-      + Bỏ qua nếu sản phẩm cho phép bán âm (ProductAllowSellWhenOutStock = true)
-      + Bỏ qua nếu không tìm thấy thông tin nguyên liệu
-      + Bỏ qua nếu tất cả nguyên liệu đều là sản phẩm dịch vụ
-      + Tính toán số lượng có thể bán cho mỗi nguyên liệu:
-        * Lấy số lượng tồn kho hiện tại (onHand) từ currentOnhandDictionary hoặc branchInfo
-        * Nếu không cho phép bán khi đặt hàng hết tồn, trừ đi số lượng đã đặt (Reserved)
-        * Nếu hóa đơn được tạo từ đơn đặt hàng, cộng lại số lượng đã đặt trong đơn hàng đó
-        * Tính số lượng combo có thể bán dựa trên mỗi nguyên liệu: quantityCanBuy / quantityInCombo
-        * Cập nhật lại số lượng tồn kho sau khi bán: onHand -= quantityInCombo * comboProd.Quantity
-      + Tìm nguyên liệu có số lượng combo có thể bán thấp nhất
-      + Kiểm tra nếu số lượng đặt mua vượt quá số lượng có thể bán:
-        * Sử dụng ValidateOnhandHelper.ValidateOnhandWithTolerance() để kiểm tra với dung sai
-        * Nếu không đủ tồn kho, ném ngoại lệ KvValidateInvoiceException với thông báo lỗi
+  1. **Xác định sản phẩm cần kiểm tra**:
+     - Lọc các sản phẩm mua vào (ProductType = Purchased) từ danh sách sản phẩm
+     - Tạo danh sách ID sản phẩm cần kiểm tra tồn kho (`purchasedProductIds`)
+
+  2. **Lấy thông tin tồn kho hiện tại**:
+     - Truy vấn thông tin tồn kho của các sản phẩm tại chi nhánh hiện tại thông qua ProductBranchService.GetByIds() để lấy dữ liệu OnHand, OnOrder và Reserved
+     - Thu thập các thông tin: số lượng tồn (OnHand), số lượng đang đặt (OnOrder), số lượng đã đặt trước (Reserved)
+     - Nếu sử dụng nhiều kho (`isUsingWarehouse = true`):
+       + Lấy ID chi nhánh chính (MasterId) từ ID kho hiện tại thông qua WarehouseService.GetMasterIdByWarehouseIdAsync()
+       + Sử dụng giá trị TotalOnHand (tổng số lượng tồn kho từ tất cả các kho) thay vì chỉ sử dụng OnHand (số lượng tồn kho tại kho hiện tại)
+
+  3. **Xử lý sản phẩm không có thông tin tồn kho**:
+     - Đối với sản phẩm không có dữ liệu tồn kho trong hệ thống:
+       + Tạo thông tin tồn kho mặc định với số lượng tồn (OnHand) = 0
+       + Đặt các giá trị khác (OnOrder, Reserved) = 0
+       + Sử dụng hệ số chuyển đổi (ConversionValue) = 1 nếu không có thông tin
+     - Tổng hợp tất cả thông tin tồn kho (cả dữ liệu thực tế và dữ liệu mặc định) vào một từ điển (`dictProductInfos`) với khóa là ID sản phẩm
+
+  4. **Chuyển đổi số lượng về đơn vị cơ bản**:
+     - Chuyển đổi số lượng sản phẩm về đơn vị cơ bản:
+       + Đối với mỗi sản phẩm trong hóa đơn, lấy số lượng (Quantity) và nhân với hệ số chuyển đổi (ConversionValue)
+       + Hệ số chuyển đổi giúp quy đổi từ đơn vị hiện tại sang đơn vị cơ bản (ví dụ: từ thùng sang chai)
+     - Tổng hợp số lượng theo đơn vị cơ bản:
+       + Gom nhóm các sản phẩm theo ID đơn vị cơ bản (MasterUnitId hoặc ProductId nếu không có đơn vị chính)
+       + Tính tổng số lượng đã quy đổi cho mỗi nhóm để có được tổng số lượng cần kiểm tra tồn kho
+
+  5. **Xử lý đặt hàng và tồn kho**:
+     - Nếu không cho phép bán khi đơn đặt hàng vượt quá tồn kho (`!PosSetting.AllowSellWhenOrderOutStock`):
+       + Tính toán số lượng thực tế có thể bán = số lượng tồn kho hiện tại (OnHand) - số lượng đã đặt trước (Reserved)
+       + Trường hợp đặc biệt: Nếu hóa đơn được tạo từ đơn đặt hàng hiện tại (invoice.OrderId != null), cộng lại số lượng đã đặt trước trong đơn đặt hàng đó (vì số lượng này đã được trừ trong Reserved nhưng đang được sử dụng cho hóa đơn này)
+
+  6. **Kiểm tra từng sản phẩm trong hóa đơn**:
+     - Bỏ qua sản phẩm được phép bán âm (`ProductAllowSellWhenOutStock = true`)
+     - Tính số lượng theo đơn vị cơ bản: `eachLineQty = số lượng trong hóa đơn × hệ số chuyển đổi đơn vị (ConversionValue)` 
+       + Hệ số chuyển đổi được sử dụng khi sản phẩm có đơn vị chính (MasterUnitId)
+       + Nếu không có đơn vị chính, hệ số chuyển đổi = 1
+     - Kiểm tra tồn kho có đủ không thông qua phương thức `ValidateOnhandWithTolerance()`:
+       + So sánh: `số lượng cần bán <= tồn kho hiện tại`
+       + Hệ thống áp dụng một giá trị dung sai nhỏ (tolerance) để xử lý các sai số do làm tròn số
+       + Nếu `số lượng cần bán > (tồn kho hiện tại + dung sai × hệ số chuyển đổi)` thì xem là không đủ hàng
+     - Nếu không đủ tồn kho, thêm sản phẩm vào danh sách lỗi (`lsProductFail`)
+     - Sau khi kiểm tra mỗi sản phẩm, hệ thống trừ số lượng đã kiểm tra khỏi giá trị tồn kho hiện tại (OnHand) trong bộ nhớ tạm thời. Điều này đảm bảo rằng khi kiểm tra sản phẩm tiếp theo, số lượng tồn kho đã được cập nhật chính xác, tránh tình trạng bán quá số lượng thực tế có sẵn.
+
+  7. **Xử lý khi phát hiện sản phẩm không đủ tồn kho**:
+     - Khi phát hiện sản phẩm không đủ tồn kho:
+       + Truy vấn cơ sở dữ liệu để lấy thông tin chi tiết (tên đầy đủ, mã sản phẩm) của các sản phẩm thiếu hàng
+       + Tạo thông báo lỗi chi tiết bao gồm: tên sản phẩm, mã sản phẩm, số lượng yêu cầu, và số lượng tồn kho hiện có
+       + Ném ngoại lệ `KvValidateProductException` với thông báo lỗi "Không đủ số lượng tồn kho cho sản phẩm {0}" (mã lỗi `invalid_Onhand`), trong đó {0} sẽ được thay thế bằng danh sách tên đầy đủ của các sản phẩm thiếu hàng. Ngoại lệ này cũng chứa thông tin bổ sung về loại thông báo (ErrorOnHand) và danh sách ID của các sản phẩm bị lỗi để xử lý ở tầng giao diện.
+
+  8. **Kiểm tra tồn kho cho sản phẩm combo**:
+     - Xác định các sản phẩm combo (ProductType = Manufactured) trong hóa đơn
+     - Lấy thông tin công thức sản xuất cho từng sản phẩm combo:
+       + Tạo từ điển lưu trữ cặp giá trị: ID sản phẩm combo và ID công thức tương ứng
+       + Sử dụng ProductService.GetMaterialByHistories() để lấy danh sách nguyên liệu cần thiết cho mỗi combo:
+         * Truy vấn bảng ProductFormulaHistory dựa trên danh sách ID công thức
+         * Giải mã dữ liệu JSON từ trường MaterialIds để lấy thông tin nguyên liệu
+         * Kết quả trả về là từ điển chứa ID sản phẩm combo và danh sách nguyên liệu tương ứng
+     - Thu thập thông tin tồn kho của tất cả nguyên liệu:
+       + Tạo danh sách ID của tất cả nguyên liệu cần thiết
+       + Chỉ xét các nguyên liệu thuộc loại sản phẩm mua vào (ProductType = Purchased)
+       + Truy vấn thông tin tồn kho hiện tại của các nguyên liệu tại chi nhánh hiện tại
+     - Kiểm tra khả năng đáp ứng cho từng sản phẩm combo:
+       + Bỏ qua sản phẩm được phép bán âm (ProductAllowSellWhenOutStock = true)
+       + Bỏ qua nếu không có thông tin nguyên liệu hoặc tất cả nguyên liệu đều là dịch vụ
+       + Tính toán số lượng combo tối đa có thể tạo:
+         * Với mỗi nguyên liệu, tính: số lượng tồn kho ÷ số lượng cần cho 1 combo
+         * Trừ đi số lượng đã đặt trước (Reserved) nếu cần
+         * Cộng lại số lượng đã đặt trong đơn đặt hàng gốc (nếu có)
+       + Xác định số lượng combo tối đa dựa trên nguyên liệu có số lượng thấp nhất
+       + So sánh với số lượng combo trong hóa đơn:
+         * Nếu không đủ nguyên liệu, hiển thị thông báo lỗi chỉ rõ tên combo và nguyên liệu thiếu
+         * Thông báo: "Hàng hóa {0}: thành phần {1} không đủ tồn kho" (mã lỗi `invalid_onHand_combo`), trong đó {0} là tên combo và {1} là tên nguyên liệu thiếu
+     - Cập nhật số lượng tồn kho tạm thời sau mỗi lần kiểm tra để đảm bảo tính chính xác khi kiểm tra các combo tiếp theo
 
 ### 18. Cập nhật thông tin sau khi lưu
 - Cập nhật thông tin khách hàng: Cập nhật điểm tích lũy, lịch sử mua hàng
