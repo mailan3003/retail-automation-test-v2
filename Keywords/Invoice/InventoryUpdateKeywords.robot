@@ -57,7 +57,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với $
     Set Test Variable    ${product_id}    ${result[0]} 
     Set Test Variable    ${product_batch_id}    ${result_batch[0]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
-    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsBatchExpireControl   ${true}
@@ -65,29 +65,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với $
      ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Đơn Vị Chuyển Đổi
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${CONVERSION_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${STANDARD_PRODUCT_DETAIL}    ${LARGE_QUANTITY_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Cho Phép Bán Âm Khi Hết Tồn Kho
-    ${data}=    Evaluate    json.loads('''${ALLOW_NEGATIVE_INVENTORY_DATA}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
-    ${data}=    Evaluate    json.loads('''${ORDER_TO_INVOICE_DATA}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
 
 Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
