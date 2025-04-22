@@ -856,6 +856,88 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
           - fromCombine: đánh dấu nếu tạo từ việc kết hợp hóa đơn
           - omniOnlineFieldObject: thông tin bổ sung cho kênh bán hàng đa kênh
           - fbposParam: tham số cho Facebook POS nếu có
+          
+          Quy trình xử lý trong DoMakeInvoiceAsync:
+          - Lấy thông tin tiền tệ hiện tại và ID nhà bán lẻ
+          - Chuẩn hóa chi tiết hóa đơn (NormalizeInvoiceDetail)
+          - Kiểm tra hóa đơn offline (bắt đầu bằng tiền tố offline hoặc có DocumentId > 0)
+          - Xử lý trạng thái giao hàng cho hóa đơn sử dụng COD (Cash On Delivery - Thu tiền khi giao hàng):
+            + Chuyển đổi trạng thái giao hàng cũ thông qua phương thức `UpdateInvoiceOldStatus()`:
+              * Nếu hóa đơn có UsingCod = 1 (đang sử dụng COD) và trạng thái hiện tại là 4 (Returning/Đang trả hàng):
+                - Đặt lại trạng thái hóa đơn thành "Chờ xử lý" (InvoiceState.Pending)
+                - Nếu có thông tin giao hàng (DeliveryDetail không null), cập nhật trạng thái giao hàng thành "Đang giao" (DeliveryStatus.Delivering = 2)
+              * Mục đích: Đảm bảo hóa đơn COD đang trong quá trình trả hàng được đưa về trạng thái phù hợp để xử lý lại
+            + Đảm bảo hóa đơn COD luôn ở trạng thái Pending (Chờ xử lý) và có thông tin giao hàng đầy đủ
+          - Xử lý thông tin thanh toán (invoice.Payments):
+            + Sao chép giá trị từ Amount sang AmountOriginal để lưu trữ số tiền gốc
+            + Đối với hóa đơn offline (isOfflineInv = true):
+              * Cập nhật trường CreatedBy của mỗi phương thức thanh toán bằng người tạo hóa đơn
+              * Kiểm tra và từ chối nếu có phương thức thanh toán bằng Voucher (hiển thị lỗi: "Bạn không thể thanh toán hóa đơn bằng voucher ở chế độ offline")
+              * Kiểm tra và từ chối nếu có khuyến mãi loại Voucher quà tặng (hiển thị lỗi: "Chương trình khuyến mại tặng voucher không thể áp dụng khi đang ở chế độ offline")
+            + Đối với hóa đơn online: chỉ cập nhật AmountOriginal = Amount cho mỗi phương thức thanh toán
+          - Kiểm tra và xử lý hóa đơn trùng lặp (đối với hóa đơn offline):
+            + Tìm kiếm hóa đơn đã tồn tại trong hệ thống có cùng mã (Code) hoặc UUID
+            + Nếu không tìm thấy theo mã, hệ thống sẽ tìm kiếm theo UUID trong khoảng thời gian 7 ngày trước và sau ngày mua hàng
+            + Nếu phát hiện hóa đơn trùng lặp nhưng có mã khác, hệ thống sẽ ghi log với nội dung: "Mã hóa đơn online bị trùng: {invoice.Code} - {tempInv.Code}"
+            + Đánh dấu hóa đơn là trùng lặp (IsDuplicated = true) và trả về hóa đơn đã tồn tại thay vì tạo mới
+          - Xử lý đơn hàng liên quan (nếu invoice.OrderId > 0):
+            + Kiểm tra quyền truy cập: Nếu người dùng không có quyền truy cập đơn hàng, hiển thị thông báo lỗi "Không có quyền truy cập bản ghi với người dùng {0}"
+            + Kiểm tra tính hợp lệ của đơn hàng: Đảm bảo đơn hàng thuộc cùng nhà bán lẻ, nếu không hiển thị lỗi "Bạn không có quyền thực hiện."
+            + Kiểm tra trạng thái đơn hàng: Nếu đơn hàng đã hoàn thành (Finalized) hoặc đã hủy (Void) và không phải là cập nhật hóa đơn, hiển thị lỗi "Trạng thái đơn hàng không hợp lệ"
+            + Kiểm tra quyền tạo hóa đơn: Người dùng phải có quyền "MakeInvoice" cho chi nhánh của đơn hàng, nếu không hiển thị lỗi "Bạn không thể cập nhật hóa đơn {0} được tạo từ phiếu đặt hàng {1} do bạn không có phân quyền đặt hàng"
+          - Xử lý người bán:
+            + Tự động gán người dùng hiện tại làm người bán khi TẤT CẢ các điều kiện sau được đáp ứng:
+              * Hóa đơn không được tạo từ nguồn khác (invoice.OrderId == null && invoice.ReturnId == null && invoice.DocumentId == null)
+              * Người bán đã được chỉ định và khác với người dùng hiện tại (invoice.SoldById > 0 && invoice.SoldById != AuthService.Context.User.Id)
+              * Không phải là hóa đơn offline
+              * Không phải là hóa đơn đang cập nhật (invoice.UpdateInvoiceId <= 0)
+              * Không phải là hóa đơn được sao chép (mã không bắt đầu bằng tiền tố sao chép)
+              * Người dùng hiện tại không có quyền đặc biệt (không phải admin và không có quyền Invoice.ModifySeller)
+            + Khi đáp ứng tất cả điều kiện trên: Gán người bán là người dùng hiện tại (invoice.SoldById = AuthService.Context.User.Id)
+          - Xác thực lô/hạn sử dụng sản phẩm:
+            + Kiểm tra lô/hạn cho hóa đơn offline hoặc omni:
+              * Gọi phương thức ValidateSyncOfflineBatchInvoice() để kiểm tra tính hợp lệ của lô/hạn
+              * Kiểm tra xem hóa đơn có sử dụng lô/hạn không (isAnyBatchExpireDetail)
+              * Nếu có sử dụng lô/hạn:
+                - Lấy danh sách lô đang sử dụng thông qua GetDictBatchUsing() (dictBatchUsing)
+                - Lấy số lượng tồn kho hiện tại của từng lô (dictClosestOnhand) từ procedure pr_GetClosestBatchOnhand
+                - Kiểm tra các lô không có giao dịch sau thời điểm hiện tại và lấy tồn kho từ ProductBatchExpireBranches
+                - Gọi GetOutOfStockProduct() để xác định các sản phẩm có số lượng vượt quá tồn kho
+                - Nếu có sản phẩm vượt quá tồn kho, hiển thị thông báo lỗi: "Hóa đơn này làm tồn kho của lô bị âm, bạn không thể thực hiện đồng bộ: [danh sách sản phẩm]"
+            + Kiểm tra lô/hạn cho hóa đơn thông thường
+            + Kiểm tra lô/hạn cho hóa đơn thông thường:
+              * Gọi phương thức ValidateBatchInvoice() để kiểm tra tính hợp lệ của lô/hạn:
+                - Kiểm tra xem hóa đơn có sử dụng lô/hạn không (isAnyBatchExpireDetail)
+                - Nếu có sử dụng lô/hạn:
+                  ~ Lấy danh sách lô đang sử dụng thông qua GetDictBatchUsing() (dictBatchUsing)
+                  ~ Lấy danh sách ID lô (batchIds) từ dictBatchUsing
+                  ~ Xác định ngày mua hàng hiện tại và ngày mua hàng cũ thông qua ExtractInvoicePurchaseDate()
+                  ~ Kiểm tra khi ngày mua hàng mới > ngày mua hàng cũ:
+                    * Gọi ValidateBatchInvoiceLimitByStocktake() để kiểm tra có phiếu kiểm kê nào được tạo giữa hai thời điểm
+                    * Nếu tìm thấy phiếu kiểm kê, hiển thị thông báo lỗi: "Giao dịch này có sản phẩm {0} quản lý theo lô. Bạn không thể chuyển thời gian về sau thời gian kiểm kho của phiếu {1}"
+                  ~ Kiểm tra khi ngày mua hàng mới <= ngày mua hàng cũ:
+                    * Gọi ValidateBatchInvoiceLimitByPositiveTrans() để kiểm tra có giao dịch nhập hàng nào diễn ra giữa hai thời điểm
+                    * Nếu tìm thấy giao dịch nhập hàng, hiển thị thông báo lỗi: "Giao dịch này có sản phẩm {0} quản lý theo lô. Bạn không thể chuyển thời gian giao dịch sớm hơn thời gian của phiếu {1} {2}"
+                  ~ Kiểm tra tồn kho cho hóa đơn mới (khi invoice.Id <= 0) và không phải từ hóa đơn kết hợp (!fromCombine):
+                    * Gọi ValidateBatchInvoiceProductOutStock() để kiểm tra số lượng tồn kho của các lô sản phẩm
+                    * Lấy chính xác số lượng tồn kho tại thời điểm mua hàng thông qua procedure pr_GetOnhandAtSpecificTime
+                    * So sánh số lượng sản phẩm trong hóa đơn với số lượng tồn kho thực tế của từng lô
+                    * Nếu số lượng trong hóa đơn vượt quá tồn kho thực tế, hiển thị thông báo lỗi: "{0}: số lô {1} không đủ số lượng tồn kho."
+                    * Nếu cấu hình kiểm tra tồn kho lô qua Redis được bật, cập nhật số lượng tồn kho còn lại vào bộ nhớ đệm
+            + Xử lý thay đổi từ không có khách hàng sang có khách hàng
+            + Xử lý thông tin giao hàng và vận đơn
+          - Kiểm tra thời gian giao dịch:
+            + Không cho phép thay đổi thời gian quá 6 tháng
+          - Xác thực công nợ khách hàng và xử lý thanh toán
+          - Lưu hóa đơn vào cơ sở dữ liệu và xử lý các thông tin liên quan:
+            + Cập nhật mã hóa đơn nếu cần
+            + Xử lý thông tin giao hàng
+            + Xử lý thanh toán và phân bổ thanh toán
+            + Xử lý voucher quà tặng
+            + Cập nhật thông tin khách hàng
+            + Gửi thông tin cập nhật đến Elasticsearch
+            + Xử lý thông tin giao hàng với Kafka K-ship
+          - Trả về đối tượng hóa đơn đã tạo/cập nhật
       - Xử lý hóa đơn kết hợp (nếu `req.IsFormCombine`):
         * Cập nhật mô tả hóa đơn bằng cách thay thế "---" bằng mã hóa đơn
         * Cập nhật thông tin chung của hóa đơn thông qua InvoiceService.UpdateGeneralInvoice():
