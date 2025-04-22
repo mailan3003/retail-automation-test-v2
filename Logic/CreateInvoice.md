@@ -752,7 +752,6 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                      * Hiển thị thông báo lỗi: "Sản phẩm {0} IMEI {1} hết hàng tại thời gian bạn vừa chọn"
                      * Trong đó: {0} là mã sản phẩm, {1} là số serial
                      * Ngăn chặn việc lưu hóa đơn bằng cách ném ra ngoại lệ KvValidateInvoiceException
----------------------             
              + Nếu hóa đơn được tạo từ đơn đặt hàng:
                * Hệ thống kiểm tra xem hóa đơn có `DocumentId` không (liên kết với đơn đặt hàng)
                * Ngày mua hàng phải lớn hơn hoặc bằng ngày đặt hàng:
@@ -822,28 +821,91 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
       - Cập nhật thông tin đơn hàng tự giao thông qua `DeliveryInfoService.UpdateSelfDeliveryOrder()`
 - **Tạo hóa đơn mới**:
   - Nếu đang tạo hóa đơn mới (`invoice.Id <= 0`):
-    - Nếu là hóa đơn cập nhật (`invoice.UpdateInvoiceId > 0`):
-      - Kiểm tra xem hóa đơn gốc có đang được xử lý bởi tác vụ vận chuyển không
-    - Xử lý hủy vận đơn cũ nếu chuyển từ giao hàng bởi đối tác sang tự giao:
-      - Nếu là hóa đơn cập nhật, thông tin giao hàng cũ sử dụng đối tác mặc định, có mã giao hàng, và thông tin giao hàng mới không sử dụng đối tác mặc định
-      - Gọi API `DeliveryClient.VoidOrderV3()` để hủy vận đơn với đối tác vận chuyển
-      - Nếu tính năng KShip bị tắt, hiển thị thông báo lỗi tương ứng
-    - Lưu trữ ID đơn hàng đã hoàn thành (nếu có) để xử lý sau này
-    - Tạo hóa đơn mới thông qua `InvoiceService.MakeInvoiceAsync()`
-    - Nếu là hóa đơn kết hợp (`req.IsFormCombine`):
-      - Cập nhật mô tả hóa đơn bằng cách thay thế "---" bằng mã hóa đơn
-      - Cập nhật thông tin chung của hóa đơn
-    - Xử lý thông tin giao hàng:
-      - Nếu có thông tin giao hàng và là hóa đơn cập nhật, chuyển đổi thông tin giao hàng sang định dạng phù hợp
-    - Xử lý trạng thái hóa đơn COD:
-      - Nếu là hóa đơn cập nhật, sử dụng COD, có thông tin giao hàng và trạng thái giao hàng là "Đã giao":
-        - Kiểm tra điều kiện thanh toán và cập nhật trạng thái hóa đơn từ "Chờ xử lý" sang "Đã phát hành" nếu thỏa mãn
-        - Gửi thông báo cập nhật trạng thái đến hệ thống tìm kiếm
-    - Cập nhật thông tin khách hàng và công nợ nếu có ID khách hàng
-    - Xử lý trường hợp hóa đơn trùng lặp:
-      - Nếu `invoice.IsDuplicated = true`, tạo bản sao hóa đơn và trả về kết quả
-    - Lấy thông tin thanh toán và tạo chi tiết dòng tiền
-    - Xử lý thông tin đơn hàng liên quan (nếu có)
+    - **Kiểm tra và xác thực ban đầu**:
+      - Nếu là hóa đơn cập nhật (`invoice.UpdateInvoiceId > 0`):
+        - Kiểm tra xem hóa đơn gốc có đang được xử lý bởi tác vụ vận chuyển không
+      - Lưu trữ ID đơn hàng đã hoàn thành (nếu có) để xử lý sau này
+
+    - **Xử lý hủy vận đơn khi thay đổi phương thức giao hàng**:
+      - Điều kiện áp dụng:
+        * Đang cập nhật hóa đơn (`invoice.UpdateInvoiceId > 0`)
+        * Hóa đơn cũ sử dụng đối tác vận chuyển (`UseDefaultPartner = true`)
+        * Hóa đơn cũ đã có mã vận đơn (DeliveryCode không rỗng)
+        * Hóa đơn mới chuyển sang tự giao hàng (`UseDefaultPartner = false`)
+      - Quy trình hủy vận đơn:
+        * Nếu KShip đang hoạt động và AppConfigInfo.OffKship = false (tính năng vận chuyển được bật):
+          - Gửi yêu cầu hủy vận đơn đến đối tác vận chuyển qua API
+          - Xử lý kết quả (thành công hoặc hiển thị lỗi từ đối tác)
+        * Nếu KShip không hoạt động hoặc AppConfigInfo.OffKship = true (tính năng vận chuyển bị tắt):
+          - Hiển thị thông báo: "Không kết nối được hệ thống tạo vận đơn. Hãy thử lại sau."
+    - **Tạo và cập nhật hóa đơn**:
+      - Tạo hóa đơn mới thông qua `InvoiceService.MakeInvoiceAsync()`:
+        * Kiểm tra xem hóa đơn có sử dụng lô/hạn sử dụng hoặc IMEI không
+        * Nếu hóa đơn đang cập nhật (có UpdateInvoiceId > 0) và mã bắt đầu bằng Invoice.UpdatePrefix:
+          - Sử dụng khóa Redis để đảm bảo không có xử lý đồng thời
+          - Kiểm tra xem hóa đơn đã được xử lý chưa, nếu đã xử lý thì hiển thị lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+        * Nếu hóa đơn sử dụng lô/hạn sử dụng hoặc IMEI:
+          - Sử dụng khóa Redis theo chi nhánh để đảm bảo xử lý tuần tự
+        * Nếu hóa đơn được tạo từ đơn hàng hoặc có UUID:
+          - Sử dụng khóa Redis theo OrderId hoặc UUID để tránh tạo trùng lặp
+          - Hiển thị thông báo lỗi nếu đang có yêu cầu tạo hóa đơn đang xử lý
+        * Thực hiện tạo hóa đơn thông qua DoMakeInvoiceAsync với các tham số:
+          - updateOnHand: cập nhật số lượng tồn kho
+          - isNewInvoice: đánh dấu là hóa đơn mới
+          - fromCombine: đánh dấu nếu tạo từ việc kết hợp hóa đơn
+          - omniOnlineFieldObject: thông tin bổ sung cho kênh bán hàng đa kênh
+          - fbposParam: tham số cho Facebook POS nếu có
+      - Xử lý hóa đơn kết hợp (nếu `req.IsFormCombine`):
+        * Cập nhật mô tả hóa đơn bằng cách thay thế "---" bằng mã hóa đơn
+        * Cập nhật thông tin chung của hóa đơn thông qua InvoiceService.UpdateGeneralInvoice():
+          - Cập nhật các thông tin sau (nếu được chỉ định):
+            + Người bán (SoldById)
+            + Mô tả (Description) - có thể thêm vào cuối hoặc thay thế hoàn toàn
+            + Kênh bán hàng (SaleChannelId)
+          - Cập nhật thời gian sửa đổi (ModifiedDate)
+          - Đồng bộ với hệ thống dược quốc gia (nếu cần)
+          - Cập nhật thông tin người bán trong các thanh toán liên quan:
+            + Đối với thanh toán hệ thống: cập nhật UserId = sellerId
+            + Đối với thanh toán thông thường: chỉ cập nhật các thanh toán của hóa đơn hiện tại
+          - Gửi thông tin cập nhật đến Elasticsearch:
+            + Gửi thông điệp đến RabbitMQ để đồng bộ dữ liệu
+            + Truyền các thông tin cần thiết: loại sự kiện, hướng tác động, ID nhà bán lẻ, v.v.
+      - Xử lý thông tin giao hàng:
+        * Nếu hóa đơn có thông tin giao hàng (deliveryDetail != null) và đang cập nhật hóa đơn cũ (invoice.UpdateInvoiceId > 0):
+          - Chuyển đổi thông tin giao hàng từ DeliveryInfo sang InvoiceDelivery
+          - Sao chép giá trị UsingPriceCod từ hóa đơn mới (nếu có)
+          - Cập nhật invoice.DeliveryDetail với thông tin đã chuyển đổi
+      - Xử lý trạng thái hóa đơn COD đã giao thành công:
+        * Điều kiện áp dụng:
+          - Là hóa đơn cập nhật (invoice.UpdateInvoiceId > 0)
+          - Sử dụng COD (invoice.UsingCod = 1)
+          - Có thông tin giao hàng và trạng thái giao hàng là "Đã giao" (DeliveryStatus.Delivered)
+        * Quy trình xử lý:
+          - Lấy thông tin hóa đơn hiện tại từ cơ sở dữ liệu
+          - Kiểm tra điều kiện thanh toán:
+            + Nếu tổng tiền hóa đơn <= số tiền đã thanh toán (i.Total <= i.PayingAmount), hoặc
+            + Nếu không sử dụng thu hộ (invoice.DeliveryDetail.UsingPriceCod = 0)
+          - Nếu hóa đơn đang ở trạng thái "Chờ xử lý" (InvoiceState.Pending):
+            + Cập nhật trạng thái hóa đơn thành "Đã phát hành" (InvoiceState.Issued)
+            + Lưu thay đổi vào cơ sở dữ liệu
+            + Gửi thông báo cập nhật trạng thái đến hệ thống tìm kiếm (Elasticsearch)
+
+    - **Xử lý trạng thái hóa đơn COD**:
+      - Điều kiện áp dụng:
+        * Là hóa đơn cập nhật (`invoice.UpdateInvoiceId > 0`)
+        * Sử dụng COD (`invoice.UsingCod = 1`)
+        * Có thông tin giao hàng và trạng thái giao hàng là "Đã giao"
+      - Quy trình xử lý:
+        * Kiểm tra điều kiện thanh toán
+        * Cập nhật trạng thái hóa đơn từ "Chờ xử lý" sang "Đã phát hành" nếu thỏa mãn
+        * Gửi thông báo cập nhật trạng thái đến hệ thống tìm kiếm
+
+    - **Xử lý thông tin khách hàng và hóa đơn trùng lặp**:
+      - Cập nhật thông tin khách hàng và công nợ nếu có ID khách hàng
+      - Xử lý trường hợp hóa đơn trùng lặp:
+        * Nếu `invoice.IsDuplicated = true`, tạo bản sao hóa đơn và trả về kết quả
+      - Lấy thông tin thanh toán và tạo chi tiết dòng tiền
+      - Xử lý thông tin đơn hàng liên quan (nếu có)
 ### 17. Kiểm tra tồn kho khi bán hàng
 - **Điều kiện bỏ qua kiểm tra tồn kho** (nếu một trong các điều kiện sau đúng, hệ thống sẽ không kiểm tra tồn kho):
   - Cấu hình hệ thống cho phép bán khi hết hàng (`PosSetting.AllowSellWhenOutStock = true`)
