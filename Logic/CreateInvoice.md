@@ -1485,28 +1485,69 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                             > Ánh xạ từng thuộc tính của kết quả truy vấn sang đối tượng ProductSerial mới
                             > Các thuộc tính bao gồm: BranchId, DocumentType, DocumentId, CreatedDate, ExpireDate, Id, 
                               ModifiedDate, ProductId, Quantity, RetailerId, SerialNumber, Status
-                        * Xác định thời gian kiểm tra:
-                          ~ Sử dụng thời gian mua hàng (PurchaseDate) nếu có, nếu không thì dùng thời gian hiện tại
-                        * Kiểm tra tính hợp lệ của sản phẩm:
-                          ~ Lấy danh sách ID sản phẩm từ chi tiết hóa đơn
-                          ~ Truy vấn thông tin sản phẩm từ cơ sở dữ liệu
-                          ~ Xác thực sản phẩm có được phép bán tại chi nhánh hiện tại
-                      - Mục đích: 
-                        * Đảm bảo số serial sản phẩm hợp lệ và có trong hệ thống
-                        * Theo dõi chính xác lịch sử sản phẩm có số serial
-                        * Ngăn chặn việc bán sản phẩm có số serial không hợp lệ hoặc đã bán
-                        * Đảm bảo sản phẩm được phép bán tại chi nhánh hiện tại
+                      - Kiểm tra tính hợp lệ của sản phẩm tại chi nhánh hiện tại:
+                        * Xác định loại hóa đơn:
+                          ~ Kiểm tra nếu là hóa đơn Omni (PosOnlineHelper.IsInvoiceOmni) thì bỏ qua việc kiểm tra
+                        * Nếu không phải hóa đơn Omni:
+                          ~ Kiểm tra danh sách sản phẩm và ID chi nhánh có hợp lệ không
+                          ~ Xác định ID để kiểm tra trạng thái kích hoạt:
+                            > Nếu đang sử dụng kho (IsActiveWarehouseToggle): lấy ID kho chính từ ID kho hiện tại
+                            > Nếu không sử dụng kho: sử dụng ID chi nhánh hiện tại
+                          ~ Lấy danh sách ID sản phẩm cần kiểm tra
+                          ~ Truy vấn thông tin sản phẩm-chi nhánh (ProductBranch) để tìm các sản phẩm không được kích hoạt
+                          ~ Nếu có sản phẩm không được kích hoạt tại chi nhánh:
+                            > Lấy mã sản phẩm của các sản phẩm không được kích hoạt
+                            > Kết hợp các mã sản phẩm thành một chuỗi (string.Join)
+                            > Tạo thông báo lỗi với định dạng từ KVMessage.InvalidActiveProductOnCurrentBranch: "Một số hàng hóa có trong đơn hàng đã ngừng kinh doanh ở chi nhánh hiện tại: {0}"
+                            > Ném ngoại lệ KvValidateInvoiceException với thông báo lỗi
 
-                    @ Xác thực sản phẩm combo và công thức sản xuất:
-                      - Đối với sản phẩm combo:
-                        * Kiểm tra thông tin chi tiết combo (ComboDetails) đầy đủ và hợp lệ
-                        * Xác minh số lượng thành phần trong combo khớp với định nghĩa combo
-                        * Đảm bảo giá bán combo phù hợp với cấu hình
-                      - Đối với sản phẩm sử dụng công thức sản xuất:
-                        * Xác minh công thức sản xuất hợp lệ và đầy đủ
-                        * Kiểm tra nguyên liệu đầu vào đủ để sản xuất
-                        * Đảm bảo thông tin sản xuất được ghi nhận đúng
-                      - Mục đích: Đảm bảo tính nhất quán của dữ liệu sản phẩm đặc biệt và quản lý chính xác nguyên liệu
+                  @ Kiểm tra và xác thực chi tiết hóa đơn:
+                    - Duyệt qua từng chi tiết hóa đơn (InvoiceDetails):
+                      * Kiểm tra số lượng sản phẩm:
+                        ~ Nếu số lượng < KVConst.Tolerance (gần như bằng 0):
+                          > Nếu aggressive = true: Ném ngoại lệ KvValidateInvoiceException với thông báo "Vui lòng nhập số lượng lớn hơn 0 cho sản phẩm {0}"
+                          > Nếu aggressive = false: Trả về false (không hợp lệ)
+                      * Kiểm tra độ dài ghi chú:
+                        ~ Nếu ghi chú (Note) không rỗng và độ dài > 500 ký tự:
+                          > Ném ngoại lệ KvValidateException với thông báo "Ghi chú cho sản phẩm {0} dài quá 255 ký tự."
+                      * Kiểm tra sản phẩm tồn tại:
+                        ~ Lấy thông tin sản phẩm từ dictionary products
+                        ~ Nếu sản phẩm không tồn tại hoặc đã bị xóa quá 30 ngày:
+                          > Ném ngoại lệ KvValidateInvoiceException với thông báo "Sản phẩm {0} không tồn tại"
+                      * Xử lý sản phẩm combo:
+                        ~ Nếu sản phẩm là loại Manufactured (sản xuất/combo) và chưa có ProductFormulaHistoryId:
+                          > Tìm công thức sản xuất mới nhất (OrderByDescending theo CreatedDate)
+                          > Gán ProductFormulaHistoryId = ID của công thức mới nhất
+                      * Kiểm tra lô/hạn sử dụng:
+                        ~ Nếu sản phẩm có IsBatchExpireControl = true nhưng ProductBatchExpireId = null:
+                          > Ném ngoại lệ KvValidateInvoiceException với thông báo "Hàng hóa {0} Số lượng Lô không hợp lệ"
+                      * Kiểm tra số serial:
+                        ~ Nếu sản phẩm có IsLotSerialControl = true và không phải từ kết hợp đơn hàng (!fromCombine):
+                          > Nếu có SerialNumbers nhưng số lượng serial không khớp với Quantity:
+                            # Ném ngoại lệ KvValidateInvoiceException với thông báo "Số lượng Serial không hợp lệ"
+                          > Nếu không có SerialNumbers nhưng Quantity > 0:
+                            # Ném ngoại lệ KvValidateInvoiceException với thông báo "Số lượng Serial không hợp lệ"
+                      * Xác thực chi tiết số serial (nếu có):
+                        ~ Nếu có SerialNumbers, sản phẩm có IsLotSerialControl = true và AppServiceConfigInfo.IsValidateImei = true:
+                          > Tạo danh sách tạm để kiểm tra trùng lặp (tempSerials)
+                          > Duyệt qua từng serial trong SerialNumbers:
+                            # Kiểm tra trùng lặp trong cùng một hóa đơn:
+                              * Nếu serial đã tồn tại trong tempSerials:
+                                - Ném ngoại lệ KvValidateInvoiceException với thông báo "Số Serial/IMEI {0} bị trùng"
+                              * Thêm serial vào tempSerials
+                            # Tìm thông tin serial trong danh sách productSerials:
+                              * Nếu đang cập nhật hóa đơn (UpdateInvoiceId > 0) và item.IsUpdate = true:
+                                - Bỏ qua kiểm tra
+                              * Nếu không tìm thấy serial hoặc trạng thái không phải InStock và không phải từ kết hợp đơn hàng:
+                                - Ném ngoại lệ KvValidateInvoiceException với thông báo "Serial {0} không tồn tại trong hệ thống, đã bán, không thuộc chi nhánh hiện tại hoặc nằm trong giao dịch offline chưa được đồng bộ. Bạn hãy đồng bộ các giao dịch offline."
+                            # Kiểm tra xem có kiểm kê kho mới hơn không:
+                              * Gọi StockTakeService.IsHaveStockTakeNewer để kiểm tra
+                              * Nếu có kiểm kê mới hơn (checkStockTake.Value = false):
+                                - Ném ngoại lệ KvValidateInvoiceException với thông báo "Hàng hóa {0} IMEI {1}: Không được phép chuyển thời gian giao dịch về trước hoặc sau phiếu kiểm kho {2}"
+                            # Kiểm tra tính khả dụng của serial:
+                              * Gọi ImeiTrackingService.IsAvailable để kiểm tra
+                              * Nếu serial không khả dụng (checkAvailable = false):
+                                - Ném ngoại lệ KvValidateInvoiceException với thông báo "Sản phẩm {0} IMEI {1} hết hàng tại thời gian bạn vừa chọn"
                   * Cập nhật trạng thái cũ của hóa đơn (UpdateInvoiceOldStatus)
                   * Chuẩn hóa dữ liệu hóa đơn (NormallizeData)
                   * Xử lý làm tròn giá tiền theo cấu hình tiền tệ
