@@ -1545,7 +1545,16 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                               * Nếu có kiểm kê mới hơn (checkStockTake.Value = false):
                                 - Ném ngoại lệ KvValidateInvoiceException với thông báo "Hàng hóa {0} IMEI {1}: Không được phép chuyển thời gian giao dịch về trước hoặc sau phiếu kiểm kho {2}"
                             # Kiểm tra tính khả dụng của serial:
-                              * Gọi ImeiTrackingService.IsAvailable để kiểm tra
+                              * Gọi ImeiTrackingService.IsAvailable để kiểm tra tính khả dụng của serial:
+                                ~ Truyền các tham số: branchId (chi nhánh hiện tại), productId (ID sản phẩm), serial (số serial), 
+                                  transDate (thời gian giao dịch), docId (ID hóa đơn), docType (loại tài liệu - Invoice)
+                                ~ Phương thức sẽ kiểm tra:
+                                  > Nếu đang sử dụng kho (isUsingWarehouse): Gọi stored procedure pr_Imei_IsAvailable
+                                  > Nếu không sử dụng kho: Tìm bản ghi ImeiTracking gần nhất theo thời gian giao dịch
+                                  > Kiểm tra EndingStocks để xác định serial có sẵn để bán hay không:
+                                    # Đối với hóa đơn bán hàng (Invoice): Serial phải có EndingStocks = 1 (còn trong kho)
+                                    # Đối với nhập hàng (PurchaseInvoice/Receive): Serial phải có EndingStocks = 0 (chưa có trong kho)
+                                  > Trả về true nếu serial khả dụng, ngược lại trả về false
                               * Nếu serial không khả dụng (checkAvailable = false):
                                 - Ném ngoại lệ KvValidateInvoiceException với thông báo "Sản phẩm {0} IMEI {1} hết hàng tại thời gian bạn vừa chọn"
                   * Cập nhật trạng thái cũ của hóa đơn (UpdateInvoiceOldStatus)
