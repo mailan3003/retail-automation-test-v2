@@ -1289,6 +1289,7 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                         * Nếu bảng giá tồn tại:
                           ~ Kiểm tra trạng thái kích hoạt: nếu bảng giá không được kích hoạt (IsActive != true), hiển thị thông báo lỗi "Bảng giá {tên bảng giá} không được kích hoạt" (KVMessage.pricebook_err_not_active)
                           ~ Kiểm tra thời hạn hiệu lực: nếu thời gian hiện tại nằm ngoài khoảng thời gian áp dụng của bảng giá (StartDate đến EndDate), hiển thị thông báo lỗi "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá {tên bảng giá}" (KVMessage.pricebook_err_expired)
+
                     @ Kiểm tra hóa đơn không được rỗng:
                       - Xác minh danh sách chi tiết hóa đơn (invoice.InvoiceDetails) không null và có ít nhất một sản phẩm:
                         * Nếu danh sách chi tiết hóa đơn là null hoặc không có sản phẩm nào:
@@ -1349,26 +1350,152 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                             > Phân tích thông tin dịch vụ bổ sung từ JSON thành danh sách ExtraServiceAdd
                             > Tìm kiếm thông tin người thanh toán (paymentBy) trong danh sách dịch vụ bổ sung
                             > Nếu không tìm thấy thông tin người thanh toán (paymentBy là null hoặc rỗng):
-                              * Hiển thị thông báo lỗi "Vui lòng chọn người thanh toán phí vận chuyển" (Labels.deliveryNeedSelectPaymentBy)
+                              * Hiển thị thông báo lỗi "Bạn cần chọn bên trả phí." (Labels.deliveryNeedSelectPaymentBy)
+                    
+                    @ Xác thực voucher trong khuyến mãi đã áp dụng:
+                      - Nếu hóa đơn có khuyến mãi voucher (invoice.InvoicePromotions có Type là InvoiceVoucherGift hoặc ProductVoucherGift) và không phải từ kết hợp đơn hàng (!fromCombine):
+                        * Lấy danh sách khuyến mãi voucher từ invoice.InvoicePromotions
+                        * Với mỗi khuyến mãi voucher:
+                          ~ Tách danh sách mã voucher từ ReceivedVoucherCodes
+                          ~ Xác định ngày mua hàng (date) - nếu chưa có thì lấy ngày hiện tại
+                          ~ Với mỗi mã voucher trong danh sách:
+                            > Gọi VoucherService.ValidateVoucher để kiểm tra tính hợp lệ:
+                              * Tạo tham số xác thực voucher (VoucherValidateParam) với các thông tin:
+                                ~ RetailerId, BranchId, UserId: Thông tin nhà bán lẻ, chi nhánh và người dùng hiện tại
+                                ~ VoucherCode: Mã voucher cần kiểm tra
+                                ~ SubTotal: Tổng tiền hàng đã trừ chiết khấu
+                                ~ PurchaseDate: Ngày mua hàng (hoặc ngày hiện tại nếu chưa có)
+                                ~ CustomerId: ID khách hàng (hoặc -1 nếu không có)
+                                ~ Products: Danh sách sản phẩm trong hóa đơn
+                                ~ CurrentVouchers: Danh sách voucher hiện tại đang áp dụng
+                                ~ IsPreCheck: false (kiểm tra đầy đủ, không phải kiểm tra nhanh)
+                              * Quá trình xác thực sẽ thực hiện các bước:
+                                ~ Kiểm tra phạm vi áp dụng voucher (ValidateVoucherScope):
+                                  # Gọi stored procedure Pr_Voucher_ValidateVoucherCode để lấy thông tin voucher và kết quả kiểm tra
+                                  # Nếu không tìm thấy voucher: trả về lỗi VoucherNotExist (Status = 1)
+                                  # Kiểm tra trạng thái chiến dịch voucher:
+                                    > Nếu VoucherCampaignState = false: trả về lỗi VoucherCampaignInactive (Status = 2)
+                                  # Kiểm tra trạng thái voucher:
+                                    > Nếu VoucherState khác Released và không phải cập nhật hóa đơn: trả về lỗi VoucherNotReleased (Status = 3)
+                                  # Kiểm tra phạm vi chi nhánh:
+                                    > Nếu BranchValidationResult < 1: trả về lỗi InvalidBranch (Status = 4)
+                                  # Kiểm tra phạm vi người dùng:
+                                    > Nếu UserValidationResult < 1: trả về lỗi InvalidUser (Status = 5)
+                                  # Kiểm tra phạm vi khách hàng:
+                                    > Nếu CustomerGroupValidationResult < 1: trả về lỗi InvalidCustomer (Status = 6)
+                                  # Trả về kết quả kiểm tra bao gồm thông tin voucher, giá trị, ngày phát hành và trạng thái
+                                ~ Kiểm tra khả năng kết hợp voucher:
+                                  # Xác minh chiến dịch cho phép kết hợp nhiều voucher (UseVoucherCombineInvoice):
+                                    > Kiểm tra thuộc tính UseVoucherCombineInvoice của chiến dịch voucher hiện tại (campaign)
+                                    > Nếu UseVoucherCombineInvoice là null hoặc false (!(campaign.UseVoucherCombineInvoice != null && campaign.UseVoucherCombineInvoice == true)):
+                                      * Hệ thống sẽ trả về lỗi InvalidUseVoucherCombine (res.Status = (int)VoucherValidateCode.InvalidUseVoucherCombine)
+                                      * Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo chỉ những voucher thuộc chiến dịch cho phép kết hợp mới có thể được sử dụng cùng với các voucher khác
+                                  # Kiểm tra tất cả voucher hiện tại có cho phép kết hợp không:
+                                    > Duyệt qua danh sách CurrentVouchers (nếu có) trong tham số VoucherValidateParam
+                                    > Với mỗi voucher trong danh sách, thực hiện:
+                                      * Lấy thông tin chiến dịch voucher tương ứng thông qua VoucherCampaignService.GetByIdAsync(currentVoucher.VoucherCampaignId)
+                                      * Kiểm tra thuộc tính UseVoucherCombineInvoice của chiến dịch:
+                                        ~ Nếu chiến dịch tồn tại (tmpCampaign != null) và không cho phép kết hợp (!(tmpCampaign.UseVoucherCombineInvoice != null && tmpCampaign.UseVoucherCombineInvoice == true)):
+                                          - Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.InvalidUseVoucherCombine (giá trị 10)
+                                          - Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo tất cả các voucher đang được áp dụng cùng lúc đều phải thuộc các chiến dịch cho phép kết hợp trên hóa đơn
+                                ~ Kiểm tra thời hạn sử dụng:
+                                  # Áp dụng múi giờ hiện tại nếu được chỉ định
+                                  # Xác minh voucher chưa hết hạn và đã đến ngày phát hành:
+                                    > Sử dụng phương thức HasExpired của campaign để kiểm tra thời hạn sử dụng
+                                    > Tham số truyền vào:
+                                      * param.PurchaseDate ?? currentDate: Ngày mua hàng hoặc ngày hiện tại nếu không có
+                                      * result.ReleaseDate.Value: Ngày phát hành voucher
+                                    > Nếu voucher đã hết hạn (campaign.HasExpired trả về true):
+                                      * Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.VoucherExpired (giá trị 7)
+                                      * Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo voucher được sử dụng trong thời gian hiệu lực, không quá sớm hoặc quá muộn so với thời gian quy định
+                                ~ Kiểm tra thời hạn sử dụng chi tiết (đối với voucher có ApplyTimeType = 1):
+                                  # Nếu chiến dịch voucher có ApplyTimeType = 1 và voucher tồn tại:
+                                    > Kiểm tra ngày hết hạn của voucher:
+                                      * Nếu voucher có ngày hết hạn (res.Voucher.ExpireDate != null) và ngày mua hàng/ngày hiện tại vượt quá ngày hết hạn:
+                                        ~ Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.VoucherExpired (giá trị 7)
+                                        ~ Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Kiểm tra ngày phát hành của voucher:
+                                      * Nếu voucher chưa có ngày phát hành (res.Voucher.ReleaseDate == null) hoặc ngày mua hàng/ngày hiện tại sớm hơn ngày phát hành:
+                                        ~ Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.VoucherExpired (giá trị 7)
+                                        ~ Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo voucher được sử dụng trong khoảng thời gian hợp lệ từ ngày phát hành đến ngày hết hạn
+                                ~ Kiểm tra giá trị đơn hàng tối thiểu:
+                                  # Xác minh tổng tiền đủ điều kiện áp dụng voucher:
+                                    > Sử dụng phương thức IsValidSubtotal của campaign để kiểm tra tổng tiền đơn hàng
+                                    > Nếu tổng tiền không đủ điều kiện (!campaign.IsValidSubtotal(param.SubTotal)):
+                                      * Phương thức IsValidSubtotal kiểm tra:
+                                        ~ Nếu PrereqPrice không có giá trị (null) thì luôn trả về true (không có yêu cầu tối thiểu)
+                                        ~ Nếu PrereqPrice có giá trị thì kiểm tra tổng tiền (param.SubTotal) phải lớn hơn hoặc bằng giá trị PrereqPrice
+                                        ~ Trả về false nếu tổng tiền nhỏ hơn giá trị tối thiểu yêu cầu
+                                      * Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.InvalidSubtotal (giá trị 8)
+                                      * Lưu giá trị tối thiểu cần đạt vào res.ReqSubtotal = campaign.PrereqPrice
+                                      * Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo tổng giá trị đơn hàng đạt ngưỡng tối thiểu để áp dụng voucher
+                                ~ Kiểm tra sản phẩm:
+                                  # Xác minh sản phẩm trong đơn hàng phù hợp với điều kiện của chiến dịch:
+                                    > Sử dụng phương thức ValidateProducts để kiểm tra sản phẩm trong đơn hàng
+                                    > Quy trình kiểm tra:
+                                      * Đầu tiên, giải quyết thông tin sản phẩm gốc (ResolveProductMaster)
+                                      * Duyệt qua từng sản phẩm trong danh sách sản phẩm của đơn hàng
+                                      * Kiểm tra các điều kiện sau:
+                                        ~ isEmptyEntity: Chiến dịch không giới hạn sản phẩm hoặc danh mục (ProductIds và Categories đều trống)
+                                        ~ isSameParentCategory: Sản phẩm thuộc cùng danh mục cha với điều kiện của chiến dịch
+                                        ~ isSameMaster: Nếu chiến dịch yêu cầu áp dụng cùng loại sản phẩm (PrereqProductApplySameKind = true) và sản phẩm cùng loại
+                                        ~ isSameProduct: Sản phẩm nằm trong danh sách sản phẩm được chỉ định của chiến dịch
+                                        ~ PrereqCategoryIds = "0": Chiến dịch áp dụng cho tất cả danh mục
+                                      * Nếu một trong các điều kiện trên thỏa mãn, trả về mã trạng thái 0 (hợp lệ)
+                                      * Nếu không có điều kiện nào thỏa mãn, trả về mã lỗi InvalidProducts (9)
+                                    > Nếu kiểm tra không thành công:
+                                      * Đặt trạng thái lỗi res.Status = (int)VoucherValidateCode.InvalidProducts
+                                      * Kết thúc quá trình xác thực và trả về kết quả (return res)
+                                    > Mục đích: Đảm bảo voucher chỉ được áp dụng cho các sản phẩm phù hợp với điều kiện của chiến dịch
+                            > Nếu kết quả kiểm tra không thành công (check.Status != 0) và không phải từ kết hợp đơn hàng (!fromCombine):
+                              * Hiển thị thông báo lỗi dựa trên mã trạng thái lỗi, sử dụng VoucherService.VoucherValidMsg:
+                                ~ Nếu status = 1: "Voucher không tồn tại" (Labels.voucherValid_1)
+                                ~ Nếu status = 2: "Đợt phát hành của voucher {0} chưa được kích hoạt" (Labels.voucherValid_2)
+                                ~ Nếu status = 3: "Trạng thái voucher {0} chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành" (Labels.voucherValid_3)
+                                ~ Nếu status = 4: "Voucher {0} không áp dụng trên chi nhánh hiện tại" (Labels.voucherValid_4)
+                                ~ Nếu status = 5: "Bạn không có quyền sử dụng voucher {0}" (Labels.voucherValid_5)
+                                ~ Nếu status = 6: "Khách hàng {2} không có quyền sử dụng voucher {0}" (Labels.voucherValid_6)
+                                ~ Nếu status = 7: "Thời gian giao dịch không phù hợp với thời hạn sử dụng của voucher {0}" (Labels.voucherValid_7)
+                                ~ Nếu status = 8: "Tổng tiền hàng phải lớn hơn {1} mới có thể sử dụng voucher {0}" (Labels.voucherValid_8)
+                                ~ Nếu status = 9: "Voucher {0} không áp dụng được cho các hàng hóa đang mua" (Labels.voucherValid_9)
+                                ~ Nếu status = 10: "Không Áp dụng gộp nhiều voucher trên một hoá đơn" (Labels.voucherValid_10)
+                                ~ Nếu status = 11: "Voucher tặng {0} không thuộc đợt phát hành hợp lệ của chương trình khuyến mại" (Labels.voucherValid_11)
+                                ~ Nếu status = 12: "Bạn chỉ có thể tặng các voucher chưa sử dụng. Voucher {0} không hợp lệ" (Labels.voucherValid_12)
+                                ~ Nếu status = 13: "Thời gian phát hành không nằm trong thời gian áp dụng của voucher {0}" (Labels.voucherValid_13)
+                                ~ Nếu status = 14: "Voucher khuyến mại {0} không áp dụng trên chi nhánh hiện tại" (Labels.voucherValid_14)
+                                ~ Nếu status = 15: "Voucher khuyến mại {0} không áp dụng với khách hàng hiện tại" (Labels.voucherValid_15)
 
-                    @ Xác thực số lượng tồn kho của sản phẩm nếu không cho phép bán âm:
-                      - Kiểm tra cấu hình hệ thống về việc cho phép bán âm (AllowSellWithNoInventory)
-                      - Nếu không cho phép bán âm:
-                        * Với mỗi sản phẩm trong hóa đơn, kiểm tra số lượng tồn kho tại chi nhánh
-                        * So sánh số lượng bán với số lượng tồn kho hiện có
-                        * Nếu số lượng bán vượt quá tồn kho: hiển thị thông báo lỗi "Sản phẩm {tên sản phẩm} không đủ số lượng tồn kho"
-                      - Mục đích: Đảm bảo tính chính xác của dữ liệu tồn kho và ngăn chặn việc bán hàng khi không có sản phẩm
-
-                    @ Kiểm tra lô/hạn sử dụng và số serial của sản phẩm:
-                      - Đối với sản phẩm quản lý theo lô/hạn sử dụng:
-                        * Xác minh thông tin lô (BatchName) và hạn sử dụng (ExpiryDate) hợp lệ
-                        * Kiểm tra số lượng trong lô đủ để bán
-                        * Đảm bảo hạn sử dụng chưa hết hạn
-                      - Đối với sản phẩm quản lý theo serial:
-                        * Xác minh mỗi serial được chỉ định là duy nhất và hợp lệ
-                        * Kiểm tra serial chưa được bán trước đó
-                        * Đảm bảo số lượng serial khớp với số lượng sản phẩm bán
-                      - Nếu không hợp lệ: hiển thị thông báo lỗi phù hợp và ngăn chặn việc tạo/cập nhật hóa đơn
+                    @ Xác thực và xử lý số serial sản phẩm:
+                      - Quy trình xử lý số serial:
+                        * Thu thập tất cả số serial từ chi tiết hóa đơn:
+                          ~ Lấy danh sách số serial từ các InvoiceDetails có SerialNumbers không rỗng
+                          ~ Kết hợp các số serial thành một chuỗi (string.Join)
+                        * Nếu có số serial:
+                          ~ Truy vấn thông tin serial từ cơ sở dữ liệu sử dụng stored procedure:
+                            > Gọi pr_productSerials_getByRetBraSerials với tham số:
+                              * RetailerId: ID của nhà bán lẻ hiện tại
+                              * BranchId: ID chi nhánh của hóa đơn
+                              * Chuỗi serial đã kết hợp
+                          ~ Chuyển đổi kết quả truy vấn thành đối tượng ProductSerial:
+                            > Ánh xạ từng thuộc tính của kết quả truy vấn sang đối tượng ProductSerial mới
+                            > Các thuộc tính bao gồm: BranchId, DocumentType, DocumentId, CreatedDate, ExpireDate, Id, 
+                              ModifiedDate, ProductId, Quantity, RetailerId, SerialNumber, Status
+                        * Xác định thời gian kiểm tra:
+                          ~ Sử dụng thời gian mua hàng (PurchaseDate) nếu có, nếu không thì dùng thời gian hiện tại
+                        * Kiểm tra tính hợp lệ của sản phẩm:
+                          ~ Lấy danh sách ID sản phẩm từ chi tiết hóa đơn
+                          ~ Truy vấn thông tin sản phẩm từ cơ sở dữ liệu
+                          ~ Xác thực sản phẩm có được phép bán tại chi nhánh hiện tại
+                      - Mục đích: 
+                        * Đảm bảo số serial sản phẩm hợp lệ và có trong hệ thống
+                        * Theo dõi chính xác lịch sử sản phẩm có số serial
+                        * Ngăn chặn việc bán sản phẩm có số serial không hợp lệ hoặc đã bán
+                        * Đảm bảo sản phẩm được phép bán tại chi nhánh hiện tại
 
                     @ Xác thực sản phẩm combo và công thức sản xuất:
                       - Đối với sản phẩm combo:
