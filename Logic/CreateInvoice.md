@@ -1199,78 +1199,214 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
                     @ Gán PartnerDelivery = đối tượng PartnerDelivery mới với thông tin từ đối tác
                     @ Nếu có thông tin DeliveryInfo, cập nhật DeliveryBy = Id của đối tác giao hàng
             + Tạo hóa đơn mới hoặc cập nhật hóa đơn hiện có:
-              ~ Nếu là hóa đơn mới (invoice.UpdateInvoiceId <= 0):
-                - Gọi CreateInvoiceAsync để xử lý hóa đơn:
-                  * Kiểm tra và xác thực dữ liệu hóa đơn:
-                    @ Kiểm tra tính hợp lệ của các trường bắt buộc (BranchId, RetailerId)
-                    @ Xác thực thông tin khách hàng (CustomerId) nếu có
-                    @ Kiểm tra tính hợp lệ của các chi tiết hóa đơn (InvoiceDetails)
-                    @ Xác thực thông tin sản phẩm trong mỗi chi tiết hóa đơn (tồn tại, giá, số lượng)
-                    @ Kiểm tra quyền hạn của người dùng đối với các thao tác trên hóa đơn
-                  * Chuẩn hóa dữ liệu (NormallizeData):
-                    @ Loại bỏ các khoảng trắng thừa trong các trường văn bản
-                    @ Chuẩn hóa các giá trị số (làm tròn số, xử lý giá trị null)
-                    @ Đảm bảo các trường ngày tháng có định dạng chính xác
-                    @ Xử lý các trường mô tả và ghi chú để tránh các ký tự đặc biệt không hợp lệ
-                  * Tính toán tổng tiền hóa đơn dựa trên chi tiết hóa đơn:
-                    @ Tính tổng giá trị của từng chi tiết hóa đơn (Quantity * Price)
-                    @ Áp dụng giảm giá cho từng chi tiết (nếu có)
-                    @ Tính tổng giá trị hóa đơn bao gồm thuế (nếu có)
-                    @ Áp dụng giảm giá tổng hóa đơn (nếu có)
-                    @ Tính toán số tiền thanh toán cuối cùng
-                  * Phân bổ giảm giá hóa đơn cho từng sản phẩm (AllocationDiscount):
-                    @ Tính tỷ lệ giảm giá cho mỗi sản phẩm dựa trên giá trị sản phẩm so với tổng hóa đơn
-                    @ Phân bổ số tiền giảm giá tổng cho từng sản phẩm theo tỷ lệ
-                    @ Cập nhật giá trị giảm giá cho từng chi tiết hóa đơn
-                    @ Đảm bảo tổng giảm giá phân bổ bằng với giảm giá tổng hóa đơn
-                  * Xử lý tích điểm cho khách hàng:
-                    @ Kiểm tra điều kiện tích điểm (RewardPoint_Type, RewardPoint_ForDiscountInvoice):
-                      - Xác định loại tích điểm theo cấu hình hệ thống (theo giá trị hóa đơn hoặc theo sản phẩm)
-                      - Kiểm tra cấu hình cho phép tích điểm với hóa đơn đã giảm giá hay không
-                      - Kiểm tra hạn mức tối thiểu của hóa đơn để được tích điểm
-                      - Xác định tỷ lệ quy đổi điểm theo cấu hình (số tiền/1 điểm)
-                    @ Tính toán điểm thưởng dựa trên cấu hình và giá trị hóa đơn:
-                      - Tính tổng giá trị hóa đơn hợp lệ để tích điểm (có thể loại trừ các sản phẩm không được tích điểm)
-                      - Áp dụng tỷ lệ quy đổi để tính số điểm được thưởng
-                      - Làm tròn số điểm theo cấu hình (làm tròn xuống, làm tròn lên hoặc làm tròn thông thường)
-                    @ Thêm điểm khuyến mãi (CalculatePromotionPoint) nếu có:
-                      - Xác định các khuyến mãi tặng điểm áp dụng cho hóa đơn
-                      - Tính toán điểm thưởng thêm từ các khuyến mãi (theo tỷ lệ phần trăm hoặc số điểm cố định)
-                      - Cộng điểm khuyến mãi vào tổng điểm tích lũy của hóa đơn
-                  * Tạo mã hóa đơn:
-                    @ Xử lý mã đặc biệt cho hóa đơn sao chép (ClonePrefix):
-                      - Kiểm tra nếu hóa đơn là bản sao chép từ hóa đơn khác
-                      - Thêm tiền tố "CL" vào mã hóa đơn để đánh dấu là bản sao
-                    @ Xử lý mã đặc biệt cho hóa đơn cập nhật (UpdatePrefix):
-                      - Kiểm tra nếu hóa đơn là bản cập nhật từ hóa đơn khác
-                      - Thêm tiền tố "UP" vào mã hóa đơn để đánh dấu là bản cập nhật
-                    @ Tạo mã mới nếu không có mã (CreateInvoiceCodeWithTransaction):
-                      - Sử dụng giao dịch cơ sở dữ liệu để đảm bảo tính duy nhất của mã
-                      - Tạo mã theo định dạng cấu hình (có thể bao gồm ngày tháng, số thứ tự)
-                      - Kiểm tra và đảm bảo mã không trùng lặp trong hệ thống
-                    @ Xử lý tiền tố đặc biệt cho Facebook, Instagram, Tiktok, bảo hành:
-                      - Thêm tiền tố "FB" cho hóa đơn từ Facebook
-                      - Thêm tiền tố "IG" cho hóa đơn từ Instagram
-                      - Thêm tiền tố "TT" cho hóa đơn từ Tiktok
-                      - Thêm tiền tố "WR" cho hóa đơn bảo hành
-                  * Thiết lập thông tin người bán và người tạo:
-                    @ Gán thông tin người bán (SoldById) từ dữ liệu đầu vào hoặc người dùng hiện tại
-                    @ Thiết lập thông tin người tạo hóa đơn (CreatedBy) là người dùng hiện tại
-                    @ Gán thời gian tạo hóa đơn (CreatedDate) là thời điểm hiện tại
-                    @ Thiết lập thông tin chi nhánh (BranchId) từ dữ liệu đầu vào hoặc chi nhánh hiện tại
-                  * Xử lý thông tin giao hàng (DeliveryInfoes) nếu sử dụng COD:
-                    @ Kiểm tra nếu hóa đơn sử dụng COD (UsingCod = 1)
-                    @ Tạo hoặc cập nhật thông tin giao hàng (DeliveryInfo) với các thông tin:
-                      - Địa chỉ giao hàng, người nhận, số điện thoại
-                      - Phương thức giao hàng, đối tác giao hàng
-                      - Phí giao hàng, phí thu hộ (COD)
-                      - Trạng thái giao hàng (mặc định là "Chờ giao hàng")
-                    @ Liên kết thông tin giao hàng với hóa đơn
-              ~ Nếu là cập nhật hóa đơn (invoice.UpdateInvoiceId > 0):
-                - Gọi CreateInvoiceAsync với các bước tương tự như tạo mới, nhưng:
-                  * Giữ nguyên ngày mua hàng nếu đã có (PurchaseDate)
-                  * Xử lý đặc biệt cho hóa đơn cập nhật (UpdatePrefix)
+              ~ Nếu không phải hóa đơn mới (isNewInvoice = false):
+                - Gọi CreateInvoiceAsync với các tham số:
+                  * invoice: đối tượng hóa đơn đã được chuẩn bị
+                  * payments: danh sách các thanh toán
+                  * updateOnHand: cờ xác định có cập nhật số lượng tồn kho hay không
+                  * order: đối tượng đơn hàng (nếu tạo từ đơn hàng)
+                  * fromCombine: cờ xác định có phải từ hóa đơn kết hợp hay không
+                - Trong quá trình xử lý CreateInvoiceAsync:
+                  * Kiểm tra và xác thực hóa đơn (ValidateInvoiceAsync) nếu không phải từ hóa đơn kết hợp:
+                    @ Kiểm tra ngày mua hàng (invoice.PurchaseDate) không được lớn hơn ngày hiện tại (DateTime.Now):
+                      - Sử dụng phương thức RoughCompare để so sánh ngày mua hàng với ngày hiện tại
+                      - Nếu kết quả so sánh > 0 (tức là ngày mua hàng lớn hơn ngày hiện tại):
+                        * Đặt biến kết quả r = false
+                        * Nếu aggressive = true (kiểm tra nghiêm ngặt): ném ngoại lệ KvValidateInvoiceException với thông báo lỗi "Vượt quá thời gian hiện tại"
+                      - Việc kiểm tra này đảm bảo không thể tạo hóa đơn với ngày mua hàng trong tương lai
+
+                    @ Kiểm tra ngày mua hàng không nằm trong kỳ đã khóa sổ:
+                      - Hệ thống gọi phương thức ValidCloseDate để kiểm tra ngày giao dịch hợp lệ với các thông tin:
+                        * Ngày mua hàng (invoice.PurchaseDate)
+                        * Thông báo lỗi phù hợp
+                        * ID chi nhánh của hóa đơn (hoặc chi nhánh hiện tại)
+                        * Cờ điều chỉnh múi giờ (mặc định là true)
+                      - Nếu ngày mua hàng nằm trong kỳ đã khóa sổ (ngày mua ≤ ngày khóa sổ):
+                        * Đánh dấu kiểm tra thất bại (r = false)
+                        * Nếu đang kiểm tra nghiêm ngặt: hiển thị thông báo lỗi "Bạn không thể tạo/sửa hóa đơn có thời gian giao dịch trước ngày khóa sổ"
+                      - Cách hoạt động của ValidCloseDate:
+                        * Lấy thông tin ngày khóa sổ của chi nhánh
+                        * So sánh ngày giao dịch với ngày khóa sổ (có điều chỉnh múi giờ nếu cần)
+                        * Báo lỗi nếu ngày giao dịch không hợp lệ
+                      - Mục đích: Đảm bảo không ai có thể tạo hoặc sửa giao dịch trong kỳ kế toán đã khóa, giúp dữ liệu kế toán luôn chính xác và đáng tin cậy
+
+                    @ Kiểm tra và ngăn chặn việc sửa hóa đơn offline (hóa đơn có mã bắt đầu bằng "HDO"):
+                      - Nếu phát hiện hóa đơn offline, hiển thị thông báo lỗi: "Bạn không thể cập nhật hóa đơn ở chế độ offline."
+                      - Mục đích: Đảm bảo hóa đơn offline (tạo khi mất kết nối) không bị sửa đổi sau khi đã đồng bộ
+
+                    @ Xác thực quyền sửa hóa đơn khi cập nhật:
+                      - Kiểm tra nếu hóa đơn có mã và đang cập nhật hóa đơn cũ (invoice.UpdateInvoiceId > 0):
+                        * Lấy hóa đơn gốc từ cơ sở dữ liệu
+                        * Kiểm tra quyền người dùng:
+                          ~ Nếu người dùng không phải Admin
+                          ~ VÀ không có quyền cập nhật hóa đơn hoàn thành (khi hóa đơn gốc không ở trạng thái Void hoặc Failed)
+                          ~ Thì:
+                            ##### Nếu kiểm tra nghiêm ngặt: hiển thị lỗi "Không có quyền thực hiện"
+                            ##### Nếu không: đánh dấu kiểm tra không thành công
+                      - Kiểm tra trạng thái hóa đơn gốc:
+                        * Nếu hóa đơn gốc ở trạng thái Void hoặc Failed:
+                          ~ Hiển thị lỗi "Không sửa được hóa đơn ở trạng thái {trạng thái}"
+                      - Kiểm tra nếu đang cập nhật hóa đơn đổi trả (invoice.UpdateReturnId > 0):
+                        * Hiển thị lỗi "Hệ thống chưa hỗ trợ cập nhật giao dịch đổi trả hàng"
+                      - Kiểm tra nếu đang cập nhật hóa đơn offline (mã bắt đầu bằng "HDO"):
+                        * Hiển thị lỗi "Bạn không thể cập nhật hóa đơn ở chế độ offline."
+
+                    @ Kiểm tra không thể sửa hóa đơn ở trạng thái "Không giao được" hoặc "Đã hủy":
+                      - Khi cập nhật hóa đơn, hệ thống kiểm tra hóa đơn gốc:
+                        * Nếu hóa đơn gốc không tìm thấy trực tiếp, hệ thống sẽ tìm kiếm dựa trên mã hóa đơn gốc
+                        * Sử dụng phương thức GetOriginInvoiceUpdateCode để trích xuất mã hóa đơn gốc từ mã hóa đơn cập nhật
+                        * Sau đó gọi GetLastUpdateInvoice để lấy phiên bản cập nhật mới nhất của hóa đơn gốc:
+                          - Phương thức này kiểm tra xem mã hóa đơn gốc có hợp lệ không (không null hoặc rỗng)
+                          - Tính toán độ dài tối đa của mã hóa đơn (mã gốc + độ dài pad + 1)
+                          - Tìm kiếm trong cơ sở dữ liệu các hóa đơn có mã bắt đầu bằng mã gốc + dấu chấm (.) hoặc chính xác bằng mã gốc
+                          - Xử lý đặc biệt cho hóa đơn Lazada:
+                            ~ Nếu không phải hóa đơn Lazada: trả về hóa đơn có mã lớn nhất (sắp xếp giảm dần theo mã)
+                            ~ Nếu là hóa đơn Lazada: lấy tất cả hóa đơn phù hợp, sau đó lọc và sắp xếp theo số thứ tự sau dấu chấm
+                          - Trả về hóa đơn cập nhật mới nhất hoặc null nếu không tìm thấy
+                      - Nếu hóa đơn gốc ở trạng thái "Không giao được" (Failed) hoặc "Đã hủy" (Void):
+                        * Hiển thị thông báo lỗi "Không sửa được hóa đơn ở trạng thái {0}" (sử dụng resource "invoice_cannotUpdateByInvalidStatus")
+                        * Nếu đang kiểm tra nghiêm ngặt (aggressive = true): ném ngoại lệ KvValidateInvoiceException
+                        * Nếu không: đánh dấu kết quả kiểm tra thất bại (r = false)
+                      - Mục đích: Đảm bảo tính nhất quán của dữ liệu, không cho phép sửa hóa đơn đã kết thúc chu trình
+
+                    @ Xác thực thông tin đơn hàng nếu tạo từ đơn hàng:
+                      - Nếu hóa đơn được tạo từ đơn hàng (invoice.OrderId > 0):
+                        * Lấy thông tin đơn hàng từ cơ sở dữ liệu
+                        * Nếu đơn hàng không tồn tại: hiển thị thông báo lỗi "Không tìm thấy đơn hàng {OrderId}" (KVMessage.OrderNotFound)
+                        * Kiểm tra quyền truy cập đơn hàng:
+                          ~ Nếu đơn hàng thuộc cửa hàng khác: hiển thị thông báo lỗi "Không thể tạo hóa đơn từ đơn hàng của cửa hàng khác" (KVMessage.NotCreateInvoiceFromOrderRetailer)
+                        * Kiểm tra trạng thái đơn hàng:
+                          ~ Nếu đơn hàng đã hoàn thành (Finalized) và không phải đơn hàng offline: hiển thị thông báo lỗi "Không thể tạo hóa đơn từ đơn hàng đã hoàn thành" (KVMessage.NotCreateInvoiceFromSuccessOrder)
+                        * Kiểm tra thời gian hóa đơn:
+                          ~ Nếu ngày hóa đơn trước ngày đơn hàng: hiển thị thông báo lỗi "Thời gian hóa đơn không được trước đơn hàng, sau phiếu trả hàng, sau phiếu thanh toán" (KVMessage.InvoiceDateTimeNotAllow)
+                      - Mục đích: Đảm bảo tính nhất quán giữa đơn hàng và hóa đơn, ngăn chặn việc tạo nhiều hóa đơn từ một đơn hàng đã hoàn thành
+                    @ Kiểm tra bảng giá (PriceBook) hợp lệ và còn hiệu lực:
+                      - Nếu hóa đơn có sử dụng bảng giá (invoice.PriceBookId > 0):
+                        * Lấy thông tin bảng giá từ cơ sở dữ liệu
+                        * Nếu bảng giá không tồn tại:
+                          ~ Đối với hóa đơn offline (mã bắt đầu bằng "HDO"): đặt PriceBookId = 0
+                          ~ Đối với các hóa đơn khác: hiển thị thông báo lỗi "Bảng giá đang chọn đã không tồn tại" (KVMessage.PriceBookSelectedNotExist)
+                        * Nếu bảng giá tồn tại:
+                          ~ Kiểm tra trạng thái kích hoạt: nếu bảng giá không được kích hoạt (IsActive != true), hiển thị thông báo lỗi "Bảng giá {tên bảng giá} không được kích hoạt" (KVMessage.pricebook_err_not_active)
+                          ~ Kiểm tra thời hạn hiệu lực: nếu thời gian hiện tại nằm ngoài khoảng thời gian áp dụng của bảng giá (StartDate đến EndDate), hiển thị thông báo lỗi "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá {tên bảng giá}" (KVMessage.pricebook_err_expired)
+                    @ Kiểm tra hóa đơn không được rỗng:
+                      - Xác minh danh sách chi tiết hóa đơn (invoice.InvoiceDetails) không null và có ít nhất một sản phẩm:
+                        * Nếu danh sách chi tiết hóa đơn là null hoặc không có sản phẩm nào:
+                          ~ Hiển thị thông báo lỗi "Phiếu hàng trống" (KVMessage.InvoiceDetailsEmpty)
+                          ~ Ném ngoại lệ KvValidateInvoiceException để ngăn chặn việc tạo/cập nhật hóa đơn
+
+                    @ Kiểm tra không thể dùng voucher kết hợp với khuyến mãi hoặc điểm thưởng:
+                      - Nếu hóa đơn có phương thức thanh toán bằng Voucher và cấu hình không cho phép kết hợp voucher (UseVoucherCombinePromotion = false):
+                        * Kiểm tra xem hóa đơn có áp dụng khuyến mãi (invoice.InvoicePromotions.Any()) hoặc có thanh toán bằng điểm thưởng (payments.Any(p => p.Method == "Point"))
+                        * Nếu có: hiển thị thông báo lỗi "Hệ thống không cho phép áp dụng chương trình khuyến mại hoặc thanh toán bằng điểm khi đã dùng voucher" (KVMessage.voucher_valid_not_applied_with_promotion_or_point)
+                        * Ném ngoại lệ KvValidateInvoiceException để ngăn chặn việc tạo/cập nhật hóa đơn
+
+                    @ Xác thực thông tin khách hàng và quyền sử dụng điểm thưởng:
+                      - Nếu hóa đơn có thông tin khách hàng (invoice.CustomerId != null):
+                        * Lấy thông tin khách hàng từ cơ sở dữ liệu
+                        * Nếu không tìm thấy khách hàng: hiển thị thông báo lỗi "Khách hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống. Bạn hãy kiểm tra và lưu lại thông tin khách hàng." (KVMessage.CustomerNotFound)
+                        * Nếu cấu hình quản lý khách hàng theo chi nhánh (ManagerCustomerByBranch = true):
+                          ~ Xác định chi nhánh chính (masterBranchId) - nếu đang sử dụng kho, lấy chi nhánh chính của kho
+                          ~ Kiểm tra xem khách hàng có thuộc chi nhánh hiện tại không
+                          ~ Nếu không thuộc chi nhánh: hiển thị thông báo lỗi "Khách hàng không thuộc chi nhánh hiện tại." (KVMessage._customerNotInBranch)
+                        * Lưu thông tin khách hàng vào hóa đơn và ghi nhận điểm thưởng hiện tại (CustomerOldPoint)
+                        * Nếu hóa đơn có phương thức thanh toán bằng điểm thưởng (payments có Method = "Point"):
+                          ~ Kiểm tra cấu hình điểm thưởng theo loại (RewardPoint_Type):
+                            > Nếu tính điểm theo hóa đơn: lấy cấu hình IsPointToMoney, MoneyToPoint, PointToMoney, InvoiceCount từ RewardPoint_*
+                            > Nếu tính điểm theo sản phẩm: lấy cấu hình từ RewardPoint_Product_*
+                          ~ Kiểm tra xem hệ thống có cho phép thanh toán bằng điểm (RewardPoint && IsPointToMoney):
+                            > Nếu là cập nhật hóa đơn (invoice.UpdateInvoiceId > 0):
+                              * Lấy thông tin điểm đã sử dụng trong hóa đơn cũ thông qua PointTrackingService.GetByDocumentAsync
+                              * Tính toán số điểm thực tế khách hàng có thể sử dụng = điểm hiện tại - điểm đã sử dụng trong hóa đơn cũ
+                              * Kiểm tra nếu số tiền thanh toán bằng điểm (pay.Amount) vượt quá giá trị điểm thực tế ((customer.RewardPoint - oldPoint?.Value ?? 0) * MoneyToPoint / PointToMoney):
+                                ~ Hiển thị thông báo lỗi "Số tiền vượt quá giá trị thanh toán bằng điểm cho phép" (KVMessage.moneyOutOfValueByAllowPoint)
+                            > Kiểm tra số tiền thanh toán không vượt quá giá trị điểm thưởng hiện có:
+                              * Nếu số tiền thanh toán (pay.Amount) vượt quá giá trị quy đổi từ điểm thưởng (customer.RewardPoint * MoneyToPoint / PointToMoney):
+                                ~ Hiển thị thông báo lỗi "Số tiền vượt quá giá trị thanh toán bằng điểm cho phép" (KVMessage.moneyOutOfValueByAllowPoint)
+                            > Kiểm tra số điểm sử dụng không vượt quá điểm hiện có:
+                              * Nếu số điểm sử dụng (pay.UsePoint) vượt quá số điểm hiện có của khách hàng (customer.RewardPoint):
+                                ~ Hiển thị thông báo lỗi "Giá trị thanh toán bằng điểm vượt quá số điểm hiện có" (KVMessage.notEnoughPoint)
+                            > Kiểm tra số tiền thanh toán không vượt quá tổng tiền hóa đơn:
+                              * Nếu hóa đơn có giá trị mới (invoice.NewInvoiceTotal.HasValue && invoice.NewInvoiceTotal.Value > 0) và số tiền thanh toán bằng điểm (pay.Amount) vượt quá giá trị mới của hóa đơn (invoice.NewInvoiceTotal.Value)
+                                ~ Hoặc nếu số tiền thanh toán bằng điểm (pay.Amount) vượt quá tổng tiền hóa đơn (invoice.Total)
+                                ~ Hiển thị thông báo lỗi "Giá trị thanh toán bằng điểm không được lớn hơn tiền khách cần trả" (KVMessage.ValuePayNotMoreConsumerPay)
+                            > Nếu cấu hình yêu cầu số lần mua tối thiểu (InvoiceCount > 0):
+                              * Đếm số hóa đơn của khách hàng
+                              * Nếu chưa đủ số lần mua: hiển thị thông báo lỗi "Số lần mua của khách hàng chưa đủ {0} lần để thanh toán bằng điểm" (KVMessage.NumberPurchaseNotEnoughToPayBuyPoint)
+                          ~ Nếu không cho phép thanh toán bằng điểm: hiển thị thông báo lỗi "Không hỗ trợ thanh toán bằng điểm thưởng" (KVMessage.notAllowUsePoint)
+
+                    @ Kiểm tra thông tin đối tác giao hàng nếu sử dụng COD:
+                      - Nếu hóa đơn có sử dụng COD (invoice.UsingCod == 1) và có thông tin giao hàng (invoice.DeliveryDetail != null):
+                        * Kiểm tra đối tác giao hàng khi trạng thái giao hàng là đang giao, đã giao, đang trả hoặc đã trả:
+                          ~ Nếu không có thông tin đối tác giao hàng (invoice.DeliveryDetail.DeliveryBy == null) và trạng thái giao hàng là một trong các trạng thái: Delivering, Delivered, Returning, Returned:
+                            > Hiển thị thông báo lỗi "Chưa nhập đối tác giao hàng" (KVMessage.DeliveryPartner_Empty)
+                        * Xác thực tồn tại của đối tác giao hàng:
+                          ~ Lấy thông tin đối tác giao hàng từ cơ sở dữ liệu thông qua PartnerDeliveryService.GetByIdAsync
+                          ~ Nếu không tìm thấy đối tác giao hàng (partner == null) và có chỉ định đối tác (invoice.DeliveryDetail.DeliveryBy != null):
+                            > Hiển thị thông báo lỗi "Đối tác giao hàng có mã {0} không tồn tại hoặc đã bị xóa khỏi hệ thống" (KVMessage.DeliveryNotFound)
+                        * Kiểm tra thông tin thanh toán khi sử dụng đối tác mặc định:
+                          ~ Nếu sử dụng đối tác mặc định (invoice.DeliveryDetail.UseDefaultPartner) và có thông tin dịch vụ bổ sung (ServiceAdd):
+                            > Phân tích thông tin dịch vụ bổ sung từ JSON thành danh sách ExtraServiceAdd
+                            > Tìm kiếm thông tin người thanh toán (paymentBy) trong danh sách dịch vụ bổ sung
+                            > Nếu không tìm thấy thông tin người thanh toán (paymentBy là null hoặc rỗng):
+                              * Hiển thị thông báo lỗi "Vui lòng chọn người thanh toán phí vận chuyển" (Labels.deliveryNeedSelectPaymentBy)
+
+                    @ Xác thực số lượng tồn kho của sản phẩm nếu không cho phép bán âm:
+                      - Kiểm tra cấu hình hệ thống về việc cho phép bán âm (AllowSellWithNoInventory)
+                      - Nếu không cho phép bán âm:
+                        * Với mỗi sản phẩm trong hóa đơn, kiểm tra số lượng tồn kho tại chi nhánh
+                        * So sánh số lượng bán với số lượng tồn kho hiện có
+                        * Nếu số lượng bán vượt quá tồn kho: hiển thị thông báo lỗi "Sản phẩm {tên sản phẩm} không đủ số lượng tồn kho"
+                      - Mục đích: Đảm bảo tính chính xác của dữ liệu tồn kho và ngăn chặn việc bán hàng khi không có sản phẩm
+
+                    @ Kiểm tra lô/hạn sử dụng và số serial của sản phẩm:
+                      - Đối với sản phẩm quản lý theo lô/hạn sử dụng:
+                        * Xác minh thông tin lô (BatchName) và hạn sử dụng (ExpiryDate) hợp lệ
+                        * Kiểm tra số lượng trong lô đủ để bán
+                        * Đảm bảo hạn sử dụng chưa hết hạn
+                      - Đối với sản phẩm quản lý theo serial:
+                        * Xác minh mỗi serial được chỉ định là duy nhất và hợp lệ
+                        * Kiểm tra serial chưa được bán trước đó
+                        * Đảm bảo số lượng serial khớp với số lượng sản phẩm bán
+                      - Nếu không hợp lệ: hiển thị thông báo lỗi phù hợp và ngăn chặn việc tạo/cập nhật hóa đơn
+
+                    @ Xác thực sản phẩm combo và công thức sản xuất:
+                      - Đối với sản phẩm combo:
+                        * Kiểm tra thông tin chi tiết combo (ComboDetails) đầy đủ và hợp lệ
+                        * Xác minh số lượng thành phần trong combo khớp với định nghĩa combo
+                        * Đảm bảo giá bán combo phù hợp với cấu hình
+                      - Đối với sản phẩm sử dụng công thức sản xuất:
+                        * Xác minh công thức sản xuất hợp lệ và đầy đủ
+                        * Kiểm tra nguyên liệu đầu vào đủ để sản xuất
+                        * Đảm bảo thông tin sản xuất được ghi nhận đúng
+                      - Mục đích: Đảm bảo tính nhất quán của dữ liệu sản phẩm đặc biệt và quản lý chính xác nguyên liệu
                   * Cập nhật trạng thái cũ của hóa đơn (UpdateInvoiceOldStatus)
+                  * Chuẩn hóa dữ liệu hóa đơn (NormallizeData)
+                  * Xử lý làm tròn giá tiền theo cấu hình tiền tệ
+                  * Tính toán lại tổng tiền hóa đơn dựa trên chi tiết hóa đơn
+                  * Phân bổ giảm giá hóa đơn cho từng sản phẩm
+                  * Xử lý tích điểm cho khách hàng dựa trên cấu hình hệ thống
+                  * Phân bổ giá cho sản phẩm khuyến mãi
+                  * Tạo mã hóa đơn mới hoặc xử lý mã hóa đơn đặc biệt (clone, update, offline, online)
+                  * Thiết lập thông tin người bán và người tạo
+                  * Tạo thông tin giao hàng nếu hóa đơn sử dụng COD
+              ~ Nếu là hóa đơn mới (isNewInvoice = true):
+                - Gọi CreateNewInvoiceAsync với các tham số:
+                  * invoice: đối tượng hóa đơn đã được chuẩn bị
+                  * payments: danh sách các thanh toán
+                - Trong quá trình xử lý CreateNewInvoiceAsync:
+                  * Cập nhật trạng thái cũ của hóa đơn (UpdateInvoiceOldStatus)
+                  * Chuẩn hóa dữ liệu hóa đơn (NormallizeData)
+                  * Xử lý làm tròn giá tiền theo cấu hình tiền tệ hiện tại
+                  * Tính toán lại tổng tiền hóa đơn dựa trên chi tiết hóa đơn và phụ phí
+                  * Phân bổ giảm giá hóa đơn cho từng sản phẩm
+                  * Xử lý tích điểm cho khách hàng dựa trên cấu hình hệ thống:
+                    @ Kiểm tra điều kiện tích điểm (không giảm giá, không dùng điểm, không dùng voucher)
+                    @ Xác định nhóm khách hàng được phép tích điểm
+                    @ Tính toán điểm thưởng dựa trên loại tích điểm (theo hóa đơn hoặc theo sản phẩm)
+                  * Thiết lập thời gian mua hàng nếu chưa có
+                  * Thiết lập thông tin người bán và người tạo
+                  * Tạo thông tin giao hàng nếu hóa đơn sử dụng COD và có thay đổi từ giao hàng thông thường sang giao hàng vận chuyển
             + Xử lý tiền đặt cọc từ đơn hàng:
               ~ Tính toán số tiền đặt cọc đã thanh toán
               ~ Tạo thanh toán hoàn trả đặt cọc nếu cần
