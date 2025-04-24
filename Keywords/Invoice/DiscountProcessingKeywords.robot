@@ -162,14 +162,12 @@ Xác Thực Phân Bổ Giảm Giá Sản Phẩm Trong CSDL
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${empty_list} =    Create List
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
     
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Nested Dictionary Property  ${product_detail}    Quantity    ${quantity}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
@@ -180,9 +178,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Giả
 
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Discount    ${discount}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
+    ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Nested Dictionary Property   ${product_detail}    Discount    ${discount}
+    ${product_detail}=   Update Nested Dictionary Property   ${product_detail}    Quantity    ${quantity}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -216,7 +214,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Cố Đ�
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
     ${surcharge_item_body}=    Deep Copy    ${surcharge_item_body}
-    ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_item_body}    Price    ${surcharge}
+    ${surcharge_item_body}=   Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge}
     ${invoice_surcharges}=    Create List    ${surcharge_item_body}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
     

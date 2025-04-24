@@ -1,13 +1,13 @@
 *** Variables ***
 # Environment variables
-${RETAILER_ID}      19809
-${BRANCH_ID}        1000000025  
-${USER_ID}          1000000467
-${SOLD_BY_ID}       ${USER_ID}
+# ${RETAILER_ID}      19809
+# ${BRANCH_ID}        1000000025  
+# ${USER_ID}          1000000467
+# ${SOLD_BY_ID}       ${USER_ID}
 
-${DEFAULT_BRANCH_ID}        1000000025
-${DEFAULT_USER_ID}          1000000467
-${DEFAULT_CUSTOMER_ID}      1000009032
+# ${DEFAULT_BRANCH_ID}        1000000025
+# ${DEFAULT_USER_ID}          1000000467
+# ${DEFAULT_CUSTOMER_ID}      1000009032
 
 
 
@@ -176,7 +176,6 @@ ${PROMOTION_GIFT_ID_9}    87289
 # Branch data  
 ${MAIN_BRANCH}    1234
 ${SUB_BRANCH}     5678
-${DEFAULT_BRANCH_ID}      1
 ${OTHER_BRANCH_ID}        2
 ${MASTER_BRANCH_ID}       1
 ${CUSTOMER_ID}            1000009350

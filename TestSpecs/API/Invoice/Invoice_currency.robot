@@ -1,38 +1,68 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá khi tạo hóa đơn
-Resource          ../../../Keywords/Invoice/DiscountKeywords.robot
+Resource          ../../../Keywords/Invoice/Currency_Keywords.robot
+Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    DiscountTest
+
 
 *** Test Cases ***
-RT-DC-001 Tạo hóa đơn thành công với chiết khấu cố định
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu cố định
+
+RT-QT-01 Tính tổng tiền hàng cơ bản
+    [Documentation]    Kiểm tra tính tổng tiền hàng cơ bản:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.55đ, số lượng 2.5
+    ...    - Kỳ vọng: Tổng tiền = 100.55đ * 2.5 = 250.55
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (2 chữ số)
+    ...    - Kết quả: 250.55đ nếu cấu hình là 2 chữ số thập phân
+    [Tags]     currency     apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Với Sản Phẩm Đơn Giá 100.55 Số Lượng 2.5
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
+
+RT-QT-02 Tính tổng tiền hàng có giảm giá sản phẩm
+    [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá sản phẩm:
+    ...    - Sản phẩm: 1 sản phẩm với giá 350.55đ, giảm giá 25.05đ, số lượng 2.33
+    ...    - Kỳ vọng: Tổng tiền = (350.55đ - 25.05đ) * 2.33 = 758.42
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (2 chữ số)
+    ...    - Kết quả: 758.42đ nếu cấu hình là 2 chữ số thập phân
+    [Tags]     currency     apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 350.55 Giảm Giá 25.05 Số Lượng 2.33
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
+
+
+RT-QT-03 Tạo hóa đơn thành công với làm tròn chiết khấu cố định
+    [Documentation]    Kiểm tra tạo hóa đơn thành công với làm tròn chiết khấu cố định
     ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_FIXED001"
+    ...    - Mã hóa đơn: "HD_TEST_ROUNDING001"
     ...    - Chi nhánh ID: 4316
     ...    - Người bán ID: 4119
     ...    - Khách hàng ID: 629661
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu cố định: 10,000đ
-    ...    - Logic xử lý: InvoiceService.NormalizeData() 
+    ...    - Chiết khấu cố định (chưa làm tròn): 10,500.03đ
+    ...    - Logic xử lý: InvoiceService.NormalizeData() làm tròn chiết khấu theo cấu hình
     ...    - Code: invoice.Discount = NumberHelper.GetCurrencyDecimal(invoice.Discount, currencyData.CurrencyDecimalPlace);
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Giá trị chiết khấu (Discount) được chuẩn hóa và lưu vào DB: 10,000đ
-    ...    - Tỷ lệ chiết khấu (DiscountRatio) = 0
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chiết Khấu Cố Định
+    ...    - Giá trị chiết khấu (Discount) được làm tròn theo cài đặt tiền tệ: 10,500.03đ
+    [Tags]    currency    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Chiết Khấu Cố Định 10500.03
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10500.03
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
 
 
-RT-DC-002 Tạo hóa đơn thành công với chiết khấu theo phần trăm
+
+
+RT-QT-04 Tạo hóa đơn thành công với chiết khấu theo phần trăm
     [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu theo phần trăm
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_TEST_PERCENT001"
@@ -40,62 +70,24 @@ RT-DC-002 Tạo hóa đơn thành công với chiết khấu theo phần trăm
     ...    - Người bán ID: 4119
     ...    - Khách hàng ID: 629661
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Tỷ lệ chiết khấu: 10%
+    ...    - Tỷ lệ chiết khấu: 10.02%
     ...    - Logic xử lý: InvoiceService.NormalizeData() 
     ...    - Code: invoice.DiscountRatio = NumberHelper.GetCurrencyDecimal(invoice.DiscountRatio, currencyData.CurrencyDecimalPlaceForProduct);
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Tỷ lệ chiết khấu (DiscountRatio) được chuẩn hóa và lưu vào DB: 10
+    ...    - Tỷ lệ chiết khấu (DiscountRatio) được chuẩn hóa và lưu vào DB: 10.02
     ...    - Giá trị chiết khấu (Discount) = 0 (tỷ lệ được ưu tiên hơn)
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chiết Khấu Phần Trăm
+    [Tags]    currency    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Chiết Khấu Tỷ Lệ 10.02 %
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10
-    And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    0
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10.02
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
 
 
-RT-DC-005 Tạo hóa đơn thành công với chiết khấu sản phẩm cố định
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu sản phẩm cố định
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_DISC001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ, Chiết khấu=10,000đ
-    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chiết khấu cho từng sản phẩm
-    ...    - Code: detail.Discount = NumberHelper.GetCurrencyDecimal(detail.Discount, currencyData.CurrencyDecimalPlaceForProduct);
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Giá trị chiết khấu sản phẩm (InvoiceDetail.Discount) được lưu vào DB: 10,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Chiết Khấu
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_1}    10000
-RT-DC-006 Tạo hóa đơn thành công với chiết khấu sản phẩm theo phần trăm
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với chiết khấu sản phẩm theo phần trăm
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_DISC001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ, Tỷ lệ chiết khấu=10%
-    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý tỷ lệ chiết khấu cho từng sản phẩm
-    ...    - Code: detail.DiscountRatio = NumberHelper.GetCurrencyDecimal(detail.DiscountRatio, currencyData.CurrencyDecimalPlaceForProduct);
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Tỷ lệ chiết khấu sản phẩm (InvoiceDetail.DiscountRatio) được lưu vào DB: 10%
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Chiết Khấu Phần Trăm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Tỉ Lệ Chiết Khấu Sản Phẩm    ${INVOICE_ID}    ${PRODUCT_1}    10
-
-RT-DC-007 Tạo hóa đơn thành công với nhiều loại chiết khấu kết hợp
+RT-QT-05 Tạo hóa đơn thành công với nhiều loại chiết khấu kết hợp
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều loại chiết khấu kết hợp
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_TEST_COMBINED001"
@@ -120,111 +112,115 @@ RT-DC-007 Tạo hóa đơn thành công với nhiều loại chiết khấu kế
     And Xác Thực Chiết Khấu Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    5000
     And Xác Thực Chiết Khấu Voucher Hóa Đơn    ${INVOICE_ID}    5000
     And Xác Thực Tổng Tiền Sau Chiết Khấu    ${INVOICE_ID}    80000
-RT-DC-008 Tạo hóa đơn thất bại khi voucher không cho phép kết hợp với khuyến mãi
-    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi voucher không cho phép kết hợp với khuyến mãi
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_VOUCHER002"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu voucher: 20,000đ
-    ...    - Mã khuyến mãi: 1001 (ID khuyến mãi hợp lệ)
-    ...    - AllowMergeCouponWithOtherPromotion: 0
-    ...    - Logic xử lý: InvoiceService.ValidateVoucher() kiểm tra cài đặt không cho phép kết hợp
-    ...    - Code: if (!voucher.AllowMergeWithOtherPromotion && invoice.PromotionId != null) throw new ParameterValidateException("Voucher không thể kết hợp với khuyến mãi khác");
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Response chứa thông báo lỗi "Voucher không thể kết hợp với khuyến mãi khác"
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 420
-    And Response Should Have Error "Voucher không thể kết hợp với khuyến mãi khác"
 
-RT-DC-009 Tạo hóa đơn thành công với khuyến mãi giảm giá cho sản phẩm
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với khuyến mãi giảm giá cho sản phẩm
+
+RT-QT-06 Tạo hóa đơn quốc tế với múi giờ khác nhau
+    [Documentation]    Kiểm tra tạo hóa đơn quốc tế với múi giờ khác nhau
     ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_PROMO_PROD001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
+    ...    - Mã hóa đơn: "HD_TEST_TIMEZONE001"
+    ...    - Chi nhánh ID: ${BRANCH_ID_TIMEZONE}
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Loại khuyến mãi: PROMOTION_INVOICE_DISCOUNT_ON_PRODUCT
-    ...    - Giá trị khuyến mãi: 10,000đ
-    ...    - Sản phẩm áp dụng: SP040943
-    ...    - Logic xử lý: InvoiceService.ApplyProductPromotion() áp dụng khuyến mãi vào sản phẩm cụ thể
-    ...    - Code: detail.PromotionDiscount += promotionValue;
+    ...    - Múi giờ: (US) Chậm hơn việt nam 12 giờ
+    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý ngày giờ theo múi giờ cấu hình
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Giá trị khuyến mãi được lưu vào InvoiceDetailPromotion: 10,000đ
-    ...    - Loại khuyến mãi được lưu trong InvoicePromotion: PROMOTION_INVOICE_DISCOUNT_ON_PRODUCT
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Theo Sản Phẩm
+    ...    - Ngày tạo hóa đơn được lưu đúng theo múi giờ cấu hình
+    ...    - Tổng tiền hóa đơn chính xác
+    [Tags]    currency    timezone    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Chi Nhánh Có Timezone ${BRANCH_ID_TIMEZONE}
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Thông Tin Khuyến Mãi    ${INVOICE_ID}    PROMOTION_INVOICE_DISCOUNT_ON_PRODUCT
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Ngày Tạo Hóa Đơn Theo Múi Giờ
+    And Tổng tiền hóa đơn phải bằng 100000
 
-RT-DC-010 Tạo hóa đơn thành công với giới hạn chiết khấu tối đa cho voucher
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với giới hạn chiết khấu tối đa cho voucher
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_VOUCHER003"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu voucher: 15,000đ
-    ...    - Giới hạn chiết khấu tối đa: 15,000đ
-    ...    - Logic xử lý: InvoiceService.CalculateVoucherValue() áp dụng giới hạn chiết khấu tối đa
-    ...    - Code: if (voucherValue > voucher.MaxValue) voucherValue = voucher.MaxValue;
+RT-QT-07 Tạo hóa đơn quốc tế với đơn vị tiền tệ khác JPY
+    [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác JPY
+    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Sản phẩm:, SL=1, Giá=100000 PHP
+    ...    - Đơn vị tiền tệ: JPY
+    ...    - Tỷ giá: 1.5
+    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chuyển đổi tiền tệ
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Giá trị chiết khấu voucher không vượt quá giới hạn: 15,000đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giới Hạn Chiết Khấu Voucher
+    ...    - Đơn vị tiền tệ được lưu đúng là USD
+    ...    - Tổng tiền hóa đơn = 100000 PHP 
+    ...    - Tổng tiền thanh toán = 1.5 * 5 = 7.5 JPY
+    ...    - Công nợ khách hàng = 99992.5
+    [Tags]    currency    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 5 JPY Phương thức ${PAYMENT_CASH} Khách hàng ${CUSTOMER_ID_CURRENCY_1}
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Voucher Hóa Đơn    ${INVOICE_ID}    15000
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Phiếu Thu Được Tạo ${PAYMENT_EXCHANGE_AMOUNT} Phương thức ${PAYMENT_CASH}
+    And Xác thực tổng thanh toán hóa đơn ${PAYMENT_EXCHANGE_AMOUNT}
+    And Xác Thực Công Nợ Của Hóa Đơn 99992.5
+    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_ID_CURRENCY_1} Giảm 7.5
+    And Xác Thực Thanh Toán 5 Tiền Tệ JPY Được Lưu Trong Sổ Quỹ
 
-RT-DC-011 Tạo hóa đơn thành công với làm tròn chiết khấu cố định
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với làm tròn chiết khấu cố định
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_ROUNDING001"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Chiết khấu cố định (chưa làm tròn): 10,500đ
-    ...    - Logic xử lý: InvoiceService.NormalizeData() làm tròn chiết khấu theo cấu hình
-    ...    - Code: invoice.Discount = NumberHelper.GetCurrencyDecimal(invoice.Discount, currencyData.CurrencyDecimalPlace);
+RT-QT-08 Tạo hóa đơn quốc tế thanh toán chuyển khoản VND
+    [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác VND
+    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Sản phẩm:, SL=1, Giá=100000 PHP
+    ...    - Đơn vị tiền tệ: VND
+    ...    - Tỷ giá: 1.5
+    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chuyển đổi tiền tệ
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Giá trị chiết khấu (Discount) được làm tròn theo cài đặt tiền tệ: 10,500đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chiết Khấu Làm Tròn
+    ...    - Đơn vị tiền tệ được lưu đúng là VND
+    ...    - Tổng tiền hóa đơn = 100000 PHP 
+    ...    - Tổng tiền thanh toán = 1.5 * 5 = 7.5 JPY
+    ...    - Công nợ khách hàng = 0
+    [Tags]    currency    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 10.5 VND Phương thức ${PAYMENT_TRANSFER} Khách hàng ${CUSTOMER_ID_CURRENCY_2}
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10500
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Phiếu Thu Được Tạo ${PAYMENT_EXCHANGE_AMOUNT} Phương thức ${PAYMENT_TRANSFER}
+    And Xác thực tổng thanh toán hóa đơn ${PAYMENT_EXCHANGE_AMOUNT}
+    And Xác Thực Công Nợ Của Hóa Đơn 0
+    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_ID_CURRENCY_2} Giảm ${PAYMENT_EXCHANGE_AMOUNT}
+    And Xác Thực Thanh Toán 10.5 Tiền Tệ VND Được Lưu Trong Sổ Quỹ
 
-RT-DC-012 Tạo hóa đơn thành công với làm tròn chiết khấu phần trăm
-    [Documentation]    Kiểm tra tạo hóa đơn thành công với làm tròn tỷ lệ chiết khấu phần trăm
-    ...    - Dữ liệu đầu vào: 
-    ...    - Mã hóa đơn: "HD_TEST_ROUNDING002"
-    ...    - Chi nhánh ID: 4316
-    ...    - Người bán ID: 4119
-    ...    - Khách hàng ID: 629661
-    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
-    ...    - Tỷ lệ chiết khấu (chưa làm tròn): 12.34%
-    ...    - Logic xử lý: InvoiceService.NormalizeData() làm tròn tỷ lệ chiết khấu theo cấu hình
-    ...    - Code: invoice.DiscountRatio = NumberHelper.GetCurrencyDecimal(invoice.DiscountRatio, currencyData.CurrencyDecimalPlaceForProduct);
+RT-QT-09 Tạo hóa đơn quốc tế Khách lẻ thanh toán chuyển khoản PHP
+    [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác PHP
+    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Sản phẩm:, SL=1, Giá=100000 PHP
+    ...    - Đơn vị tiền tệ: PHP
+    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chuyển đổi tiền tệ
     ...    - Kỳ vọng:
     ...    - Status code: 200
-    ...    - Tỷ lệ chiết khấu (DiscountRatio) được làm tròn theo cài đặt tiền tệ: 12.34
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chiết Khấu Phần Trăm Làm Tròn
+    ...    - Đơn vị tiền tệ được lưu đúng là VND
+
+    ...    - Công nợ khách hàng = 0
+    [Tags]    currency    apicurrency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Tiền Tệ Mặc Định 40000 Phương thức ${PAYMENT_CASH} Khách hàng lẻ
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Hóa Đơn Trong DB
-    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    12.34 
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Phiếu Thu Được Tạo 40000 Phương thức ${PAYMENT_CASH}
+    And Xác thực tổng thanh toán hóa đơn 40000
+    And Xác Thực Công Nợ Của Hóa Đơn 60000
+    And Xác Thực Thanh Toán 40000 Tiền Tệ PHP Được Lưu Trong Sổ Quỹ
+
+RT-QT-10 Tạo hóa đơn quốc tế thanh toán kết hợp 2 loại tiền tệ
+    [Documentation]    Kiểm tra tạo hóa đơn quốc tế với thanh toán kết hợp 2 loại tiền tệ
+    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Sản phẩm:, SL=1, Giá=100000 PHP
+    ...    - Đơn vị tiền tệ thanh toán: PHP và JPY
+    ...    - Tỷ giá: Theo cấu hình hệ thống
+    ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chuyển đổi tiền tệ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thanh toán được ghi nhận đúng với 2 loại tiền tệ
+    ...    - Công nợ khách hàng được cập nhật chính xác
+    [Tags]    currency    apicurrency    multi_currency
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp 50000 PHP Và 20 JPY Khách hàng ${CUSTOMER_ID_CURRENCY_3}
+    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_ID_CURRENCY_3} trước khi thanh toán
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác thực tổng thanh toán hóa đơn ${TOTAL_PAYMENT}  
+    And Xác Thực Công Nợ Của Hóa Đơn 49970
+    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_ID_CURRENCY_3} trước khi thanh toán
+

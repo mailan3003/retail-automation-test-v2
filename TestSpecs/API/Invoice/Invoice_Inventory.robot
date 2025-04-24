@@ -4,7 +4,7 @@ Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
-
+Test Teardown     Tear down Delete Hóa Đơn
 *** Keywords ***
 Suite Setup
     Set Suite Variable    ${SUITE_NAME}    InventoryUpdateTest
@@ -14,7 +14,7 @@ RT-INU-001 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm thư�
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm thường
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${PRODUCT_1}, Số lượng=5, Giá=100,000đ
+    ...    - Sản phẩm ${PRODUCT_CODE_NOMAL}, Số lượng=5, Giá=100,000đ
     ...    - Logic xử lý: ProductBranchService.UpdateInventory()
     ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity
     ...    - Kỳ vọng:
@@ -32,7 +32,7 @@ RT-INU-002 Cập nhật tồn kho khi tạo hóa đơn với số lượng thậ
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với số lượng thập phân
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${PRODUCT_1}, Số lượng=100.555, Giá=100,000đ
+    ...    - Sản phẩm ID=${PRODUCT_CODE_DECIMAL}, Số lượng=100.555, Giá=100,000đ
     ...    - Logic xử lý: ProductBranchService.UpdateInventory()
     ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity
     ...    - Kỳ vọng:
@@ -50,7 +50,7 @@ RT-INU-003 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm combo ID=${COMBO_PRODUCT_ID}, Số lượng=1, Giá=150,000đ
+    ...    - Sản phẩm combo ${PRODUCT_CODE_COMBO}, Số lượng=1, Giá=150,000đ
     ...    - Logic xử lý: ProductBranchService.UpdateInventory()
     ...    - Code: Với mỗi sản phẩm con: productBranch.OnHand -= (combo.Quantity * childProduct.Quantity)
     ...    - Kỳ vọng:
@@ -67,7 +67,7 @@ RT-INU-006 Cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển đổi
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${PRODUCT_1}, Số lượng=2, Giá=100,000đ, UnitId=2, ConversionValue=12
+    ...    - Sản phẩm ${PRODUCT_CODE_QD}, Số lượng=2, Giá=100,000đ, UnitId=2, ConversionValue=12
     ...    - Logic xử lý: ProductBranchService.UpdateInventory()
     ...    - Code: productBranch.OnHand -= (invoiceDetail.Quantity * invoiceDetail.ConversionValue)
     ...    - Kỳ vọng:
@@ -100,7 +100,7 @@ RT-INU-008 Cập nhật tồn kho âm khi cho phép bán hàng khi hết tồn
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho âm khi cho phép bán hàng khi hết tồn
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${product_out_of_stock}, Số lượng=1000, Giá=100,000đ
+    ...    - Sản phẩm ${PRODUCT_CODE_AM}, Số lượng=1000, Giá=100,000đ
     ...    - Cấu hình: AllowSellWhenOutStock=true
     ...    - Logic xử lý: ProductBranchService.UpdateInventory()
     ...    - Code: if (productBranch.AllowSellWhenOutStock) productBranch.OnHand -= invoiceDetail.Quantity
@@ -120,7 +120,7 @@ RT-INU-005 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo l
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo lô
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ID=${product_batch}, Số lượng=1, Giá=100,000đ, BatchId=${batch_1}, BatchName=LOT001
+    ...    - Sản phẩm ${PRODUCT_BATCH_NAME}, Số lượng=1, Giá=100,000đ,  BatchName=${BATCH_NAME}
     ...    - Logic xử lý: BatchExpireService.UpdateBatchQuantity()
     ...    - Code: batch.Quantity -= invoiceDetail.Quantity
     ...    - Kỳ vọng:
@@ -128,17 +128,16 @@ RT-INU-005 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo l
     ...    - Số lượng lô giảm 1 đơn vị
     ...    - Lịch sử lô được ghi nhận với DocumentType=Invoice, Value=-1
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${PRODUCT_BATCH_NAME} với ${BATCH_NAME} số lượng 1
-     And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Số lượng lô ${product_batch_id} đã giảm 1 đơn vị
-    Tear down Delete Hóa Đơn
 
 RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo serial
     [Tags]    inventory    smoke   apiinvoice
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo serial
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm  ${PRODUCT_CODE_SERIAL} Số lượng=1, Giá=100,000đ, Serial=SN001,SN002
+    ...    - Sản phẩm  ${PRODUCT_CODE_SERIAL} Số lượng=1, Giá=100,000đ, Serial=${SERIAL_NUMBER}
     ...    - Logic xử lý: SerialService.UpdateSerialStatus()
     ...    - Code: serial.Status = SerialStatus.Sold; serial.DocumentId = invoice.Id; serial.DocumentType = DocumentType.Invoice
     ...    - Kỳ vọng:
@@ -151,7 +150,48 @@ RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo s
     Then Mã trạng thái phải là 200
     And Tồn kho sản phẩm ${product_id} đã giảm 1 đơn vị
     And Serial ${SERIAL_NUMBER} chuyển sang trạng thái đã bán
-    Tear down Delete Hóa Đơn
+ 
+RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm
+    [Tags]    inventory    smoke   apiinvoice
+    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm khác nhau
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm 1: ${PRODUCT_CODE_NOMAL}, Số lượng=3, Giá=100,000đ
+    ...    - Sản phẩm 2: ${PRODUCT_CODE_DECIMAL}, Số lượng=2.5, Giá=150,000đ
+    ...    - Logic xử lý: ProductBranchService.UpdateInventory() cho từng sản phẩm
+    ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Số lượng tồn kho sản phẩm 1 giảm 3 đơn vị
+    ...    - Số lượng tồn kho sản phẩm 2 giảm 2.5 đơn vị
+    ...    - Lịch sử tồn kho được ghi nhận cho cả hai sản phẩm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm 
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_1}
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_2}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Tồn kho sản phẩm ${product_id_1} đã giảm 3 đơn vị
+    And Tồn kho sản phẩm ${product_id_2} đã giảm 2.5 đơn vị
+    And Lịch sử tồn kho được tạo với số lượng 3 đơn vị cho sản phẩm ${product_id_1}
+    And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm ${product_id_2}
+
+RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiều dòng
+    [Tags]    inventory    smoke   apiinvoice
+    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm khác nhau
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm 1: ${PRODUCT_CODE_NOMAL}, Số lượng=3, Giá=100,000đ
+    ...     Thêm 5 dòng sản phẩm 1 mỗi dòng số lương 3 vào hóa đơn
+    ...    - Logic xử lý: ProductBranchService.UpdateInventory() cho từng sản phẩm
+    ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Số lượng tồn kho sản phẩm  giảm 18 đơn vị
+    Given Chuẩn Bị Dữ Liêu Hóa Đơn Với Sản Phẩm HH0080 Có 5 Dòng Số Lượng Mỗi Dòng 2
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}    
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị
+    And Lịch sử tồn kho được tạo với số lượng ${TOTAL_QUANTITY} đơn vị cho sản phẩm ${product_id}
+
 
 # RT-INU-009 Cập nhật số lượng đặt hàng khi tạo hóa đơn từ đơn hàng    Chuyển sang file khác
 #     [Documentation]    Kiểm tra cập nhật số lượng đặt hàng khi tạo hóa đơn từ đơn hàng

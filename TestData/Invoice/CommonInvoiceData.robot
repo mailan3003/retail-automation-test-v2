@@ -1,7 +1,10 @@
 *** Settings ***
 Documentation     Dữ liệu hóa đơn chuẩn dùng chung cho các test cases
 Resource          ../CommonData.robot
-
+#Resource          ../../Config/Env_currency.robot
+Resource          ../../Config/Env_dakho.robot
+#Resource          ../../Config/Env_vlxd.robot
+#Resource          ../../Config/Env_nhathuoc.robot
 *** Variables ***
 # Chi tiết hóa đơn chuẩn
 @{STANDARD_INVOICE_DETAILS}
@@ -19,6 +22,19 @@ Resource          ../CommonData.robot
 ...    InvoiceDetails=@{STANDARD_INVOICE_DETAILS}
 
 # Template dữ liệu cho request
+
+&{STANDARD_PRESCRIPTION_DETAIL}
+...    DoctorId=1000000001
+...    ClinicId=1000000001
+
+&{STANDARD_MATERIALS_DETAIL}
+...    Attribute1=30
+...    Attribute2=60
+...    Attribute3=${None}
+...    Attribute4=6
+...    Attribute5=${None}
+...    Type1=2
+...    Type2=1
 
 @{STANDARD_PAYMENT_BODY}
 ...    &{payment_body} 
