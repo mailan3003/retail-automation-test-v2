@@ -51,6 +51,31 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với $
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${ma_hh} Số Lượng ${quantity} Và Hàng Hóa ${ma_hh_1} Số Lượng ${quantity_1}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    Set Test Variable    ${product_id}    ${result[0]}
+    ${query_2}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result_1}=    Fetch One    ${query_2}    ${ma_hh_1}
+    Set Test Variable    ${product_id_1}    ${result_1[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product_1}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
+    ${data_product_1}=    Update Nested Dictionary Property     ${data_product_1}    ProductId    ${product_id_1}
+    ${data_product_1}=    Update Nested Dictionary Property     ${data_product_1}    Quantity    ${quantity_1}
+    ${list_data_product}=    Create List    ${data_product}    ${data_product_1}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${list_data_product}
+    ${total_quantity}=    Evaluate    ${quantity} + ${quantity_1}
+    Set Test Variable    ${TOTAL_QUANTITY}    ${total_quantity}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+    
+    
+
+
+
 Chuẩn Bị Dữ Liêu Hóa Đơn Với Sản Phẩm ${ma_hh} Có ${number} Dòng Số Lượng Mỗi Dòng ${quantity}
     ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
     ${result}=    Fetch One    ${query_1}    ${ma_hh}

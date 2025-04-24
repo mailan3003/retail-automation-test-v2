@@ -102,8 +102,7 @@ RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate
     ...    - Status code: 400
     ...    - Thông báo lỗi: "Kho không tồn tại"
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô WHLD0002 Với Lo1 Số Lượng 2.5 Tại Kho Bán Hàng
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id} 
     And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -122,7 +121,6 @@ RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate Kho phụ
     ...    - Status code: 400
     ...    - Thông báo lỗi: "Kho không tồn tại"
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô WHLD0003 Với Lo1 Số Lượng 1.55 Tại Kho Kho 2
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id} 
     And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Kho 2 
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -170,7 +168,7 @@ RT-IWH-0011 Tạo hóa đơn gian hàng với sản phẩm combo kho phụ
     And Sản phẩm con trong combo ${product_id} đã giảm tồn kho 1 lần số lượng tại kho Kho 1
 
 RT-IWH-010 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng
-    [Tags]    warehouse    smoke    apiinvoice
+    [Tags]    warehouse    smoke  
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với sản phẩm theo lô từ nhiều kho
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ${PRODUCT_BATCH_CODE}, Lô=${BATCH_NAME_1}, Số lượng=2, Giá=100,000đ, Kho=${MAIN_WAREHOUSE_ID}

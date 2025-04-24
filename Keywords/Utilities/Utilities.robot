@@ -7,7 +7,7 @@ Library           OperatingSystem
 #Resource          ../../Config/Env.robot
 #Resource          ../../Config/Env_currency.robot
 #Resource          ../../Config/Env_nhathuoc.robot
-Resource          ../../Config/Env_dakho.robot
+Resource          ../../Config/Env_${ENV}.robot
 #Resource          ../../Config/Env_vlxd.robot
 *** Keywords ***
 Create Auth Headers

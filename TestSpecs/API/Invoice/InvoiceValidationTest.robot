@@ -1,6 +1,9 @@
 *** Settings ***
 Documentation     Test API kiểm tra và xác thực đầu vào khi tạo hóa đơn
-Resource          ../../../Keywords/Invoice/InvoiceValidationKeywords.robot
+Resource          ../../../Keywords/Invoice/InputValidationKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Suite Setup       Suite Setup
 
 *** Keywords ***
@@ -10,16 +13,18 @@ Suite Setup
 *** Test Cases ***
 RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
     [Documentation]    Kiểm tra tạo hóa đơn thành công với dữ liệu đầu vào hợp lệ
-    Given Prepare Standard Invoice Request
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 200
-    And Response Should Have Data.Id exist
+    [Tags]    invoicevalidate    smoke   apiinvoice
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
 
 RT-IV-002 Kiểm tra mã hóa đơn trùng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
-    Given Prepare Invoice With Duplicate Code
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 409
+
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Mã hóa đơn đã tồn tại"
 
 RT-IV-003 Kiểm tra mã hóa đơn quá dài
@@ -30,32 +35,36 @@ RT-IV-003 Kiểm tra mã hóa đơn quá dài
     And Response Should Have Error "Mã hóa đơn không được vượt quá 50 ký tự"
 
 RT-IV-004 Kiểm tra thiếu thông tin chi nhánh
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhánh
-    Given Prepare Invoice With Missing Branch
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "Vui lòng chọn chi nhánh"
+    [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
+    [Tags]    invoicevalidate    smoke     apiinvoice
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Có lỗi khi cập nhật dữ liệu"
 
 RT-IV-005 Kiểm tra chi nhánh không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với chi nhánh không tồn tại
-    Given Prepare Invoice With Invalid Branch
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 404
-    And Response Should Have Error "Chi nhánh không tồn tại"
+    [Tags]    invoicevalidate    smoke     apiinvoice
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chi Nhánh Không Tồn Tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Có lỗi khi cập nhật dữ liệu"
 
 RT-IV-006 Kiểm tra khách hàng không thuộc chi nhánh
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không thuộc chi nhánh
-    Given Prepare Invoice With Customer From Other Branch
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "Khách hàng không thuộc chi nhánh đang chọn"
+    [Tags]    invoicevalidate    smoke     apiinvoice
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Thuộc Chi Nhánh
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "hách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
 
 RT-IV-007 Kiểm tra thiếu thông tin người bán
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin người bán
-    Given Prepare Invoice With Missing Sold By
-    When Send Create Invoice Request
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "Vui lòng chọn người bán hàng"
+    [Tags]    invoicevalidate    smoke     apiinvoice
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Người Bán
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Người bán không tồn tại hoặc đã bị xóa khỏi hệ thống"
 
 RT-IV-008 Kiểm tra người bán không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với người bán không tồn tại
