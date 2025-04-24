@@ -327,6 +327,7 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
      );
      ```
      - Thông báo lỗi sẽ hiển thị: "Khách hàng đã được hưởng các khuyến mại: [Tên các khuyến mãi], vui lòng kiểm tra lại."
+
 ### 12. Xử lý thông tin đơn thuốc (cho nhà thuốc GPP)
 - **Điều kiện áp dụng**:
   - Hệ thống sẽ bỏ qua kiểm tra khi `isValid = true` (đã xác thực ở nơi khác)
@@ -430,6 +431,7 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
   - Nếu không có thông tin khách hàng (`invoice.CustomerId <= 0`):
     - Hóa đơn sẽ được xử lý như hóa đơn bán lẻ cho khách vãng lai
     - Không cần kiểm tra thêm thông tin khách hàng
+
 ### 16. Kiểm tra kho hàng
 - **Xác định và kiểm tra trạng thái kho hàng**:
   - Hệ thống xác định ID kho hàng (`whId`) dựa trên thông tin trong hóa đơn:
