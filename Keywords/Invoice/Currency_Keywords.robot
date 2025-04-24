@@ -238,3 +238,14 @@ Xác Thực Công Nợ Của Khách Hàng ${customer_id} Sau khi thanh toán ${p
     ${result}=    Fetch One    ${query}    ${customer_id} 
     ${debt_after_payment}=    Evaluate    ${DEBT_BEFORE_PAYMENT} - ${payment_amount}
     Should Be Equal As Numbers    ${result[0]}    ${debt_after_payment}    Công nợ không đúng. Kỳ vọng: ${debt_after_payment}, Thực tế: ${result[0]}
+
+Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn ${expected_discount_ratio}
+    ${query}=    Set Variable    SELECT DiscountRatio FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_discount_ratio}    Tỉ lệ chiết khấu không đúng. Kỳ vọng: ${expected_discount_ratio}, Thực tế: ${result[0]}
+
+Xác Thực Chiết Khấu Hóa Đơn ${expected_discount}
+    ${query}=    Set Variable    SELECT Discount FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_discount}    Chiết khấu không đúng. Kỳ vọng: ${expected_discount}, Thực tế: ${result[0]}
+

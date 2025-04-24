@@ -2,7 +2,7 @@
 Documentation     Dữ liệu hóa đơn chuẩn dùng chung cho các test cases
 Resource          ../CommonData.robot
 #Resource          ../../Config/Env_currency.robot
-Resource          ../../Config/Env_dakho.robot
+Resource          ../../Config/Env_${ENV}.robot
 #Resource          ../../Config/Env_vlxd.robot
 #Resource          ../../Config/Env_nhathuoc.robot
 *** Variables ***
@@ -43,6 +43,12 @@ Resource          ../../Config/Env_dakho.robot
 ...    Method=Cash
 ...    Amount=100000
 
+&{STANDARD_COUPON}  
+...    Code=COUPON_TEST_001
+...    CouponCampaignId=1000000007
+...    PriceMax=100000
+...    PriceRatio=5
+...    Id=1000001411
 
 # promotion
 @{invoice_promotion_body}    

@@ -164,15 +164,15 @@ RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩ
     ...    - Số lượng tồn kho sản phẩm 1 giảm 3 đơn vị
     ...    - Số lượng tồn kho sản phẩm 2 giảm 2.5 đơn vị
     ...    - Lịch sử tồn kho được ghi nhận cho cả hai sản phẩm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm 
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm GHDU003 Số Lượng 3 Và Hàng Hóa GHDU004 Số Lượng 2.5
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_1}
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_2}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
-    And Tồn kho sản phẩm ${product_id_1} đã giảm 3 đơn vị
-    And Tồn kho sản phẩm ${product_id_2} đã giảm 2.5 đơn vị
-    And Lịch sử tồn kho được tạo với số lượng 3 đơn vị cho sản phẩm ${product_id_1}
-    And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm ${product_id_2}
+    And Tồn kho sản phẩm ${product_id} đã giảm 3 đơn vị
+    And Tồn kho sản phẩm ${product_id_1} đã giảm 2.5 đơn vị
+    And Lịch sử tồn kho được tạo với số lượng 3 đơn vị cho sản phẩm ${product_id}
+    And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm ${product_id_1}
 
 RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiều dòng
     [Tags]    inventory    smoke   apiinvoice

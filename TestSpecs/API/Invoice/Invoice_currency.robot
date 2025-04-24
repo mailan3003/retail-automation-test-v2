@@ -56,7 +56,7 @@ RT-QT-03 Tạo hóa đơn thành công với làm tròn chiết khấu cố đ�
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10500.03
+    And Xác Thực Chiết Khấu Hóa Đơn 10500.03
     And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
 
 
@@ -83,7 +83,7 @@ RT-QT-04 Tạo hóa đơn thành công với chiết khấu theo phần trăm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn    ${INVOICE_ID}    10.02
+    And Xác Thực Tỉ Lệ Chiết Khấu Hóa Đơn 10.02
     And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE}
 
 
