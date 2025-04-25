@@ -34,7 +34,7 @@
   - Tăng tính minh bạch và độ tin cậy trong quá trình giao hàng và thu tiền hộ 
 
 ---
-**Navigation**
-- Previous: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
-- Next: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
+- Tiếp theo: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

@@ -32,7 +32,7 @@
     - Không cần kiểm tra thêm thông tin khách hàng 
 
 ---
-**Navigation**
-- Previous: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
-- Next: [17-CreateInvoice-WarehouseCheck.md](./17-CreateInvoice-WarehouseCheck.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
+- Tiếp theo: [17-CreateInvoice-WarehouseCheck.md](./17-CreateInvoice-WarehouseCheck.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

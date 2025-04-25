@@ -24,7 +24,7 @@
       - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng 
 
 ---
-**Navigation**
-- Previous: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
-- Next: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
+- Tiếp theo: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

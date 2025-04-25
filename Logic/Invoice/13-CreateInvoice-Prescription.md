@@ -38,7 +38,7 @@
      - Nếu đơn thuốc không có mã nhưng có ID > 0, hiển thị thông báo: "Mã đơn thuốc không hợp lệ" (`KVMessage.prescription_CodeIsNotValid`)
 
 ---
-**Navigation**
-- Previous: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
-- Next: [14-CreateInvoice-SalesPersonCheck.md](./14-CreateInvoice-SalesPersonCheck.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
+- Tiếp theo: [14-CreateInvoice-SalesPersonCheck.md](./14-CreateInvoice-SalesPersonCheck.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

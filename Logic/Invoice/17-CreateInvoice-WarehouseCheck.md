@@ -30,7 +30,7 @@
   - Nếu kho hàng không đáp ứng các điều kiện trên, quá trình tạo/cập nhật hóa đơn sẽ bị dừng lại và hiển thị thông báo lỗi tương ứng 
 
 ---
-**Navigation**
-- Previous: [16-CreateInvoice-CustomerDelivery.md](./16-CreateInvoice-CustomerDelivery.md)
-- Next: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [16-CreateInvoice-CustomerDelivery.md](./16-CreateInvoice-CustomerDelivery.md)
+- Tiếp theo: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

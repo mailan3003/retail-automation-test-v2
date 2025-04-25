@@ -27,7 +27,7 @@
     - Loại bỏ các ký tự đặc biệt không hợp lệ, đảm bảo tính nhất quán của dữ liệu 
 
 ---
-**Navigation**
-- Previous: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md)
-- Next: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md)
+- Tiếp theo: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

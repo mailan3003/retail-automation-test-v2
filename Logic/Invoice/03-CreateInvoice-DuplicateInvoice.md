@@ -20,7 +20,7 @@
   - **Lợi ích**: Cơ chế này ngăn chặn việc tạo hóa đơn trùng lặp khi có nhiều request đồng thời, đảm bảo tính toàn vẹn dữ liệu. 
 
 ---
-**Navigation**
-- Previous: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md)
-- Next: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md)
+- Tiếp theo: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

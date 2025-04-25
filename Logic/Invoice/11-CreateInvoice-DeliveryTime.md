@@ -22,7 +22,7 @@
       ``` 
 
 ---
-**Navigation**
-- Previous: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
-- Next: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
+- Tiếp theo: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

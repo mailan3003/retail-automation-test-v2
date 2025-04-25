@@ -37,7 +37,7 @@
     - Hệ thống sẽ ném ngoại lệ với thông báo "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật" 
 
 ---
-**Navigation**
-- Previous: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
-- Next: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
+- Tiếp theo: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

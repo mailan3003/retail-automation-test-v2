@@ -49,7 +49,7 @@
   - Đảm bảo tính nhất quán của dữ liệu địa chỉ trong hệ thống 
 
 ---
-**Navigation**
-- Previous: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
-- Next: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
+- Tiếp theo: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

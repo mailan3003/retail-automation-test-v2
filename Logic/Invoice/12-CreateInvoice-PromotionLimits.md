@@ -45,7 +45,7 @@
      - Thông báo lỗi sẽ hiển thị: "Khách hàng đã được hưởng các khuyến mại: [Tên các khuyến mãi], vui lòng kiểm tra lại." 
 
 ---
-**Navigation**
-- Previous: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
-- Next: [13-CreateInvoice-Prescription.md](./13-CreateInvoice-Prescription.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
+- Tiếp theo: [13-CreateInvoice-Prescription.md](./13-CreateInvoice-Prescription.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

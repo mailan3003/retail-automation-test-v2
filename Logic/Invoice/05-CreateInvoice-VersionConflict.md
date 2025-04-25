@@ -24,7 +24,7 @@
   - Cung cấp thông báo rõ ràng cho người dùng khi xảy ra xung đột, hướng dẫn họ tải lại dữ liệu mới nhất 
 
 ---
-**Navigation**
-- Previous: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
-- Next: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
+- Tiếp theo: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

@@ -25,7 +25,7 @@
       - Tiếp tục xử lý hóa đơn với UUID mới 
 
 ---
-**Navigation**
-- Previous: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
-- Next: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
+- Tiếp theo: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

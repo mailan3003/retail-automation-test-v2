@@ -28,7 +28,7 @@
   - Tăng tính minh bạch trong quá trình xử lý hóa đơn 
 
 ---
-**Navigation**
-- Previous: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
-- Next: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
+- Tiếp theo: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

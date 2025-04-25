@@ -9,7 +9,7 @@
   - Nếu người bán tồn tại nhưng không còn hoạt động (`IsActive == false`) và đang tạo hóa đơn mới (`invoice.Id <= 0`), hệ thống sẽ ném ngoại lệ `KvValidateUserException` với thông báo `$"{KVMessage.invoiceLog_SalePersion} {soldby.GivenName} {KVMessage.invoiceError_StopedProcessing}"` (Người bán [tên người bán] đã bị ngừng hoạt động) 
 
 ---
-**Navigation**
-- Previous: [13-CreateInvoice-Prescription.md](./13-CreateInvoice-Prescription.md)
-- Next: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
-- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+**Điều hướng**
+- Trước đó: [13-CreateInvoice-Prescription.md](./13-CreateInvoice-Prescription.md)
+- Tiếp theo: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
+- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
