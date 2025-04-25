@@ -9,13 +9,16 @@ Resource    ../Utilities/DataUtilities.robot
 Library          ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc ${status} Liên Kết Theo Đơn Thuốc
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc ${status} Liên Kết Theo Đơn Thuốc 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với cờ UsingPrescription=1 để bán thuốc theo đơn thuốc
     ${value_using_prescription}=    Set Variable If    '${status}'=='Có'    1    0
+    ${prescription_code}    Generate Random String    6    [LOWER][NUMBERS]
+    Set Test Variable    ${prescription_code}    ${prescription_code}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}    Deep Copy   ${STANDARD_PRESCRIPTION_DETAIL}
     ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${data_prescription}    Update Nested Dictionary Property    ${data_prescription}    Code    ${prescription_code}
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.UsingPrescription    ${value_using_prescription}
@@ -147,60 +150,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingGlobalPrescription=1
 
 
 # Các keyword xác thực database: cần mô phỏng chúng vì không có thư viện DatabaseLibrary thực tế
-Xác Thực Hóa Đơn Được Tạo Thành Công Trong DB
-    [Documentation]    Xác thực hóa đơn đã được tạo thành công trong database
-    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
-    
-    # Trong môi trường test thực tế, sẽ truy vấn DB để kiểm tra
-    # Ở đây chỉ mô phỏng phương thức Execute SQL Query
-    # ${query}=    Set Variable    SELECT Id, Code FROM Invoice WHERE Id = ${invoice_id}
-    # ${result}=    Execute SQL Query    ${query}
-    ${result}=    Create List    ${invoice_id}
-    Should Not Be Empty    ${result}
-    
-    # ${query_detail}=    Set Variable    SELECT * FROM InvoiceDetail WHERE InvoiceId = ${invoice_id}
-    # ${detail_result}=    Execute SQL Query    ${query_detail}
-    ${detail_result}=    Create List    ${invoice_id}
-    Should Not Be Empty    ${detail_result}
 
-Xác Thực Hóa Đơn Không Tồn Tại Trong DB
-    [Documentation]    Xác thực hóa đơn không tồn tại trong database
-    ${response_data}=    Set Variable    ${RESPONSE.json()}
-    
-    # Lấy Id từ response nếu có (không nên có vì request thất bại)
-    ${invoice_id}=    Set Variable If    
-    ...    "Id" in $response_data    ${response_data["Id"]}    0
-    
-    # Nếu không có Id, kiểm tra với Invoice Code trong request
-    ${invoice_code}=    Set Variable    ${REQUEST_DATA["Invoice"]["Code"]}
-    
-    # Trong môi trường test thực tế, sẽ truy vấn DB để kiểm tra
-    # ${query}=    Set Variable    SELECT Id FROM Invoice WHERE Code = '${invoice_code}' AND RetailerId = ${RETAILER_ID}
-    # ${result}=    Execute SQL Query    ${query}
-    ${result}=    Create List
-    Should Be Empty    ${result}
+
 
 Xác Thực Thông Tin Đơn Thuốc Được Lưu Trong DB
     [Documentation]    Xác thực thông tin đơn thuốc được lưu trong database
-    ${prescription_code}=    Set Variable    ${REQUEST_DATA["Prescription"]["Code"]}
-    
-    # Trong môi trường test thực tế, sẽ truy vấn DB để kiểm tra
-    # ${query}=    Set Variable    
-    # ...    SELECT Id, Code, DoctorId, ClinicId, PatientId 
-    # ...    FROM Prescription 
-    # ...    WHERE InvoiceId = ${INVOICE_ID} AND Code = '${prescription_code}'
-    # ${result}=    Execute SQL Query    ${query}
-    ${result}=    Create List    ${prescription_code}
+    ${query}=    Set Variable    SELECT * FROM Prescription WHERE Code = ?
+    ${result}=   Fetch One   ${query}    ${prescription_code}
     Should Not Be Empty    ${result}
-    
-    # ${query_patient}=    Set Variable    
-    # ...    SELECT Id, Name, Age, Gender, Weight 
-    # ...    FROM Patient 
-    # ...    WHERE Id = (SELECT PatientId FROM Prescription WHERE InvoiceId = ${INVOICE_ID})
-    # ${patient_result}=    Execute SQL Query    ${query_patient}
-    ${patient_result}=    Create List    1
-    Should Not Be Empty    ${patient_result}
 
 Xác Thực Thông Tin Đơn Thuốc Toàn Cầu Được Lưu Trong DB
     [Documentation]    Xác thực thông tin đơn thuốc toàn cầu được lưu trong database

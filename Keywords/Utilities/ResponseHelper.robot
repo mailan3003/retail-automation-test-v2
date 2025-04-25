@@ -32,21 +32,3 @@ Nội dung phản hồi trả về phải tồn tại ${path}
         ${current}=    Evaluate    ${current}.get("${key}", None) if isinstance(${current}, dict) else None
         Run Keyword If    '${current}' == 'None'    Fail    Key '${path}' not found in dictionary
     END
-Response Should Have ${path} With value ${expected_value}    
-    ${keys}=    Split String    ${path}    .
-    ${actual_value}=    Set Variable    ${RESPONSE.json()}
-
-    FOR    ${key}    IN    @{keys}
-        ${actual_value}=    Get From Dictionary    ${actual_value}    ${key}
-    END
-
-    Should Be Equal    ${actual_value}    ${expected_value}
-
-
-Response Should Have ${path} exist
-    ${keys}=    Split String    ${path}    .
-    ${current}=    Set Variable    ${RESPONSE.json()}
-    FOR    ${key}    IN    @{keys}
-        ${current}=    Evaluate    ${current}.get("${key}", None) if isinstance(${current}, dict) else None
-        Run Keyword If    '${current}' == 'None'    Fail    Key '${path}' not found in dictionary
-    END

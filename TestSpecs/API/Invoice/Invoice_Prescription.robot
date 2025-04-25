@@ -5,11 +5,12 @@ Resource         ../../../Keywords/Utilities/ResponseHelper.robot
 Resource         ../../../Keywords/Utilities/DataUtilities.robot
 Resource         ../../../Keywords/Utilities/RequestHelper.robot
 Resource         ../../../TestData/Invoice/PrescriptionData.robot
-
+Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 *** Test Cases ***
 RT-PR-001 Kiểm tra tạo hóa đơn theo đơn thuốc
     [Documentation]    Kiểm tra hệ thống tạo hóa đơn theo đơn thuốc
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Có Liên Kết Theo Đơn Thuốc
+    [Tags]         
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Có Liên Kết Theo Đơn Thuốc 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -17,6 +18,7 @@ RT-PR-001 Kiểm tra tạo hóa đơn theo đơn thuốc
 
 RT-PR-002 Tạo hóa đơn với cửa hàng không phải nhà thuốc GPP
     [Documentation]    Kiểm tra hệ thống bỏ qua xác thực đơn thuốc khi cửa hàng không phải nhà thuốc GPP
+    [Tags]     prescription    
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Không Liên Kết Theo Đơn Thuốc
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
