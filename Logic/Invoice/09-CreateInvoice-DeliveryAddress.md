@@ -47,3 +47,9 @@
   - Hỗ trợ tìm kiếm thông minh không phân biệt hoa thường
   - Tối ưu hiệu suất bằng cách sử dụng Redis cache
   - Đảm bảo tính nhất quán của dữ liệu địa chỉ trong hệ thống 
+
+---
+**Navigation**
+- Previous: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
+- Next: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

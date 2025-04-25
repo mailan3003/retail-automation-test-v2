@@ -35,3 +35,9 @@
     - Nếu hóa đơn gốc đã hoàn thành (`oldInvoice.Status == (int)InvoiceState.Issued`)
     - Và đã có hóa đơn trả hàng liên kết (`listReturn != null && listReturn.Any() && oldInvoice.Returns.Any()`)
     - Hệ thống sẽ ném ngoại lệ với thông báo "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật" 
+
+---
+**Navigation**
+- Previous: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
+- Next: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

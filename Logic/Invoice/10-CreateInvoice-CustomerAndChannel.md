@@ -22,3 +22,9 @@
       - Hệ thống ném ngoại lệ `KvValidateDeliveryInfoException`
       - Thông báo lỗi: `Labels.cod_invalidExpecteDeliveryInvoice` ("Thời gian giao hàng phải sau thời gian hóa đơn")
       - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng 
+
+---
+**Navigation**
+- Previous: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
+- Next: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

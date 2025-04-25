@@ -30,3 +30,9 @@
   - Nếu không có thông tin khách hàng (`invoice.CustomerId <= 0`):
     - Hóa đơn sẽ được xử lý như hóa đơn bán lẻ cho khách vãng lai
     - Không cần kiểm tra thêm thông tin khách hàng 
+
+---
+**Navigation**
+- Previous: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
+- Next: [17-CreateInvoice-WarehouseCheck.md](./17-CreateInvoice-WarehouseCheck.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

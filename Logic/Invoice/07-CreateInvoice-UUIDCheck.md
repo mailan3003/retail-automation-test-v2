@@ -23,3 +23,9 @@
       - Tạo UUID mới với định dạng "WN" + Guid mới
       - Ghi log thông tin về việc phát hiện và xử lý UUID trùng lặp
       - Tiếp tục xử lý hóa đơn với UUID mới 
+
+---
+**Navigation**
+- Previous: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
+- Next: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

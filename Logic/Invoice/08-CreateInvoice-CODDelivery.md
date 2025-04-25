@@ -32,3 +32,9 @@
   - Ngăn chặn việc sử dụng đối tác vận chuyển không hợp lệ hoặc không được hỗ trợ
   - Chuẩn hóa trạng thái vận đơn để phù hợp với quy trình xử lý của hệ thống
   - Tăng tính minh bạch và độ tin cậy trong quá trình giao hàng và thu tiền hộ 
+
+---
+**Navigation**
+- Previous: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
+- Next: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

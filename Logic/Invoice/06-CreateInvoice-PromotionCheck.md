@@ -26,3 +26,9 @@
   - Ngăn chặn việc áp dụng khuyến mãi đã hết hạn hoặc bị hủy
   - Cung cấp thông báo chi tiết giúp người dùng hiểu rõ vấn đề
   - Tăng tính minh bạch trong quá trình xử lý hóa đơn 
+
+---
+**Navigation**
+- Previous: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
+- Next: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

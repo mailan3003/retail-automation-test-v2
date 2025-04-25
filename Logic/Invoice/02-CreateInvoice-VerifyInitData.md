@@ -25,3 +25,9 @@
   - Làm sạch thông tin giao hàng (nếu có):
     - `invoice.DeliveryDetail.Address = StringHelper.RemoveRegex(invoice.DeliveryDetail.Address)`
     - Loại bỏ các ký tự đặc biệt không hợp lệ, đảm bảo tính nhất quán của dữ liệu 
+
+---
+**Navigation**
+- Previous: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md)
+- Next: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 

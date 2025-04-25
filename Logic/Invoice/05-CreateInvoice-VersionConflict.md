@@ -22,3 +22,9 @@
   - Đảm bảo tính nhất quán của dữ liệu trong hệ thống đa người dùng
   - Giảm thiểu rủi ro mất dữ liệu do cập nhật đồng thời
   - Cung cấp thông báo rõ ràng cho người dùng khi xảy ra xung đột, hướng dẫn họ tải lại dữ liệu mới nhất 
+
+---
+**Navigation**
+- Previous: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
+- Next: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
+- Overview: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
