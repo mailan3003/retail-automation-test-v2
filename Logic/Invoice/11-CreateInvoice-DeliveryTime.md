@@ -25,4 +25,4 @@
 **Điều hướng**
 - Trước đó: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
 - Tiếp theo: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

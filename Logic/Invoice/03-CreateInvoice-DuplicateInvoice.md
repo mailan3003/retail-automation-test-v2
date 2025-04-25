@@ -23,4 +23,4 @@
 **Điều hướng**
 - Trước đó: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md)
 - Tiếp theo: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

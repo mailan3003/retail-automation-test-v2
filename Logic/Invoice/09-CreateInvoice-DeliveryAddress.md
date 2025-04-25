@@ -52,4 +52,4 @@
 **Điều hướng**
 - Trước đó: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
 - Tiếp theo: [10-CreateInvoice-CustomerAndChannel.md](./10-CreateInvoice-CustomerAndChannel.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

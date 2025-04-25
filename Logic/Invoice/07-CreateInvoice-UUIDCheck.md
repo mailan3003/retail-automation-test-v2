@@ -28,4 +28,4 @@
 **Điều hướng**
 - Trước đó: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
 - Tiếp theo: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

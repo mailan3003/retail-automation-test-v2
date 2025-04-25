@@ -41,4 +41,4 @@
 **Điều hướng**
 - Trước đó: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)
 - Tiếp theo: [14-CreateInvoice-SalesPersonCheck.md](./14-CreateInvoice-SalesPersonCheck.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

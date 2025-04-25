@@ -12,4 +12,4 @@
 **Điều hướng**
 - Trước đó: [13-CreateInvoice-Prescription.md](./13-CreateInvoice-Prescription.md)
 - Tiếp theo: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

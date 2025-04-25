@@ -31,4 +31,4 @@
 **Điều hướng**
 - Trước đó: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
 - Tiếp theo: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

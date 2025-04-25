@@ -37,4 +37,4 @@
 **Điều hướng**
 - Trước đó: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)
 - Tiếp theo: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

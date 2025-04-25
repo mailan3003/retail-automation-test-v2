@@ -27,4 +27,4 @@
 **Điều hướng**
 - Trước đó: [04-CreateInvoice-UpdateInvoice.md](./04-CreateInvoice-UpdateInvoice.md)
 - Tiếp theo: [06-CreateInvoice-PromotionCheck.md](./06-CreateInvoice-PromotionCheck.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

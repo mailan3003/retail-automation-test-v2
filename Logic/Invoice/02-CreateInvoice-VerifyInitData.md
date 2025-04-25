@@ -30,4 +30,4 @@
 **Điều hướng**
 - Trước đó: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md)
 - Tiếp theo: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

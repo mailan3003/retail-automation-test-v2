@@ -35,4 +35,4 @@
 **Điều hướng**
 - Trước đó: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)
 - Tiếp theo: [17-CreateInvoice-WarehouseCheck.md](./17-CreateInvoice-WarehouseCheck.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

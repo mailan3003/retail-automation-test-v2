@@ -33,4 +33,4 @@
 **Điều hướng**
 - Trước đó: [16-CreateInvoice-CustomerDelivery.md](./16-CreateInvoice-CustomerDelivery.md)
 - Tiếp theo: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

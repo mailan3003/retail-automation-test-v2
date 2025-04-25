@@ -6,4 +6,5 @@ Phương thức `CreateInvoice` quản lý việc tạo mới và cập nhật h
 ---
 **Điều hướng**
 - Trước đó: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md)
-- Tiếp theo: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md) 
+- Tiếp theo: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md)
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

@@ -40,4 +40,4 @@
 **Điều hướng**
 - Trước đó: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
 - Tiếp theo: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 

@@ -27,4 +27,4 @@
 **Điều hướng**
 - Trước đó: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
 - Tiếp theo: [11-CreateInvoice-DeliveryTime.md](./11-CreateInvoice-DeliveryTime.md)
-- Tổng quan: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md) 
+- Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md) 
