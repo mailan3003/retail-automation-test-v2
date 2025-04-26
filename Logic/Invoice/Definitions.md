@@ -1,0 +1,14 @@
+### This file explains necessary key `concepts`, `definitions`, etc. that help you understand our business logic to generate it in Vietnamese easily.
+- The `isValid` variable is passed by several other calling methods and is used to bypass logic for specific business rules.
+- The `TaxService.IsActiveProductVATToggle` method specifies whether a retailer is using the VAT module. You should group all failure test cases involving this configuration while writing test cases.
+- The `AppServiceConfigInfo` variable is a collection of web configurations.
+- All messages with the prefix `KVMessage.*` are stored as key-value XML pairs in the `KVMessage.resx` file located in the `C:\SOURCECODE\Resource\Kiotviet.Resources` folder. Please ensure that you retrieve the correct values based on the keys
+- All labels with the prefix `Labels.*` are stored as key-value XML pairs in the `Labels.resx` file located in the `C:\SOURCECODE\Resource\Kiotviet.Resources` folder. Please ensure that you retrieve the correct values based on the keys
+- All exceptions with the prefix `KvValidate*` will return a 420 HTTP status response.
+- The `InvoiceProcessingToggle` configuration is set manually by the admin. Let's assume it will be true while writing test cases.
+- All service dependencies ending with the suffix `*Service` are located in the `C:\SOURCECODE\CoreWeb` folder. Please ensure that you retrieve the correct methods while diving into the services.
+- The `KvPromotionService` service calls the separate promotion API to perform specific logic.
+- The `DeliveryInfoService.IsActiveKShipV4Toggle()` method specifies whether a retailer is using the 4th version of the Delivery module. You should group all failure test cases involving this configuration while writing test cases.
+- The `UsingCod` property of the `Invoice` class indicates whether an invoice contains delivery information.
+- The `UsingCod` property of the `DeliveryInfo` class differs from the UsingCod property above. It indicates whether an invoice uses the 'Cash On Delivery' method.
+- The `PosSetting` contains a set of retailer's settings. You should group all failure test cases involving retailer's settings while writing test cases.

@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API của DataProcessingTest
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/InvoiceVLXDDATA.robot
+Resource          ../../TestData/Invoice/InvoiceVLXDData.robot
 Resource          ../../Keywords/Invoice/InvoiceVATKeywords.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../Utilities/RequestHelper.robot

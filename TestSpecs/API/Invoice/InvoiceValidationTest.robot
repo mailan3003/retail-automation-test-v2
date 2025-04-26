@@ -23,7 +23,7 @@ RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
 
 RT-IV-002 Kiểm tra mã hóa đơn trùng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
-    [Tags]   
+    [Tags]     test4235
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
