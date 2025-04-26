@@ -8,7 +8,7 @@ robot_tasks:
         variables:
         - "ENV:vlxd"
     -   name: "dakho-task"
-        include_tags: "dakho"
+        include_tags: "warehouse"
         variables:
         - "ENV:dakho"
     -   name: "currency-task"
