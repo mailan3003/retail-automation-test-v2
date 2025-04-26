@@ -226,7 +226,6 @@ Xác Thực Thanh Toán ${amount} Tiền Tệ ${currency_code} Được Lưu Tro
     Should Be Equal    ${result[0]}    ${currency_code}    Đơn vị tiền tệ không đúng. Kỳ vọng: ${currency_code}, Thực tế: ${result[0]}
     Should Be Equal As Numbers    ${result[1]}    ${amount}    Số tiền không đúng. Kỳ vọng: ${amount}, Thực tế: ${result[1]}
 
-Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_ID_CURRENCY_3} Giảm ${TOTAL_PAYMENT}  
 
 Lấy thông Tin công nợ khách hàng ${customer_id} trước khi thanh toán
     ${query}=    Set Variable    SELECT Debt FROM CustomerSummary WHERE Id = ?
