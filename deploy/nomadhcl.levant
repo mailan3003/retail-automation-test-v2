@@ -42,7 +42,7 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
                 #memory_max = 15128 # MB
             }
         }
-        {{ end }}
+        [[ end ]]
         task "autotest-integration" {
             driver = "docker"
             lifecycle {
