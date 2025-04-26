@@ -29,6 +29,8 @@ deploy to nomad agent:
   stage: deploy
   only:
     - develop-ci
+    - develop-ci-parallel
   script:
     - echo "Deploying to Nomad agent"
     - cp deploy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
+    - cp deploy/robot_tasks.yml /opt/retail-automation-test-v2/robot_tasks.yml
