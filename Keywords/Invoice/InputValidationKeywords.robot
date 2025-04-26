@@ -1,52 +1,248 @@
 *** Settings ***
 Documentation     Keywords cho test cases API của InputValidationTest
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Utilities/DataUtilities.robot
 Resource          ../../TestData/Invoice/Invoice_Validation_Data.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Library           ../../Resources/DatabaseLibrary.py
+Library           DateTime
+*** Variables ***
+${CUSTOMER_OTHER_BRANCH}    1000009380
+${BRANCH_NOT_EXIST}    4234325
+${INACTIVE_PRODUCT_ID}    1000014522
+${SERIAL_SOLD}    GSU1Y
+${PRODUCT_ID_STOCK_OUT}    1000017692
+${PRODUCT_ID_NT}   1000017642
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
-    ${data}=    Set Variable    ${STANDARD_INVOICE_REQUEST}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Không Hợp Lệ
-    ${data}=    Set Variable    ${INVALID_CODE_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.BranchId    ${None}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Trùng
-    ${data}=    Set Variable    ${INVOICE_DUPLICATED_CODE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Chi Nhánh Không Tồn Tại
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.BranchId    ${BRANCH_NOT_EXIST}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Dài
-    ${data}=    Set Variable    ${LONG_CODE_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     [Arguments]    ${data}=${UPDATE_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Code    ${UPDATE_INVOICE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
     [Arguments]    ${data}=${ORDER_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Code    ${ORDER_INVOICE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Tồn Tại
-    ${data}=    Set Variable    ${INVALID_CUSTOMER_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    7835222
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Chi Nhánh Khác
-    ${data}=    Set Variable    ${OTHER_BRANCH_CUSTOMER_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${CUSTOMER_OTHER_BRANCH}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Người Bán
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.SoldById    ${None}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Tồn Tại
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.SoldById   5355333335
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trong Tương Lai
+    ${current_date}=    Get Current Date   
+    ${future_date}=    Add Time To Date    ${current_date}    3 day   
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.PurchaseDate    ${future_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Không Có Sản Phẩm
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${None}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Không Tồn Tại
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    ProductId    ${None}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Số Lượng Sản Phẩm Bằng 0
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    0
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Số Lượng Sản Phẩm Âm
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    -1
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Hết Hàng Gian Không Cho Phép Bán Âm
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    ProductId    ${PRODUCT_ID_STOCK_OUT}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+    
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${ma_hh} Gian Không Cho Phép Bán Âm
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    10
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    ProductId    ${result[0]}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Giá Bán Âm
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Price    -1
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đã Ngừng Kinh Doanh
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    ProductId    ${INACTIVE_PRODUCT_ID}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Hết Hàng
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    0
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Serial Không Tồn Tại
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}     Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_ID_SERIAL}  
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    SerialNumbers   88888
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial Đã Bán
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}     Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_ID_SERIAL}  
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    IsLotSerialControl    ${TRUE}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    SerialNumbers   ${SERIAL_SOLD}  
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial Số Lượng Không Hợp Lệ
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}     Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_ID_SERIAL}  
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    IsLotSerialControl    ${TRUE}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    SerialNumbers   ${SERIAL_SOLD}  
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    Quantity    2
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Lô Date ${ma_hh} Không Đủ Số Lượng
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${query_2}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE ProductId = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    ${result_batch}=    Fetch One    ${query_2}     ${result[0]}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    120000
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId   ${result[0]}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsBatchExpireControl   ${true}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductBatchExpireId   ${result_batch[0]}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Vượt Quá
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    SerialNumbers    ${OVERPAYMENT_INVOICE}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Bảo Hành Không Có Thời Hạn
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${data_product}  Deep Copy     ${STANDARD_INVOICE_DETAIL}
+    ${warranty_data}=    Deep Copy    ${invoice_warranty_body}
+    ${data_product}=    Update Nested Dictionary Property  ${data_product}    UseWarranty    ${true}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails.ProductWarranty    ${warranty_data}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Phương Thức Thanh Toán Có Số Tiền Âm
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${payment_data}=    Deep Copy   ${payment_body} 
+    ${payment_data}=    Update Nested Dictionary Property  ${payment_data}    Amount    -1000
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Payments    ${payment_data}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng ${customer_code} Thay Toán ${payment} Gian Bật Không Cho Phép Nợ
+    ${query_1}=    Set Variable    SELECT ID FROM Customer WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${customer_code}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${product_data}=    Deep Copy   ${STANDARD_INVOICE_DETAIL}
+    ${product_data}=    Update Nested Dictionary Property  ${product_data}   ProductId    ${PRODUCT_ID_NT}
+    ${payment_data}=    Deep Copy   ${payment_body} 
+    ${payment_data}=    Update Nested Dictionary Property  ${payment_data}    Amount    ${payment}
+     ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoiceDetails    ${product_data}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Payments    ${payment_data}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${result[0]}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Bằng Điểm
-    ${data}=    Set Variable    ${POINT_PAYMENT_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    PaymentMethod    ${POINT_PAYMENT_INVOICE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn COD
     [Arguments]    ${delivery_info}=${VALID_DELIVERY_INFO}
@@ -54,81 +250,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn COD
     Run Keyword If    ${delivery_info} != ${None}    Set To Dictionary    ${data}    DeliveryInfo=${delivery_info}
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Hết Hàng
-    ${data}=    Set Variable    ${OUT_OF_STOCK_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Serial Không Hợp Lệ
-    ${data}=    Set Variable    ${INVALID_SERIAL_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Serial Trùng
-    ${data}=    Set Variable    ${DUPLICATE_SERIAL_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô
-    [Arguments]    ${data}=${BATCH_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Vượt Quá
-    ${data}=    Set Variable    ${OVERPAYMENT_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sổ Giá
-    [Arguments]    ${data}=${PRICEBOOK_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Và Khuyến Mãi
-    ${data}=    Set Variable    ${VOUCHER_PROMOTION_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Kê Đơn
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
-    
-    &{prescription_product}=    Create Dictionary
-    ...    ProductId=${PRESCRIPTION_DRUG_ID}
-    ...    Quantity=1
-    ...    Price=50000
-    
-    ${details}=    Create List    ${prescription_product}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Không Hoạt Động
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
-    
-    &{inactive_product}=    Create Dictionary
-    ...    ProductId=${INACTIVE_PRODUCT_ID}
-    ...    Quantity=1
-    ...    Price=100000
-    
-    ${details}=    Create List    ${inactive_product}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Combo
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
-    
-    &{combo_product}=    Create Dictionary
-    ...    ProductId=${COMBO_PRODUCT_ID}
-    ...    Quantity=1
-    ...    Price=300000
-    
-    ${details}=    Create List    ${combo_product}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN     ${data}
-
-Gửi Yêu Cầu Tạo Hóa Đơn    
-    ${response}=    Call API    invoices    ${REQUEST_DATA} 
-    Set Test Variable    ${RESPONSE}     ${response}
-
 # DB Validation Keywords
 Xác Thực Hóa Đơn Trong DB
     [Documentation]    Xác thực hóa đơn tồn tại trong CSDL và các thông tin chi tiết
