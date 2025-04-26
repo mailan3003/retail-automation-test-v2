@@ -10,13 +10,13 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
         attribute = "${attr.kernel.name}"
         value = "linux"
     }
-    group "automation-test" {
+    [[ range .robot_tasks ]]
+    group "automation-test-[[ .name ]]" {
         count = 1
         restart {
             attempts = 0
         }
-        [[ range .robot_tasks ]]
-        task "robot-[[ .name ]]" {
+        task "robot" {
             driver = "docker"
             template {
                 data = <<EOH
@@ -42,7 +42,6 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
                 #memory_max = 15128 # MB
             }
         }
-        [[ end ]]
         task "autotest-integration" {
             driver = "docker"
             lifecycle {
@@ -77,9 +76,10 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
             }
             resources {
                 cpu = 300 # Mhz
-                memory = 7428 # MB
+                memory = 1428 # MB
                 #memory_max = 16428 # MB
             }
         }
     }
+    [[ end ]]
 }
