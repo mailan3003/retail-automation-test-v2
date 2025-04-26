@@ -1,0 +1,17 @@
+pipeline {
+    agent { label 'nomadagent' }
+
+    environment {
+        BUILD_NUMBER = "jenkins-${env.BUILD_NUMBER}"
+    }
+    stages {
+        stage('automation-test-job') {
+            steps {
+                sh """
+                    levant render -out=automation-test-job.nomad -var-file=/opt/retail-automation-test-v2/robot_tasks.yml /opt/retail-automation-test-v2/nomadhcl.levant
+                    /home/jenkins/.local/bin/nomadtools watch --purge run automation-test-job.nomad
+                """
+            }
+        }
+    }
+}

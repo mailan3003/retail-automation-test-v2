@@ -1,0 +1,17 @@
+robot_tasks:
+    -   name: "apiinvoice-task"
+        include_tags: "apiinvoice"
+        variables:
+        - "ENV:api"
+    -   name: "vlxd-task"
+        include_tags: "vlxd"
+        variables:
+        - "ENV:vlxd"
+    -   name: "dakho-task"
+        include_tags: "dakho"
+        variables:
+        - "ENV:dakho"
+    -   name: "currency-task"
+        include_tags: "currency"
+        variables:
+        - "ENV:currency"
