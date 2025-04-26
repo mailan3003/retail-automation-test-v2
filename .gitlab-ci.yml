@@ -15,6 +15,7 @@ build docker image:
   stage: build
   only:
     - develop-ci
+    - develop
   script:
     - docker build . -t $DOCKER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
@@ -29,7 +30,7 @@ deploy to nomad agent:
   stage: deploy
   only:
     - develop-ci
-    - develop-ci-parallel
+    - develop
   script:
     - echo "Deploying to Nomad agent"
     - cp deploy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
