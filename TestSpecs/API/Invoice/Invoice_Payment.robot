@@ -521,20 +521,6 @@ RT-RC-021 Tạo hóa đơn với điểm khách hàng không đủ
     Then Mã trạng thái phải là 400
     And Nội dung phản hồi trả về phải có thông báo lỗi điểm không đủ
 
-RT-RC-022 Tạo hóa đơn với mã voucher không hợp lệ
-    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn thanh toán bằng voucher không hợp lệ
-    ...    - Dữ liệu đầu vào:
-    ...    - Hóa đơn có tổng tiền = 100,000đ
-    ...    - Phương thức thanh toán: Voucher
-    ...    - Mã voucher: INVALID_VOUCHER (không tồn tại)
-    ...    - Kỳ vọng:
-    ...    - Status code: 400
-    ...    - Response có thông báo lỗi về voucher không hợp lệ
-    [Tags]    payment    voucher    validation    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã trạng thái phải là 400
-    And Nội dung phản hồi trả về phải có thông báo lỗi voucher không hợp lệ
 
 RT-RC-023 Tạo hóa đơn và cập nhật thông tin công nợ khách hàng
     [Documentation]    Kiểm tra cập nhật thông tin công nợ khách hàng khi tạo hóa đơn
@@ -556,3 +542,147 @@ RT-RC-023 Tạo hóa đơn và cập nhật thông tin công nợ khách hàng
     And Xác Thực Công Nợ Của Hóa Đơn 50000
     And Xác Thực Công Nợ Khách Hàng Tăng 50000
 
+
+# Các test case mới cho phần xử lý thanh toán bằng Voucher
+RT-GP-010 Thanh toán hóa đơn thành công với Voucher
+    [Documentation]    Kiểm tra thanh toán hóa đơn thành công với Voucher
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER001"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher 100,000đ
+    ...    - Logic xử lý: 
+    ...      + InvoiceService.CreateInvoice() tạo Payment với Method="Voucher"
+    ...      + VoucherService.ValidateVoucher() xác thực voucher hợp lệ
+    ...      + InvoiceVoucherService.BulkCreateInvoiceVoucherAsync() cập nhật trạng thái voucher
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công
+    ...    - Thanh toán Voucher được ghi nhận với số tiền 100,000đ
+    ...    - Voucher được đánh dấu đã sử dụng (status=1) và gắn với hóa đơn
+    [Tags]    payment    voucher    AIGenerated    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher ${VOUCHER_CAMPAIGN_ID_1}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    100000
+    And Xác Thực Trạng Thái Voucher Đã Sử Dụng    ${voucher_id}
+
+RT-GP-011 Thanh toán hóa đơn với Voucher vượt quá giá trị hóa đơn
+    [Documentation]    Kiểm tra thanh toán hóa đơn với Voucher có giá trị lớn hơn tổng hóa đơn
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER002"
+    ...    - Tổng tiền hóa đơn: 50,000đ
+    ...    - Thanh toán: Voucher 100,000đ
+    ...    - Logic xử lý: 
+    ...      + InvoiceService.CreateInvoice() tạo Payment với Method="Voucher"
+    ...      + Hệ thống giới hạn số tiền voucher bằng tổng tiền hóa đơn
+    ...      + payment.Amount = Math.Min(payment.Amount, total)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công
+    ...    - Thanh toán Voucher được ghi nhận với số tiền 50,000đ (= tổng hóa đơn)
+    ...    - Voucher được đánh dấu đã sử dụng (status=1)
+    [Tags]    payment    voucher    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giá Thấp Thanh Toán Bằng Voucher ${VOUCHER_CAMPAIGN_ID_1}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
+    And Xác Thực Trạng Thái Voucher Đã Sử Dụng    ${voucher_id}
+
+RT-GP-012 Thanh toán hóa đơn kết hợp Voucher và phương thức khác
+    [Documentation]    Kiểm tra thanh toán hóa đơn kết hợp Voucher và tiền mặt
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER003"
+    ...    - Tổng tiền: 150,000đ
+    ...    - Thanh toán 1: Voucher 50,000đ
+    ...    - Thanh toán 2: Tiền mặt 100,000đ
+    ...    - Logic xử lý: 
+    ...      + InvoiceService.CreateInvoice() tạo các Payment với Method khác nhau
+    ...      + Hệ thống tổng hợp tất cả các phương thức thanh toán
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công
+    ...    - Thanh toán Voucher được ghi nhận với số tiền 50,000đ
+    ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
+    ...    - Trạng thái thanh toán của hóa đơn là "Đã thanh toán" (1)
+    [Tags]    payment    voucher    combined    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Kết Hợp Voucher ${VOUCHER_CAMPAIGN_ID_2} Và Tiền Mặt
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
+    And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    100000
+    And Xác Thực Tổng Tiền Thanh Toán Hóa Đơn    ${INVOICE_ID}    150000
+    And Xác Thực Trạng Thái Thanh Toán Hóa Đơn    ${INVOICE_ID}    1
+
+RT-GP-013 Thanh toán hóa đơn với Voucher không hợp lệ
+    [Documentation]    Kiểm tra xử lý lỗi khi thanh toán bằng Voucher không hợp lệ
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER004"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher không hợp lệ (đã sử dụng hoặc hết hạn)
+    ...    - Logic xử lý: 
+    ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+    [Tags]    payment    voucher    error    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Thông Báo Lỗi Phải Chứa "Voucher không hợp lệ hoặc đã được sử dụng"
+
+RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
+    [Documentation]    Kiểm tra thanh toán hóa đơn với nhiều Voucher khác nhau
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER005"
+    ...    - Tổng tiền: 200,000đ
+    ...    - Thanh toán 1: Voucher 1 - 50,000đ
+    ...    - Thanh toán 2: Voucher 2 - 50,000đ
+    ...    - Thanh toán 3: Tiền mặt - 100,000đ
+    ...    - Logic xử lý: 
+    ...      + InvoiceService.CreateInvoice() tạo nhiều Payment với Method="Voucher"
+    ...      + VoucherService.ValidateVoucher() xác thực từng voucher
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công
+    ...    - Thanh toán Voucher 1 được ghi nhận với số tiền 50,000đ
+    ...    - Thanh toán Voucher 2 được ghi nhận với số tiền 50,000đ
+    ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
+    ...    - Các Voucher được đánh dấu đã sử dụng (status=1)
+    [Tags]    payment    voucher    multiple    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với Nhiều Voucher
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id_1}    50000
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id_2}    50000
+    And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    100000
+    And Xác Thực Trạng Thái Nhiều Voucher Đã Sử Dụng
+
+RT-GP-015 Thanh toán hóa đơn với Voucher và khuyến mãi
+    [Documentation]    Kiểm tra thanh toán hóa đơn với Voucher kết hợp khuyến mãi
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER006"
+    ...    - Tổng tiền trước KM: 150,000đ
+    ...    - Khuyến mãi: 30,000đ
+    ...    - Tổng tiền sau KM: 120,000đ
+    ...    - Thanh toán: Voucher 50,000đ, Tiền mặt 70,000đ
+    ...    - Logic xử lý: 
+    ...      + InvoiceService.ProcessPromotionDiscount() áp dụng khuyến mãi
+    ...      + InvoiceService.CreateInvoice() tạo Payment với Method="Voucher"
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công
+    ...    - Giảm giá khuyến mãi được ghi nhận với số tiền 30,000đ
+    ...    - Thanh toán Voucher được ghi nhận với số tiền 50,000đ
+    ...    - Thanh toán tiền mặt được ghi nhận với số tiền 70,000đ
+    [Tags]    payment    voucher    promotion    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Kết Hợp Khuyến Mãi
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
+    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
+    And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    70000
+    And Xác Thực Giảm Giá Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    30000

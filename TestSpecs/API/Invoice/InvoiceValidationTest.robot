@@ -23,7 +23,7 @@ RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
 
 RT-IV-002 Kiểm tra mã hóa đơn trùng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
-
+    [Tags]   
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -252,3 +252,26 @@ RT-IV-029 Kiểm tra sản phẩm lô date không đủ số lượng
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error ": số lô DFL - 27/04/2025 không đủ số lượng tồn kho."
     
+RT-IV-030 Kiểm tra điều kiện về ngày không được trước ngày khóa sổ
+    [Documentation]    Kiểm tra validate ngày tạo hóa đơn không được trước ngày khóa sổ
+    [Tags]     invoicevalidate    apiinvoice      3435
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trước Ngày Khóa Sổ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Bạn không thể bán hàng trước ngày khóa sổ 26/04/2025"
+
+RT-RC-022 Tạo hóa đơn với mã voucher không hợp lệ
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn thanh toán bằng voucher không hợp lệ
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn có tổng tiền = 100,000đ
+    ...    - Phương thức thanh toán: Voucher
+    ...    - Mã voucher: INVALID_VOUCHER (không tồn tại)
+    ...    - Kỳ vọng:
+    ...    - Status code: 400
+    ...    - Response có thông báo lỗi về voucher không hợp lệ
+    [Tags]    payment    voucher    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 400
+    And Nội dung phản hồi trả về phải có thông báo lỗi voucher không hợp lệ
+

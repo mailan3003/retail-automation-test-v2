@@ -134,9 +134,8 @@ ${TAX_1_ID}             2
 ${valid_channel_id}    6666
 
 # Dates
-${FUTURE_DATE}    2024-12-31
-${PAST_DATE}      2023-01-01
-
+${KHOA_SO_DATE}    25-04-2025
+${BRANCH_ID_NHANH_A}  1000000048
 # Promotion data
 ${PROMOTION_ID_GROUP_CUSTOMER}    91436
 ${PROMOTION_ID_PERCENTAGE}    87281

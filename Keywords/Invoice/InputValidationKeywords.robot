@@ -36,17 +36,10 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Chi Nhánh Không Tồn Tại
     RETURN     ${request}
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
-    [Arguments]    ${data}=${UPDATE_INVOICE}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trước Ngày Khóa Sổ
     ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property  ${request}    Code    ${UPDATE_INVOICE}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN     ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
-    [Arguments]    ${data}=${ORDER_INVOICE}
-    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property  ${request}    Code    ${ORDER_INVOICE}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.PurchaseDate    25-04-2025
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.BranchId    ${BRANCH_ID_NHANH_A}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN     ${request}
 

@@ -219,7 +219,7 @@ RT-RP-014 Không tích điểm cho sản phẩm có tính điểm phần điểm
     ...    - Sản phẩm 1: Giá = 0đ, Số lượng = 1
     ...    - Sản phẩm 2: Giá = 100,000đ, Số lượng = 1
     ...    - Điểm dự kiến: 10 điểm (chỉ tính điểm cho sản phẩm 2)
-    [Tags]    api    invoice    reward-point    negative    zero-price
+    [Tags]    apiinvoice    reward-point    negative    zero-price
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm giá 0đ
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_ID_REWARD_POINT_ZERO} Có Điểm Cố Định
