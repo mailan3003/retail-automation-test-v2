@@ -21,21 +21,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Mã ${ma_hh} có Số Lượng
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Có Số Lượng ${quantity}
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${detail}=    Set Variable    ${data["Invoice"]["InvoiceDetails"][0]}
-    Set To Dictionary    ${detail}    Quantity=${quantity}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Combo
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${COMBO_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial ${ma_hh} Với Serial ${serial_number}
     ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
     ${result}=    Fetch One    ${query_1}    ${ma_hh}
@@ -57,7 +42,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với $
     Set Test Variable    ${product_id}    ${result[0]} 
     Set Test Variable    ${product_batch_id}    ${result_batch[0]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
-    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsBatchExpireControl   ${true}
@@ -65,30 +50,54 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô ${ma_hh} với $
      ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Đơn Vị Chuyển Đổi
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${CONVERSION_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Sản Phẩm
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Cho Cập Nhật Tồn Kho
-    ${details}=    Create List    ${STANDARD_PRODUCT_DETAIL}    ${LARGE_QUANTITY_PRODUCT_DETAIL}
-    Set To Dictionary    ${data["Invoice"]}    InvoiceDetails=${details}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${ma_hh} Số Lượng ${quantity} Và Hàng Hóa ${ma_hh_1} Số Lượng ${quantity_1}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    Set Test Variable    ${product_id}    ${result[0]}
+    ${query_2}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result_1}=    Fetch One    ${query_2}    ${ma_hh_1}
+    Set Test Variable    ${product_id_1}    ${result_1[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product_1}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
+    ${data_product_1}=    Update Nested Dictionary Property     ${data_product_1}    ProductId    ${product_id_1}
+    ${data_product_1}=    Update Nested Dictionary Property     ${data_product_1}    Quantity    ${quantity_1}
+    ${list_data_product}=    Create List    ${data_product}    ${data_product_1}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${list_data_product}
+    ${total_quantity}=    Evaluate    ${quantity} + ${quantity_1}
+    Set Test Variable    ${TOTAL_QUANTITY}    ${total_quantity}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+    
+    
 
-Chuẩn Bị Dữ Liệu Cho Phép Bán Âm Khi Hết Tồn Kho
-    ${data}=    Evaluate    json.loads('''${ALLOW_NEGATIVE_INVENTORY_DATA}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đơn Hàng
-    ${data}=    Evaluate    json.loads('''${ORDER_TO_INVOICE_DATA}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
+Chuẩn Bị Dữ Liêu Hóa Đơn Với Sản Phẩm ${ma_hh} Có ${number} Dòng Số Lượng Mỗi Dòng ${quantity}
+    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${ma_hh}
+    Set Test Variable    ${product_id}    ${result[0]}
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery} 
+    ${data_product}=     Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    ${quantity}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsMaster   ${true}
+    ${list_data_product}=    Create List    ${data_product}
+    FOR    ${i}    IN RANGE    ${number}
+        ${data_product_copy}=    Deep Copy    ${data_product}
+        ${data_product_copy}=    Update Nested Dictionary Property     ${data_product_copy}    Quantity    ${quantity}
+        ${data_product_copy}=    Update Nested Dictionary Property     ${data_product_copy}    ProductId    ${product_id}
+        ${data_product_copy}=    Update Nested Dictionary Property     ${data_product_copy}    IsMaster   ${false}
+        Append To List    ${list_data_product}    ${data_product_copy}
+    END
+    ${total_quantity}=    Evaluate    ${quantity} * (${number}+1)
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${list_data_product}
+    Set Test Variable    ${TOTAL_QUANTITY}    ${total_quantity}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id}
     ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?

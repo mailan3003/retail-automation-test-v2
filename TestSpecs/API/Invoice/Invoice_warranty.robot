@@ -66,7 +66,7 @@ RT-IWR-003 Tạo hóa đơn thành công với sản phẩm BHBT có thời hạ
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Nhiều Thời Hạn BH @{warranty_name} @{number_time} @{number_time_type} Và BT 1 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID_2} BHBT Trong CSDL
     And Xác Thực Thông Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Chứa Nhiều Thời Hạn BHBT @{warranty_name} @{number_time} @{number_time_type} Được Lưu Trong CSDL
     And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Được Lưu Với Thời Hạn 1 Năm

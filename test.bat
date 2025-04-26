@@ -1,1 +1,1 @@
-robot -i    smoke   TestSpecs 
+pabot --processes 8 -T -d reports --argumentfile variable_file.txt -i   apiinvoice   TestSpecs 

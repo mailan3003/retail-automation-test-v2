@@ -1,19 +1,23 @@
 *** Settings ***
 Documentation     Keywords cho test cases API cập nhật thông tin giao hàng
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/DeliveryUpdateData.robot
+Resource          DeliveryProcessingKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
-Chuẩn Bị Dữ Liệu Cập Nhật Giao Hàng Cơ Bản
+Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     [Documentation]    Chuẩn bị dữ liệu cập nhật giao hàng cơ bản
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    Gửi Yêu Cầu Tạo Hóa Đơn
+    
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
     [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận

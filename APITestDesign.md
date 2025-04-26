@@ -14,17 +14,17 @@ robotframework-tests/
 │   │   ├── ResponseHelper.robot            # Utilities for handling responses
 │   │   └── Utilities.robot                 # Other common utilities
 │   └── {API Name}/                           # Each API module has its own folder (eg, Invoice for InvoiceAPI)
-│       └── {Feature}Keywords.robot         # Feature-specific keywords
+│       └── {Feature}_Keywords.robot         # Feature-specific keywords
 ├── Resources/                              # External libraries
 │   └── DatabaseLibrary.py                  # Library to execute database query 
 ├── TestData/                               # All test data used in the project
 │   ├── CommonData.robot                    # Common test data
 │   └── {API Name}/                           # Each API module has its own test data folder (eg, Invoice for InvoiceAPI)
-│       └── {Feature}Data.robot             # Feature-specific test data
+│       └── {Feature}_Data.robot             # Feature-specific test data
 └── TestSpecs/                              # All test specifications
     ├── API/                                # API test specifications
     │   └── {API Name}/                       # Each API module (eg, Invoice for InvoiceAPI)
-    │       └── {Feature}Test.robot         # Feature-specific API tests
+    │       └── {Feature}_Test.robot         # Feature-specific API tests
     └── E2E/                                # End-to-end test specifications
         └── {Feature}Test.robot             # Feature-specific E2E tests
 ```

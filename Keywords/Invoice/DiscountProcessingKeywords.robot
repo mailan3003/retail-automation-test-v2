@@ -39,6 +39,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá Tỷ Lệ ${discount_ratio} %
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Coupon Giảm Giá 20000
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với mã coupon giảm giá 20000
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CouponCode    ${PROMOTION_ID_1}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
 
 # Keywords xác thực
 Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Giảm Giá ${expected_discount}
@@ -162,14 +169,12 @@ Xác Thực Phân Bổ Giảm Giá Sản Phẩm Trong CSDL
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${empty_list} =    Create List
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
     
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Nested Dictionary Property  ${product_detail}    Quantity    ${quantity}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
@@ -180,9 +185,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Giả
 
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Discount    ${discount}
-    ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    ${quantity}
+    ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Nested Dictionary Property   ${product_detail}    Discount    ${discount}
+    ${product_detail}=   Update Nested Dictionary Property   ${product_detail}    Quantity    ${quantity}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -216,7 +221,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Cố Đ�
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
     ${surcharge_item_body}=    Deep Copy    ${surcharge_item_body}
-    ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_item_body}    Price    ${surcharge}
+    ${surcharge_item_body}=   Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge}
     ${invoice_surcharges}=    Create List    ${surcharge_item_body}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
     
@@ -415,6 +420,72 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
     ${invoice_surcharges}=    Create List    ${surcharge}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
     
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+Lấy Thông Tin Chương Trình Coupon
+    [Documentation]  Lấy thông tin chương trình coupon
+    [Arguments]    ${couponcampaign_code}
+    ${query}=    Set Variable    SELECT Id FROM CouponCampaign WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${couponcampaign_code}
+    RETURN    ${result[0]}
+
+Lấy Coupon Theo Coupon Campaign Id
+    [Documentation]  Lấy coupon code theo coupon campaign id
+    [Arguments]    ${couponcampaign_id}
+    ${query}=    Set Variable    SELECT Id, Code FROM Coupon WHERE CouponCampaignId = ? AND Status = 1
+    ${result}=    Fetch One    ${query}    ${couponcampaign_id}
+    RETURN    ${result[0]}    ${result[1]}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign}
+    [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
+    ${coupon_data}=  Update Nested Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
+    ${coupon_data}=  Update Nested Dictionary Property     ${coupon_data}    Id    ${coupon_id}
+    ${coupon_data}=  Update Nested Dictionary Property  ${coupon_data}    Code    ${coupon_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    5000
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign} Và Giảm Giá ${discount}
+    [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon và giảm giá
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Id    ${coupon_id}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Code    ${coupon_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    100000
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Đơn Giá ${price} Áp Đợt Coupon ${ma_coupon_campaign}
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Id    ${coupon_id}
+    ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Code    ${coupon_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     100000
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    100000
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 

@@ -1,18 +1,15 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá hóa đơn
-Suite Setup       Suite Setup
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 
 *** Variables ***
-${DB_CONNECTED}    ${TRUE}
+
 
 *** Keywords ***
-Suite Setup
-    [Documentation]    Setup for the test suite
-    Set Suite Variable    ${SUITE_NAME}    DiscountProcessingTest
+
 *** Test Cases ***
 RT-DP-001 Tạo hóa đơn với giảm giá cơ bản
     [Documentation]    Kiểm tra tạo hóa đơn với giảm giá cơ bản:
@@ -146,4 +143,60 @@ RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 85000
     
+RT-DP-015 Tính tổng tiền hàng có giảm giá theo mã coupon
+    [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Mã coupon: Giảm 20.000đ
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 20.000đ = 80.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 80000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount    apiinvoice    coupon
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon BHCP00004 và Giảm Giá 50000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng 0
+    
+RT-DP-016 Tính tổng tiền hàng có giảm giá theo mã coupon phần trăm
+    [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon phần trăm:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Mã coupon: Giảm 15% tổng giá trị đơn hàng
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - (100.000đ * 15%) = 85.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 85000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount    apiinvoice    coupon
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon BHCP00004
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng 95000
+    
+RT-DP-017 Tính tổng tiền hàng có giảm giá theo tối đa 100000
+    [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon với điều kiện áp dụng:
+    ...    - Sản phẩm:  sản phẩm với tổng giá 5000000đ
+    ...    - Mã coupon: Giảm 100.000đ cho đơn hàng từ 300.000đ
+    ...    - Kỳ vọng: Tổng tiền = 300.000đ - 50.000đ = 250.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 250000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount    apiinvoice    coupon
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Đơn Giá 5000000 Áp Đợt Coupon BHCP00004
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng 4900000
+    
+RT-DP-018 Tính tổng tiền hàng có phí giao hàng và giảm giá
+    [Documentation]    Kiểm tra tính tổng tiền hàng có phí giao hàng và giảm giá:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Giảm giá: 10.000đ
+    ...    - Phí giao hàng: 30.000đ
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 10.000đ + 30.000đ = 120.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 120000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá 10000 Và Phí Giao Hàng 30000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng 120000
 

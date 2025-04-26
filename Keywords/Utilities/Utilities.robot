@@ -4,11 +4,15 @@ Library           Collections
 Library           String
 Library           RequestsLibrary
 Library           OperatingSystem
-Resource          ../../Config/Env.robot
+#Resource          ../../Config/Env.robot
+#Resource          ../../Config/Env_currency.robot
+#Resource          ../../Config/Env_nhathuoc.robot
+Resource          ../../Config/Env_${ENV}.robot
+#Resource          ../../Config/Env_vlxd.robot
 *** Keywords ***
 Create Auth Headers
     [Arguments]    ${token}=${AUTH_TOKEN}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}       BranchId=${BRANCH_ID}
     RETURN    ${headers}
 
 Call API

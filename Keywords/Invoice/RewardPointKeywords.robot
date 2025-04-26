@@ -2,7 +2,6 @@
 Documentation     Keywords cho test cases API tính điểm thưởng hóa đơn
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../../TestData/Invoice/RewardPointData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -14,9 +13,8 @@ Library           String
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo hóa đơn
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_INVOICE}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPoint_MoneyPerPoint    ${REWARD_POINTS_MONEY_RATIO}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.IsRewardPointUsingPriceAfterDiscount    ${TRUE}
@@ -65,69 +63,44 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Hóa Đơn Có Chi�
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo sản phẩm
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_PRODUCT}
-    
-    # Thêm sản phẩm có tích điểm
-    ${product}=    Deep Copy    ${PRODUCT_WITH_REWARD_POINT}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    100000
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm Có Điểm Cố Định
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${prodcut_id} Có Điểm Cố Định
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo sản phẩm có điểm cố định
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_PRODUCT}
-    
-    # Thêm sản phẩm có điểm cố định
-    ${product}=    Deep Copy    ${fixed_point_product_detail}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    100000
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${prodcut_id}
+    ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId   ${CUSTOMER_ID_REWARD_POINT}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm Số Lượng Nhiều
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${prodcut_id} Có Tích Điểm Với Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo sản phẩm có số lượng lớn
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_PRODUCT}
-    
-    # Thêm sản phẩm có điểm cố định với số lượng lớn
-    ${product}=    Deep Copy    ${fixed_point_product_detail}
-    ${product}=    Update Dictionary Property    ${product}    Quantity    5
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    500000
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${prodcut_id}
+    ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
+    ${data_product}=    Update Dictionary Property    ${data_product}    Quantity    ${quantity}
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId   ${CUSTOMER_ID_REWARD_POINT}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm Hỗn Hợp
+Chuẩn Bị Dữ Liệu Hóa Đơn Với ${type_1} Sản Phẩm ${product_id_1} Và ${type_2} Sản Phẩm ${product_id_2}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_PRODUCT}
-    
-    # Thêm sản phẩm có tích điểm
-    ${product1}=    Deep Copy    ${PRODUCT_WITH_REWARD_POINT}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product1}
-    
-    # Thêm sản phẩm không tích điểm
-    ${product2}=    Deep Copy    ${no_reward_product_detail}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product2}
-    
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    200000
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product_2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${value_1}=   Set Variable If    "${type_1}" == "Tích Điểm"    ${True}    ${False}
+    ${value_2}=   Set Variable If    "${type_2}" == "Tích Điểm"    ${True}    ${False}
+    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${product_id_1}
+    ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${value_1}
+    ${data_product_2}=    Update Dictionary Property    ${data_product_2}    ProductId    ${product_id_2}
+    ${data_product_2}=    Update Dictionary Property    ${data_product_2}    IsRewardPoint    ${value_2}
+    ${data_product_list}=    Create List    ${data_product}    ${data_product_2}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product_list}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId   ${CUSTOMER_ID_REWARD_POINT}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -148,20 +121,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Không Tích Điểm
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
     [Documentation]    Chuẩn bị dữ liệu hóa đơn không có khách hàng (không tích điểm)
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_INVOICE}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPoint_MoneyPerPoint    ${REWARD_POINTS_MONEY_RATIO}
-    
-    # Cập nhật thông tin khách hàng vãng lai
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    0
-    
-    # Thêm thông tin sản phẩm
-    ${product}=    Create Invoice Detail    ${PRODUCT_1}    1    100000    0
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    100000
-    
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId   ${PRODUCT_ID_REWARD_POINT}
+    ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
+    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -227,87 +191,42 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Phụ Phí Và Thuế
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Tổng Tiền Lẻ
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với tổng tiền lẻ để kiểm tra làm tròn điểm
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_INVOICE}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPoint_MoneyPerPoint    ${REWARD_POINTS_MONEY_RATIO}
-    
-    # Thêm thông tin sản phẩm
-    ${product}=    Create Invoice Detail    ${PRODUCT_1}    1    105000    0
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    105000
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
+Xác Thực Điểm Thưởng Hóa Đơn ${expected_point}
+    Wait Until Keyword Succeeds    3x    1s    Kiểm tra điểm thưởng hóa đơn ${expected_point}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Giá Bằng 0
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có giá bằng 0
-    ${request}=    Deep Copy    ${invoice_request_body}
-    
-    # Cập nhật cấu hình tích điểm
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPointType    ${REWARD_TYPE_INVOICE}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.RewardPoint_MoneyPerPoint    ${REWARD_POINTS_MONEY_RATIO}
-    
-    # Thêm sản phẩm giá 0đ
-    ${product1}=    Deep Copy    ${zero_price_product_detail}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product1}
-    
-    # Thêm sản phẩm giá thông thường
-    ${product2}=    Create Invoice Detail    ${PRODUCT_2}    1    100000    0
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product2}
-    
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Total    100000
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Gửi Yêu Cầu Tạo Hóa Đơn    
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    #Log To Console    Response: ${response.status_code} - ${response.text}
-    Set Test Variable    ${RESPONSE}     ${response}
-
-Xác Thực Điểm Thưởng Hóa Đơn
-    [Arguments]    ${expected_point}
+Kiểm tra điểm thưởng hóa đơn ${expected_point}
     [Documentation]    Xác thực điểm tích lũy của hóa đơn trong response
-    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
-    
     # Xác thực điểm thưởng trong response
     ${actual_point}=    Set Variable    ${RESPONSE.json()["Point"]}
     Should Be Equal As Numbers    ${actual_point}    ${expected_point}    Điểm thưởng của hóa đơn không đúng mong đợi
-    
-    # Xác thực điểm thưởng trong database
     ${query}=    Set Variable    SELECT Point FROM Invoice WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}
+    ${result}=    Fetch One    ${query}      ${INVOICE_ID}   
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
     Should Be Equal As Numbers    ${result[0]}    ${expected_point}    Điểm thưởng trong CSDL không đúng với giá trị mong đợi
 
 Xác Thực Không Có Điểm Thưởng
     [Documentation]    Xác thực hóa đơn không có điểm thưởng hoặc có điểm thưởng bằng 0
-    Xác Thực Điểm Thưởng Hóa Đơn    0
+    Xác Thực Điểm Thưởng Hóa Đơn 0
 
-Xác Thực Bản Ghi Điểm Thưởng Được Tạo
-    [Arguments]    ${expected_point}
+
+Xác Thực Bản Ghi Điểm Thưởng Được Tạo ${expected_point}
+    Wait Until Keyword Succeeds    3x    1s    Kiểm tra bản ghi điểm thưởng đã được tạo ${expected_point}
+
+Kiểm tra bản ghi điểm thưởng đã được tạo ${expected_point}
     [Documentation]    Xác thực bản ghi tích điểm đã được tạo trong database
-    ${invoice_id}=    Set Variable    ${INVOICE_ID}
     ${customer_id}=    Get Nested Property    ${REQUEST_DATA}    Invoice.CustomerId
     
     # Kiểm tra trong bảng PointTracking
-    ${query}=    Set Variable    SELECT Point FROM PointTracking WHERE InvoiceId = ? AND CustomerId = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}    ${customer_id}
+    ${query}=    Set Variable    SELECT Value FROM PointTracking WHERE DocumentId = ? AND PartnerId = ?
+    ${result}=    Fetch One    ${query}   ${INVOICE_ID}   ${customer_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy bản ghi tích điểm trong CSDL
     Should Be Equal As Numbers    ${result[0]}    ${expected_point}    Điểm tích lũy trong bảng PointTracking không đúng với giá trị mong đợi
 
 Xác Thực Không Có Bản Ghi Điểm Thưởng
     [Documentation]    Xác thực không có bản ghi tích điểm được tạo
-    ${invoice_id}=    Set Variable    ${INVOICE_ID}
-    
     # Kiểm tra trong bảng PointTracking
-    ${query}=    Set Variable    SELECT COUNT(*) FROM PointTracking WHERE InvoiceId = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM PointTracking WHERE DocumentId = ?
+    ${result}=    Fetch One    ${query}   ${INVOICE_ID}
     Should Be Equal As Numbers    ${result[0]}    0    Tìm thấy bản ghi tích điểm khi không nên có
 
 Thiết Lập Cấu Hình Tích Điểm
@@ -334,3 +253,11 @@ Call API PUT
     ${response}=    PUT    ${url}    json=${request_data}    headers=${headers}
     Log To Console    Response: ${response.status_code} - ${response.text}
     RETURN    ${response} 
+
+Get Reward Point Product
+    [Arguments]    ${product_code}
+    [Documentation]    Lấy cấu hình tích điểm của sản phẩm trong database
+    ${query}=    Set Variable    SELECT RewardPoint FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${product_code}
+    RETURN    ${result[0]}
+
