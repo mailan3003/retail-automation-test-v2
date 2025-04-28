@@ -17,12 +17,6 @@
         3. Kênh bán hàng đang hoạt động: `saleChannelInDB.IsActive == true`
       - Nếu không thỏa mãn bất kỳ điều kiện nào, hệ thống ném ngoại lệ `KvValidateSaleChannelException` với thông báo `KVMessage.sc_kenh_ban_khong_ton_tai` ("Kênh bán không tồn tại")
 
-  - **Xác thực thông tin giao hàng**:
-    - Khi hóa đơn có thông tin giao hàng và thời gian giao hàng dự kiến được thiết lập, nhưng thời gian này sớm hơn hoặc bằng thời gian mua hàng (tức là `invoice.DeliveryDetail != null && invoice.DeliveryDetail.ExpectedDelivery != null && invoice.DeliveryDetail.ExpectedDelivery <= invoice.PurchaseDate`):
-      - Hệ thống ném ngoại lệ `KvValidateDeliveryInfoException`
-      - Thông báo lỗi: `Labels.cod_invalidExpecteDeliveryInvoice` ("Thời gian giao hàng phải sau thời gian hóa đơn")
-      - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng 
-
 ## Test Data JSON cho các trường hợp thất bại
 
 ### 1. ID khách hàng không hợp lệ
@@ -98,23 +92,6 @@
 }
 ```
 **Kết quả kiểm tra**: Hệ thống báo lỗi khi kênh bán hàng không hoạt động.
-
-### 5. Thời gian giao hàng không hợp lệ
-```json
-{
-  "Invoice": {
-    "PurchaseDate": "2023-08-15T14:00:00",
-    "DeliveryDetail": {
-      "ExpectedDelivery": "2023-08-15T13:00:00"
-    }
-  },
-  "ExpectedError": {
-    "Type": "KvValidateDeliveryInfoException",
-    "Message": "Thời gian giao hàng phải sau thời gian hóa đơn"
-  }
-}
-```
-**Kết quả kiểm tra**: Hệ thống báo lỗi khi thời gian giao hàng dự kiến sớm hơn hoặc bằng thời gian mua hàng.
 
 ---
 **Điều hướng**

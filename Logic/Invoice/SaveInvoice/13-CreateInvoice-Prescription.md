@@ -16,12 +16,6 @@
          - Tất cả các trường sau đều trống/null: `Name`, `Age`, `Gender`, `Weight`, `IdentityCard`, `HealthInsuranceCard`, `Address`, `Guardian`, `PhoneNumber`
      - Điều kiện lỗi: Nếu CẢ đơn thuốc VÀ bệnh nhân đều thiếu thông tin
      - Kết quả: Hệ thống sẽ ném ngoại lệ `KvValidateClinicException` với thông báo `KVMessage.prescription_Empty` ("Bạn chưa nhập thông tin đơn thuốc")
-     - Test case:
-       - TC1: Đơn thuốc null, bệnh nhân null → Lỗi
-       - TC2: Đơn thuốc có thông tin, bệnh nhân null → Không lỗi
-       - TC3: Đơn thuốc null, bệnh nhân có thông tin → Không lỗi
-       - TC4: Đơn thuốc không có thông tin, bệnh nhân không có thông tin → Lỗi
-       - TC5: Đơn thuốc có thông tin, bệnh nhân có thông tin → Không lỗi
 
   2. **Kiểm tra thông tin thuốc trong đơn**:
      - **Kiểm tra mô tả cách dùng thuốc**:
@@ -30,10 +24,6 @@
          - Với mỗi thuốc trong `invoice.Medicines`, hệ thống tìm sản phẩm tương ứng trong `invoice.InvoiceDetails` dựa trên `ProductId`
          - Sản phẩm được xem là thiếu mô tả khi: `IsMaster == true` và `Note` trống hoặc null
        - Kết quả: Nếu phát hiện sản phẩm thiếu mô tả, hệ thống sẽ ném ngoại lệ `KVMedicineException` với thông báo "Hàng hóa thiếu ghi chú" (`KVMessage.invoice_ProductNoDescription`)
-       - Test case:
-         - TC1: `UsingGlobalPrescription == 1`, sản phẩm có `Note` → Không lỗi
-         - TC2: `UsingGlobalPrescription == 1`, sản phẩm không có `Note` → Lỗi
-         - TC3: `UsingGlobalPrescription == 0`, sản phẩm không có `Note` → Không lỗi
      
      - **Kiểm tra tình trạng thuốc hết hạn**:
        - Quy tắc xác định thuốc đang bán:
@@ -46,10 +36,6 @@
          - Nếu có ít nhất một thuốc hết hạn, hệ thống sẽ ném ngoại lệ `KVMedicineException`
          - Thông báo lỗi: Nếu chỉ có 1 thuốc hết hạn, hiển thị mã thuốc đó; nếu có nhiều thuốc, hiển thị danh sách mã thuốc ngăn cách bởi dấu phẩy
          - Nội dung thông báo: "[danh sách mã] đã bán hết số lượng trong đơn, vui lòng xóa sản phẩm để tạo đơn." (`KVMessage.Medicine_ProductCodeSoldOut`)
-       - Test case:
-         - TC1: Không có thuốc hết hạn (`IsExpired == false` hoặc null) → Không lỗi
-         - TC2: Một thuốc có `IsExpired == true` → Lỗi, hiển thị mã thuốc đó
-         - TC3: Nhiều thuốc có `IsExpired == true` → Lỗi, hiển thị danh sách mã thuốc
 
   3. **Kiểm tra mã đơn thuốc**:
      - **Điều kiện kiểm tra**:
@@ -57,20 +43,13 @@
      
      - **Quy tắc kiểm tra**:
        - **Trường hợp 1**: Đơn thuốc có mã (`invoice.Prescription.Code` không rỗng)
-         - Kiểm tra độ dài mã không vượt quá 50 ký tự
+         - Kiểm tra độ dài mã không vượt quá 50 ký tự:
+           - Nếu độ dài mã đơn thuốc vượt quá 50 ký tự (`invoice.Prescription.Code.Length > 50`), hệ thống sẽ ném ngoại lệ `KvValidateClinicException` với thông báo: "Vui lòng nhập Mã đơn thuốc không quá 50 kí tự" (`KVMessage.prescription_CodeLengthMax`)
          - Kiểm tra mã đơn thuốc không trùng với mã đơn thuốc đã tồn tại trong hệ thống
          - Kết quả: Nếu trùng và không phải đơn thuốc toàn cục (`invoice.UsingGlobalPrescription != 1`), hệ thống sẽ ném ngoại lệ với thông báo: "Mã đơn thuốc {mã} đã tồn tại trong hệ thống" (`KVMessage.prescription_CodeAlreadyExist`)
        
        - **Trường hợp 2**: Đơn thuốc không có mã nhưng có ID > 0
          - Kết quả: Hệ thống sẽ ném ngoại lệ với thông báo: "Mã đơn thuốc không hợp lệ" (`KVMessage.prescription_CodeIsNotValid`)
-     
-     - **Test case**:
-       - TC1: Đơn thuốc không có mã (`Code` rỗng hoặc null), ID = 0 → Không lỗi
-       - TC2: Đơn thuốc không có mã (`Code` rỗng hoặc null), ID > 0 → Lỗi "Mã đơn thuốc không hợp lệ"
-       - TC3: Đơn thuốc có mã, độ dài > 50 ký tự → Lỗi (kiểm tra độ dài)
-       - TC4: Đơn thuốc có mã, mã không trùng trong hệ thống → Không lỗi
-       - TC5: Đơn thuốc có mã, mã trùng trong hệ thống, `invoice.UsingGlobalPrescription == 1` → Không lỗi
-       - TC6: Đơn thuốc có mã, mã trùng trong hệ thống, `invoice.UsingGlobalPrescription != 1` → Lỗi "Mã đơn thuốc {mã} đã tồn tại trong hệ thống"
 
 ## Test Data JSON cho các trường hợp thất bại
 
@@ -271,6 +250,30 @@
 }
 ```
 **Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện mã đơn thuốc đã tồn tại trong hệ thống.
+
+### 7. Mã đơn thuốc vượt quá độ dài cho phép
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "Prescription": {
+      "Id": 0,
+      "Code": "DT00100000000000000000000000000000000000000000000000000",
+      "DoctorId": 456,
+      "ClinicId": 789
+    }
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KvValidateClinicException",
+    "Message": "Vui lòng nhập Mã đơn thuốc không quá 50 kí tự"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi mã đơn thuốc vượt quá 50 ký tự.
 
 ---
 **Điều hướng**
