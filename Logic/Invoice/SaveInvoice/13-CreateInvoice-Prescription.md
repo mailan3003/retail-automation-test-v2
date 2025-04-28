@@ -72,6 +72,206 @@
        - TC5: Đơn thuốc có mã, mã trùng trong hệ thống, `invoice.UsingGlobalPrescription == 1` → Không lỗi
        - TC6: Đơn thuốc có mã, mã trùng trong hệ thống, `invoice.UsingGlobalPrescription != 1` → Lỗi "Mã đơn thuốc {mã} đã tồn tại trong hệ thống"
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Đơn thuốc và bệnh nhân đều thiếu thông tin
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "Prescription": {
+      "Code": null,
+      "DoctorId": null,
+      "ClinicId": null,
+      "Description": null
+    },
+    "Patient": {
+      "Name": null,
+      "Age": null,
+      "Gender": null,
+      "Weight": null,
+      "IdentityCard": null,
+      "HealthInsuranceCard": null,
+      "Address": null,
+      "Guardian": null,
+      "PhoneNumber": null
+    }
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KvValidateClinicException",
+    "Message": "Bạn chưa nhập thông tin đơn thuốc"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi cả đơn thuốc và bệnh nhân đều thiếu thông tin.
+
+### 2. Sản phẩm trong đơn thuốc toàn cục thiếu mô tả cách dùng
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "UsingGlobalPrescription": 1,
+    "InvoiceDetails": [
+      {
+        "ProductId": 100,
+        "ProductName": "Paracetamol 500mg",
+        "IsMaster": true,
+        "Note": null
+      },
+      {
+        "ProductId": 200,
+        "ProductName": "Vitamin C",
+        "IsMaster": true,
+        "Note": "Uống 1 viên/ngày sau ăn"
+      }
+    ],
+    "Medicines": [
+      {
+        "ProductId": 100,
+        "Code": "PARA-500",
+        "Name": "Paracetamol 500mg"
+      },
+      {
+        "ProductId": 200,
+        "Code": "VIT-C",
+        "Name": "Vitamin C"
+      }
+    ]
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KVMedicineException",
+    "Message": "Hàng hóa thiếu ghi chú"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện sản phẩm thiếu mô tả cách dùng trong đơn thuốc toàn cục.
+
+### 3. Thuốc trong đơn đã hết hạn
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "Medicines": [
+      {
+        "ProductId": 100,
+        "Code": "PARA-500",
+        "Name": "Paracetamol 500mg",
+        "IsExpired": true
+      },
+      {
+        "ProductId": 200,
+        "Code": "VIT-C",
+        "Name": "Vitamin C",
+        "IsExpired": false
+      }
+    ],
+    "NewMedicines": []
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KVMedicineException",
+    "Message": "PARA-500 đã bán hết số lượng trong đơn, vui lòng xóa sản phẩm để tạo đơn."
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện thuốc trong đơn đã hết hạn.
+
+### 4. Nhiều thuốc trong đơn đã hết hạn
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "Medicines": [
+      {
+        "ProductId": 100,
+        "Code": "PARA-500",
+        "Name": "Paracetamol 500mg",
+        "IsExpired": true
+      },
+      {
+        "ProductId": 200,
+        "Code": "VIT-C",
+        "Name": "Vitamin C",
+        "IsExpired": true
+      }
+    ],
+    "NewMedicines": []
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KVMedicineException",
+    "Message": "PARA-500, VIT-C đã bán hết số lượng trong đơn, vui lòng xóa sản phẩm để tạo đơn."
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi liệt kê tất cả các mã thuốc đã hết hạn trong thông báo.
+
+### 5. Đơn thuốc không có mã nhưng có ID > 0
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "Prescription": {
+      "Id": 123,
+      "Code": null,
+      "DoctorId": 456,
+      "ClinicId": 789
+    }
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KvValidateClinicException",
+    "Message": "Mã đơn thuốc không hợp lệ"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi đơn thuốc không có mã nhưng có ID > 0.
+
+### 6. Mã đơn thuốc trùng với mã đã tồn tại
+```json
+{
+  "Invoice": {
+    "UsingPrescription": 1,
+    "UsingGlobalPrescription": 0,
+    "Prescription": {
+      "Id": 0,
+      "Code": "DT001",
+      "DoctorId": 456,
+      "ClinicId": 789
+    }
+  },
+  "AuthServiceContext": {
+    "IsActiveGppDrugStore": true
+  },
+  "ExistingPrescription": {
+    "Code": "DT001"
+  },
+  "IsValid": false,
+  "ExpectedError": {
+    "Type": "KvValidateClinicException",
+    "Message": "Mã đơn thuốc DT001 đã tồn tại trong hệ thống"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện mã đơn thuốc đã tồn tại trong hệ thống.
+
 ---
 **Điều hướng**
 - Trước đó: [12-CreateInvoice-PromotionLimits.md](./12-CreateInvoice-PromotionLimits.md)

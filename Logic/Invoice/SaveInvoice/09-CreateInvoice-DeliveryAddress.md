@@ -48,6 +48,84 @@
   - Tối ưu hiệu suất bằng cách sử dụng Redis cache
   - Đảm bảo tính nhất quán của dữ liệu địa chỉ trong hệ thống 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Không tìm thấy thông tin địa chỉ
+```json
+{
+  "Invoice": {
+    "DeliveryDetail": {
+      "LocationName": "Địa Điểm Không Tồn Tại",
+      "WardName": "Phường Không Tồn Tại",
+      "LocationId": null,
+      "WardId": null
+    }
+  },
+  "LocationServiceResult": null,
+  "ExpectedResult": {
+    "DeliveryDetail": {
+      "LocationId": null,
+      "WardId": null
+    }
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống không cập nhật LocationId và WardId khi không tìm thấy thông tin địa chỉ tương ứng.
+
+### 2. Tìm thấy thông tin địa chỉ nhưng khác với ID hiện tại
+```json
+{
+  "Invoice": {
+    "DeliveryDetail": {
+      "LocationName": "Hà Nội",
+      "WardName": "Cầu Giấy",
+      "LocationId": 10,
+      "WardId": 20
+    }
+  },
+  "LocationServiceResult": {
+    "LocationId": 1,
+    "LocationKmsId": "HN",
+    "WardId": 15,
+    "WardKmsId": "CG"
+  },
+  "ExpectedResult": {
+    "DeliveryDetail": {
+      "LocationId": 10,
+      "WardId": 15
+    }
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống chỉ cập nhật WardId khi phát hiện sự khác biệt, nhưng giữ nguyên LocationId đã có.
+
+### 3. Tìm thấy thông tin địa chỉ nhưng không có LocationId
+```json
+{
+  "Invoice": {
+    "DeliveryDetail": {
+      "LocationName": "Hà Nội",
+      "WardName": "Cầu Giấy",
+      "LocationId": 0,
+      "WardId": 20
+    }
+  },
+  "LocationServiceResult": {
+    "LocationId": 1,
+    "LocationKmsId": "HN",
+    "WardId": 15,
+    "WardKmsId": "CG"
+  },
+  "ExpectedResult": {
+    "DeliveryDetail": {
+      "LocationId": 1,
+      "WardId": 15
+    }
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống cập nhật cả LocationId và WardId khi LocationId chưa có giá trị hợp lệ (null hoặc <= 0).
+
 ---
 **Điều hướng**
 - Trước đó: [08-CreateInvoice-CODDelivery.md](./08-CreateInvoice-CODDelivery.md)

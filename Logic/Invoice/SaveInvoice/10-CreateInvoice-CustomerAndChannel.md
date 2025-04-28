@@ -23,6 +23,99 @@
       - Thông báo lỗi: `Labels.cod_invalidExpecteDeliveryInvoice` ("Thời gian giao hàng phải sau thời gian hóa đơn")
       - Đảm bảo tính hợp lý về mặt thời gian trong quy trình giao hàng 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. ID khách hàng không hợp lệ
+```json
+{
+  "Invoice": {
+    "CustomerId": -1,
+    "Code": "HD001"
+  },
+  "ExpectedError": {
+    "Type": "KvValidateCustomerException",
+    "Message": "Có lỗi trong quá trình ghi nhận thông tin. Xin vui lòng Lưu lại thông tin khách hàng một lần nữa."
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện ID khách hàng không hợp lệ (nhỏ hơn 0).
+
+### 2. Kênh bán hàng không tồn tại
+```json
+{
+  "Invoice": {
+    "SaleChannelId": 123,
+    "Code": "HD001"
+  },
+  "SaleChannelInDB": null,
+  "CurrentRetailerId": 5,
+  "ExpectedError": {
+    "Type": "KvValidateSaleChannelException",
+    "Message": "Kênh bán không tồn tại"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi kênh bán hàng không tồn tại trong cơ sở dữ liệu.
+
+### 3. Kênh bán hàng không thuộc cửa hàng hiện tại
+```json
+{
+  "Invoice": {
+    "SaleChannelId": 123,
+    "Code": "HD001"
+  },
+  "SaleChannelInDB": {
+    "Id": 123,
+    "RetailerId": 10,
+    "IsActive": true
+  },
+  "CurrentRetailerId": 5,
+  "ExpectedError": {
+    "Type": "KvValidateSaleChannelException",
+    "Message": "Kênh bán không tồn tại"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi kênh bán hàng không thuộc về cửa hàng hiện tại.
+
+### 4. Kênh bán hàng không hoạt động
+```json
+{
+  "Invoice": {
+    "SaleChannelId": 123,
+    "Code": "HD001"
+  },
+  "SaleChannelInDB": {
+    "Id": 123,
+    "RetailerId": 5,
+    "IsActive": false
+  },
+  "CurrentRetailerId": 5,
+  "ExpectedError": {
+    "Type": "KvValidateSaleChannelException",
+    "Message": "Kênh bán không tồn tại"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi kênh bán hàng không hoạt động.
+
+### 5. Thời gian giao hàng không hợp lệ
+```json
+{
+  "Invoice": {
+    "PurchaseDate": "2023-08-15T14:00:00",
+    "DeliveryDetail": {
+      "ExpectedDelivery": "2023-08-15T13:00:00"
+    }
+  },
+  "ExpectedError": {
+    "Type": "KvValidateDeliveryInfoException",
+    "Message": "Thời gian giao hàng phải sau thời gian hóa đơn"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi thời gian giao hàng dự kiến sớm hơn hoặc bằng thời gian mua hàng.
+
 ---
 **Điều hướng**
 - Trước đó: [09-CreateInvoice-DeliveryAddress.md](./09-CreateInvoice-DeliveryAddress.md)
