@@ -1,0 +1,25 @@
+services:
+  at_web_v2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: at_web_v2
+    hostname: at_web_v2
+    environment:
+      - PABOT_PROCESS=${PABOT_PROCESS}
+      - PABOT_PROCESS=${PABOT_PROCESS}
+      - RESULT_DIR=${RESULT_DIR}
+      - DATABASE_CONFIG_DRIVER=${DATABASE_CONFIG_DRIVER:-ODBC Driver 18 for SQL Server}
+    entrypoint: >
+      bash -c '
+        pabot --processes 8 -T -d reports  -i    smoke   TestSpecs
+      '
+    volumes:
+      - ./Resources:/app/Resources
+      - ./TestSpecs:/app/TestSpecs
+
+    networks:
+      - at_web
+
+networks:
+  at_web:

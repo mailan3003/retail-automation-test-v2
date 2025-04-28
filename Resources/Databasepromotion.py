@@ -1,12 +1,14 @@
-
+import os
 import pyodbc
+
+DATABASE_CONFIG_DRIVER = os.environ.get('DATABASE_CONFIG_DRIVER', 'SQL Server')
 
 DATABASE_CONFIG_PROMOTION = {
     'server': '103.252.0.202,6000',
     'database': 'KiotVietPromotion',
     'username': 'retail_app',
     'password': 'LnqxffeJulNvQi6u',
-    'driver': 'SQL Server'
+    'driver': DATABASE_CONFIG_DRIVER
 }
 
 def db_connection_promotion():
@@ -15,7 +17,8 @@ def db_connection_promotion():
         f"SERVER={DATABASE_CONFIG_PROMOTION['server']};"
         f"DATABASE={DATABASE_CONFIG_PROMOTION['database']};"
         f"UID={DATABASE_CONFIG_PROMOTION['username']};"
-        f"PWD={DATABASE_CONFIG_PROMOTION['password']}"
+        f"PWD={DATABASE_CONFIG_PROMOTION['password']};"
+        f"TrustServerCertificate=yes;"
     )
     conn = pyodbc.connect(conn_str)
     return conn

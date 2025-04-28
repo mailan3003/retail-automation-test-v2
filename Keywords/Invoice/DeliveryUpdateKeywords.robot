@@ -1,33 +1,48 @@
 *** Settings ***
 Documentation     Keywords cho test cases API cập nhật thông tin giao hàng
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/DeliveryUpdateData.robot
+Resource          DeliveryProcessingKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
+Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/Utilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
-Chuẩn Bị Dữ Liệu Cập Nhật Giao Hàng Cơ Bản
+Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     [Documentation]    Chuẩn bị dữ liệu cập nhật giao hàng cơ bản
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    Gửi Yêu Cầu Tạo Hóa Đơn
+    ${invoice_id}    Set Variable    ${RESPONSE.json()["Id"]}
+    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
+
+
+Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    ${response}=    Call API MAN    invoices    ${REQUEST_DATA}
+    Set Test Variable    ${RESPONSE}    ${response}
+    ${invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["Id"]}    0
+    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
     [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
+
     Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_RECEIVER_INFO}
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng
+Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng ${fee}
     [Documentation]    Chuẩn bị dữ liệu cập nhật phí giao hàng
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_SHIPPING_FEE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Price    ${fee}
+    ${request}=    Update Nested Dictionary Property    ${request}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceId    ${INVOICE_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Miễn Phí Giao Hàng
     [Documentation]    Chuẩn bị dữ liệu cập nhật miễn phí giao hàng
