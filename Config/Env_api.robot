@@ -3,7 +3,6 @@ ${AUTH_TOKEN}         eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc
 ${RETAILER_CODE}      autoapi
 ${RETAILER_ID}        19809
 
-${RETAILER_ID}      19809
 ${BRANCH_ID}        1000000025  
 ${USER_ID}          1000000467
 ${SOLD_BY_ID}       ${USER_ID}
@@ -13,3 +12,4 @@ ${DEFAULT_USER_ID}          1000000467
 ${DEFAULT_CUSTOMER_ID}      1000009032
 
 ${API_URL}               https://api-sale.kvpos.com/api/
+${API_MAN_URL}               https://api-man.kvpos.com/api/
