@@ -20,11 +20,14 @@
           ```
         - Tương đương với truy vấn Entity Framework:
           ```csharp
-          var bankAccountBranches = await BankAccountBranchService.GetAll()
+          var branchBank = await BankAccountBranchService.GetAll()
               .Where(b => b.BankAccountId == accountId && b.RetailerId == AuthService.Context.RetailerId)
               .ToListAsync();
           ```
-        - Nếu không tìm thấy bản ghi nào, tức là tài khoản không được phép sử dụng tại chi nhánh hiện tại
+        - Nếu không tìm thấy bản ghi nào trong danh sách `branchBank` hoặc không có bản ghi nào có `BranchId` trùng với chi nhánh hiện tại (`AuthService.Context.BranchId`), tức là tài khoản không được phép sử dụng tại chi nhánh hiện tại:
+          ```csharp
+          if (!branchBank.Any(b => b.BranchId == AuthService.Context.BranchId))
+          ```
         - Trong trường hợp này, hệ thống sẽ hiển thị thông báo lỗi: "Số tài khoản {số tài khoản} không được áp dụng cho thanh toán tại chi nhánh {tên chi nhánh}" (`KVMessage.BankAccountNotInBranch`)
     - Việc xác thực này đảm bảo tài khoản ngân hàng hợp lệ và được phép sử dụng tại chi nhánh hiện tại trước khi xử lý thanh toán 
 
