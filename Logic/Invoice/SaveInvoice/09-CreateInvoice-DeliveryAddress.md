@@ -11,13 +11,7 @@
     - Phương thức này thực hiện hai bước chính:
       1. **Tìm kiếm thông tin tỉnh/thành phố**:
          - Ưu tiên tìm trong Redis cache (nếu được cấu hình)
-         - Nếu không tìm thấy trong cache, truy vấn từ cơ sở dữ liệu bằng câu lệnh:
-           ```sql
-           SELECT l.Id, l.Name, l.KmsId AS LocationKmsId, w.Id AS WardId, w.KmsId AS WardKmsId
-           FROM KvLocations l
-           LEFT JOIN KvWards w ON w.LocationId = l.Id
-           WHERE LOWER(l.Name) = LOWER(@locationName) AND LOWER(w.Name) = LOWER(@wardName)
-           ```
+         - Nếu không tìm thấy trong cache, truy vấn từ cơ sở dữ liệu
          - So khớp tên địa điểm không phân biệt hoa thường
       
       2. **Tìm kiếm thông tin phường/xã**:
