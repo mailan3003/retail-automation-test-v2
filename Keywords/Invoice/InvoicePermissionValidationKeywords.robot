@@ -2,51 +2,86 @@
 Resource    ../Utilities/RequestHelper.robot
 Resource    ../Utilities/ResponseHelper.robot
 Resource    ../../TestData/CommonData.robot
-Resource    ../../TestData/Invoice/InvoicePermissionValidationData.robot
-Resource    ../../Env.robot
+Resource    ../../TestData/Invoice/CommonInvoiceData.robot
+Resource    ../Utilities/Utilities.robot
+Resource    ../Utilities/DataUtilities.robot
+Resource    ../Login/Login.robot
+Library    ../../Resources/DatabaseLibrary.py
+Library    DateTime
 
 *** Keywords ***
-Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    ${invoice_data}=    Evaluate    json.loads('''${invoice_permission_validation_default_data}''')    json
-    Set Test Variable    ${REQUEST_DATA}    ${invoice_data}
+Chuẩn bị hóa đơn tiêu chuẩn
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    Set Test Variable    ${REQUEST_DATA}    ${request}    
+
+Chuẩn bị hóa đơn tiêu chuẩn với trạng thái ${status}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Status    ${status}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với người bán ${seller_id}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    SoldById=${seller_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SoldById    ${seller_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với chi nhánh ${branch_id}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    BranchId=${branch_id}
+Chuẩn bị dữ liệu hóa đơn với kênh bán ${channel_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${channel_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với ngày ${purchase_date}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    PurchaseDate=${purchase_date}
+Chuẩn Bị Dữ Liệu Thay Đổi Thời Gian Lùi ${days} Ngày So Với Ngày Hiện Tại
+    ${current_date}=    Get Current Date    UTC    
+    ${purchase_date}=   Subtract Time From Date   ${current_date}    ${days} days
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn từ đơn hàng ${order_id}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    OrderId=${order_id}
+Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${current_date}=    Get Current Date    UTC   7 hours     result_format=%Y-%m-%d %H:%M:%S
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate  0000/20/20
+    Set Test Variable    ${PURCHASE_DATE}    ${current_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với khách hàng ${customer_id}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    CustomerId=${customer_id}
+Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PricebookId    ${pricebook_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với ngày thanh toán ${payment_date}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    ${payments}=    Get From Dictionary    ${REQUEST_DATA["Invoice"]}    Payments
-    Set To Dictionary    ${payments[0]}    TransDate=${payment_date}
+Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_id} theo chi nhánh ${branch_id}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PricebookId    ${pricebook_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với giao hàng dự kiến ${delivery_date}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    ${delivery_info}=    Create Dictionary    ExpectedDeliveryDate=${delivery_date}
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    DeliveryInfo=${delivery_info}
+Tạo hóa đơn với user ${username} và password ${password}
+    ${bearer_token}=    Get BearerToken by user    ${username}    ${password}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BearerToken    ${bearer_token}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với cấu hình NotAllowModifyInvoiceDate=${value}
-    Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
-    Set To Dictionary    ${REQUEST_DATA["Invoice"]}    NotAllowModifyInvoiceDate=${value}
+Thông tin người bán ${seller_id} trong hóa đơn được lưu trong CSDL
+    ${query}=    Set Variable    SELECT SoldbyId FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Strings    ${result[0]}    ${seller_id}
 
-Gửi yêu cầu tạo hóa đơn với token ${token_type}
-    ${token}=    Set Variable If    "${token_type}" == "admin"    ${AUTH_TOKEN}    invalid_token
-    ${headers}=    Create Dictionary    Content-Type=application/json    Authorization=Bearer ${token}
-    ${response}=    POST    ${API_URL}/invoices    ${REQUEST_DATA}    ${headers}
-    Set Test Variable    ${RESPONSE}    ${response}
-    RETURN    ${response} 
+Thông tin kênh bán ${channel_id} trong hóa đơn được lưu trong CSDL
+    ${query}=    Set Variable    SELECT SaleChannelId FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Strings    ${result[0]}    ${channel_id}
+Thông tin ngày bán ${purchase_date} trong hóa đơn được lưu trong CSDL
+    ${query}=    Set Variable    SELECT PurchaseDate FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    ${actual_date_str}=    Convert To String    ${result[0]}
+    ${actual_date_str}=    Fetch From Left    ${actual_date_str}    .
+    ${expected_date_obj}=    Convert Date    ${purchase_date} 
+    ${actual_date_obj}=    Convert Date    ${actual_date_str}
+    ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
+    ${abs_diff}=    Evaluate    abs(${diff})
+    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
+
+Thông tin bảng giá ${pricebook_id} trong hóa đơn được lưu trong CSDL
+    ${query}=    Set Variable    SELECT PricebookId FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Strings    ${result[0]}    ${pricebook_id}

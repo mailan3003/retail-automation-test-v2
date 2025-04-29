@@ -13,34 +13,9 @@ Library           String
 Library           DateTime
 
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Với Thanh Toán
-    [Arguments]    ${payment_method}=${PAYMENT_CASH}    ${payment_amount}=${STANDARD_RECEIPT_AMOUNT}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${payments}=    Create List
-    IF    '${payment_method}' == '${PAYMENT_CASH}'
-        ${payment}=    Set Variable   ${CASH_RECEIPT_PAYMENT}
-    ELSE IF    '${payment_method}' == '${PAYMENT_CARD}'
-        ${payment}=    Set Variable    ${CARD_RECEIPT_PAYMENT}
-    ELSE IF    '${payment_method}' == '${PAYMENT_TRANSFER}'
-        ${payment}=    Set Variable    ${TRANSFER_RECEIPT_PAYMENT}
-    ELSE
-        ${payment}=    Set Variable    ${CASH_RECEIPT_PAYMENT}
-    END
-        
-    # Cập nhật số tiền nếu khác mặc định
-    IF    ${payment_amount} != ${STANDARD_RECEIPT_AMOUNT}
-        Set To Dictionary    ${payment}    Amount=${payment_amount}
-    END
-    Append To List    ${payments}    ${payment}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    Log    ${REQUEST_DATA}  
-    RETURN    ${request}
-
 Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data}=    Set Variable    ${payment_body} 
+    ${data}=    Deep Copy    ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
@@ -50,7 +25,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${payment_method} Tài khoản ${bank_account_id} Với Số Tiền ${payment_amount} 
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data}=    Set Variable    ${payment_body} 
+    ${data}=     Deep Copy   ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
     ${data}=    Update Nested Dictionary Property    ${data}    AccountId    ${bank_account_id}
@@ -78,7 +53,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Phương Thức ${list_payment_method}
 
 Chuẩn Bị Hóa Đơn Thanh Toán Số Tiền ${payment_amount} Sử Dụng Điểm ${reward_point}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data}=    Set Variable    ${payment_body} 
+    ${data}=    Deep Copy    ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_POINT}
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
     ${data}=    Update Nested Dictionary Property    ${data}    UsePoint   ${reward_point}
@@ -93,7 +68,7 @@ Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt ${Voucher_campain}
     ${Voucher_Id}=    Fetch One    ${query_2}    ${result[0]}
      ${result[1]}    Convert To Number     ${result[1]}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data}=    Set Variable    ${payment_body} 
+    ${data}=    Deep Copy     ${payment_body} 
     ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    5
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
@@ -105,11 +80,78 @@ Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt ${Voucher_campain}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt ${Voucher_campain} Với Mã Voucher ở Trạng Thái ${status}
+    ${status}=    Set Variable If  '${status}'=='Chưa Sử Dụng'    0     3
+    ${query_1}=    Set Variable    SELECT ID, Price FROM VoucherCampaign WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${Voucher_campain}
+    ${query_2}=    Set Variable    SELECT top(1) Id FROM Voucher WHERE VoucherCampaignId = ? AND Status = ?
+    ${Voucher_Id}=    Fetch One    ${query_2}    ${result[0]}    ${status}
+     ${result[1]}    Convert To Number     ${result[1]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=     Deep Copy    ${payment_body} 
+    ${data_product}=     Deep Copy     ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    5
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_VOUCHER}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${result[1]}
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherId   ${voucher_id[0]}
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherCampaignId   ${result[0]}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt ${Voucher_campain} Khi Chưa Đủ Điều Kiện
+    ${query_1}=    Set Variable    SELECT ID, Price FROM VoucherCampaign WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${Voucher_campain}
+    ${query_2}=    Set Variable    SELECT top(1) Id FROM Voucher WHERE VoucherCampaignId = ? AND Status = 1
+    ${voucher_Id}=    Fetch One    ${query_2}    ${result[0]}
+    ${result[1]}    Convert To Number     ${result[1]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_VOUCHER}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${result[1]}
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherId   ${voucher_id[0]}
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherCampaignId   ${result[0]}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với ${number_of_voucher} Voucher Đợt ${Voucher_campain}
+    ${query_1}=    Set Variable    SELECT ID, Price FROM VoucherCampaign WHERE Code = ?
+    ${result}=    Fetch One    ${query_1}    ${Voucher_campain}
+     ${result[1]}    Convert To Number     ${result[1]}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL}  
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    5
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${payments}=    Create List
+    ${list_voucher_id}=    Create List
+    FOR    ${index}    IN RANGE    ${number_of_voucher}
+        ${query_2}=    Set Variable    SELECT top(1) Id FROM Voucher WHERE VoucherCampaignId = ? AND Status = 1
+        ${voucher_Id}=    Fetch One    ${query_2}    ${result[0]}
+        ${data}=     Deep Copy     ${payment_body} 
+        ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_VOUCHER}
+        ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${result[1]}
+        ${data}=    Update Nested Dictionary Property    ${data}    VoucherId   ${voucher_id[0]}
+        ${data}=    Update Nested Dictionary Property    ${data}    VoucherCampaignId   ${result[0]}
+        Append To List    ${payments}    ${data}
+        Append To List    ${list_voucher_id}    ${voucher_id[0]}
+    END
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    Set Test Variable    ${list_voucher_id}    ${list_voucher_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
 Xác Thực Tài Khoản Wallet ${bank_account_id} Được Sử Dụng Khi Thanh Toán
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND AccountId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${bank_account_id}
     Should Be Equal As Numbers    ${result[0]}    1    Tài khoản ngân hàng không được sử dụng trong thanh toán hóa đơn
+
+
+
 
 
 
@@ -137,21 +179,29 @@ Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${payment_method} V�
     ${query}=    Set Variable    SELECT Amount FROM Payment WHERE InvoiceId = ? AND Method = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${payment_method}
     Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Phương Thức Thanh Toán
-    [Arguments]    ${cash_amount}=${MULTIPLE_PAYMENT_AMOUNT}    ${card_amount}=${MULTIPLE_PAYMENT_AMOUNT}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data}=    Set Variable    ${MULTIPLE_PAYMENT_METHODS}
-    # Cập nhật số tiền nếu khác mặc định
-    IF    ${cash_amount} != ${MULTIPLE_PAYMENT_AMOUNT}
-        Set To Dictionary    ${data[0]}    Amount=${cash_amount}
+Xác Thực Thanh Toán Được Ghi Nhận ${number_of_payment_method} Phương Thức ${list_payment_method} Thanh Toán ${list_payment_amount}
+    ${query}=    Set Variable    SELECT Method, Amount FROM Payment WHERE InvoiceId = ? 
+    ${result}=    Fetch All    ${query}    ${invoice_id}  
+    FOR    ${index}    IN RANGE  0  ${number_of_payment_method}
+        ${payment_method}=    Get From List    ${list_payment_method}    ${index}
+        ${payment_amount}=    Get From List    ${list_payment_amount}    ${index}
+        Should Be Equal    ${result[${index}][0]}    ${payment_method}    Phương thức thanh toán không đúng. Kỳ vọng: ${payment_method}, Thực tế: ${result[${index}][0]}
+        Should Be Equal As Numbers    ${result[${index}][1]}    ${payment_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${payment_amount}, Thực tế: ${result[${index}][1]}
     END
-    
-    IF    ${card_amount} != ${MULTIPLE_PAYMENT_AMOUNT}
-        Set To Dictionary    ${data[1]}    Amount=${card_amount}
+   
+Xác Thực Trạng Thái Voucher Đã Sử Dụng ${list_voucher_id}
+    ${number_of_voucher}=    Get Length    ${list_voucher_id}
+    FOR    ${index}    IN RANGE   ${number_of_voucher}
+        ${query}=    Set Variable    SELECT Status FROM Voucher WHERE Id = ?
+        ${result}=    Fetch One    ${query}    ${list_voucher_id[${index}]}
+        Should Be Equal As Numbers    ${result[0]}    2    Voucher đã được sử dụng
     END
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments     ${data}
-    Set Test Variable    ${REQUEST_DATA}   ${request} 
-    RETURN    ${request} 
+
+Update Trạng thái Voucher Đã Phát Hành ${list_voucher_id}
+    FOR    ${voucher_id}    IN    @{list_voucher_id}
+        ${query}=    Set Variable    UPDATE Voucher SET Status = 1 WHERE Id = ?
+        Execute Query    ${query}    ${voucher_id}
+    END
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Thừa
     [Arguments]    ${excess_amount}=${EXCESS_RECEIPT_AMOUNT}
@@ -533,22 +583,7 @@ Xác Thực Điểm Khách Hàng Sử Dụng ${expected_points}
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${PAYMENT_POINT}
     Should Be Equal As Numbers    ${result[0]}    ${expected_points}    Số điểm sử dụng không đúng. Kỳ vọng: ${expected_points}, Thực tế: ${result[0]}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Vượt Giới Hạn Công Nợ
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    
-    # Cập nhật khách hàng có giới hạn công nợ
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${DEBT_LIMIT_CUSTOMER_ID}
-    
-    # Tạo thanh toán tiền mặt không đủ
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_CASH}
-    ...    Amount=20000
-    
-    ${payments}=    Create List    ${payment}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
+
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Điểm Không Đủ
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
@@ -565,35 +600,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Điểm Không Đủ
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    
-    # Tạo thanh toán bằng voucher không hợp lệ
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=100000
-    ...    VoucherCode=INVALID_VOUCHER
-    ...    VoucherId=999999
-    
-    ${payments}=    Create List    ${payment}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Công Nợ Khách Hàng
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    
-    # Tạo thanh toán tiền mặt một phần
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_CASH}
-    ...    Amount=50000
-    
-    ${payments}=    Create List    ${payment}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 Xác Thực Công Nợ Khách Hàng Tăng ${expected_debt_increase}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
@@ -618,17 +625,3 @@ Xác Thực Công Nợ Khách Hàng Tăng ${expected_debt_increase}
     # Kiểm tra công nợ đã tăng đúng số tiền
     Should Be Equal As Numbers    ${invoice_debt}    ${expected_debt_increase}    Công nợ hóa đơn không đúng. Kỳ vọng: ${expected_debt_increase}, Thực tế: ${invoice_debt}
 
-Nội dung phản hồi trả về phải có thông báo lỗi công nợ
-    ${response_body}=    Set Variable    ${RESPONSE.json()}
-    ${error_message}=    Set Variable    ${response_body["responseStatus"]["message"]}
-    Should Contain    ${error_message}    nợ    Response không chứa thông báo lỗi về công nợ
-
-Nội dung phản hồi trả về phải có thông báo lỗi điểm không đủ
-    ${response_body}=    Set Variable    ${RESPONSE.json()}
-    ${error_message}=    Set Variable    ${response_body["responseStatus"]["message"]}
-    Should Contain    ${error_message}    điểm    Response không chứa thông báo lỗi về điểm không đủ
-
-Nội dung phản hồi trả về phải có thông báo lỗi voucher không hợp lệ
-    ${response_body}=    Set Variable    ${RESPONSE.json()}
-    ${error_message}=    Set Variable    ${response_body["responseStatus"]["message"]}
-    Should Contain    ${error_message}    voucher    Response không chứa thông báo lỗi về voucher không hợp lệ 

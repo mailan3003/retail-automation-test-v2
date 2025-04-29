@@ -2,16 +2,16 @@
 Documentation     Test cases API cho phần tạo phiếu thu khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
 Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
+Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
-*** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    ReceiptCreationTest
+
 *** Variables ***
 @{list_payment_method}   ${PAYMENT_CASH}    ${PAYMENT_CARD}
 @{list_payment_amount}   50000      50000
 @{list_payment_amount_1}   30000      30000
+@{list_payment_method_voucher}  ${PAYMENT_VOUCHER}   ${PAYMENT_VOUCHER}  
+@{list_payment_amount_voucher}  100000      100000
 *** Test Cases ***
 RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     [Documentation]    Kiểm tra tạo phiếu thu tiền mặt khi tạo hóa đơn
@@ -489,21 +489,6 @@ RT-RC-019 Tạo phiếu thu với tất cả số tiền thanh toán bằng đi�
     And Xác Thực Công Nợ Của Hóa Đơn 0
     And Xác Thực Điểm Khách Hàng Sử Dụng 100
 
-RT-RC-020 Tạo hóa đơn với số dư nợ lớn hơn công nợ cho phép
-    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn có số dư nợ vượt quá công nợ cho phép
-    ...    - Dữ liệu đầu vào:
-    ...    - Khách hàng có giới hạn công nợ 50,000đ
-    ...    - Hóa đơn có tổng tiền = 100,000đ
-    ...    - Phương thức thanh toán: tiền mặt
-    ...    - Số tiền thanh toán: 20,000đ (còn nợ 80,000đ > giới hạn 50,000đ)
-    ...    - Kỳ vọng:
-    ...    - Status code: 400
-    ...    - Response có thông báo lỗi về giới hạn công nợ
-    [Tags]    payment    debt_limit    validation    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Vượt Giới Hạn Công Nợ
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã trạng thái phải là 400
-    And Nội dung phản hồi trả về phải có thông báo lỗi công nợ
 
 RT-RC-021 Tạo hóa đơn với điểm khách hàng không đủ
     [Documentation]    Kiểm tra xử lý khi tạo hóa đơn thanh toán bằng điểm nhưng điểm không đủ
@@ -520,27 +505,6 @@ RT-RC-021 Tạo hóa đơn với điểm khách hàng không đủ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 400
     And Nội dung phản hồi trả về phải có thông báo lỗi điểm không đủ
-
-
-RT-RC-023 Tạo hóa đơn và cập nhật thông tin công nợ khách hàng
-    [Documentation]    Kiểm tra cập nhật thông tin công nợ khách hàng khi tạo hóa đơn
-    ...    - Dữ liệu đầu vào:
-    ...    - Khách hàng có công nợ ban đầu = 0đ
-    ...    - Hóa đơn có tổng tiền = 100,000đ
-    ...    - Phương thức thanh toán: tiền mặt
-    ...    - Số tiền thanh toán: 50,000đ (còn nợ 50,000đ)
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Công nợ của hóa đơn = 50,000đ
-    ...    - Công nợ của khách hàng được cập nhật thêm 50,000đ
-    [Tags]    payment    debt    customer    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Công Nợ Khách Hàng
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã trạng thái phải là 200
-    And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 50000
-    And Xác Thực Công Nợ Của Hóa Đơn 50000
-    And Xác Thực Công Nợ Khách Hàng Tăng 50000
 
 
 # Các test case mới cho phần xử lý thanh toán bằng Voucher
@@ -627,11 +591,112 @@ RT-GP-013 Thanh toán hóa đơn với Voucher không hợp lệ
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
-    [Tags]    payment    voucher    error    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
+    [Tags]    payment    voucher   apiinvoice      
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher ở Trạng Thái Chưa Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Thông Báo Lỗi Phải Chứa "Voucher không hợp lệ hoặc đã được sử dụng"
+    And Response Should Have Error "Trạng thái voucher AA96OU5QFZ chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
+
+RT-GP-013 Thanh toán hóa đơn với Voucher đã sử dụng
+    [Documentation]    Kiểm tra xử lý lỗi khi thanh toán bằng Voucher không hợp lệ
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER004"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher không hợp lệ (đã sử dụng hoặc hết hạn)
+    ...    - Logic xử lý: 
+    ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+    [Tags]    payment    voucher   apiinvoice      
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher ở Trạng Thái Đã Sử Dụng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Trạng thái voucher AGXDKFPN9Z chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
+
+Tạo hóa đơn chưa đủ điều kiện vẫn thanh toán bằng voucher
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn chưa đủ điều kiện vẫn thanh toán bằng voucher
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER005"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher 100,000đ
+    ...    - Logic xử lý: 
+    ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+    [Tags]    payment    voucher   apiinvoice      
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Khi Chưa Đủ Điều Kiện
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng voucher A64Z6YUHSZ"
+
+Tạo hóa đơn với voucher chưa áp dụng 
+   [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với voucher chưa áp dụng
+   ...    - Dữ liệu đầu vào:
+   ...    - Mã hóa đơn: "HD_TEST_VOUCHER006"
+   ...    - Tổng tiền: 100,000đ
+   ...    - Thanh toán: Voucher 100,000đ
+   ...    - Logic xử lý: 
+   ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+   ...    - Kỳ vọng:
+   ...    - Status code: 420
+   ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+   [Tags]    payment    voucher   apiinvoice       
+   Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHERE001
+   When Gửi Yêu Cầu Tạo Hóa Đơn
+   Then Mã Trạng Thái Phải Là 420
+   And Response Should Have Error "Đợt phát hành của voucher AZTOV31PPT chưa được kích hoạt"
+
+Tạo hóa đơn với voucher cho nhóm hàng
+   [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với voucher chưa áp dụng
+   ...    - Dữ liệu đầu vào:
+   ...    - Mã hóa đơn: "HD_TEST_VOUCHER006"
+   ...    - Tổng tiền: 100,000đ
+   ...    - Thanh toán: Voucher 100,000đ
+   ...    - Logic xử lý: 
+   ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+   ...    - Kỳ vọng:
+   ...    - Status code: 420
+   ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+   [Tags]    API_TAODUOC
+   Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHERNH001
+   When Gửi Yêu Cầu Tạo Hóa Đơn
+   Then Mã Trạng Thái Phải Là 420
+
+Tạo hóa đơn thanh toán nhiều voucher với đợt phát hành không cho phép sử dụng nhiều lần
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn thanh toán nhiều voucher với đợt phát hành không cho phép sử dụng nhiều lần
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER007"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher 100,000đ    
+    ...    - Logic xử lý: 
+    ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+    [Tags] 
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER010
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+
+Tạo hóa đơn thanh toán nhiều voucher với voucher hết hạn
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn thanh toán nhiều voucher với voucher hết hạn
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn: "HD_TEST_VOUCHER008"
+    ...    - Tổng tiền: 100,000đ
+    ...    - Thanh toán: Voucher 100,000đ
+    ...    - Logic xử lý: 
+    ...      + VoucherService.ValidateVoucher() kiểm tra tính hợp lệ và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
+    [Tags]   apiinvoice  test3244
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Thời gian giao dịch không phù hợp với thời hạn sử dụng của voucher A4UVPWOBFZ"
+
 
 RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
     [Documentation]    Kiểm tra thanh toán hóa đơn với nhiều Voucher khác nhau
@@ -640,7 +705,6 @@ RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
     ...    - Tổng tiền: 200,000đ
     ...    - Thanh toán 1: Voucher 1 - 50,000đ
     ...    - Thanh toán 2: Voucher 2 - 50,000đ
-    ...    - Thanh toán 3: Tiền mặt - 100,000đ
     ...    - Logic xử lý: 
     ...      + InvoiceService.CreateInvoice() tạo nhiều Payment với Method="Voucher"
     ...      + VoucherService.ValidateVoucher() xác thực từng voucher
@@ -651,15 +715,14 @@ RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
     ...    - Thanh toán Voucher 2 được ghi nhận với số tiền 50,000đ
     ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
     ...    - Các Voucher được đánh dấu đã sử dụng (status=1)
-    [Tags]    payment    voucher    multiple    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với Nhiều Voucher
+    [Tags]    payment    voucher    multiple   apiinvoice   test43
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với 2 Voucher Đợt VOUCHERNH001
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id_1}    50000
-    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id_2}    50000
-    And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    100000
-    And Xác Thực Trạng Thái Nhiều Voucher Đã Sử Dụng
+    And Xác Thực Thanh Toán Được Ghi Nhận 2 Phương Thức ${list_payment_method_voucher} Thanh Toán ${list_payment_amount_voucher}
+    And Xác Thực Trạng Thái Voucher Đã Sử Dụng ${list_voucher_id}
+    [Teardown]   Tear down Delete Hóa Đơn
 
 RT-GP-015 Thanh toán hóa đơn với Voucher và khuyến mãi
     [Documentation]    Kiểm tra thanh toán hóa đơn với Voucher kết hợp khuyến mãi

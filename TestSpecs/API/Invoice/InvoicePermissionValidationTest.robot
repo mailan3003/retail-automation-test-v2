@@ -1,6 +1,8 @@
 *** Settings ***
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoicePermissionValidationKeywords.robot
+Resource    ../../../Keywords/Utilities/RequestHelper.robot
+Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 
 *** Test Cases ***
 RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
@@ -13,11 +15,98 @@ RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
 
 RT-INPV-002 Kiểm tra quyền thay đổi người bán khi người tạo khác người bán
     [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
-    [Tags]    invoice    validation    permission    seller
-    Given Chuẩn bị dữ liệu hóa đơn với người bán ${invoice_permission_validation_other_seller}
-    When Gửi yêu cầu tạo hóa đơn với token admin
-    Then Response Status Code Should Be 200
-    And Response Should Have SoldById With value ${invoice_permission_validation_other_seller}
+    [Tags]    apiinvoice    validation    permission    
+    Given Chuẩn bị dữ liệu hóa đơn với người bán ${SOLD_BY_ID}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin người bán ${SOLD_BY_ID} trong hóa đơn được lưu trong CSDL
+
+Tạo Hóa Đơn Có Kênh Bán
+    [Documentation]      tạo hóa đơn có kênh bán
+    [Tags]    apiinvoice    validation    permission    
+    And Chuẩn bị dữ liệu hóa đơn với kênh bán ${CHANNEL_ID_1}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin kênh bán ${CHANNEL_ID_1} trong hóa đơn được lưu trong CSDL
+
+Tạo Hóa Đơn Có Kênh Bán Không Tồn Tại
+    [Documentation]     tạo hóa đơn có kênh bán không tồn tại
+    [Tags]    apiinvoice    validation    permission    
+    And Chuẩn bị dữ liệu hóa đơn với kênh bán ${valid_channel_id}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Kênh bán không tồn tại"
+
+Tạo Hóa Đơn Có Thay Đổi Thời Gian  
+    [Documentation]     tạo hóa đơn có thay đổi thời gian
+    [Tags]    apiinvoice    validation    permission    
+    And Chuẩn bị dữ liệu thay đổi thời gian lùi 2 ngày so với ngày hiện tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+
+Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng hóa đơn tự lấy thời gian theo ngày hiện tại
+    [Tags]    apiinvoice    validation    permission     
+    Given Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+
+Chuẩn bị dữ liệu hóa đơn gắn với bảng giá 
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
+    [Tags]    apiinvoice    validation    permission    
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá ${PRICEBOOK_ID}   
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin bảng giá ${PRICEBOOK_ID} trong hóa đơn được lưu trong CSDL
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
+    [Tags]    apiinvoice    validation    permission    
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá 53253
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Bảng giá đang chọn đã không tồn tại"
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
+    [Tags]    apiinvoice    validation    permission      
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000153
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá Bảng giá kết hợp"
+
+Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh 
+    [Documentation]    Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh
+    [Tags]  
+    Given Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000145 theo chi nhánh 1000000048
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá Bảng giá kết hợp"
+
+
+Tạo hóa đơn với user không có quyền tạo hóa đơn
+    [Documentation]    Tạo hóa đơn với user không có quyền tạo hóa đơn
+    [Tags]    apiinvoice    validation    permission    
+    Given Chuẩn bị hóa đơn tiêu chuẩn
+    When Get BearerToken by user    anh.nk     Kiotviet123456
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 403
+
+Tạo hóa đơn với trạng thái đơn hàng là 
+    [Documentation]    Tạo hóa đơn với trạng thái đơn hàng là Finalized
+    [Tags]   
+    Given Chuẩn bị hóa đơn tiêu chuẩn với trạng thái 0
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 403
+
+Thay đổi người bán không có quyền bán
+    [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
 
 RT-INPV-003 Kiểm tra quyền truy cập chi nhánh của người dùng
     [Documentation]    Kiểm tra quyền truy cập chi nhánh khi tạo hóa đơn

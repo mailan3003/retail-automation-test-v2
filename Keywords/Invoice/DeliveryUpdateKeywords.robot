@@ -40,7 +40,7 @@ Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng ${fee}
     ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Price    ${fee}
     ${request}=    Update Nested Dictionary Property    ${request}    DeliveryDetail    ${delivery_detail_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceId    ${INVOICE_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 

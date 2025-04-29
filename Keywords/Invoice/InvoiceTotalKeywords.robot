@@ -184,13 +184,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Gửi Yêu Cầu Tạo Hóa Đơn
-    [Documentation]    Gửi yêu cầu tạo hóa đơn và lưu response
-    ${response}=    Call API    invoices    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    Log    Trạng thái phản hồi: ${response.status_code}
-    Log    Dữ liệu phản hồi: ${response.text}
-    RETURN    ${response}
 
 # DB Validation Keywords
 Xác Thực Hóa Đơn Trong DB

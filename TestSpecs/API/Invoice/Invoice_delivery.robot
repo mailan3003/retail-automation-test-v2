@@ -202,3 +202,5 @@ RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Giao Hàng Trong DB Không Thu Hộ
     And Xác Thực Trạng Thái Giao Hàng    1
+
+
