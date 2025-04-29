@@ -33,6 +33,99 @@
   - Chuẩn hóa trạng thái vận đơn để phù hợp với quy trình xử lý của hệ thống
   - Tăng tính minh bạch và độ tin cậy trong quá trình giao hàng và thu tiền hộ 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Đối tác vận chuyển không hợp lệ
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "UsingCod": 1,
+    "Status": 1,
+    "DeliveryDetail": {
+      "UseDefaultPartner": true,
+      "PartnerCode": "GHN",
+      "ServiceAdd": "S1"
+    },
+    "IsChangeNormalToShippingDelivery": true
+  },
+  "CurrentCarrierCom": {
+    "Code": "GHN",
+    "IsActive": false,
+    "Scope": "RT001,RT002,RT003"
+  },
+  "CurrentRetailerCode": "RT005",
+  "PosSetting": {
+    "UseCodByKvCarrier": false
+  },
+  "ExpectedError": {
+    "Type": "KvValidatePartnerDeliveryException",
+    "Message": "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện đối tác vận chuyển không hợp lệ (không hoạt động hoặc không hỗ trợ nhà bán hàng hiện tại).
+
+### 2. Thiếu thông tin bên trả phí vận chuyển
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "UsingCod": 1,
+    "Status": 1,
+    "DeliveryDetail": {
+      "UseDefaultPartner": true,
+      "PartnerCode": "GHN",
+      "ServiceAdd": ""
+    }
+  },
+  "CurrentCarrierCom": {
+    "Code": "GHN",
+    "IsActive": true,
+    "Scope": "RT001,RT002,RT003"
+  },
+  "CurrentRetailerCode": "RT001",
+  "PosSetting": {
+    "UseCodByKvCarrier": false
+  },
+  "ExpectedError": {
+    "Type": "KvValidatePartnerDeliveryException",
+    "Message": "Vui lòng chọn bên trả phí"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi thiếu thông tin về bên trả phí vận chuyển.
+
+### 3. Thiết lập nhà bán hàng không cho phép sử dụng COD qua đối tác KiotViet
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "UsingCod": 1,
+    "Status": 1,
+    "DeliveryDetail": {
+      "UseDefaultPartner": true,
+      "PartnerCode": "GHN",
+      "ServiceAdd": "S1"
+    }
+  },
+  "CurrentCarrierCom": {
+    "Code": "GHN",
+    "IsActive": true,
+    "Scope": "RT001,RT002,RT003"
+  },
+  "CurrentRetailerCode": "RT001",
+  "PosSetting": {
+    "UseCodByKvCarrier": true
+  },
+  "ExpectedError": {
+    "Type": "KvValidatePartnerDeliveryException",
+    "Message": "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi thiết lập của nhà bán hàng không cho phép sử dụng COD qua đối tác KiotViet.
+
 ---
 **Điều hướng**
 - Trước đó: [07-CreateInvoice-UUIDCheck.md](./07-CreateInvoice-UUIDCheck.md)

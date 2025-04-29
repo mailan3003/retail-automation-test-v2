@@ -19,6 +19,50 @@
     
   - **Lợi ích**: Cơ chế này ngăn chặn việc tạo hóa đơn trùng lặp khi có nhiều request đồng thời, đảm bảo tính toàn vẹn dữ liệu. 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Hóa đơn trùng UUID
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "Uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "Code": "HD001"
+  },
+  "Config": {
+    "InvoiceProcessingToggle": true
+  },
+  "RedisCache": {
+    "Key": "cache:InvoiceProcessing:retailerId_123:550e8400-e29b-41d4-a716-446655440000",
+    "Value": "2023-08-15T10:30:45"
+  },
+  "ExpectedError": {
+    "Type": "KvValidateInvoiceException",
+    "Message": "Mã hóa đơn online bị trùng"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện UUID đã tồn tại trong cache, ngăn chặn việc tạo hóa đơn trùng lặp.
+
+### 2. Hóa đơn offline bỏ qua kiểm tra UUID
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "Uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "Code": "HDO001"
+  },
+  "Config": {
+    "InvoiceProcessingToggle": true,
+    "OffCodePrefix": "HDO"
+  },
+  "ExpectedResult": {
+    "SkipUuidCheck": true
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống không thực hiện kiểm tra UUID với hóa đơn offline (mã bắt đầu bằng HDO), cho phép tạo hóa đơn mà không kiểm tra trùng lặp.
+
 ---
 **Điều hướng**
 - Trước đó: [02-CreateInvoice-VerifyInitData.md](./02-CreateInvoice-VerifyInitData.md)

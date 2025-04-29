@@ -31,6 +31,119 @@
     - Hóa đơn sẽ được xử lý như hóa đơn bán lẻ cho khách vãng lai
     - Không cần kiểm tra thêm thông tin khách hàng 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Khách hàng không còn hoạt động trong hệ thống
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "CustomerId": 123,
+    "Code": "HD001"
+  },
+  "Customer": {
+    "Id": 123,
+    "Name": "Nguyễn Văn A",
+    "IsActive": false,
+    "IsDeleted": false
+  },
+  "ExpectedError": {
+    "Type": "KvValidateCustomerException",
+    "Message": "Khách hàng không còn hoạt động trong hệ thống"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi tạo hóa đơn mới cho khách hàng không còn hoạt động.
+
+### 2. Khách hàng đã bị xóa khỏi hệ thống
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "CustomerId": 123,
+    "Code": "HD001"
+  },
+  "Customer": {
+    "Id": 123,
+    "Name": "Nguyễn Văn A",
+    "IsActive": true,
+    "IsDeleted": true
+  },
+  "ExpectedError": {
+    "Type": "KvValidateCustomerException",
+    "Message": "Khách hàng không còn hoạt động trong hệ thống"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi tạo hóa đơn mới cho khách hàng đã bị xóa khỏi hệ thống.
+
+### 3. Khách hàng không tồn tại
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "CustomerId": 456,
+    "Code": "HD001"
+  },
+  "Customer": null,
+  "ExpectedError": {
+    "Type": "KvValidateCustomerException",
+    "Message": "Khách hàng không còn hoạt động trong hệ thống"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi tạo hóa đơn mới cho khách hàng không tồn tại trong hệ thống.
+
+### 4. Bỏ qua kiểm tra trạng thái khách hàng khi cập nhật hóa đơn
+```json
+{
+  "Invoice": {
+    "Id": 100,
+    "CustomerId": 123,
+    "Code": "HD100"
+  },
+  "Customer": {
+    "Id": 123,
+    "Name": "Nguyễn Văn A",
+    "IsActive": false,
+    "IsDeleted": false,
+    "Debt": 1000000
+  },
+  "CustomerOldDebt": 1000000,
+  "ExpectedResult": {
+    "Success": true
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống bỏ qua kiểm tra trạng thái khách hàng khi cập nhật hóa đơn đã tồn tại.
+
+### 5. Hóa đơn offline với đối tác giao hàng mặc định
+```json
+{
+  "Invoice": {
+    "Id": 0,
+    "Code": "HDO001",
+    "DeliveryDetail": {
+      "UseDefaultPartner": true,
+      "PartnerCode": "GHN",
+      "PartnerName": "Giao Hàng Nhanh"
+    }
+  },
+  "Settings": {
+    "OffCodePrefix": "HDO"
+  },
+  "ExpectedResult": {
+    "DeliveryDetail": {
+      "UseDefaultPartner": true,
+      "PartnerCode": "",
+      "PartnerName": "",
+      "PartnerDelivery": null
+    }
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống xóa thông tin đối tác giao hàng khi hóa đơn offline sử dụng đối tác mặc định.
+
 ---
 **Điều hướng**
 - Trước đó: [15-CreateInvoice-PaymentValidation.md](./15-CreateInvoice-PaymentValidation.md)

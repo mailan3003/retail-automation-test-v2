@@ -27,6 +27,76 @@
   - Cung cấp thông báo chi tiết giúp người dùng hiểu rõ vấn đề
   - Tăng tính minh bạch trong quá trình xử lý hóa đơn 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Áp dụng khuyến mãi đã bị xóa
+```json
+{
+  "Invoice": {
+    "InvoicePromotions": [
+      {
+        "Id": 0,
+        "PromotionId": 123,
+        "Name": "Giảm giá 50%: CT001",
+        "Value": 25000
+      },
+      {
+        "Id": 0,
+        "PromotionId": 456,
+        "Name": "Tặng quà: CT002",
+        "Value": 0
+      }
+    ]
+  },
+  "KvPromotionServiceResult": {
+    "ValidIdList": [],
+    "DeletedIdList": [123, 456]
+  },
+  "ExpectedError": {
+    "Type": "KvValidateException",
+    "Message": "Chương trình khuyến mại Giảm giá 50%, Tặng quà ngừng hoạt động, vui lòng áp dụng khuyến mại khác!"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi phát hiện các chương trình khuyến mãi đã bị xóa hoặc ngừng hoạt động.
+
+### 2. Áp dụng khuyến mãi đã bị xóa và khuyến mãi còn hiệu lực
+```json
+{
+  "Invoice": {
+    "InvoicePromotions": [
+      {
+        "Id": 0,
+        "PromotionId": 123,
+        "Name": "Giảm giá 50%: CT001",
+        "Value": 25000
+      },
+      {
+        "Id": 0,
+        "PromotionId": 456,
+        "Name": "Tặng quà: CT002",
+        "Value": 0
+      },
+      {
+        "Id": 0,
+        "PromotionId": 789,
+        "Name": "Mua 1 tặng 1: CT003",
+        "Value": 15000
+      }
+    ]
+  },
+  "KvPromotionServiceResult": {
+    "ValidIdList": [789],
+    "DeletedIdList": [123, 456]
+  },
+  "ExpectedError": {
+    "Type": "KvValidateException",
+    "Message": "Chương trình khuyến mại Giảm giá 50%, Tặng quà ngừng hoạt động, vui lòng áp dụng khuyến mại khác!"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi chỉ với các chương trình khuyến mãi đã ngừng hoạt động, mặc dù vẫn có khuyến mãi hợp lệ trong danh sách.
+
 ---
 **Điều hướng**
 - Trước đó: [05-CreateInvoice-VersionConflict.md](./05-CreateInvoice-VersionConflict.md)
