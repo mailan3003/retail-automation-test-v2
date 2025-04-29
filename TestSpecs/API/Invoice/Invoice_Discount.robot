@@ -185,18 +185,55 @@ RT-DP-017 Tính tổng tiền hàng có giảm giá theo tối đa 100000
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 4900000
     
-RT-DP-018 Tính tổng tiền hàng có phí giao hàng và giảm giá
-    [Documentation]    Kiểm tra tính tổng tiền hàng có phí giao hàng và giảm giá:
+Tạo hóa đơn áp dụng coupon ở trạng thái chưa phát hành
+    [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở trạng thái không hợp lệ:
     ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
-    ...    - Giảm giá: 10.000đ
-    ...    - Phí giao hàng: 30.000đ
-    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 10.000đ + 30.000đ = 120.000đ
-    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
-    ...    - Kết quả: 120000đ nếu cấu hình là 0 chữ số thập phân
-    [Tags]   
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá 10000 Và Phí Giao Hàng 30000
+    ...    - Mã coupon: Giảm 10.000đ
+    ...    - Trạng thái coupon: Không hợp lệ
+    ...    - Kỳ vọng: Mã trạng thái phải là 400
+    ...    - Nội dung phản hồi trả về phải có thông báo lỗi về coupon không hợp lệ
+    [Tags]    discount    apiinvoice    coupon       
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001 Và Trạng Thái Chưa Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã trạng thái phải là 200
-    And Nội dung phản hồi trả về phải tồn tại Id
-    And Tổng tiền hóa đơn phải bằng 120000
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Trạng thái coupon CPM23LRPX0 chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
 
+Tạo hóa đơn áp dụng coupon ở trạng thái đã sử dụng
+    [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở trạng thái đã sử dụng:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Mã coupon: Giảm 10.000đ
+    ...    - Trạng thái coupon: Đã sử dụng
+    ...    
+    ...    - Kỳ vọng: Mã trạng thái phải là 400
+    ...    - Nội dung phản hồi trả về phải có thông báo lỗi về coupon không hợp lệ
+    [Tags]    discount    apiinvoice    coupon    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001 Và Trạng Thái Đã Sử Dụng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Trạng thái coupon CPCMT5OSH5 chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
+
+Tạo hóa đơn không đủ điều kiện vẫn áp dụng coupon
+    [Documentation]    Kiểm tra tạo hóa đơn không đủ điều kiện vẫn áp dụng coupon:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Mã coupon: Giảm 10.000đ
+    ...    - Trạng thái coupon: Đã phát hành
+    ...    - Kỳ vọng: Mã trạng thái phải là 420
+    ...    - Nội dung phản hồi trả về phải có thông báo lỗi về coupon không hợp lệ
+    [Tags]    discount    apiinvoice    coupon    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng coupon CPDD8VJS9D"
+
+Tạo hóa đơn áp dụng coupon ở đợt phát hành chưa áp dụng
+    [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở đợt phát hành chưa áp dụng:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Mã coupon: Giảm 10.000đ
+    ...    - Trạng thái coupon: Đã phát hành
+    ...    - Kỳ vọng: Mã trạng thái phải là 420
+    ...    - Nội dung phản hồi trả về phải có thông báo lỗi về coupon không hợp lệ
+    [Tags]    discount    apiinvoice    coupon        
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON002
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Đợt phát hành của coupon CPIGVM6HXV chưa được kích hoạt"

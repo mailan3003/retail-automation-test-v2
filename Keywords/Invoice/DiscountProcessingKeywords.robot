@@ -438,10 +438,32 @@ Lấy Coupon Theo Coupon Campaign Id
     ${result}=    Fetch One    ${query}    ${couponcampaign_id}
     RETURN    ${result[0]}    ${result[1]}
 
+Lấy Coupon Theo ${couponcampaign_id} Và Trạng Thái ${status}
+    [Documentation]  Lấy coupon code theo coupon campaign id
+    ${status}=    Set Variable if    '${status}'=='Chưa Sử Dụng'    0     2
+    ${query}=    Set Variable    SELECT Id, Code FROM Coupon WHERE CouponCampaignId = ? AND Status = ?
+    ${result}=    Fetch One    ${query}    ${couponcampaign_id}    ${status}
+    RETURN    ${result[0]}    ${result[1]}
+
 Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign}
     [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
     ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
     ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
+    ${coupon_data}=  Update Nested Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
+    ${coupon_data}=  Update Nested Dictionary Property     ${coupon_data}    Id    ${coupon_id}
+    ${coupon_data}=  Update Nested Dictionary Property  ${coupon_data}    Code    ${coupon_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    5000
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign} Và Trạng Thái ${status}
+    [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
+    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo ${couponcampaign_id} Và Trạng Thái ${status}
     ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
     ${coupon_data}=  Update Nested Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
     ${coupon_data}=  Update Nested Dictionary Property     ${coupon_data}    Id    ${coupon_id}

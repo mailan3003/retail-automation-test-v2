@@ -80,6 +80,9 @@ ${PARTNER_DELIVERY_2_NAME}      Giao hàng nhanh
 #Category Data
 ${CATEGORY_1_ID}        1000000717
 
+#Pricebook Data
+${PRICEBOOK_ID}        1000000142
+
 #Surcharge Data
 ${SURCHARGE_1_ID}       1000000049
 ${SURCHARGE_2_ID}       1000000045
@@ -132,7 +135,12 @@ ${TAX_1_ID}             2
 
 # Sale channel data
 ${valid_channel_id}    6666
+${CHANNEL_ID_1}   1000000042
 
+
+# Sold by 
+${SOLD_BY_ID}    1000000495
+${SOLD_BY_ID_2}   1000000503
 # Dates
 ${KHOA_SO_DATE}    25-04-2025
 ${BRANCH_ID_NHANH_A}  1000000048
@@ -167,10 +175,6 @@ ${PROMOTION_GIFT_ID_5}    87286
 ${PROMOTION_GIFT_ID_6}    91443
 ${PROMOTION_GIFT_ID_9}    87289
 # Branch data  
-${MAIN_BRANCH}    1234
-${SUB_BRANCH}     5678
-${OTHER_BRANCH_ID}        2
-${MASTER_BRANCH_ID}       1
 ${CUSTOMER_ID}            1000009350
 # Tax data
 ${VAT_RATE}       10
@@ -228,11 +232,4 @@ ${STATUS_COMPLETED}      3
 ${STATUS_CANCELLED}      4
 ${STATUS_FAILED}         5
 
-# API endpoints
-${API_BASE_URL}         https://api.kiotviet.com
-${API_VERSION}          v1
-${API_INVOICE}          ${API_BASE_URL}/${API_VERSION}/invoices
-
-# API Config
-${API_ENDPOINT}             https://
 

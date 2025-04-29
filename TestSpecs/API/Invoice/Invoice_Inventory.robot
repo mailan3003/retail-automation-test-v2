@@ -211,3 +211,19 @@ RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiề
 #     And Tồn kho sản phẩm ${PRODUCT_1} đã giảm 5 đơn vị
 #     And Lịch sử tồn kho được tạo với số lượng 5 đơn vị cho sản phẩm ${PRODUCT_1}
 #     And Số lượng đặt hàng của sản phẩm ${PRODUCT_1} được giảm 5 đơn vị 
+
+RT-INU-010 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo 2 cấp 
+    [Tags]    inventory    smoke   apiinvoice  test4723754
+    [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm combo ${PRODUCT_CODE_COMBO}, Số lượng=1, Giá=150,000đ
+    ...    - Logic xử lý: ProductBranchService.UpdateInventory()
+    ...    - Code: Với mỗi sản phẩm con: productBranch.OnHand -= (combo.Quantity * childProduct.Quantity)
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Tồn kho các sản phẩm con trong combo giảm theo định mức
+    ...    - Lịch sử tồn kho được ghi nhận cho từng sản phẩm con cấp 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Mã COMBOC2 có Số Lượng 2
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Sản phẩm con trong combo ${product_id} đã giảm tồn kho 2 lần số lượng

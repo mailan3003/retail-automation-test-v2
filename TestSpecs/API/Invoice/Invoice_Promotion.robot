@@ -301,6 +301,7 @@ RT-PR-017: Tạo hóa đơn khuyến mãi hàng hóa giá bán theo số lượn
 #     When Gửi Yêu Cầu Tạo Hóa Đơn
 #     Then Mã Trạng Thái Phải Là 200
 #     And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là null Đồng
+
 # RT-PR-019: Tạo hóa đơn với khuyến mãi không hoạt động
 #     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi không hoạt động
 #     ...                Trạng thái khuyến mãi: Không hoạt động

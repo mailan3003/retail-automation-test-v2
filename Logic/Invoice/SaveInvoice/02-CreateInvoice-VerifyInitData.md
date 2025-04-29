@@ -27,6 +27,60 @@
     - Loại bỏ các ký tự đặc biệt không hợp lệ, đảm bảo tính nhất quán của dữ liệu 
 
 ---
+
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Invoice null
+```json
+{
+  "Invoice": null,
+  "ExpectedError": {
+    "Type": "KvValidateInvoiceException",
+    "Message": "Dữ liệu này không còn tồn tại trên hệ thống. Vui lòng kiểm tra lại"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi invoice null, đảm bảo rằng dữ liệu đầu vào phải tồn tại trước khi xử lý.
+
+### 2. Thay đổi người bán không có quyền
+```json
+{
+  "Invoice": {
+    "SoldById": 102,
+    "CompareSoldById": 101,
+    "PurchaseDate": "2023-01-01T10:00:00",
+    "ExpectedDelivery": "2023-01-05T14:00:00"
+  },
+  "CurrentUser": {
+    "Permissions": []
+  },
+  "ExpectedResult": {
+    "SoldById": 101
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống khôi phục người bán về giá trị ban đầu khi người dùng không có quyền sửa đổi, đảm bảo tính toàn vẹn của dữ liệu và phân quyền chức năng.
+
+### 3. Dữ liệu địa chỉ giao hàng không hợp lệ
+```json
+{
+  "Invoice": {
+    "DeliveryDetail": {
+      "Address": "123 Đường ABC <script>alert('XSS')</script>",
+      "ExpectedDeliveryUtc": "2023-01-05T07:00:00Z"
+    }
+  },
+  "ExpectedResult": {
+    "DeliveryDetail": {
+      "Address": "123 Đường ABC ",
+      "ExpectedDelivery": "2023-01-05T14:00:00"
+    }
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống loại bỏ các ký tự đặc biệt và mã script trong địa chỉ, đồng thời chuyển đổi múi giờ, ngăn chặn tấn công XSS và chuẩn hóa dữ liệu thời gian.
+
+---
 **Điều hướng**
 - Trước đó: [01-CreateInvoice-Overview.md](./01-CreateInvoice-Overview.md)
 - Tiếp theo: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)

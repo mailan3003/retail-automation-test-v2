@@ -36,6 +36,79 @@
     - Và đã có hóa đơn trả hàng liên kết (`listReturn != null && listReturn.Any() && oldInvoice.Returns.Any()`)
     - Hệ thống sẽ ném ngoại lệ với thông báo "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật" 
 
+## Test Data JSON cho các trường hợp thất bại
+
+### 1. Thay đổi thông tin giao hàng của hóa đơn đã có giao hàng
+```json
+{
+  "Invoice": {
+    "Id": 10,
+    "UpdateInvoiceId": 5,
+    "Code": "Update_HD001",
+    "DeliveryDetail": {
+      "UseDefaultPartner": false
+    }
+  },
+  "ExistOldInvoiceDeliveryInfo": {
+    "UseDefaultPartner": true,
+    "Status": 1
+  },
+  "ExpectedError": {
+    "Type": "KvValidateException",
+    "Message": "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi cố gắng thay đổi thông tin đối tác vận chuyển của hóa đơn đã có giao hàng.
+
+### 2. Thay đổi khách hàng của hóa đơn đã thanh toán
+```json
+{
+  "Invoice": {
+    "Id": 10,
+    "UpdateInvoiceId": 5,
+    "Code": "Update_HD001",
+    "CustomerId": 200
+  },
+  "OldInvoice": {
+    "Id": 5,
+    "CustomerId": 100,
+    "TotalPayment": 500000
+  },
+  "ExpectedError": {
+    "Type": "KvValidateException",
+    "Message": "Có thay đổi mới hơn từ server"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi cố gắng thay đổi khách hàng của hóa đơn đã có thanh toán.
+
+### 3. Cập nhật hóa đơn đã có trả hàng
+```json
+{
+  "Invoice": {
+    "Id": 10,
+    "UpdateInvoiceId": 5,
+    "Code": "Update_HD001"
+  },
+  "OldInvoice": {
+    "Id": 5,
+    "Status": 3,
+    "Returns": [
+      { "Id": 1, "Code": "RT001" }
+    ]
+  },
+  "ListReturn": [
+    { "Id": 1, "Code": "RT001", "InvoiceId": 5 }
+  ],
+  "ExpectedError": {
+    "Type": "KvValidateException",
+    "Message": "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
+  }
+}
+```
+**Kết quả kiểm tra**: Hệ thống báo lỗi khi cố gắng cập nhật hóa đơn đã hoàn thành và có trả hàng liên kết.
+
 ---
 **Điều hướng**
 - Trước đó: [03-CreateInvoice-DuplicateInvoice.md](./03-CreateInvoice-DuplicateInvoice.md)
