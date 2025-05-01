@@ -1,4 +1,4 @@
-# Phân tích Business Logic của phương thức CreateInvoice - Index File
+# Phân tích Business Logic của phương thức CreateInvoice
 
 ## Danh mục các bước xử lý
 
@@ -19,6 +19,12 @@
 15. [Kiểm tra thông tin thanh toán](./15-CreateInvoice-PaymentValidation.md)
 16. [Kiểm tra thông tin khách hàng và xử lý thông tin giao hàng](./16-CreateInvoice-CustomerDelivery.md)
 17. [Kiểm tra kho hàng](./17-CreateInvoice-WarehouseCheck.md)
-18. [Lưu hoặc cập nhật hóa đơn](./CreateInvoice.md#17-lưu-hoặc-cập-nhật-hóa-đơn)
+18. [Lưu hoặc cập nhật hóa đơn](./18-CreateInvoice-SaveOrUpdateInvoice.md)
+    - [Cập nhật hóa đơn hiện có](./18-1-CreateInvoice-UpdateExistingInvoice-Index.md)
+      - [Kiểm tra vận đơn đang xử lý](./18-1-1-CheckProcessingShippingTasks.md)
+      - [Xử lý tác vụ vận chuyển quá hạn](./18-1-2-ProcessExpiredShippingTasks.md)
+      - [Cập nhật hóa đơn](./18-1-3-UpdateInvoice.md)
+      - [Xử lý đặc biệt cho KShipV4](./18-1-4-KShipV4Handling.md)
+    - [Tạo hóa đơn mới](./18-2-CreateInvoice-CreateNewInvoice.md)
 
 Mỗi file chứa thông tin chi tiết về một bước xử lý cụ thể trong quy trình tạo/cập nhật hóa đơn của hệ thống KiotViet. Các bước này được thực hiện tuần tự để đảm bảo hóa đơn hợp lệ trước khi lưu vào cơ sở dữ liệu. 
