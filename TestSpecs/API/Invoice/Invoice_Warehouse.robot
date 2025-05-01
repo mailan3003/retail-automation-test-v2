@@ -207,4 +207,63 @@ RT-IWH-011 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng kho
     And Tổng tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị
     And Tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Kho 1
 
+RT-IWH-012 Tạo hóa đơn với kho hàng đã bị xóa
+    [Tags]    warehouse    negative    AIGenerated
+    [Documentation]    Kiểm tra tạo hóa đơn với kho hàng đã bị xóa (IsActive = false)
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn với kho hàng đã bị xóa
+    ...    - Logic xử lý: WarehouseService.ValidateStatusOfWarehouse
+    ...    - Mã nguồn: Kiểm tra nếu kho hàng không còn hoạt động (IsActive = false)
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "${DELETED_WAREHOUSE_NAME} không hợp lệ"
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Thông Báo Lỗi Phải Chứa "${DELETED_WAREHOUSE_NAME} không hợp lệ"
+
+RT-IWH-013 Tạo hóa đơn với kho hàng đã ngừng hoạt động
+    [Tags]    warehouse    negative    AIGenerated
+    [Documentation]    Kiểm tra tạo hóa đơn với kho hàng đã ngừng hoạt động (LimitAccess = true)
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn với kho hàng đã ngừng hoạt động
+    ...    - Logic xử lý: WarehouseService.ValidateStatusOfWarehouse
+    ...    - Mã nguồn: Kiểm tra nếu kho hàng bị hạn chế truy cập (LimitAccess = true)
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "{INACTIVE_WAREHOUSE_NAME} đã ngừng hoạt động"
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Ngừng Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Thông Báo Lỗi Phải Chứa "${INACTIVE_WAREHOUSE_NAME} đã ngừng hoạt động"
+
+RT-IWH-014 Tạo hóa đơn với kho bán hàng mặc định nhưng chi nhánh đã bị xóa
+    [Tags]    warehouse    negative    AIGenerated
+    [Documentation]    Kiểm tra tạo hóa đơn với kho bán hàng mặc định nhưng chi nhánh đã bị xóa
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn với kho bán hàng mặc định Type=1 (Chi Nhánh)
+    ...    - Chi nhánh đã bị xóa (IsActive = false)
+    ...    - Logic xử lý: Hệ thống xác định whId=invoice.BranchId và kiểm tra trạng thái
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "${DELETED_WAREHOUSE_NAME} không hợp lệ"
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Bán Hàng Mặc Định Chi Nhánh Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Thông Báo Lỗi Phải Chứa "${DELETED_WAREHOUSE_NAME} không hợp lệ"
+
+RT-IWH-015 Tạo hóa đơn không chỉ định kho hàng và chi nhánh đã bị vô hiệu hóa
+    [Tags]    warehouse    negative    AIGenerated
+    [Documentation]    Kiểm tra tạo hóa đơn không chỉ định kho hàng và chi nhánh đã bị vô hiệu hóa
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn không chỉ định kho hàng cụ thể (WareHouse = null)
+    ...    - Chi nhánh đã bị vô hiệu hóa (IsActive = false)
+    ...    - Logic xử lý: Hệ thống xác định whId=invoice.BranchId và kiểm tra trạng thái
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "${INACTIVE_WAREHOUSE_NAME} đã ngừng hoạt động"
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Không Chỉ Định Kho Hàng Chi Nhánh Đã Bị Vô Hiệu Hóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Thông Báo Lỗi Phải Chứa "${INACTIVE_WAREHOUSE_NAME} đã ngừng hoạt động"
 

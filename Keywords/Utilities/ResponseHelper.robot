@@ -1,6 +1,7 @@
 *** Settings ***
 Library    Collections
 Library    String
+Resource    Utilities.robot
 
 *** Keywords ***
 Status Should Be
