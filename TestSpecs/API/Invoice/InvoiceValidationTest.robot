@@ -322,4 +322,48 @@ RT-SV-001 Tạo hóa đơn mới với người bán không hoạt động
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
+    And Phản hồi phải chứa lỗi "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
+
+RT-CV-001 Tạo hóa đơn với ID khách hàng không hợp lệ
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với ID khách hàng không hợp lệ (âm)
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: invoice.CustomerId != null && invoice.CustomerId < -0.0000001
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateCustomerException
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có lỗi trong quá trình ghi nhận thông tin. Xin vui lòng Lưu lại thông tin khách hàng một lần nữa."
+
+RT-CV-002 Tạo hóa đơn với kênh bán không tồn tại
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không tồn tại trong DB
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: invoice.SaleChannelId > 0 nhưng saleChannelInDB == null
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"
+
+RT-CV-003 Tạo hóa đơn với kênh bán không thuộc cửa hàng hiện tại
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không thuộc cửa hàng hiện tại
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: saleChannelInDB.RetailerId != CurrentRetailerId
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"
+
+RT-CV-004 Tạo hóa đơn với kênh bán không hoạt động
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không hoạt động
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: saleChannelInDB.IsActive == false
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"

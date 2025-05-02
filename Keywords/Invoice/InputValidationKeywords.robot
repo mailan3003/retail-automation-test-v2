@@ -375,3 +375,29 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
     ${request}=    Update Nested Dictionary Property  ${request}    Invoice.SoldById    ${INACTIVE_SOLD_BY_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    -1
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${NON_EXIST_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    # Giả sử 123 là một ID kênh bán tồn tại nhưng thuộc cửa hàng khác
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${DIFFERENT_SHOP_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    # Giả sử 456 là một ID kênh bán thuộc cửa hàng hiện tại nhưng không hoạt động
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${INACTIVE_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
