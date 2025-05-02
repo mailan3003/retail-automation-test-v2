@@ -762,7 +762,7 @@ RT-BP-001 Tạo hóa đơn thất bại với tài khoản ngân hàng không t�
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    payment    bank_account    validation2    AIGenerated
+    [Tags]    payment    bank_account    validation    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${INVALID_BANK_ACCOUNT_ID} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -781,7 +781,7 @@ RT-BP-002 Tạo hóa đơn thất bại với tài khoản ngân hàng không đ
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh ${DEFAULT_BRANCH_NAME}"
-    [Tags]    payment    bank_account    validation2    AIGenerated
+    [Tags]    payment    bank_account    validation    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_ID} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -799,7 +799,7 @@ RT-BP-003 Tạo hóa đơn thất bại khi một trong nhiều phương thức 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    payment    bank_account    validation2    multiple_payment    AIGenerated
+    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Một Phương Thức Thanh Toán Ngân Hàng Không Hợp Lệ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420

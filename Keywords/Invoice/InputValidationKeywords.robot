@@ -369,3 +369,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.SoldById    ${INACTIVE_SOLD_BY_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}

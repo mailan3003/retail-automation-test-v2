@@ -307,3 +307,19 @@ RT-CD-002 Tạo hóa đơn với khách hàng đã bị xóa
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
 
+
+RT-SV-001 Tạo hóa đơn mới với người bán không hoạt động
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn mới với người bán không còn hoạt động
+    ...    - Source: if (soldby == null || (invoice.Id <= 0 && soldby.Status != UserStatus.Active))
+    ...    - Logic: Kiểm tra trạng thái hoạt động của người bán khi tạo hóa đơn mới
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Người bán: GivenName=${INACTIVE_SOLD_BY_NAME}, Status=0, IsActive=false
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
+    [Tags]    invoicevalidate    salesperson    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
