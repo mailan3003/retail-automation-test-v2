@@ -25,7 +25,7 @@
     - Đồng thời lấy thông tin chi tiết của khách hàng thông qua `CustomerService.GetByIdAsync(invoice.CustomerId.Value)`
     - Kiểm tra trạng thái khách hàng:
       - Nếu đang tạo hóa đơn mới (`invoice.Id <= 0`) và khách hàng không tồn tại (`customer == null`) hoặc không còn hoạt động (`customer.IsActive != true`) hoặc đã bị xóa (`customer.isDeleted == true`):
-        - Hệ thống sẽ ném ngoại lệ `KvValidateCustomerException` với thông báo `KVMessage._customer_UnActive` (Khách hàng không còn hoạt động trong hệ thống)
+        - Hệ thống sẽ ném ngoại lệ `KvValidateCustomerException` với thông báo `KVMessage._customer_UnActive` (Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống.)
     - Thông tin công nợ hiện tại của khách hàng (`customerOldDebt`) sẽ được sử dụng sau này để tính toán công nợ mới sau khi tạo/cập nhật hóa đơn
   - Nếu không có thông tin khách hàng (`invoice.CustomerId <= 0`):
     - Hóa đơn sẽ được xử lý như hóa đơn bán lẻ cho khách vãng lai
@@ -93,56 +93,6 @@
 }
 ```
 **Kết quả kiểm tra**: Hệ thống báo lỗi khi tạo hóa đơn mới cho khách hàng không tồn tại trong hệ thống.
-
-### 4. Bỏ qua kiểm tra trạng thái khách hàng khi cập nhật hóa đơn
-```json
-{
-  "Invoice": {
-    "Id": 100,
-    "CustomerId": 123,
-    "Code": "HD100"
-  },
-  "Customer": {
-    "Id": 123,
-    "Name": "Nguyễn Văn A",
-    "IsActive": false,
-    "IsDeleted": false,
-    "Debt": 1000000
-  },
-  "CustomerOldDebt": 1000000,
-  "ExpectedResult": {
-    "Success": true
-  }
-}
-```
-**Kết quả kiểm tra**: Hệ thống bỏ qua kiểm tra trạng thái khách hàng khi cập nhật hóa đơn đã tồn tại.
-
-### 5. Hóa đơn offline với đối tác giao hàng mặc định
-```json
-{
-  "Invoice": {
-    "Id": 0,
-    "Code": "HDO001",
-    "DeliveryDetail": {
-      "UseDefaultPartner": true,
-      "PartnerCode": "GHN",
-      "PartnerName": "Giao Hàng Nhanh"
-    }
-  },
-  "Settings": {
-    "OffCodePrefix": "HDO"
-  },
-  "ExpectedResult": {
-    "DeliveryDetail": {
-      "UseDefaultPartner": true,
-      "PartnerCode": "",
-      "PartnerName": "",
-      "PartnerDelivery": null
-    }
-  }
-}
-```
-**Kết quả kiểm tra**: Hệ thống xóa thông tin đối tác giao hàng khi hóa đơn offline sử dụng đối tác mặc định.
 
 ---
 **Điều hướng**

@@ -275,3 +275,35 @@ RT-RC-022 Tạo hóa đơn với mã voucher không hợp lệ
     Then Mã trạng thái phải là 400
     And Nội dung phản hồi trả về phải có thông báo lỗi voucher không hợp lệ
 
+RT-CD-001 Tạo hóa đơn với khách hàng không còn hoạt động
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với khách hàng không còn hoạt động
+    ...    - Source: if (invoice.Id <= 0 && (customer == null || customer.IsActive != true || customer.isDeleted == true))
+    ...    - Logic: Kiểm tra trạng thái IsActive của khách hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Khách hàng có IsActive=False, IsDeleted=False
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+
+RT-CD-002 Tạo hóa đơn với khách hàng đã bị xóa
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với khách hàng đã bị xóa
+    ...    - Source: if (invoice.Id <= 0 && (customer == null || customer.IsActive != true || customer.isDeleted == true))
+    ...    - Logic: Kiểm tra trạng thái IsDeleted của khách hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Khách hàng có IsActive=True, IsDeleted=True
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+

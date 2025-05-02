@@ -348,3 +348,24 @@ Xác Thực Thanh Toán Hóa Đơn Trong DB
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${method}
     Should Not Be Equal    ${result}    None    Thanh toán không tồn tại trong CSDL
     Should Be Equal As Numbers    ${result[2]}    ${amount}    Số tiền thanh toán không khớp
+
+# CustomerDelivery Test Keywords - AIGenerated
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${INACTIVE_CUSTOMER_ID}
+    
+    # Giả định hệ thống biết rằng khách hàng có ID này không hoạt động 
+    # khi validate trong service
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${DELETED_CUSTOMER_ID}
+    
+    # Giả định hệ thống biết rằng khách hàng có ID này đã bị xóa
+    # khi validate trong service
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}

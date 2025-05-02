@@ -23,6 +23,9 @@ Response Should Have Error ${expected_error}
     ${cleaned_error}=    Replace String    ${expected_error}    "    ${EMPTY}
     Should Have Nested Property     ${RESPONSE.json()}  ResponseStatus.Message  ${cleaned_error}
 
+Phản hồi phải chứa lỗi ${expected_error}
+    Response Should Have Error ${expected_error}
+
 Mã trạng thái phải là ${expected_status_code}
     Status Should Be    ${expected_status_code}    ${RESPONSE}
 
