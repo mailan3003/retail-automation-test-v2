@@ -32,7 +32,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
-    [Tags]    invoicevalidate    smoke    
+    [Tags]    invoicevalidate    smoke    apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -275,3 +275,95 @@ RT-RC-022 Tạo hóa đơn với mã voucher không hợp lệ
     Then Mã trạng thái phải là 400
     And Nội dung phản hồi trả về phải có thông báo lỗi voucher không hợp lệ
 
+RT-CD-001 Tạo hóa đơn với khách hàng không còn hoạt động
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với khách hàng không còn hoạt động
+    ...    - Source: if (invoice.Id <= 0 && (customer == null || customer.IsActive != true || customer.isDeleted == true))
+    ...    - Logic: Kiểm tra trạng thái IsActive của khách hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Khách hàng có IsActive=False, IsDeleted=False
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+
+RT-CD-002 Tạo hóa đơn với khách hàng đã bị xóa
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với khách hàng đã bị xóa
+    ...    - Source: if (invoice.Id <= 0 && (customer == null || customer.IsActive != true || customer.isDeleted == true))
+    ...    - Logic: Kiểm tra trạng thái IsDeleted của khách hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Khách hàng có IsActive=True, IsDeleted=True
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+
+
+RT-SV-001 Tạo hóa đơn mới với người bán không hoạt động
+    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn mới với người bán không còn hoạt động
+    ...    - Source: if (soldby == null || (invoice.Id <= 0 && soldby.Status != UserStatus.Active))
+    ...    - Logic: Kiểm tra trạng thái hoạt động của người bán khi tạo hóa đơn mới
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới (Id=0)
+    ...    - Người bán: GivenName=${INACTIVE_SOLD_BY_NAME}, Status=0, IsActive=false
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
+    [Tags]    invoicevalidate    salesperson    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
+
+RT-CV-001 Tạo hóa đơn với ID khách hàng không hợp lệ
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với ID khách hàng không hợp lệ (âm)
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: invoice.CustomerId != null && invoice.CustomerId < -0.0000001
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateCustomerException
+    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có lỗi trong quá trình ghi nhận thông tin. Xin vui lòng Lưu lại thông tin khách hàng một lần nữa."
+
+RT-CV-002 Tạo hóa đơn với kênh bán không tồn tại
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không tồn tại trong DB
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: invoice.SaleChannelId > 0 nhưng saleChannelInDB == null
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"
+
+RT-CV-003 Tạo hóa đơn với kênh bán không thuộc cửa hàng hiện tại
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không thuộc cửa hàng hiện tại
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: saleChannelInDB.RetailerId != CurrentRetailerId
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"
+
+RT-CV-004 Tạo hóa đơn với kênh bán không hoạt động
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với kênh bán không hoạt động
+    ...    - Source: CreateInvoice - CustomerAndChannel logic
+    ...    - Điều kiện: saleChannelInDB.IsActive == false
+    ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"

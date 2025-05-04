@@ -7,43 +7,39 @@
 Hệ thống thực hiện kiểm tra kỹ lưỡng các phương thức thanh toán trong hóa đơn để đảm bảo tính hợp lệ:
 
 1. **Quy trình kiểm tra cơ bản**:
-   - Hệ thống duyệt qua danh sách thanh toán (`invoice.Payments`)
-   - Chỉ áp dụng kiểm tra khi danh sách thanh toán không rỗng
+   - Hệ thống kiểm tra danh sách thanh toán (`invoice.Payments`)
+   - Chỉ thực hiện kiểm tra khi danh sách thanh toán không rỗng (`invoice.Payments != null && invoice.Payments.Any()`)
 
-2. **Kiểm tra đặc biệt cho thanh toán qua thẻ/chuyển khoản**:
-   - Áp dụng cho các phương thức:
-     - Thanh toán qua thẻ (`PaymentType.Card`)
-     - Chuyển khoản ngân hàng (`PaymentType.Transfer`)
-   - **Yêu cầu bắt buộc**: Với các phương thức thanh toán này, phải chọn tài khoản ngân hàng
-     - Nếu không chọn tài khoản (`p.AccountId == null`): Hiển thị thông báo "Vui lòng chọn tài khoản ngân hàng để thanh toán"
-
-3. **Xác thực tài khoản ngân hàng**:
-   - **Điều kiện kiểm tra**: Thanh toán có liên kết với tài khoản ngân hàng (`p.AccountId != null && p.AccountId > 0`)
-   - **Quy trình xác thực**:
-     - Gọi `BankAccountService.ValidateBankAccount(p.AccountId.Value)` để xác thực
-     - Kiểm tra tài khoản ngân hàng tồn tại trong hệ thống
-     - Nếu không tồn tại: Hiển thị thông báo "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống." (`KVMessage.account_NotFound`)
-
-4. **Kiểm tra quyền sử dụng tại chi nhánh**:
-   - **Điều kiện kiểm tra**: Tài khoản tồn tại nhưng không phải tài khoản toàn cục (`!bank.IsGlobal`)
-   - **Quy trình xác thực**:
-     - Truy vấn danh sách chi nhánh được phép sử dụng tài khoản:
-       ```sql
-       SELECT * FROM BankAccountBranch 
-       WHERE BankAccountId = @accountId 
-       AND RetailerId = @retailerId
-       ```
-     - Tương đương với truy vấn Entity Framework:
-       ```csharp
-       var branchBank = await BankAccountBranchService.GetAll()
-           .Where(b => b.BankAccountId == accountId && b.RetailerId == AuthService.Context.RetailerId)
-           .ToListAsync();
-       ```
-     - Kiểm tra chi nhánh hiện tại có trong danh sách được phép:
-       ```csharp
-       if (!branchBank.Any(b => b.BranchId == AuthService.Context.BranchId))
-       ```
-     - Nếu không được phép: Hiển thị thông báo "Số tài khoản {số tài khoản} không được áp dụng cho thanh toán tại chi nhánh {tên chi nhánh}" (`KVMessage.BankAccountNotInBranch`)
+2. **Xác thực tài khoản ngân hàng cho thanh toán thẻ/chuyển khoản**:
+   - Hệ thống duyệt qua từng phương thức thanh toán trong danh sách (`foreach(var p in invoice.Payments)`)
+   - **Điều kiện áp dụng**: 
+     - Thanh toán có chọn tài khoản ngân hàng (`p.AccountId != null && p.AccountId > 0`)
+     - Phương thức thanh toán là thẻ hoặc chuyển khoản (`p.Method == PaymentType.Card.ToString() || p.Method == PaymentType.Transfer.ToString()`)
+   
+3. **Quy trình xác thực tài khoản ngân hàng (ValidateBankAccount)**:
+   - Khi đáp ứng các điều kiện trên, hệ thống gọi phương thức `BankAccountService.ValidateBankAccount(p.AccountId.Value)`
+   - Phương thức này thực hiện các kiểm tra sau:
+     - **Kiểm tra tồn tại**: Xác minh tài khoản ngân hàng tồn tại trong hệ thống
+       - Nếu không tồn tại: Hiển thị thông báo "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống." (`KVMessage.account_NotFound`)
+     - **Kiểm tra quyền sử dụng tại chi nhánh**:
+       - **Điều kiện kiểm tra**: Tài khoản tồn tại nhưng không phải tài khoản toàn cục (`!bank.IsGlobal`)
+       - Truy vấn danh sách chi nhánh được phép sử dụng tài khoản:
+         ```sql
+         SELECT * FROM BankAccountBranch 
+         WHERE BankAccountId = @accountId 
+         AND RetailerId = @retailerId
+         ```
+       - Tương đương với truy vấn Entity Framework:
+         ```csharp
+         var branchBank = await BankAccountBranchService.GetAll()
+             .Where(b => b.BankAccountId == accountId && b.RetailerId == AuthService.Context.RetailerId)
+             .ToListAsync();
+         ```
+       - Kiểm tra chi nhánh hiện tại có trong danh sách được phép:
+         ```csharp
+         if (!branchBank.Any(b => b.BranchId == AuthService.Context.BranchId))
+         ```
+       - Nếu không được phép: Hiển thị thông báo "Số tài khoản {số tài khoản} không được áp dụng cho thanh toán tại chi nhánh {tên chi nhánh}" (`KVMessage.BankAccountNotInBranch`)
 
 > **Mục đích**: Đảm bảo tài khoản ngân hàng hợp lệ và được phép sử dụng tại chi nhánh hiện tại trước khi xử lý thanh toán.
 
@@ -141,26 +137,6 @@ Hệ thống thực hiện kiểm tra kỹ lưỡng các phương thức thanh t
 }
 ```
 **Kết quả kiểm tra**: Hệ thống báo lỗi khi một trong nhiều phương thức thanh toán sử dụng tài khoản ngân hàng không hợp lệ.
-
-### 4. Thanh toán qua thẻ hoặc chuyển khoản không chọn tài khoản
-```json
-{
-  "Invoice": {
-    "Payments": [
-      {
-        "PaymentType": 2,
-        "AccountId": null,
-        "Amount": 500000
-      }
-    ]
-  },
-  "ExpectedError": {
-    "Type": "KvValidateBankAccountException",
-    "Message": "Vui lòng chọn tài khoản ngân hàng để thanh toán"
-  }
-}
-```
-**Kết quả kiểm tra**: Hệ thống báo lỗi khi thanh toán qua thẻ hoặc chuyển khoản nhưng không chọn tài khoản ngân hàng.
 
 ---
 **Điều hướng**
