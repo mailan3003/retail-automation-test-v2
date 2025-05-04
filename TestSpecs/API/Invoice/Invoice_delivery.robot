@@ -203,4 +203,37 @@ RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
     And Xác Thực Hóa Đơn Giao Hàng Trong DB Không Thu Hộ
     And Xác Thực Trạng Thái Giao Hàng    1
 
+RT-DP-013 Tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.PurchaseDate: "2023-08-15T14:00:00"
+    ...    - Invoice.DeliveryDetail.ExpectedDelivery: "2023-08-15T10:00:00" (sớm hơn thời gian hóa đơn)
+    ...    - IsValid: false (cần kiểm tra validation)
+    ...    - Logic kiểm tra: Logic xác thực thời gian giao hàng trong CreateInvoice
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
+    [Tags]    apiinvoice    delivery    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"
+
+RT-DP-014 Tạo hóa đơn thất bại khi thời gian giao hàng trùng với thời gian hóa đơn
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi thời gian giao hàng trùng với thời gian hóa đơn
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.PurchaseDate: "2023-08-15T14:00:00"
+    ...    - Invoice.DeliveryDetail.ExpectedDelivery: "2023-08-15T14:00:00" (trùng với thời gian hóa đơn)
+    ...    - IsValid: false (cần kiểm tra validation)
+    ...    - Logic kiểm tra: Logic xác thực thời gian giao hàng trong CreateInvoice
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
+    [Tags]    apiinvoice    delivery    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"
 

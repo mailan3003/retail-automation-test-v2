@@ -2,7 +2,8 @@
 Documentation     Test cases API cho phần tạo phiếu thu khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
 Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
-Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/PaymentUpdateKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 
 
@@ -749,3 +750,57 @@ RT-GP-015 Thanh toán hóa đơn với Voucher và khuyến mãi
     And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
     And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    70000
     And Xác Thực Giảm Giá Khuyến Mãi Hóa Đơn    ${INVOICE_ID}    30000
+
+RT-BP-001 Tạo hóa đơn thất bại với tài khoản ngân hàng không tồn tại
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại với tài khoản ngân hàng không tồn tại
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn có tổng tiền = 100,000đ
+    ...    - Phương thức thanh toán: thẻ
+    ...    - Tài khoản ngân hàng: Tài khoản không tồn tại (ID: ${INVALID_BANK_ACCOUNT_ID})
+    ...    - Logic xử lý:
+    ...      + BankAccountService.ValidateBankAccount() kiểm tra tài khoản tồn tại và trả về lỗi
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    payment    bank_account    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${INVALID_BANK_ACCOUNT_ID} Với Số Tiền 100000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
+
+RT-BP-002 Tạo hóa đơn thất bại với tài khoản ngân hàng không được phép sử dụng tại chi nhánh
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại với tài khoản ngân hàng không được phép sử dụng tại chi nhánh
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn có tổng tiền = 100,000đ
+    ...    - Phương thức thanh toán: chuyển khoản
+    ...    - Tài khoản ngân hàng: Tài khoản tồn tại nhưng không được phép sử dụng tại chi nhánh hiện tại
+    ...    - Logic xử lý:
+    ...      + BankAccountService.ValidateBankAccount() kiểm tra tài khoản tồn tại
+    ...      + Hệ thống kiểm tra quyền sử dụng tại chi nhánh và trả về lỗi
+    ...      + Query: SELECT * FROM BankAccountBranch WHERE BankAccountId = ? AND RetailerId = ?
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh ${DEFAULT_BRANCH_NAME}"
+    [Tags]    payment    bank_account    validation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_ID} Với Số Tiền 100000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh ${DEFAULT_BRANCH_NAME}"
+
+RT-BP-003 Tạo hóa đơn thất bại khi một trong nhiều phương thức thanh toán có tài khoản ngân hàng không hợp lệ
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi một trong nhiều phương thức thanh toán có tài khoản ngân hàng không hợp lệ
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn có tổng tiền = 100,000đ
+    ...    - Phương thức thanh toán 1: thẻ, số tiền 50,000đ, tài khoản ngân hàng ID: ${VALID_BANK_ACCOUNT_ID} (hợp lệ)
+    ...    - Phương thức thanh toán 2: chuyển khoản, số tiền 50,000đ, tài khoản ngân hàng ID: ${INVALID_BANK_ACCOUNT_ID} (không tồn tại)
+    ...    - Logic xử lý:
+    ...      + BankAccountService.ValidateBankAccount() kiểm tra tài khoản tồn tại cho mỗi phương thức thanh toán
+    ...      + Phương thức 2 sẽ gây lỗi vì tài khoản không tồn tại
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
+    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Một Phương Thức Thanh Toán Ngân Hàng Không Hợp Lệ
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."

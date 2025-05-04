@@ -6,7 +6,11 @@ Resource    ../Utilities/Utilities.robot
 Resource    ../../TestData/CommonData.robot
 Resource    ../../TestData/Invoice/CommonInvoiceData.robot
 Resource    ../../TestData/Invoice/InvoiceWarehouseData.robot
+Resource    ../../Config/Env_api.robot
 Library     ../../Resources/DatabaseLibrary.py
+Library     RequestsLibrary
+Library     Collections
+
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Mã ${ma_hh} có Số Lượng ${quantity} Kho ${kho}
     ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
@@ -170,3 +174,35 @@ Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo Tại Kho
         ${expected_value}=    Evaluate    -${child_quantity}*${amount}
         Should Be Equal As Numbers    ${tracking[0]}    ${expected_value}    Giá trị thay đổi tồn kho sản phẩm con không khớp
     END
+# Warehouse validation test keywords
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Bị Xóa
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${warehouse}=    Create Dictionary    Id=${DELETED_WAREHOUSE_ID}    Type=2
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Ngừng Hoạt Động
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${warehouse}=    Create Dictionary    Id=${INACTIVE_WAREHOUSE_ID}    Type=2
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Bán Hàng Mặc Định Chi Nhánh Đã Bị Xóa
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${warehouse}=    Create Dictionary    Id=${DELETED_BRANCH_ID}    Type=1
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${DELETED_WAREHOUSE_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Không Chỉ Định Kho Hàng Chi Nhánh Đã Bị Vô Hiệu Hóa
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${None}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${INACTIVE_WAREHOUSE_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Thông Báo Lỗi Phải Chứa "${error_message}"
+    Response Should Have Error "${error_message}"

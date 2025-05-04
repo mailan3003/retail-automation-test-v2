@@ -219,3 +219,25 @@ Get WardID của Phường/Xã ${ward_name}
     ${query}=    Set Variable    SELECT id FROM Wards WHERE Name = ?
     ${ward_data}=    Fetch One    ${query}    ${ward_name}
     RETURN    ${ward_data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
+    ${purchase_date}=    Set Variable    2023-08-15T14:00:00
+    ${expected_delivery}=    Set Variable    2023-08-15T10:00:00
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery    ${expected_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
+    ${purchase_date}=    Set Variable    2023-08-15T14:00:00
+    ${expected_delivery}=    Set Variable    2023-08-15T14:00:00
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery    ${expected_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

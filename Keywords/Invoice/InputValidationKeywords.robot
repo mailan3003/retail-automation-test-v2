@@ -348,3 +348,56 @@ Xác Thực Thanh Toán Hóa Đơn Trong DB
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${method}
     Should Not Be Equal    ${result}    None    Thanh toán không tồn tại trong CSDL
     Should Be Equal As Numbers    ${result[2]}    ${amount}    Số tiền thanh toán không khớp
+
+# CustomerDelivery Test Keywords - AIGenerated
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${INACTIVE_CUSTOMER_ID}
+    
+    # Giả định hệ thống biết rằng khách hàng có ID này không hoạt động 
+    # khi validate trong service
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${DELETED_CUSTOMER_ID}
+    
+    # Giả định hệ thống biết rằng khách hàng có ID này đã bị xóa
+    # khi validate trong service
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.SoldById    ${INACTIVE_SOLD_BY_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    -1
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${NON_EXIST_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    # Giả sử 123 là một ID kênh bán tồn tại nhưng thuộc cửa hàng khác
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${DIFFERENT_SHOP_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    # Giả sử 456 là một ID kênh bán thuộc cửa hàng hiện tại nhưng không hoạt động
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${INACTIVE_SALE_CHANNEL_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

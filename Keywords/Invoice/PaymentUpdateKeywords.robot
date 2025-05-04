@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation     Keywords cho phần API cập nhật thanh toán
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/PaymentUpdateData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Utilities/DataUtilities.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../../TestData/Invoice/PaymentUpdateData.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           Collections
 Library           String
@@ -326,4 +328,24 @@ Hóa đơn ${invoice_id} có tổng ${count} phương thức thanh toán
     Xác Thực Số Lượng Thanh Toán Trong CSDL    ${invoice_id}    ${count}
 
 Hóa đơn ${invoice_id} có tổng tiền thanh toán là ${total}
-    Xác Thực Tổng Tiền Thanh Toán Trong CSDL    ${invoice_id}    ${total} 
+    Xác Thực Tổng Tiền Thanh Toán Trong CSDL    ${invoice_id}    ${total}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Một Phương Thức Thanh Toán Ngân Hàng Không Hợp Lệ
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    
+    # Tạo danh sách các phương thức thanh toán
+    ${payments}=    Create List
+    
+    # Phương thức thanh toán 1: thẻ với tài khoản hợp lệ
+    ${payment1}=    Deep Copy    ${payment_body}
+    Set To Dictionary    ${payment1}    Method=${PAYMENT_CARD}    Amount=50000    AccountId=${VALID_BANK_ACCOUNT_ID}
+    Append To List    ${payments}    ${payment1}
+    
+    # Phương thức thanh toán 2: chuyển khoản với tài khoản không tồn tại
+    ${payment2}=    Deep Copy    ${payment_body}
+    Set To Dictionary    ${payment2}    Method=${PAYMENT_TRANSFER}    Amount=50000    AccountId=${INVALID_BANK_ACCOUNT_ID}
+    Append To List    ${payments}    ${payment2}
+    
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

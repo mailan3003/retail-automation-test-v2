@@ -8,6 +8,12 @@
                ? invoice.WareHouse.Id 
                : invoice.BranchId;
     ```
+    
+    Trong đó `WarehouseType` là enum định nghĩa các loại kho hàng trong hệ thống (xem chi tiết tại [WarehouseType.md](../Enums/WarehouseType.md)):
+    - `Branch (0)`: Chi nhánh
+    - `DefaultDirectSale (1)`: Kho bán trực tiếp mặc định tạo ra từ thông tin chi nhánh
+    - `Archive (2)`: Kho không bán trực tiếp
+    - `DirectSales (3)`: Kho bán trực tiếp do người dùng tạo ra
   - Hệ thống sử dụng một trong hai giá trị:
     - ID của kho hàng được chỉ định (`invoice.WareHouse.Id`) nếu hóa đơn có thông tin kho hàng và không phải kho bán hàng mặc định
     - ID chi nhánh (`invoice.BranchId`) nếu không có kho hàng cụ thể hoặc là kho bán hàng mặc định
@@ -19,8 +25,8 @@
     2. Nếu có, tiếp tục kiểm tra trạng thái kho hàng hiện tại
     3. Lấy thông tin kho hàng từ cơ sở dữ liệu dựa trên ID kho hàng
     4. Kiểm tra các điều kiện về trạng thái kho:
-       - Nếu kho hàng không còn hoạt động: Hiển thị thông báo "{tên kho} không hợp lệ" (KVMessage.WarehouseIsDeleted)
-       - Nếu kho hàng bị hạn chế truy cập: Hiển thị thông báo "{tên kho} đã ngừng hoạt động" (KVMessage.WarehouseIsDeactived)
+       - Nếu kho hàng không còn hoạt động (IsActive = false): Hệ thống ném ngoại lệ KvValidateException với thông báo "{tên kho} không hợp lệ" (KVMessage.WarehouseIsDeleted), ngăn sử dụng kho đã vô hiệu hóa
+       - Nếu kho hàng bị hạn chế truy cập (LimitAccess = true): Hệ thống ném ngoại lệ KvValidateException với thông báo "{tên kho} đã ngừng hoạt động" (KVMessage.WarehouseIsDeactived), ngăn sử dụng kho bị giới hạn quyền truy cập
   
   - Việc kiểm tra này đảm bảo rằng:
     - Kho hàng được sử dụng trong hóa đơn phải tồn tại
