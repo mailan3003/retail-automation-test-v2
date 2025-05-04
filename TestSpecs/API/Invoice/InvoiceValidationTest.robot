@@ -32,7 +32,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
-    [Tags]    invoicevalidate    smoke    
+    [Tags]    invoicevalidate    smoke    apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420

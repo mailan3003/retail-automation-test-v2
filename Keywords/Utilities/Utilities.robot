@@ -12,7 +12,7 @@ Resource          ../../Config/Env_${ENV}.robot
 *** Keywords ***
 Create Auth Headers
     [Arguments]    ${token}=${AUTH_TOKEN}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}       BranchId=${BRANCH_ID}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}     
     RETURN    ${headers}
 
 Call API
