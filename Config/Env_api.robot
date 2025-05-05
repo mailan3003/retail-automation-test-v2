@@ -10,6 +10,7 @@ ${SOLD_BY_ID}       ${USER_ID}
 ${DEFAULT_BRANCH_ID}        1000000025
 ${DEFAULT_USER_ID}          1000000467
 ${DEFAULT_CUSTOMER_ID}      1000009032
+${DEFAULT_BRANCH_NAME}       "Chi nhánh trung tâm"
 
 ${API_URL}               https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
