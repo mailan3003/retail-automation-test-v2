@@ -47,3 +47,39 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Hóa Đơn Đã Có Trả
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Đối Tác Vận Chuyển
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Id    ${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Trạng Thái
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Id    ${UPDATE_INVOICE_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Status    3
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thiếu Thông Tin Giao Hàng
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Id    ${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${NONE}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Trả Hàng Liên Kết
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Id    100
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_VERSION_CONFLICT_004
+    
+    # Giả lập dữ liệu hóa đơn đã có trả hàng
+    # Trong môi trường test thực tế, Redis sẽ được sử dụng ở đây
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

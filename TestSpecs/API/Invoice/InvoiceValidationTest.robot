@@ -412,3 +412,50 @@ RT-IV-033 Kiểm tra cập nhật hóa đơn đã có trả hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
+
+RT-VC-001 Kiểm tra xung đột phiên bản khi cập nhật thông tin đối tác vận chuyển
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật đối tác vận chuyển
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu hóa đơn hiện tại sử dụng đối tác vận chuyển mặc định (di?.UseDefaultPartner == true)
+    ...    - Nhưng yêu cầu cập nhật không sử dụng đối tác vận chuyển mặc định (DeliveryDetail.UseDefaultPartner == false)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Đối Tác Vận Chuyển
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-VC-002 Kiểm tra xung đột phiên bản khi cập nhật trạng thái hóa đơn
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật trạng thái hóa đơn
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu trạng thái hóa đơn hiện tại khác với trạng thái trong yêu cầu cập nhật (inv.Status != invoice.Status)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID}, Status=1 (Đã hoàn thành)
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID}, Status=3 (Đang xử lý)
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    status    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Trạng Thái
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-VC-003 Kiểm tra xung đột phiên bản khi cập nhật không có thông tin giao hàng
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật không có thông tin giao hàng
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu hóa đơn hiện tại sử dụng đối tác vận chuyển mặc định (di?.UseDefaultPartner == true)
+    ...    - Nhưng yêu cầu cập nhật không có thông tin giao hàng (invoice.DeliveryDetail == null)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryDetail=null
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thiếu Thông Tin Giao Hàng
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
