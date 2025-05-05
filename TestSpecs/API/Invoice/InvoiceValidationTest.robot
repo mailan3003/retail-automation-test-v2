@@ -32,7 +32,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
-    [Tags]    invoicevalidate    smoke    
+    [Tags]    invoicevalidate    smoke    apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -285,7 +285,7 @@ RT-CD-001 Tạo hóa đơn với khách hàng không còn hoạt động
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -301,7 +301,7 @@ RT-CD-002 Tạo hóa đơn với khách hàng đã bị xóa
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    [Tags]    invoicevalidate    customer    validation    AIGenerated   apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -318,7 +318,7 @@ RT-SV-001 Tạo hóa đơn mới với người bán không hoạt động
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
-    [Tags]    invoicevalidate    salesperson    validation    AIGenerated
+    [Tags]    invoicevalidate    salesperson    validation    AIGenerated     apiinvoice    
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -329,7 +329,7 @@ RT-CV-001 Tạo hóa đơn với ID khách hàng không hợp lệ
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: invoice.CustomerId != null && invoice.CustomerId < -0.0000001
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateCustomerException
-    [Tags]    invoicevalidate    customer    validation    AIGenerated
+    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -340,7 +340,7 @@ RT-CV-002 Tạo hóa đơn với kênh bán không tồn tại
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: invoice.SaleChannelId > 0 nhưng saleChannelInDB == null
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice    
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -351,7 +351,7 @@ RT-CV-003 Tạo hóa đơn với kênh bán không thuộc cửa hàng hiện t�
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: saleChannelInDB.RetailerId != CurrentRetailerId
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice    
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -362,7 +362,7 @@ RT-CV-004 Tạo hóa đơn với kênh bán không hoạt động
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: saleChannelInDB.IsActive == false
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
