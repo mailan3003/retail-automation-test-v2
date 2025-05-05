@@ -27,7 +27,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
     ...    - Logic: Kiểm tra UUID trùng lặp trong Redis cache
     ...    - UUID: 550e8400-e29b-41d4-a716-446655440000 đã tồn tại
     ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng"
-    [Tags]     invoicevalidate    duplicate2    uuid    AIGenerated
+    [Tags]     invoicevalidate    duplicate    uuid    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
