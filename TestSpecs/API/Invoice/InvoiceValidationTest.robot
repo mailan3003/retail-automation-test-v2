@@ -22,13 +22,16 @@ RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
 
 
 RT-IV-002 Kiểm tra mã hóa đơn trùng
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
-    [Tags]     test4235
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã UUID đã tồn tại
+    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() line ~1550
+    ...    - Logic: Kiểm tra UUID trùng lặp trong Redis cache
+    ...    - UUID: 550e8400-e29b-41d4-a716-446655440000 đã tồn tại
+    ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng"
+    [Tags]     invoicevalidate    duplicate2    uuid    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Mã hóa đơn đã tồn tại"
-
+    And Phản hồi phải bao gồm lỗi "Mã hóa đơn online bị trùng"
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
