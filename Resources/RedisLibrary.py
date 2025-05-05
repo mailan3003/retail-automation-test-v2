@@ -1,4 +1,6 @@
 import redis
+import sys
+import traceback
 
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -7,12 +9,9 @@ import redis
 RedisLibrary - A Robot Framework library for Redis operations
 """
 
-# Mock implementation that doesn't require 'redis' module
 class RedisLibrary:
     """
     RedisLibrary is a Robot Framework library for Redis operations.
-    
-    In testing environment, this mock version simulates Redis operations.
     """
     
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
@@ -26,8 +25,37 @@ class RedisLibrary:
         self.port = port
         self.db = db
         self.password = password
-        self.redis_cache = {}
-        print(f"Mock Redis connected to {host}:{port}/{db}")
+        self.redis_client = None
+        print(f"Initializing RedisLibrary with {host}:{port}/{db}")
+        self.connect_to_redis(host, port, db, password)
+    
+    def connect_to_redis(self, host, port, db, password=None):
+        """
+        Connect to Redis with specified parameters
+        
+        Arguments:
+        - host: Redis host
+        - port: Redis port
+        - db: Redis database
+        - password: Redis password (optional)
+        """
+        try:
+            print(f"Connecting to Redis at {host}:{port}/{db}")
+            self.redis_client = redis.Redis(
+                host=host,
+                port=int(port),
+                db=int(db),
+                password=password,
+                decode_responses=True
+            )
+            # Test connection
+            pong = self.redis_client.ping()
+            print(f"Redis connection successful: {pong}")
+            return True
+        except Exception as e:
+            print(f"Error connecting to Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            return False
         
     def create_key(self, key, value, ex=None):
         """
@@ -38,9 +66,13 @@ class RedisLibrary:
         - value: Value to store
         - ex: Expiration time in seconds (optional)
         """
-        self.redis_cache[key] = value
-        print(f"Mock Redis: Created key '{key}' with value '{value}'")
-        return True
+        try:
+            print(f"Creating Redis key: {key} = {value}, expires in {ex}s")
+            return self.redis_client.set(key, value, ex=ex)
+        except Exception as e:
+            print(f"Error creating key in Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            return False
         
     def read_key(self, key):
         """
@@ -52,7 +84,13 @@ class RedisLibrary:
         Returns:
         - Value of the key or None if key not found
         """
-        return self.redis_cache.get(key)
+        try:
+            print(f"Reading Redis key: {key}")
+            return self.redis_client.get(key)
+        except Exception as e:
+            print(f"Error reading key from Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            return None
         
     def update_key(self, key, value, ex=None):
         """
@@ -63,8 +101,7 @@ class RedisLibrary:
         - value: New value
         - ex: Expiration time in seconds (optional)
         """
-        self.redis_cache[key] = value
-        return True
+        return self.create_key(key, value, ex)
         
     def delete_key(self, key):
         """
@@ -73,9 +110,13 @@ class RedisLibrary:
         Arguments:
         - key: Redis key
         """
-        if key in self.redis_cache:
-            del self.redis_cache[key]
-        return True
+        try:
+            print(f"Deleting Redis key: {key}")
+            return self.redis_client.delete(key) > 0
+        except Exception as e:
+            print(f"Error deleting key from Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            return False
         
     def key_should_exist(self, key):
         """
@@ -84,9 +125,15 @@ class RedisLibrary:
         Arguments:
         - key: Redis key
         """
-        if key not in self.redis_cache:
-            raise AssertionError(f"Key '{key}' does not exist in Redis")
-        return True
+        try:
+            print(f"Checking if Redis key exists: {key}")
+            if not self.redis_client.exists(key):
+                raise AssertionError(f"Key '{key}' does not exist in Redis")
+            return True
+        except Exception as e:
+            print(f"Error checking key existence in Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            raise
         
     def key_should_not_exist(self, key):
         """
@@ -95,6 +142,12 @@ class RedisLibrary:
         Arguments:
         - key: Redis key
         """
-        if key in self.redis_cache:
-            raise AssertionError(f"Key '{key}' exists in Redis")
-        return True
+        try:
+            print(f"Checking if Redis key does not exist: {key}")
+            if self.redis_client.exists(key):
+                raise AssertionError(f"Key '{key}' exists in Redis")
+            return True
+        except Exception as e:
+            print(f"Error checking key non-existence in Redis: {e}")
+            traceback.print_exc(file=sys.stdout)
+            raise

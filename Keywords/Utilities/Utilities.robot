@@ -42,6 +42,17 @@ Should Have Nested Property
     Run Keyword If    '${expected_value}' != '${None}'    Should Be Equal    ${current}    ${expected_value}
     RETURN    ${current}
 
+Should Contain Nested Property
+    [Arguments]    ${data}    ${property_path}    ${expected_value}=${None}
+    @{parts}=    Split String    ${property_path}    .
+    ${current}=    Set Variable    ${data}
+    FOR    ${part}    IN    @{parts}
+        ${current}=    Get From Dictionary    ${current}    ${part}
+    END
+    Run Keyword If    '${expected_value}' != '${None}'    Should Contain    ${current}    ${expected_value}
+    RETURN    ${current}
+
+
 Delete Data
     [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
     ${headers}=    Create Auth Headers    ${token}

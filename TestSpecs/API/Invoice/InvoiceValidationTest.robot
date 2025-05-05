@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation     Test API kiểm tra và xác thực đầu vào khi tạo hóa đơn
 Resource          ../../../Keywords/Invoice/InputValidationKeywords.robot
+Resource          ../../../Keywords/Invoice/UpdateInvoiceKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
+Resource          ../../../TestData/Invoice/UpdateInvoiceData.robot
 Suite Setup       Suite Setup
 
 *** Keywords ***
@@ -22,13 +24,16 @@ RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
 
 
 RT-IV-002 Kiểm tra mã hóa đơn trùng
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã đã tồn tại
-    [Tags]     test4235
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với mã UUID đã tồn tại
+    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() line ~1550
+    ...    - Logic: Kiểm tra UUID trùng lặp trong Redis cache
+    ...    - UUID: 550e8400-e29b-41d4-a716-446655440000 đã tồn tại
+    ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng"
+    [Tags]     invoicevalidate    duplicate    uuid    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Mã hóa đơn đã tồn tại"
-
+    And Phản hồi phải bao gồm lỗi "Mã hóa đơn online bị trùng"
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
@@ -367,3 +372,90 @@ RT-CV-004 Tạo hóa đơn với kênh bán không hoạt động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Kênh bán không tồn tại"
+
+# Update invoice validation test cases
+RT-IV-031 Kiểm tra thay đổi thông tin giao hàng của hóa đơn đã có giao hàng
+    [Documentation]    Kiểm tra lỗi khi cập nhật hóa đơn với việc thay đổi thông tin giao hàng của hóa đơn đã có giao hàng
+    ...    - Source: InvoiceService.cs > validateWithOldData() line ~1600
+    ...    - Logic: Kiểm tra khi thay đổi thông tin đối tác vận chuyển của hóa đơn đã có giao hàng
+    ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true, Status=1
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server"
+    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Thông Tin Giao Hàng
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-IV-032 Kiểm tra thay đổi khách hàng khi hóa đơn đã có thanh toán
+    [Documentation]    Kiểm tra lỗi khi cập nhật hóa đơn với việc thay đổi khách hàng của hóa đơn đã có thanh toán
+    ...    - Source: InvoiceService.cs > validateWithOldData() line ~1625
+    ...    - Logic: Kiểm tra khi thay đổi khách hàng của hóa đơn đã có thanh toán
+    ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_OLD_CUSTOMER_ID}, TotalPayment=${UPDATE_INVOICE_ID_WRONG_CUSTOMER_TOTAL_PAYMENT}
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, Code=${UPDATE_INVOICE_CODE_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_CUSTOMER_ID_WRONG_CUSTOMER}
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Khách Hàng Đã Thanh Toán
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-IV-033 Kiểm tra cập nhật hóa đơn đã có trả hàng
+    [Documentation]    Kiểm tra lỗi khi cập nhật hóa đơn đã có trả hàng
+    ...    - Source: InvoiceService.cs > validateWithOldData() line ~1650
+    ...    - Logic: Kiểm tra cập nhật hóa đơn đã hoàn thành và có trả hàng liên kết
+    ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, UpdateInvoiceId=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, Code=${UPDATE_INVOICE_ID_CONTAIN_RETURN_CODE}
+    ...    - Kỳ vọng: Lỗi "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
+    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Hóa Đơn Đã Có Trả Hàng
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
+
+RT-VC-001 Kiểm tra xung đột phiên bản khi cập nhật thông tin đối tác vận chuyển
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật đối tác vận chuyển
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu hóa đơn hiện tại sử dụng đối tác vận chuyển mặc định (di?.UseDefaultPartner == true)
+    ...    - Nhưng yêu cầu cập nhật không sử dụng đối tác vận chuyển mặc định (DeliveryDetail.UseDefaultPartner == false)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Đối Tác Vận Chuyển
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-VC-002 Kiểm tra xung đột phiên bản khi cập nhật trạng thái hóa đơn
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật trạng thái hóa đơn
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu trạng thái hóa đơn hiện tại khác với trạng thái trong yêu cầu cập nhật (inv.Status != invoice.Status)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID}, Status=1 (Đã hoàn thành)
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID}, Status=3 (Đang xử lý)
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    status    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Trạng Thái
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+RT-VC-003 Kiểm tra xung đột phiên bản khi cập nhật không có thông tin giao hàng
+    [Documentation]    Kiểm tra xử lý xung đột phiên bản khi cập nhật không có thông tin giao hàng
+    ...    - Source: CreateInvoice - Phần 4. Kiểm tra xung đột phiên bản
+    ...    - Logic: Nếu hóa đơn hiện tại sử dụng đối tác vận chuyển mặc định (di?.UseDefaultPartner == true)
+    ...    - Nhưng yêu cầu cập nhật không có thông tin giao hàng (invoice.DeliveryDetail == null)
+    ...    - Hệ thống sẽ báo lỗi "Có thay đổi mới hơn từ server"
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
+    ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryDetail=null
+    ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thiếu Thông Tin Giao Hàng
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
