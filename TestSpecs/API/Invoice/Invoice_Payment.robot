@@ -799,7 +799,7 @@ RT-BP-003 Tạo hóa đơn thất bại khi một trong nhiều phương thức 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated    apiinvoice    
+    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated    apiinvoice    test3663 
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Một Phương Thức Thanh Toán Ngân Hàng Không Hợp Lệ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 500
