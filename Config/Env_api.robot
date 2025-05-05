@@ -14,3 +14,8 @@ ${DEFAULT_BRANCH_NAME}       "Chi nhánh trung tâm"
 
 ${API_URL}               https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
+
+${REDIS_HOST}      103.252.0.202
+${REDIS_PORT}      6679
+${REDIS_DB}        0
+${REDIS_PASSWORD}  ${EMPTY}
