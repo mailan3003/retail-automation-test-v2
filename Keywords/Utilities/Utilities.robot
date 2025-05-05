@@ -15,9 +15,20 @@ Create Auth Headers
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}     
     RETURN    ${headers}
 
+Create Auth Headers With BranchId
+    [Arguments]    ${token}=${AUTH_TOKEN}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${BRANCH_ID}
+    RETURN    ${headers}
+
 Call API
     [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers    ${token}
+    ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
+
+Call API With BranchId
+    [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With BranchId    ${token}
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
 

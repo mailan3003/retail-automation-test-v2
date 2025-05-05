@@ -176,6 +176,8 @@ ${PROMOTION_GIFT_ID_6}    91443
 ${PROMOTION_GIFT_ID_9}    87289
 # Branch data  
 ${CUSTOMER_ID}            1000009350
+${DEFAULT_BRANCH_ID}      1000000048
+${DEFAULT_BRANCH_NAME}    Chi nhánh A
 # Tax data
 ${VAT_RATE}       10
 ${NO_TAX}         0
