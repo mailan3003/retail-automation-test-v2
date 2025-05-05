@@ -208,7 +208,7 @@ RT-IWH-011 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng kho
     And Tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Kho 1
 
 RT-IWH-012 Tạo hóa đơn với kho hàng đã bị xóa
-    [Tags]    warehouse    negative    AIGenerated
+    [Tags]    warehouse    negative    AIGenerated   
     [Documentation]    Kiểm tra tạo hóa đơn với kho hàng đã bị xóa (IsActive = false)
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn với kho hàng đã bị xóa
@@ -223,7 +223,7 @@ RT-IWH-012 Tạo hóa đơn với kho hàng đã bị xóa
     And Thông Báo Lỗi Phải Chứa "${DELETED_WAREHOUSE_NAME} không hợp lệ"
 
 RT-IWH-013 Tạo hóa đơn với kho hàng đã ngừng hoạt động
-    [Tags]    warehouse    negative    AIGenerated
+    [Tags]    warehouse    negative    AIGenerated   
     [Documentation]    Kiểm tra tạo hóa đơn với kho hàng đã ngừng hoạt động (LimitAccess = true)
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn với kho hàng đã ngừng hoạt động
@@ -238,7 +238,7 @@ RT-IWH-013 Tạo hóa đơn với kho hàng đã ngừng hoạt động
     And Thông Báo Lỗi Phải Chứa "${INACTIVE_WAREHOUSE_NAME} đã ngừng hoạt động"
 
 RT-IWH-014 Tạo hóa đơn với kho bán hàng mặc định nhưng chi nhánh đã bị xóa
-    [Tags]    warehouse    negative    AIGenerated
+    [Tags]    warehouse    negative    AIGenerated    
     [Documentation]    Kiểm tra tạo hóa đơn với kho bán hàng mặc định nhưng chi nhánh đã bị xóa
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn với kho bán hàng mặc định Type=1 (Chi Nhánh)
@@ -253,7 +253,7 @@ RT-IWH-014 Tạo hóa đơn với kho bán hàng mặc định nhưng chi nhánh
     And Thông Báo Lỗi Phải Chứa "${DELETED_WAREHOUSE_NAME} không hợp lệ"
 
 RT-IWH-015 Tạo hóa đơn không chỉ định kho hàng và chi nhánh đã bị vô hiệu hóa
-    [Tags]    warehouse    negative    AIGenerated
+    [Tags]    warehouse    negative    AIGenerated    
     [Documentation]    Kiểm tra tạo hóa đơn không chỉ định kho hàng và chi nhánh đã bị vô hiệu hóa
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn không chỉ định kho hàng cụ thể (WareHouse = null)
