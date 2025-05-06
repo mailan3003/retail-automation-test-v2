@@ -18,7 +18,7 @@
      - Chuẩn bị các thông tin khác như: khuyến mãi, điểm thưởng, thông tin đơn thuốc...
 
   2. **Gọi phương thức tạo hóa đơn**:
-     - Gọi phương thức `InvoiceService.MakeInvoiceAsync()` với các tham số phù hợp:
+     - Gọi phương thức `InvoiceService.MakeInvoiceAsync()` với các tham số phù hợp (xem chi tiết tại [MakeInvoice-Index.md](../MakeInvoiceAsync/MakeInvoice-Index.md)):
        + `updateOnHand`: Chỉ định có cập nhật số lượng tồn kho không (true/false)
          * Thường đặt là `true` nếu hóa đơn ảnh hưởng đến tồn kho
          * Đặt là `false` trong trường hợp đặc biệt như đồng bộ hóa đơn offline
