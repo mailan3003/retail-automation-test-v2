@@ -84,3 +84,13 @@ Carefully do these steps:
 2. Obey all rules, best practices, example in @APITestDesign.md file
 3. Generate test cases for all sections in the @05-CreateInvoice-VersionConflict.md file to @InvoiceValidationTest.robot file, use shared variable if needed
 4. Add a tag AIGenerated to the test new case
+
+
+# Prompt to separate business logic
+
+Carefully do these steps:
+1. Read the DoMakeInvoiceAsync method, deep dive into furthest methods to understand its business logic.
+2. Find best practices to express the business logic easy for writing test cases.
+3. Write a comprehensive documentation in Vietnamese to explain the business logic of the method CheckFailedTask to a new file, locate it to the folder.
+4. Separate the business logic into smaller sections in small files.
+5. Locate new files to the @SaveInvoice folder and link them in the @18-2-CreateInvoice-CreateNewInvoice.md file
