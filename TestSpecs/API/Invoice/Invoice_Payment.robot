@@ -4,6 +4,8 @@ Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
 Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Resource          ../../../Keywords/Invoice/PaymentUpdateKeywords.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
 
 
@@ -455,7 +457,7 @@ RT-RC-018 Thanh toán kết hợp ba phương thức thanh toán
     ...    - Thanh toán thẻ được ghi nhận số tiền 30,000đ
     ...    - Thanh toán chuyển khoản được ghi nhận số tiền 30,000đ
     ...    - Công nợ của hóa đơn = 0
-    [Tags]    payment    multiple_methods    AIGenerated        test3663
+    [Tags]    payment    multiple_methods    AIGenerated        
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Ba Phương Thức Thanh Toán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -780,12 +782,12 @@ RT-BP-002 Tạo hóa đơn thất bại với tài khoản ngân hàng không đ
     ...      + Query: SELECT * FROM BankAccountBranch WHERE BankAccountId = ? AND RetailerId = ?
     ...    - Kỳ vọng:
     ...    - Status code: 420
-    ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh ${DEFAULT_BRANCH_NAME}"
-    [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice    
+    ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"
+    [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_ID} Với Số Tiền 100000
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 420
-    And Phản hồi phải chứa lỗi "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh ${DEFAULT_BRANCH_NAME}"
+    And Phản hồi phải chứa lỗi "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"
 
 RT-BP-003 Tạo hóa đơn thất bại khi một trong nhiều phương thức thanh toán có tài khoản ngân hàng không hợp lệ
     [Documentation]    Kiểm tra tạo hóa đơn thất bại khi một trong nhiều phương thức thanh toán có tài khoản ngân hàng không hợp lệ
@@ -799,8 +801,8 @@ RT-BP-003 Tạo hóa đơn thất bại khi một trong nhiều phương thức 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated    apiinvoice    test3663 
+    [Tags]    payment    bank_account    validation    multiple_payment    AIGenerated    apiinvoice     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Một Phương Thức Thanh Toán Ngân Hàng Không Hợp Lệ
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."

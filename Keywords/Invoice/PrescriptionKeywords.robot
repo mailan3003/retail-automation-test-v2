@@ -189,3 +189,233 @@ Xác Thực Thông Tin Đơn Thuốc Toàn Cầu Được Lưu Trong DB
         Set Variable    ${note["Note"]}
         Should Not Be Empty    ${note["Note"]}
     END 
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Không Có Thông Tin Đơn Thuốc Và Bệnh Nhân
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc không có thông tin đơn thuốc và bệnh nhân
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc rỗng và bệnh nhân rỗng
+    Set To Dictionary    ${data}    Prescription=${EMPTY_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${EMPTY_PATIENT}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Thiếu Thông Tin Đơn Thuốc
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc không có thông tin đơn thuốc nhưng có thông tin bệnh nhân
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc rỗng với bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${EMPTY_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Thiếu Thông Tin Bệnh Nhân
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc có thông tin đơn thuốc nhưng không có thông tin bệnh nhân
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc đầy đủ nhưng bệnh nhân rỗng
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${EMPTY_PATIENT}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingGlobalPrescription=1 Và Thuốc Không Có Mô Tả
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với đơn thuốc toàn cầu và sản phẩm không có mô tả
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_WITH_GLOBAL_PRESCRIPTION})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITHOUT_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    # Thêm master medicine tương ứng với sản phẩm trong invoice details
+    ${master_medicine}=    Deep Copy    ${MASTER_MEDICINE}
+    ${medicines}=    Create List    ${master_medicine}
+    Set To Dictionary    ${invoice}    Medicines=${medicines}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Hết Hạn
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc hết hạn
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    # Thêm medicine bị hết hạn
+    ${medicines}=    Create List    ${EXPIRED_MEDICINE}
+    Set To Dictionary    ${invoice}    Medicines=${medicines}
+    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Nhiều Thuốc Hết Hạn
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với nhiều thuốc hết hạn
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    # Thêm nhiều medicine bị hết hạn
+    Set To Dictionary    ${invoice}    Medicines=${MULTIPLE_EXPIRED_MEDICINES}
+    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Thay Thế
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc thay thế
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    # Thêm thuốc thay thế và thuốc hết hạn
+    ${medicines}=    Create List    ${EXPIRED_MEDICINE}    ${REPLACEMENT_MEDICINE}
+    Set To Dictionary    ${invoice}    Medicines=${medicines}
+    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Mới Và Thuốc Hết Hạn
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc mới và thuốc hết hạn
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
+    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    # Thêm thuốc mới và thuốc hết hạn
+    ${medicines}=    Create List    ${EXPIRED_MEDICINE}
+    ${new_medicines}=    Create List    ${NEW_MEDICINE}
+    Set To Dictionary    ${invoice}    Medicines=${medicines}
+    Set To Dictionary    ${invoice}    NewMedicines=${new_medicines}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data}
+
+Xác Thực Hóa Đơn Không Tồn Tại Trong DB
+    [Documentation]    Xác thực hóa đơn không tồn tại trong database
+    ${query}=    Set Variable    SELECT COUNT(*) AS count FROM Invoice WHERE Code = ?
+    ${request_data}=    Get Variable Value    ${REQUEST_DATA}
+    ${invoice_code}=    Set Variable    ${request_data["Invoice"]["Code"]}
+    ${result}=    Fetch One    ${query}    ${invoice_code}
+    Should Be Equal As Integers    ${result["count"]}    0
+
+Xác Thực Hóa Đơn Được Tạo Thành Công Trong DB
+    [Documentation]    Xác thực hóa đơn được tạo thành công trong database
+    ${query}=    Set Variable    SELECT Id, Code, Status FROM Invoice WHERE Code = ?
+    ${request_data}=    Get Variable Value    ${REQUEST_DATA}
+    ${invoice_code}=    Set Variable    ${request_data["Invoice"]["Code"]}
+    ${result}=    Fetch One    ${query}    ${invoice_code}
+    Should Not Be Empty    ${result}
+    
+    ${invoice_id}=    Set Variable    ${result["Id"]}
+    Set Test Variable    ${INVOICE_ID}    ${invoice_id}
+    
+    # Kiểm tra trạng thái hóa đơn
+    Should Be Equal As Integers    ${result["Status"]}    1
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Đúng 50 Ký Tự
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với mã đơn thuốc đúng 50 ký tự (biên giá trị)
+    ${data}=    Evaluate    dict()
+    
+    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
+    Set To Dictionary    ${data}    Invoice=${invoice}
+    
+    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
+    Set To Dictionary    ${data}    InvoiceDetails=${details}
+    
+    ${payments}=    Create List    ${STANDARD_PAYMENT}
+    Set To Dictionary    ${data}    Payments=${payments}
+    
+    # Tạo mã đơn thuốc đúng 50 ký tự
+    ${prescription}=    Deep Copy    ${COMPLETE_PRESCRIPTION}
+    ${code_exactly_50}=    Set Variable    PRESC-CODE-WITH-EXACTLY-50-CHARACTERS-ABCDEFGHIJKLMNO
+    Set To Dictionary    ${prescription}    Code=${code_exactly_50}
+    Set To Dictionary    ${data}    Prescription=${prescription}
+    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${data}
+    RETURN    ${data} 
