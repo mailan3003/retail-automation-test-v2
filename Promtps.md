@@ -74,3 +74,13 @@ You are a senior .net developer and master robot framework, gherkin language, yo
 - Add a tag AIGenerated to the test new case
 - Must strictly all rules, best practices, example in @APITestDesign.md file
 - 
+
+
+
+# Prompt add more test case v2
+
+Carefully do these steps:
+1. Read the instruction in the @APIStructure.md file to understand how API strtucture to read code and generate test case with request body and SQL query for verification and Redis.
+2. Obey all rules, best practices, example in @APITestDesign.md file
+3. Generate test cases for all sections in the @05-CreateInvoice-VersionConflict.md file to @InvoiceValidationTest.robot file, use shared variable if needed
+4. Add a tag AIGenerated to the test new case
