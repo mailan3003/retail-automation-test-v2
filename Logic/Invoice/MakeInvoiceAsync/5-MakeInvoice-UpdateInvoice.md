@@ -8,18 +8,22 @@
 
 - **Điều kiện áp dụng**:
   - Hóa đơn đang được cập nhật (invoice.UpdateInvoiceId > 0)
-  - Mã hóa đơn bắt đầu bằng tiền tố cập nhật (`Invoice.UpdatePrefix`)
+  - Mã hóa đơn bắt đầu bằng tiền tố cập nhật "Update_" (`Invoice.UpdatePrefix`)
 
 - **Quy trình xử lý chi tiết**:
   1. **Lấy thông tin hóa đơn cũ**:
-     - Truy vấn thông tin hóa đơn gốc cần cập nhật:
+     - Truy vấn và xác thực thông tin hóa đơn gốc cần cập nhật:
        ```csharp
+       // Lấy thông tin hóa đơn gốc từ database
        oldInvoice = await _getByIdAsync(invoice.UpdateInvoiceId);
+       
+       // Kiểm tra tồn tại của hóa đơn gốc
+       if (oldInvoice == null) 
+           throw new KvValidateInvoiceException(
+               string.Format(KVMessage.InvoiceNotFound, invoice.UpdateInvoiceId)
+           );
        ```
-     - Kiểm tra tồn tại của hóa đơn gốc:
-       ```csharp
-       if (oldInvoice == null) throw new KvValidateInvoiceException(string.Format(KVMessage.InvoiceNotFound, invoice.UpdateInvoiceId));
-       ```
+     - **Tóm tắt**: Bước này thực hiện việc lấy thông tin hóa đơn gốc cần cập nhật và xác thực sự tồn tại của nó. Nếu không tìm thấy hóa đơn gốc, hệ thống sẽ ném ra ngoại lệ với thông báo "Không tìm thấy hóa đơn với id {0}".
 
   2. **Kiểm tra chi nhánh**:
      - Đảm bảo hóa đơn gốc và hóa đơn cập nhật thuộc cùng chi nhánh:
@@ -31,6 +35,9 @@
        }
        ```
      - Mục đích: Ngăn chặn việc chuyển hóa đơn giữa các chi nhánh
+     - Khi phát hiện hóa đơn gốc và hóa đơn cập nhật thuộc khác chi nhánh, hệ thống sẽ ném ngoại lệ với thông báo "Hóa đơn bạn chọn thuộc chi nhánh {0}. Xin vui lòng chọn lại chi nhánh làm việc là {1} để thực hiện giao dịch này." trong đó:
+       + {0}: Tên chi nhánh của hóa đơn gốc (oldInvoice.BranchName)
+       + {1}: Tên chi nhánh của hóa đơn cập nhật (banchName?.Name)
 
   3. **Lưu trữ thông tin giao hàng COD**:
      - Xác định hóa đơn cũ có sử dụng COD không:
