@@ -26,6 +26,12 @@ Call API
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
 
+Call API Man
+    [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers    ${token}
+    ${response}=    POST    ${API_MAN_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
+
 Call API With BranchId
     [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers With BranchId    ${token}

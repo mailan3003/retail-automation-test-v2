@@ -1,12 +1,13 @@
 *** Settings ***
 Documentation     Test cases API cho phần cập nhật thông tin giao hàng
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
-*** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    DeliveryUpdateTest
+*** Variables ***
+${SELLER_ID}    1000000490
+${CHANNEL_ID}   1000000042
 
 *** Test Cases ***
 RT-DU-001 Cập nhật trạng thái giao hàng thành công
@@ -20,8 +21,9 @@ RT-DU-001 Cập nhật trạng thái giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Processing" (2) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_PROCESSING}
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_PROCESSING}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_PROCESSING}
@@ -292,3 +294,133 @@ RT-DU-016 Cập nhật mã vận đơn sử dụng tham số nhúng
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
     And Mã Vận Đơn Được Cập Nhật Thành EXPRESS123456789 
+
+Cập nhật người bán từ MHQL
+   [Documentation]    Kiểm tra cập nhật người bán từ MHQL
+   ...    - Dữ liệu đầu vào:
+   ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+   ...    - Người bán: ${SELLER_ID}
+   ...    - Kỳ vọng:
+   ...    - Status code: 200
+   ...    - Người bán được cập nhật thành ${SELLER_ID}
+   [Tags]    apiinvoice    smoke   
+   Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+   And Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${SELLER_ID}
+   When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+   Then Mã Trạng Thái Phải Là 200
+   And Người Bán Được Cập Nhật Thành ${SELLER_ID}
+Cập nhật thời gian từ MHQL
+    [Documentation]    Kiểm tra cập nhật thời gian từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Trừ 3 Ngày
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL    
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+
+Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu Thanh Toán
+    [Documentation]    Kiểm tra cập nhập thời gian có thanh toán không thay đổi thời gian phiếu thanh toán
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke     test36635
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Không Thay Đổi Phiếu Thanh Toán
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+    And Thời Gian Phiếu Thanh Toán ${CURRENT_DATE_PAYMENT}  
+    
+ Cập Nhập Thời Gian Có Thanh Toán Có Thay Đổi Thời gian Phiếu Thanh Toán
+    [Documentation]    Kiểm tra cập nhập thời gian có thanh toán có thay đổi thời gian phiếu thanh toán
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke     test36635
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Có Thay Đổi Phiếu Thanh Toán
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+    And Thời Gian Phiếu Thanh Toán ${PURCHASE_DATE}
+
+Cập nhật thời gian tương lai từ MHQL
+    [Documentation]    Kiểm tra cập nhật thời gian tương lai từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke      
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Thêm 3 Ngày
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL        
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Bạn chỉ được cập nhật giao dịch trong vòng 12 tháng."
+
+
+Cập nhập kênh bán từ MHQL
+    [Documentation]    Kiểm tra cập nhập kênh bán từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Kênh bán: ${CHANNEL_ID}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Kênh bán được cập nhật thành ${CHANNEL_ID}
+    [Tags]    apiinvoice    smoke   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${CHANNEL_ID}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Kênh Bán Được Cập Nhật Thành ${CHANNEL_ID}
+Cập nhật ghi chú từ MHQL
+    [Documentation]    Kiểm tra cập nhập ghi chú từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Ghi chú: ${NOTE}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Ghi chú được cập nhật thành ${NOTE}
+    [Tags]    apiinvoice    smoke     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 50 Kí Tự
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Ghi Chú Được Cập Nhật Thành ${NOTE}
+
+Cập nhật ghi chú quá nhiều kí tự từ MHQL
+    [Documentation]    Kiểm tra cập nhập ghi chú quá nhiều kí tự từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Ghi chú: ${NOTE}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Ghi chú được cập nhật thành ${NOTE}
+    [Tags]    apiinvoice    smoke     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 5000 Kí Tự
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Ghi Chú Được Cập Nhật Thành ${NOTE}
+
+
+
+
+

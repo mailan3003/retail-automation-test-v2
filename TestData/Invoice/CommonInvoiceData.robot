@@ -109,6 +109,12 @@ Resource          ../../Config/Env_${ENV}.robot
 ...    Status=3
 ...    InvoiceDetailUuid=
 
+# Invoice Body Update
+&{invoice_body_update}
+...    Id=
+...    PurchaseDate=${None}
+...    Status=1
+...    SoldById=${DEFAULT_USER_ID}
 
 
 # SoldBy Body
@@ -207,9 +213,16 @@ Resource          ../../Config/Env_${ENV}.robot
 @{standard_invoice_detail_tax_body}
 ...    &{invoice_detail_tax_body}
 
+
 &{invoice_detail_tax_body}
 ...    TaxId=2
-...    DetailTax=3500
+...    DetailTax=3500   
+
+&{invoice_body_update} 
+...    Id=${INVOICE_ID}
+...    PurchaseDate=${None}
+...    Status=1
+...    SoldById=${DEFAULT_USER_ID}
 
 
 # Invoice Body
@@ -220,3 +233,4 @@ Resource          ../../Config/Env_${ENV}.robot
 &{invoice_body_not_delivery}    BranchId=${DEFAULT_BRANCH_ID}    RetailerId=${RETAILER_ID}    UpdateInvoiceId=0    UpdateReturnId=0    IsChangeNormalToShippingDelivery=${False}    SoldById=${DEFAULT_USER_ID}    SoldBy=&{sold_by_body}    SaleChannelId=0    Seller=&{sold_by_body}    OrderCode=    Code=    Discount=0   InvoiceDetails=@{STANDARD_INVOICE_DETAILS}    InvoiceOrderSurcharges=@{EMPTY}    InvoicePromotions=@{EMPTY}    InvoiceSupplierPromotions=@{Empty}      UsingCod=0    Payments=@{EMPTY}     Total=0    TotalTax=${None}    EnableVATToggle=${False}    Surcharge=0    Type=1    addToAccount=0    PayingAmount=0    TotalBeforeDiscount=0    ProductDiscount=0    InvoiceWarranties=@{Empty}    CreatedBy=${DEFAULT_USER_ID}
 &{invoice_request_body_not_delivery}    Invoice=&{invoice_body_not_delivery}
 
+&{invoice_request_body_update}     Invoice=&{invoice_body_update}      IsUpdatePayment=false
