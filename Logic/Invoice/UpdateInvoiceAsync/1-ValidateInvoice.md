@@ -62,28 +62,6 @@ Kiểm tra và xác thực tính hợp lệ của hóa đơn trước khi thực
     + Thông tin giao hàng
     + Các thông tin khác
 
-### Xử lý lỗi
-- **Các loại lỗi có thể xảy ra**:
-  1. Hóa đơn không tồn tại
-  2. Đơn vị tiền tệ không hợp lệ
-  3. Thiếu thông tin đối tác giao hàng cho hóa đơn COD
-  4. Nguồn gốc hóa đơn không hợp lệ
-  5. Xung đột dữ liệu khi cập nhật
-
-- **Cách xử lý**:
-  - Ném ngoại lệ tương ứng với loại lỗi
-  - Cung cấp thông báo lỗi rõ ràng cho người dùng
-  - Ghi log lỗi để theo dõi và xử lý sau
-
-### Kết quả
-- Nếu tất cả các kiểm tra đều hợp lệ:
-  - Tiếp tục quy trình cập nhật hóa đơn
-  - Đảm bảo dữ liệu được cập nhật là chính xác và đầy đủ
-- Nếu có lỗi:
-  - Dừng quy trình cập nhật
-  - Thông báo lỗi cho người dùng
-  - Yêu cầu người dùng sửa lỗi trước khi tiếp tục
-
 ## Điều hướng
 - Quay lại: [18-1-3-UpdateInvoice.md](../SaveInvoice/18-1-3-UpdateInvoice.md)
 - Tiếp theo: [2-NormalizeInvoiceDetail.md](./2-NormalizeInvoiceDetail.md) 

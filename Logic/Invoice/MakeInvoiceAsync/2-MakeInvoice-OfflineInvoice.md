@@ -7,7 +7,7 @@
 - **Mục đích**: Xử lý các hóa đơn được tạo từ thiết bị offline (POS không kết nối) và cần đồng bộ lên hệ thống trung tâm
 
 - **Điều kiện áp dụng**:
-  - Hóa đơn có mã bắt đầu bằng tiền tố offline (`OFF_`) hoặc có `DocumentId > 0`
+  - Hóa đơn có mã bắt đầu bằng tiền tố offline (`HDO_`) hoặc có `DocumentId > 0`
   - Được xác định qua biến `isOfflineInv` trong mã nguồn
 
 - **Quy trình xử lý chi tiết**:
@@ -54,7 +54,7 @@
        + Trả về hóa đơn đã tồn tại
 
   3. **Xử lý trạng thái giao hàng COD**:
-     - Nếu hóa đơn sử dụng COD và có thông tin giao hàng:
+     - Nếu hóa đơn có vận đơn và có thông tin giao hàng:
        ```csharp
        if (invoice.UsingCod == 1 && invoice.DeliveryDetail != null)
        {
@@ -74,71 +74,10 @@
        + Chuyển đổi trạng thái "Chưa giao hàng" (3) thành "Pending"
        + Chuyển đổi trạng thái "Đang giao hàng" (4) thành "Delivering"
 
-## Kịch bản kiểm thử
-
-### 1. Kiểm tra phương thức thanh toán với hóa đơn offline
-
-| Kịch bản | Dữ liệu đầu vào | Kết quả mong đợi |
-|----------|----------------|-----------------|
-| 1.1. Hóa đơn offline không sử dụng voucher | Hóa đơn offline với phương thức thanh toán là tiền mặt/thẻ | Thành công: Hệ thống xử lý tiếp |
-| 1.2. Hóa đơn offline sử dụng voucher | Hóa đơn offline với phương thức thanh toán là voucher | Lỗi: "Bạn không thể thanh toán hóa đơn bằng voucher ở chế độ offline" |
-
-**Bước thực hiện**:
-1. Tạo hóa đơn với mã bắt đầu bằng "OFF_"
-2. Thêm phương thức thanh toán là voucher
-3. Thử lưu hóa đơn
-4. Kiểm tra thông báo lỗi hiển thị
-
-### 2. Kiểm tra chương trình khuyến mãi với hóa đơn offline
-
-| Kịch bản | Dữ liệu đầu vào | Kết quả mong đợi |
-|----------|----------------|-----------------|
-| 2.1. Hóa đơn offline không áp dụng khuyến mãi tặng voucher | Hóa đơn offline với khuyến mãi thông thường (giảm giá) | Thành công: Hệ thống xử lý tiếp |
-| 2.2. Hóa đơn offline áp dụng khuyến mãi tặng voucher | Hóa đơn offline có áp dụng khuyến mãi tặng voucher | Lỗi: "Chương trình khuyến mãi tặng voucher không thể áp dụng khi đang ở chế độ offline" |
-
-**Bước thực hiện**:
-1. Tạo hóa đơn với mã bắt đầu bằng "OFF_"
-2. Áp dụng chương trình khuyến mãi tặng voucher
-3. Thử lưu hóa đơn
-4. Kiểm tra thông báo lỗi hiển thị
-
-### 3. Kiểm tra trùng lặp hóa đơn offline
-
-| Kịch bản | Dữ liệu đầu vào | Kết quả mong đợi |
-|----------|----------------|-----------------|
-| 3.1. Hóa đơn offline với mã chưa tồn tại | Hóa đơn offline với mã mới | Thành công: Hệ thống tạo hóa đơn mới |
-| 3.2. Hóa đơn offline với mã đã tồn tại | Hóa đơn offline với mã đã tồn tại trong hệ thống | Thành công: Hệ thống trả về hóa đơn đã tồn tại và đánh dấu là trùng lặp |
-| 3.3. Hóa đơn offline với UUID đã tồn tại | Hóa đơn offline với UUID đã tồn tại (trong khoảng 7 ngày) | Thành công: Hệ thống trả về hóa đơn đã tồn tại và đánh dấu là trùng lặp |
-
-**Bước thực hiện**:
-1. Tạo hóa đơn offline với mã hoặc UUID đã tồn tại
-2. Đồng bộ hóa đơn lên hệ thống
-3. Kiểm tra kết quả trả về (hóa đơn được đánh dấu trùng lặp)
-
-### 4. Kiểm tra đồng bộ trạng thái giao hàng cho hóa đơn offline
-
-| Kịch bản | Dữ liệu đầu vào | Kết quả mong đợi |
-|----------|----------------|-----------------|
-| 4.1. Hóa đơn offline COD với trạng thái "Chưa giao hàng" | Hóa đơn offline sử dụng COD (UsingCod = 1) và trạng thái giao hàng là 3 | Thành công: Hệ thống chuyển trạng thái thành "Pending" |
-| 4.2. Hóa đơn offline COD với trạng thái "Đang giao hàng" | Hóa đơn offline sử dụng COD (UsingCod = 1) và trạng thái giao hàng là 4 | Thành công: Hệ thống chuyển trạng thái thành "Delivering" |
-
-**Bước thực hiện**:
-1. Tạo hóa đơn offline sử dụng COD
-2. Thiết lập trạng thái giao hàng
-3. Đồng bộ hóa đơn lên hệ thống
-4. Kiểm tra trạng thái giao hàng sau khi đồng bộ
-
-## Bảng tổng hợp lỗi
-
-| Mã lỗi | Thông báo | Nguyên nhân |
-|--------|-----------|------------|
-| KvValidatePaymentException | "Bạn không thể thanh toán hóa đơn bằng voucher ở chế độ offline" | Hóa đơn offline sử dụng phương thức thanh toán voucher |
-| KvValidateInvoiceException | "Chương trình khuyến mãi tặng voucher không thể áp dụng khi đang ở chế độ offline" | Hóa đơn offline áp dụng khuyến mãi tặng voucher |
-
 ## Luồng xử lý chính
 
 1. **Xác định hóa đơn offline**: 
-   - Hóa đơn có mã bắt đầu bằng "OFF_" hoặc có DocumentId > 0
+   - Hóa đơn có mã bắt đầu bằng "HDO_" hoặc có DocumentId > 0
    - Biến `isOfflineInv` được đặt là true
 
 2. **Kiểm tra các điều kiện không hợp lệ**:
