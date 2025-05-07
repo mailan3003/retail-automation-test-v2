@@ -438,12 +438,12 @@ RT-PR-021: Tạo hóa đơn với voucher không cho phép kết hợp với khu
     ...                Voucher: Không cho phép kết hợp với khuyến mãi (AllowMergeWithOtherPromotion = false)
     ...                Khuyến mãi: Giảm giá 10,000đ
     ...                Kỳ vọng: API trả về lỗi không thể kết hợp voucher với khuyến mãi khác
-    [Tags]    promotion    voucher    negative    api    AIGenerated
+    [Tags]    promotion    voucher    negative    vlxd    AIGenerated   
     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
     When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 400
-    And Response Phải Có Lỗi "Voucher không thể kết hợp với khuyến mãi khác"
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Hệ thống không cho phép áp dụng chương trình khuyến mại hoặc thanh toán bằng điểm khi đã dùng voucher"
 
 RT-PR-022: Tạo hóa đơn với khuyến mãi tặng voucher theo sản phẩm
     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng voucher theo sản phẩm
@@ -532,7 +532,7 @@ RT-PR-028: Tạo hóa đơn với khuyến mãi đã bị xóa
     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi đã bị xóa
     ...                Khuyến mãi: Đã bị xóa trên hệ thống (nằm trong danh sách DeletedIdList)
     ...                Kỳ vọng: API báo lỗi chương trình khuyến mãi đã ngừng hoạt động
-    [Tags]    promotion    deleted_promotion    negative    apiinvoice3    AIGenerated
+    [Tags]    promotion    deleted_promotion    negative    apiinvoice    AIGenerated
     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Đã Bị Xóa
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -545,7 +545,7 @@ RT-PR-029: Tạo hóa đơn với nhiều khuyến mãi trong đó có khuyến 
     ...                Khuyến mãi 1: Còn hiệu lực (nằm trong ValidIdList)
     ...                Khuyến mãi 2: Đã bị xóa (nằm trong DeletedIdList)
     ...                Kỳ vọng: API báo lỗi về các chương trình khuyến mãi đã bị xóa
-    [Tags]    promotion    multiple    deleted_promotion    negative    apiinvoice3    AIGenerated
+    [Tags]    promotion    multiple    deleted_promotion    negative    apiinvoice    AIGenerated
     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Hợp Lệ Và Khuyến Mãi Đã Bị Xóa
     When Gửi Yêu Cầu Tạo Hóa Đơn

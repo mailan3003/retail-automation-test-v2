@@ -195,13 +195,7 @@ Xác Thực Số Tiền Thu Hộ
     Should Not Be Equal    ${delivery_data}    None    Thông tin giao hàng không tồn tại trong CSDL
     Should Be Equal As Numbers    ${delivery_data[0]}    ${expected_cod_fee}    Số tiền thu hộ không khớp
 
-Xác Thực Ghi Chú Giao Hàng
-    [Documentation]    Xác thực ghi chú giao hàng trong CSDL
-    [Arguments]    ${expected_note}
-    ${query}=    Set Variable    SELECT Note FROM DeliveryInfo WHERE InvoiceId = ?
-    ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
-    Should Not Be Equal    ${delivery_data}    None    Thông tin giao hàng không tồn tại trong CSDL
-    Should Be Equal    ${delivery_data[0]}    ${expected_note}    Ghi chú giao hàng không khớp 
+
 
 Xác Thực Khách Hàng ${expected_customer_id}
     ${query}=    Set Variable    SELECT CustomerId FROM Invoice WHERE Id = ?

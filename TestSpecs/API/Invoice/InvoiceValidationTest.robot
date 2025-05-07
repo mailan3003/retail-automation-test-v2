@@ -469,7 +469,7 @@ RT-IV-UUID-001 Kiểm tra UUID trùng lặp với cùng khách hàng và tổng 
     ...    - Hóa đơn mới: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
     ...    - Hóa đơn đã tồn tại: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
     ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng: HD050 - HD001"
-    [Tags]    invoicevalidate    duplicate    uuid2    AIGenerated
+    [Tags]    invoicevalidate    duplicate    uuid2    AIGenerated  apiinvoice
     Given Tạo hóa đơn với UUID trùng lặp
     And Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
     When Gửi Yêu Cầu Tạo Hóa Đơn

@@ -46,10 +46,22 @@ Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${channel_id}
     ${request_body}    Deep Copy    ${invoice_body_update} 
     ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
     ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
-    ${request_body}=    Update Nested Dictionary Property    ${request_body}    ChannelId    ${channel_id}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    SaleChannelId    ${channel_id}
      ${request}=    Deep Copy    ${invoice_request_body_update}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${status}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryDetail.Status    ${status}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${seller_id}
     ${invoice_data}=    Thông tin hóa đơn được cập nhật  
@@ -114,57 +126,99 @@ Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
     [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận
-    Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_RECEIVER_INFO}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryDetail.Receiver   Nguyễn Thị B
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryDetail.ContactNumber    0912345678
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryDetail.Address    456 Đường Lê Lợi, Q3
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng ${fee}
     [Documentation]    Chuẩn bị dữ liệu cập nhật phí giao hàng
-    ${request}=    Deep Copy    ${invoice_request_body_update}
-    ${request}=    Update Nested Dictionary Property    ${request}    DeliveryDetail.Price    ${fee}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Price    ${fee}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
     Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Miễn Phí Giao Hàng
+Chuẩn Bị Dữ Liệu Cập Nhật Thu Hộ
     [Documentation]    Chuẩn bị dữ liệu cập nhật miễn phí giao hàng
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_FREE_SHIPPING}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.UsingPriceCod    1
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${status_data}
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${status_data}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn
+Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn ${tracking_code}
     [Documentation]    Chuẩn bị dữ liệu cập nhật mã vận đơn
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_TRACKING_CODE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.DeliveryCode    ${tracking_code}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng
+Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${delivery_by} 
     [Documentation]    Chuẩn bị dữ liệu cập nhật đối tác giao hàng
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${UPDATED_DELIVERY_PARTNER}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.DeliveryBy  ${delivery_by}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Giao Một Phần
-    [Documentation]    Chuẩn bị dữ liệu cập nhật giao hàng một phần
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${PARTIAL_DELIVERY_INFO}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+Chuẩn Bị Dữ Liệu Cập Nhật Gói Hàng ${x}x${y}x${z}x${w}
+    [Documentation]    Chuẩn bị dữ liệu cập nhật gói hàng
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Weight  ${x}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Length  ${y}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Width  ${z}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Height  ${w}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Ngày Giao Dự Kiến
+Chuẩn Bị Dữ Liệu Cập Nhật Ngày Giao Dự Kiến và Ghi Chú
     [Documentation]    Chuẩn bị dữ liệu cập nhật ngày giao dự kiến
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    Set To Dictionary    ${data}    DeliveryInfo=${EXPECTED_DELIVERY_DATE}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${expected_date}=   Add Time To Date    ${purchase_date}    10 days
+    ${note}=    Set Variable    "Dự kiến giao vào ngày"
+    ${request_body}    Deep Copy    ${delivery_update_body_1}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.ExpectedDelivery    ${expected_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.Comments    ${note}
+    ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${EXPECTED_DELIVERY_DATE}    ${expected_date}
+    Set Test Variable    ${EXPECTED_NOTE}    ${note}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${REQUEST_DATA} 
 
 Chuẩn Bị Dữ Liệu Cập Nhật Với Hóa Đơn Không Tồn Tại
     [Documentation]    Chuẩn bị dữ liệu cập nhật vận chuyển với hóa đơn không tồn tại
@@ -193,7 +247,7 @@ Xác Thực Cập Nhật Giao Hàng Trong DB
 Xác Thực Cập Nhật Thông Tin Người Nhận
     [Documentation]    Xác thực thông tin người nhận đã được cập nhật
     [Arguments]    ${invoice_id}    ${expected_name}    ${expected_phone}    ${expected_address}
-    ${query}=    Set Variable    SELECT ReceiverName, ReceiverPhone, ReceiverAddress FROM DeliveryInfo WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT Receiver, ContactNumber, Address FROM DeliveryPackage WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
     Should Be Equal    ${delivery_data[0]}    ${expected_name}    Tên người nhận không khớp
@@ -203,7 +257,7 @@ Xác Thực Cập Nhật Thông Tin Người Nhận
 Xác Thực Cập Nhật Phí Giao Hàng
     [Documentation]    Xác thực phí giao hàng đã được cập nhật
     [Arguments]    ${invoice_id}    ${expected_fee}
-    ${query}=    Set Variable    SELECT ShippingFee FROM DeliveryInfo WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT Price FROM DeliveryInfo WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
     Should Be Equal As Numbers    ${delivery_data[0]}    ${expected_fee}    Phí giao hàng không khớp
@@ -228,10 +282,18 @@ Xác Thực Cập Nhật Trạng Thái Giao Hàng
 Xác Thực Cập Nhật Mã Vận Đơn
     [Documentation]    Xác thực mã vận đơn đã được cập nhật
     [Arguments]    ${invoice_id}    ${expected_tracking_code}
-    ${query}=    Set Variable    SELECT TrackingCode FROM DeliveryInfo WHERE InvoiceId = ?
+    ${query}=    Set Variable    SELECT DeliveryCode FROM DeliveryInfo WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
     Should Be Equal    ${delivery_data[0]}    ${expected_tracking_code}    Mã vận đơn không khớp
+
+Xác Thực Cập Nhật Thu Hộ
+    [Documentation]    Xác thực thông tin thu hộ đã được cập nhật
+    [Arguments]    ${invoice_id}    
+    ${query}=    Set Variable    SELECT UsingCod FROM DeliveryPackage WHERE InvoiceId = ?
+    ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
+    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
+    Should Be Equal As Integers    ${delivery_data[0]}   1
 
 Xác Thực Cập Nhật Đối Tác Giao Hàng
     [Documentation]    Xác thực đối tác giao hàng đã được cập nhật
@@ -253,19 +315,25 @@ Xác Thực Cập Nhật Giao Một Phần
 
 Xác Thực Cập Nhật Ngày Giao Dự Kiến
     [Documentation]    Xác thực ngày giao dự kiến đã được cập nhật
-    [Arguments]    ${invoice_id}    ${expected_date}
-    ${query}=    Set Variable    SELECT ExpectedDeliveryDate FROM DeliveryInfo WHERE InvoiceId = ?
-    ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
-    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
-    Should Be Equal    ${delivery_data[0]}    ${expected_date}    Ngày giao dự kiến không khớp
+    ${query}=    Set Variable    SELECT ExpectedDelivery FROM DeliveryInfo WHERE InvoiceId = ?
+    ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
+    ${payment_date}=    Convert Date    ${delivery_data[0]}
+    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin hóa đơn ${INVOICE_ID}
+    ${actual_date_str}=    Convert To String   ${payment_date}
+    ${actual_date_str}=    Fetch From Left    ${actual_date_str}    .
+    ${expected_date_obj}=    Convert Date    ${EXPECTED_DELIVERY_DATE}
+    ${actual_date_obj}=    Convert Date    ${actual_date_str}
+    ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
+    ${abs_diff}=    Evaluate    abs(${diff})
+    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
 
-Xác Thực Ghi Chú Giao Hàng
+Xác Thực Ghi Chú Giao Hàng ${expected_note}
     [Documentation]    Xác thực ghi chú giao hàng đã được cập nhật
-    [Arguments]    ${invoice_id}    ${expected_note}
-    ${query}=    Set Variable    SELECT Note FROM DeliveryInfo WHERE InvoiceId = ?
-    ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
-    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
+    ${query}=    Set Variable    SELECT Comments FROM DeliveryPackage WHERE InvoiceId = ?
+    ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${INVOICE_ID}
     Should Be Equal    ${delivery_data[0]}    ${expected_note}    Ghi chú giao hàng không khớp
+
 
 Thông tin hóa đơn được cập nhật
     [Documentation]    Xác thực thông tin hóa đơn đã được cập nhật
@@ -316,6 +384,13 @@ Ghi Chú Được Cập Nhật Thành ${expected_note}
     Should Not Be Equal    ${invoice_data}    None    Không tìm thấy thông tin hóa đơn ${INVOICE_ID}
     Should Be Equal    ${invoice_data[0]}    ${expected_note}    Ghi chú không khớp
 
+Đối tác giao hàng được cập nhật thành ${expected_delivery_by}
+    [Documentation]    Xác thực đối tác giao hàng đã được cập nhật
+    ${query}=    Set Variable    SELECT DeliveryBy FROM DeliveryInfo WHERE InvoiceId = ?
+    ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
+    Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${INVOICE_ID}
+    Should Be Equal As Integers    ${delivery_data[0]}    ${expected_delivery_by}    Phương thức giao hàng không khớp
+
 Chuẩn Bị Dữ Liệu Cập Nhật Giao Hàng Với Mã Hóa Đơn ${invoice_id} Và Trạng Thái ${status} Và Ghi Chú "${note}"
     ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
     Set To Dictionary    ${data}    InvoiceId=${invoice_id}
@@ -334,19 +409,6 @@ Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Với Tên ${name} SĐT ${
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng Thành ${fee} Đồng
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    &{delivery_info}=    Create Dictionary    ShippingFee=${fee}
-    Set To Dictionary    ${data}    DeliveryInfo=${delivery_info}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng Thành ${status}
-    ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
-    &{delivery_info}=    Create Dictionary    Status=${status}
-    Set To Dictionary    ${data}    DeliveryInfo=${delivery_info}
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn Thành ${tracking_code}
     ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
@@ -356,25 +418,21 @@ Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn Thành ${tracking_code}
     RETURN    ${data}
 
 Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${status}
-    ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
-    Xác Thực Cập Nhật Giao Hàng Trong DB    ${invoice_id}
-    Xác Thực Cập Nhật Trạng Thái Giao Hàng    ${invoice_id}    ${status}
+    Xác Thực Cập Nhật Giao Hàng Trong DB    ${INVOICE_ID}
+    Xác Thực Cập Nhật Trạng Thái Giao Hàng    ${INVOICE_ID}    ${status}
 
 Thông Tin Người Nhận Được Cập Nhật Thành ${name}, ${phone}, ${address}
-    ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
-    Xác Thực Cập Nhật Thông Tin Người Nhận    ${invoice_id}    ${name}    ${phone}    ${address}
+    Xác Thực Cập Nhật Thông Tin Người Nhận    ${INVOICE_ID}    ${name}    ${phone}    ${address}
 
 Phí Giao Hàng Được Cập Nhật Thành ${fee} Đồng
-    ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
-    Xác Thực Cập Nhật Phí Giao Hàng    ${invoice_id}    ${fee}
+    Xác Thực Cập Nhật Phí Giao Hàng    ${INVOICE_ID}    ${fee}
 
 Mã Vận Đơn Được Cập Nhật Thành ${tracking_code}
-    ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
-    Xác Thực Cập Nhật Mã Vận Đơn    ${invoice_id}    ${tracking_code}
+    Xác Thực Cập Nhật Mã Vận Đơn    ${INVOICE_ID}    ${tracking_code}
 
-Ghi Chú Giao Hàng Được Cập Nhật Thành "${note}"
-    ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
-    Xác Thực Ghi Chú Giao Hàng    ${invoice_id}    ${note} 
+Hóa Đơn Được Cập Nhật Thu Hộ
+    Xác Thực Cập Nhật Thu Hộ    ${INVOICE_ID}
+
 
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount}
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
