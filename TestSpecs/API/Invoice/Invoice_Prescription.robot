@@ -18,19 +18,20 @@ RT-PR-001 Kiểm tra tạo hóa đơn theo đơn thuốc
 
 RT-PR-002 Tạo hóa đơn với cửa hàng không phải nhà thuốc GPP
     [Documentation]    Kiểm tra hệ thống bỏ qua xác thực đơn thuốc khi cửa hàng không phải nhà thuốc GPP
-    [Tags]     prescription    
+    [Tags]     prescription      nhathuoc
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Không Liên Kết Theo Đơn Thuốc
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Thông Tin Đơn Thuốc Được Lưu Trong DB
+    And Xác định hóa đơn Không sử dụng đơn thuốc
+    [Teardown]    Tear down Delete Hóa Đơn
 RT-PR-003 Kiểm tra thiếu thông tin đơn thuốc và bệnh nhân
     [Documentation]    Kiểm tra lỗi khi không cung cấp thông tin đơn thuốc và bệnh nhân
+    [Tags]    prescription     nhathuoc   
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Không Có Thông Tin Đơn Thuốc Và Bệnh Nhân
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 400
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId   
+    Then Response Status Code Should Be 420
     And Response Should Have Error "${KV_MESSAGE_PRESCRIPTION_EMPTY}"
-    And Xác Thực Hóa Đơn Không Tồn Tại Trong DB
 
 RT-PR-004 Kiểm tra thiếu thông tin đơn thuốc
     [Documentation]    Kiểm tra lỗi khi không cung cấp thông tin đơn thuốc nhưng có thông tin bệnh nhân
@@ -66,19 +67,31 @@ RT-PR-007 Kiểm tra xác thực thuốc hết hạn
 
 RT-PR-008 Kiểm tra xác thực mã đơn thuốc vượt quá 50 ký tự
     [Documentation]    Kiểm tra lỗi khi mã đơn thuốc vượt quá 50 ký tự
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Dài Hơn 50 Ký Tự
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 400
-    And Response Should Have Error "${KV_MESSAGE_PRESCRIPTION_CODE_LENGTH_ERROR}"
-    And Xác Thực Hóa Đơn Không Tồn Tại Trong DB
+    [Tags]    prescription     nhathuoc       
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc 51 Ký Tự
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Vui lòng nhập Mã đơn thuốc không quá 50 kí tự"
+
+RT-PR-009 Kiểm tra xác thực mã đơn thuốc đúng 50 ký tự
+    [Documentation]    Kiểm tra lỗi khi mã đơn thuốc đúng 50 ký tự
+    [Tags]    prescription     nhathuoc       
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc 50 Ký Tự
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Xác Thực Thông Tin Đơn Thuốc Được Lưu Trong DB
+    And Xác Thực Hóa Đơn Có Đơn Thuốc Bán Theo Đơn ${PRESCRIPTION_ID}
+    [Teardown]    Tear down Delete Hóa Đơn
 
 RT-PR-009 Kiểm tra xác thực mã đơn thuốc đã tồn tại
     [Documentation]    Kiểm tra lỗi khi mã đơn thuốc đã tồn tại trong hệ thống
+    [Tags]    prescription     nhathuoc       
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Đã Tồn Tại
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 400
-    And Response Should Have Error Containing "${KV_MESSAGE_PRESCRIPTION_CODE_ALREADY_EXIST}"
-    And Xác Thực Hóa Đơn Không Tồn Tại Trong DB
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Mã đơn thuốc DT000001 đã tồn tại trong hệ thống"
+
 
 RT-PR-010 Kiểm tra xác thực mã đơn thuốc không hợp lệ
     [Documentation]    Kiểm tra lỗi khi ID đơn thuốc > 0 nhưng không có mã đơn thuốc
@@ -90,11 +103,11 @@ RT-PR-010 Kiểm tra xác thực mã đơn thuốc không hợp lệ
 
 RT-PR-011 Kiểm tra thành công với thông tin đơn thuốc và bệnh nhân đầy đủ
     [Documentation]    Kiểm tra tạo thành công hóa đơn với thông tin đơn thuốc và bệnh nhân đầy đủ
+    [Tags]    prescription     nhathuoc        
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thông Tin Đơn Thuốc Và Bệnh Nhân Đầy Đủ
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Response Status Code Should Be 200
-    And Xác Thực Hóa Đơn Được Tạo Thành Công Trong DB
-    And Xác Thực Thông Tin Đơn Thuốc Được Lưu Trong DB
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
 
 RT-PR-012 Kiểm tra thành công với đơn thuốc toàn cầu
     [Documentation]    Kiểm tra tạo thành công hóa đơn với đơn thuốc toàn cầu và các sản phẩm có mô tả đầy đủ

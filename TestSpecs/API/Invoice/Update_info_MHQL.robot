@@ -21,7 +21,7 @@ RT-DU-001 Cập nhật trạng thái giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Processing" (2) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Giao Hàng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_PROCESSING}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Response Status Code Should Be 200

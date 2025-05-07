@@ -29,7 +29,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
     ...    - Logic: Kiểm tra UUID trùng lặp trong Redis cache
     ...    - UUID: 550e8400-e29b-41d4-a716-446655440000 đã tồn tại
     ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng"
-    [Tags]     invoicevalidate    duplicate    uuid    AIGenerated
+    [Tags]     invoicevalidate    duplicate    uuid    AIGenerated    test7777
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -127,7 +127,7 @@ RT-IV-019 Kiểm tra sản phẩm hết hàng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm hết hàng
     [Tags]    invoicevalidate    smoke     nhathuoc        
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Hết Hàng Gian Không Cho Phép Bán Âm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Không đủ số lượng tồn kho cho sản phẩm Hàng hóa hết hàng"
 
@@ -135,7 +135,7 @@ RT-IV-020 Kiểm tra sản phẩm Không Đủ Tồn Kho
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm không đủ tồn kho
     [Tags]    invoicevalidate    smoke     nhathuoc         
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm HHAM00002 Gian Không Cho Phép Bán Âm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Không đủ số lượng tồn kho cho sản phẩm Hàng hóa không đủ tồn"
 
@@ -144,7 +144,7 @@ RT-IV-021 Kiểm tra sản phẩm combo không đủ hàng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm combo mà các thành phần không đủ hàng
     [Tags]    invoicevalidate    smoke     nhathuoc         
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm COMBO0001 Gian Không Cho Phép Bán Âm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Hàng hóa : thành phần TPCB0001 không đủ tồn kho"
 
@@ -381,7 +381,7 @@ RT-IV-031 Kiểm tra thay đổi thông tin giao hàng của hóa đơn đã có
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true, Status=1
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server"
-    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Thông Tin Giao Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -394,7 +394,7 @@ RT-IV-032 Kiểm tra thay đổi khách hàng khi hóa đơn đã có thanh toá
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_OLD_CUSTOMER_ID}, TotalPayment=${UPDATE_INVOICE_ID_WRONG_CUSTOMER_TOTAL_PAYMENT}
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, Code=${UPDATE_INVOICE_CODE_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_CUSTOMER_ID_WRONG_CUSTOMER}
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Khách Hàng Đã Thanh Toán
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -407,7 +407,7 @@ RT-IV-033 Kiểm tra cập nhật hóa đơn đã có trả hàng
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, UpdateInvoiceId=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, Code=${UPDATE_INVOICE_ID_CONTAIN_RETURN_CODE}
     ...    - Kỳ vọng: Lỗi "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
-    [Tags]    invoicevalidate     update-invoice    updateinvoice123    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Hóa Đơn Đã Có Trả Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -423,7 +423,7 @@ RT-VC-001 Kiểm tra xung đột phiên bản khi cập nhật thông tin đối
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated
+    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated        apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Đối Tác Vận Chuyển
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -438,7 +438,7 @@ RT-VC-002 Kiểm tra xung đột phiên bản khi cập nhật trạng thái hó
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID}, Status=1 (Đã hoàn thành)
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID}, Status=3 (Đang xử lý)
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    status    AIGenerated
+    [Tags]    invoicevalidate    versionconflict    status    AIGenerated        apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Trạng Thái
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -454,7 +454,7 @@ RT-VC-003 Kiểm tra xung đột phiên bản khi cập nhật không có thông
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryDetail=null
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated
+    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated        apiinvoice
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thiếu Thông Tin Giao Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
