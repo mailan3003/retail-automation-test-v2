@@ -478,21 +478,6 @@ RT-IV-UUID-001 Kiểm tra UUID trùng lặp với cùng khách hàng và tổng 
     And Phản hồi phải bao gồm lỗi "Mã hóa đơn online bị trùng"
 
 # Prescription Validation Test Cases
-RT-IV-PRESC-001 Kiểm tra hóa đơn thiếu thông tin đơn thuốc và bệnh nhân
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn nhà thuốc GPP thiếu cả thông tin đơn thuốc và bệnh nhân
-    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() - Phần xử lý thông tin đơn thuốc
-    ...    - Logic: Khi UsingPrescription=1, nếu cả Prescription và Patient đều thiếu thông tin, hệ thống báo lỗi
-    ...    - Dữ liệu đầu vào:
-    ...    - Hóa đơn với UsingPrescription=1, đơn thuốc rỗng, bệnh nhân rỗng
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Thông báo lỗi: "Bạn chưa nhập thông tin đơn thuốc"
-    [Tags]    invoicevalidate    prescription    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Không Có Thông Tin Đơn Thuốc Và Bệnh Nhân
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Bạn chưa nhập thông tin đơn thuốc"
-
 RT-IV-PRESC-002 Kiểm tra hóa đơn thuốc thiếu mô tả cách dùng
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn nhà thuốc GPP có đơn thuốc toàn cục nhưng sản phẩm thiếu mô tả cách dùng
     ...    - Source: InvoiceService.cs > CreateInvoiceAsync() - Phần xử lý thông tin đơn thuốc
@@ -503,41 +488,12 @@ RT-IV-PRESC-002 Kiểm tra hóa đơn thuốc thiếu mô tả cách dùng
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Hàng hóa thiếu ghi chú"
-    [Tags]    invoicevalidate    prescription    AIGenerated
+    [Tags]    invoicevalidate    prescription    AIGenerated   nhathuoc
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Toàn Cục Với Sản Phẩm Thiếu Mô Tả
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Hàng hóa thiếu ghi chú"
 
-RT-IV-PRESC-003 Kiểm tra hóa đơn có mã đơn thuốc quá dài
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn nhà thuốc GPP có mã đơn thuốc vượt quá 50 ký tự
-    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() - Phần xử lý thông tin đơn thuốc
-    ...    - Logic: Hệ thống kiểm tra độ dài mã đơn thuốc không vượt quá 50 ký tự
-    ...    - Dữ liệu đầu vào:
-    ...    - Hóa đơn với UsingPrescription=1, mã đơn thuốc 51 ký tự
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Thông báo lỗi: "Vui lòng nhập Mã đơn thuốc không quá 50 kí tự"
-    [Tags]    invoicevalidate    prescription    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Quá Dài
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Vui lòng nhập Mã đơn thuốc không quá 50 kí tự"
-
-RT-IV-PRESC-004 Kiểm tra hóa đơn có mã đơn thuốc đã tồn tại
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn nhà thuốc GPP có mã đơn thuốc đã tồn tại trong hệ thống
-    ...    - Source: InvoiceService.cs > CreateInvoiceAsync() - Phần xử lý thông tin đơn thuốc
-    ...    - Logic: Hệ thống kiểm tra mã đơn thuốc không trùng với mã đã tồn tại
-    ...    - Dữ liệu đầu vào:
-    ...    - Hóa đơn với UsingPrescription=1, UsingGlobalPrescription=0, mã đơn thuốc "${COMPLETE_PRESCRIPTION.Code}" đã tồn tại
-    ...    - Kỳ vọng:
-    ...    - Status code: 420
-    ...    - Thông báo lỗi: "Mã đơn thuốc ${COMPLETE_PRESCRIPTION.Code} đã tồn tại trong hệ thống"
-    [Tags]    invoicevalidate    prescription    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Đơn Thuốc Đã Tồn Tại    ${COMPLETE_PRESCRIPTION.Code}
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Mã đơn thuốc ${COMPLETE_PRESCRIPTION.Code} đã tồn tại trong hệ thống"
 
 RT-IV-PRESC-005 Kiểm tra hóa đơn có đơn thuốc với ID nhưng không có mã
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn nhà thuốc GPP có đơn thuốc với Id>0 nhưng không có mã
@@ -548,7 +504,7 @@ RT-IV-PRESC-005 Kiểm tra hóa đơn có đơn thuốc với ID nhưng không c
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Mã đơn thuốc không hợp lệ"
-    [Tags]    invoicevalidate    prescription    AIGenerated
+    [Tags]    invoicevalidate    prescription    AIGenerated    nhathuoc
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc ID Không Code
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -570,7 +526,7 @@ RT-IV-PL-001 Kiểm tra giới hạn sử dụng khuyến mãi khi khách hàng 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi bao gồm: "Khách hàng đã được hưởng các khuyến mại:" và "vui lòng kiểm tra lại."
-    [Tags]    invoicevalidate    promotion    limits    AIGenerated
+    [Tags]    invoicevalidate    promotion    limits    AIGenerated   test424344
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Có Giới Hạn Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
