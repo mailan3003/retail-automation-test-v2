@@ -450,3 +450,16 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+# UUID Check Keywords
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Uuid    ${DUPLICATE_UUID}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Code    HD001
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${DUPLICATE_CUSTOMER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Tạo hóa đơn với UUID trùng lặp
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200

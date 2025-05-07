@@ -459,3 +459,19 @@ RT-VC-003 Kiểm tra xung đột phiên bản khi cập nhật không có thông
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
+
+# UUID Check Test Cases
+RT-IV-UUID-001 Kiểm tra UUID trùng lặp với cùng khách hàng và tổng tiền
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với UUID trùng lặp cùng khách hàng và tổng tiền
+    ...    - Source: InvoiceService.cs > CheckUuidAsync() 
+    ...    - Logic: Kiểm tra UUID trùng lặp và so sánh thông tin khách hàng, tổng tiền
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn mới: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
+    ...    - Hóa đơn đã tồn tại: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
+    ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng: HD050 - HD001"
+    [Tags]    invoicevalidate    duplicate    uuid2    AIGenerated
+    Given Tạo hóa đơn với UUID trùng lặp
+    And Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi "Mã hóa đơn online bị trùng"
