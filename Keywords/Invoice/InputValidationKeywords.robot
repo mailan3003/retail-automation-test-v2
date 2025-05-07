@@ -463,3 +463,27 @@ Tạo hóa đơn với UUID trùng lặp
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
+
+# Keywords for Promotion Limits Testing
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Có Giới Hạn Sử Dụng
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    
+    # Tạo dữ liệu khuyến mãi với giới hạn sử dụng
+    ${promotion_data}=    Create Dictionary
+    ...    PromotionId=${LIMITED_PROMOTION_ID}
+    ...    PromotionInfo=${LIMITED_PROMOTION_INFO}
+    ...    LimitPromotionUsage=${TRUE}
+    ...    LimitPromotionUsageType=2
+    ...    Type=1
+    ...    SalePromotionId=24747
+    ...    Discount=10000
+    ...    DiscountRatio=${None}
+    
+    @{promotions_list}=    Create List   ${promotion_data}
+    
+    # Cập nhật dữ liệu hóa đơn
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${LIMITED_CUSTOMER_ID}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoicePromotions    ${promotions_list}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
