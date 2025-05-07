@@ -15,3 +15,7 @@ robot_tasks:
         include_tags: "currency"
         variables:
         - "ENV:currency"
+    -   name: "nhathuoc_task"
+        include_tags: "nhathuoc"
+        variables:
+        - "ENV:nhathuoc"

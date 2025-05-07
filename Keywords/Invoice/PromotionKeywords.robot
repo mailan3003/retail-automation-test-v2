@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần áp dụng khuyến mãi
 Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Invoice/InvoiceVLXDData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -526,25 +527,24 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sả
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với voucher không cho phép kết hợp với khuyến mãi
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}    
-    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
-    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}  ProductId  ${PRODUCT_ID_VLXD} 
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId   91926
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    1
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount   10000
     ${data_promo}  Create List    ${data_promo}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    100000
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCampaignId   ${VOUCHER_CAMPAIGN_ID}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherId   ${VOUCHER_ID}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherCode   TESTNONCOMBINE
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.VoucherValue   20000
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.AllowMergeWithOtherPromotion   ${FALSE}
+    ${data}=    Deep Copy    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_VOUCHER}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    100000
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherId    1000008358
+    ${data}=    Update Nested Dictionary Property    ${data}    VoucherCampaignId     1000000030
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoicePromotions  ${data_promo}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}

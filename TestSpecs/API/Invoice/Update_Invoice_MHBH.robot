@@ -95,8 +95,9 @@ RT-PU-004 Cập nhật thêm hàng hóa cho hóa đơn
     ...    - Mã trạng thái: 200
     ...    - Cả hai thanh toán được thêm vào hóa đơn
     ...    - Tổng tiền thanh toán bổ sung là 50,000đ
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment       
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_update} 
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id_update} Với Số Lượng 5.44
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
