@@ -471,7 +471,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Có Giới Hạn Sử D�
     # Tạo dữ liệu khuyến mãi với giới hạn sử dụng
     ${promotion_data}=    Create Dictionary
     ...    PromotionId=${LIMITED_PROMOTION_ID}
-    ...    PromotionInfo=${LIMITED_PROMOTION_INFO}
     ...    LimitPromotionUsage=${TRUE}
     ...    LimitPromotionUsageType=2
     ...    Type=1
