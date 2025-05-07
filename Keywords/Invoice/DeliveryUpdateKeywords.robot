@@ -120,11 +120,8 @@ Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
 
 Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng ${fee}
     [Documentation]    Chuẩn bị dữ liệu cập nhật phí giao hàng
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
-    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Price    ${fee}
-    ${request}=    Update Nested Dictionary Property    ${request}    DeliveryDetail    ${delivery_detail_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}=    Deep Copy    ${invoice_request_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    DeliveryDetail.Price    ${fee}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -135,9 +132,7 @@ Chuẩn Bị Dữ Liệu Cập Nhật Miễn Phí Giao Hàng
     Set Test Variable    ${REQUEST_DATA}    ${data}
     RETURN    ${data}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng
-    [Documentation]    Chuẩn bị dữ liệu cập nhật trạng thái giao hàng
-    [Arguments]    ${status_data}
+Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${status_data}
     ${data}=    Set Variable    ${STANDARD_DELIVERY_UPDATE}
     Set To Dictionary    ${data}    DeliveryInfo=${status_data}
     Set Test Variable    ${REQUEST_DATA}    ${data}
@@ -380,4 +375,136 @@ Mã Vận Đơn Được Cập Nhật Thành ${tracking_code}
 Ghi Chú Giao Hàng Được Cập Nhật Thành "${note}"
     ${invoice_id}=    Set Variable    ${REQUEST_DATA.InvoiceId}
     Xác Thực Ghi Chú Giao Hàng    ${invoice_id}    ${note} 
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount}
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount} Với Khách Hàng ${customer_id}
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Số Lượng ${quantity} Hàng hóa trong đơn
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Quantity    ${quantity}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${total_price}=    Evaluate    100000 * ${quantity}
+    Set Test Variable    ${TOTAL_PRICE}    ${total_price}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id} Với Số Lượng ${quantity}
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data}=    Update Nested Dictionary Property    ${data}    ProductId    ${product_id}
+    ${data}=    Update Nested Dictionary Property    ${data}    Quantity    ${quantity}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Đã Hủy
+    ${purchase_date}=    Get Current Date    result_format=%Y-%m-%d
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID_VOID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_HD011452
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Không Tồn Tại
+    ${purchase_date}=    Get Current Date    result_format=%Y-%m-%d
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    5395735
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_HD011452
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Thành Tiền ${total_price}
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Price    ${total_price}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Cập Nhập Mô Tả Hóa Đơn
+    ${description}=    Set Variable    Mô tả hóa đơn
+    ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
+    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Description    ${description}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${DESCRIPTION}    ${description}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+Số lượng hàng hóa trong đơn là ${quantity}
+    ${query}=    Set Variable    SELECT Quantity FROM InvoiceDetail WHERE InvoiceId = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    ${quantity_in_db}=    Convert To Number    ${result[0]}
+    Should Be Equal As Numbers    ${quantity_in_db}    ${quantity}    Số lượng hàng hóa trong đơn không đúng    
+
+Thông tin mã hóa đơn
+   ${query}=    Set Variable    SELECT Code, PurchaseDate FROM Invoice WHERE Id = ?
+   ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+   ${purchase_date}=    Convert Date    ${result[1]}
+   Set Test Variable    ${INVOICE_CODE}    ${result[0]}
+   RETURN    ${INVOICE_CODE}      ${purchase_date}
+
+Thông tin khách hàng trong hóa đơn là ${customer_id}
+    ${query}=    Set Variable    SELECT CustomerId FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Set Test Variable    ${CUSTOMER_ID}    ${result[0]}
+    RETURN    ${CUSTOMER_ID}
+
+Xác Thực Trạng Thái Hóa Đơn ${invoice_code} Là Trạng Thái ${expected_status}
+    ${status}=    Set Variable If    '${expected_status}'=='Hủy'    2    1
+    ${status}    Convert To Number    ${status}
+    ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT Status FROM Invoice WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${invoice_code}
+    Should Be Equal    ${result[0]}    ${status}    Trạng thái hóa đơn không đúng. Kỳ vọng: ${expected_status}, Thực tế: ${result[0]}
 

@@ -1,6 +1,5 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần tạo phiếu thu khi tạo hóa đơn
-Resource          ../../TestData/Invoice/ReceiptCreationData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/CommonData.robot
 Resource          ../Utilities/DataUtilities.robot
@@ -142,6 +141,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với ${number_of_voucher} Vouch
     Set Test Variable    ${list_voucher_id}    ${list_voucher_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+
 
 
 Xác Thực Tài Khoản Wallet ${bank_account_id} Được Sử Dụng Khi Thanh Toán
