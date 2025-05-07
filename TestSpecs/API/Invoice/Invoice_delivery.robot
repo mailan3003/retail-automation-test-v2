@@ -237,3 +237,76 @@ RT-DP-014 Tạo hóa đơn thất bại khi thời gian giao hàng trùng với 
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"
 
+RT-DP-015 Tạo hóa đơn thất bại khi đối tác giao hàng không hợp lệ
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi đối tác giao hàng không hợp lệ
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.DeliveryDetail.UseDefaultPartner: true
+    ...    - Invoice.DeliveryDetail.PartnerCode: "${NON_EXISTENT_KV_PARTNER_DELIVERY_CODE}"
+    ...    - Invoice.DeliveryDetail.ServiceAdd: "S1"
+    ...    - Logic kiểm tra: Xác thực đối tác vận chuyển trong CreateInvoice
+    ...    - Mô phỏng điều kiện:
+    ...    - Đối tác không hoạt động (currentCarrierCom.IsActive = false)
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+    [Tags]    apiinvoice    delivery123    AIGenerated    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hoạt Động
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+
+RT-DP-016 Tạo hóa đơn thất bại khi đối tác giao hàng không hỗ trợ nhà bán hàng
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi đối tác giao hàng không hỗ trợ nhà bán hàng
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.DeliveryDetail.UseDefaultPartner: true
+    ...    - Invoice.DeliveryDetail.PartnerCode: "${KV_PARTNER_DELIVERY_CODE_WRONG_SCOPE}"
+    ...    - Invoice.DeliveryDetail.ServiceAdd: "S1"
+    ...    - Logic kiểm tra: Xác thực đối tác vận chuyển trong CreateInvoice
+    ...    - Mô phỏng điều kiện:
+    ...    - Đối tác không hỗ trợ nhà bán hàng hiện tại (currentCarrierCom.Scope không chứa CurrentRetailerCode)
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+    [Tags]    apiinvoice    delivery123    AIGenerated    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hỗ Trợ Nhà Bán Hàng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+
+RT-DP-017 Tạo hóa đơn thất bại khi thiết lập nhà bán hàng không cho phép sử dụng COD qua đối tác KiotViet
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi thiết lập nhà bán hàng không cho phép sử dụng COD qua đối tác KiotViet
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.DeliveryDetail.UseDefaultPartner: true
+    ...    - Invoice.DeliveryDetail.PartnerCode: "GHN"
+    ...    - Invoice.DeliveryDetail.ServiceAdd: "S1"
+    ...    - Logic kiểm tra: Xác thực đối tác vận chuyển trong CreateInvoice
+    ...    - Mô phỏng điều kiện:
+    ...    - Thiết lập của nhà bán hàng: PosSetting.UseCodByKvCarrier = true
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+    [Tags]    apiinvoice    delivery123    AIGenerated    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thiết Lập Không Cho Phép COD Qua KiotViet
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+
+# RT-DP-018 Tạo hóa đơn thất bại khi thiếu thông tin bên trả phí vận chuyển
+#     [Documentation]    Kiểm tra tạo hóa đơn thất bại khi thiếu thông tin bên trả phí vận chuyển
+#     ...    - Dữ liệu đầu vào: 
+#     ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+#     ...    - Invoice.DeliveryDetail.UseDefaultPartner: true
+#     ...    - Invoice.DeliveryDetail.PartnerCode: "GHN"
+#     ...    - Invoice.DeliveryDetail.ServiceAdd: "" (trống)
+#     ...    - Logic kiểm tra: Kiểm tra thông tin bên trả phí vận chuyển trong CreateInvoice
+#     ...    - Kỳ vọng:
+#     ...    - Status code: 420
+#     ...    - Thông báo lỗi: "Vui lòng chọn bên trả phí"
+#     [Tags]    apiinvoice    delivery    AIGenerated    
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thiếu Thông Tin Bên Trả Phí
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Mã trạng thái phải là 420
+#     And Phản hồi phải chứa lỗi "Vui lòng chọn bên trả phí"
