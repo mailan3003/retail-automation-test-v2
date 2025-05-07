@@ -1,12 +1,14 @@
 *** Settings ***
 Documentation     Test cases API cho phần cập nhật thông tin giao hàng
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
-*** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    DeliveryUpdateTest
+*** Variables ***
+${SELLER_ID}    1000000490
+${CHANNEL_ID}   1000000042
+${DELIVERY_PARTNER_2}    1000000119
 
 *** Test Cases ***
 RT-DU-001 Cập nhật trạng thái giao hàng thành công
@@ -20,12 +22,13 @@ RT-DU-001 Cập nhật trạng thái giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Processing" (2) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_PROCESSING}
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_PROCESSING}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_PROCESSING}
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Đang giao hàng"
+
 
 RT-DU-002 Cập nhật thông tin người nhận thành công
     [Documentation]    Kiểm tra cập nhật thông tin người nhận thành công
@@ -40,10 +43,11 @@ RT-DU-002 Cập nhật thông tin người nhận thành công
     ...    - Status code: 200
     ...    - Thông tin người nhận được cập nhật trong CSDL
     ...    - Cột ReceiverName, ReceiverPhone, ReceiverAddress được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Thông Tin Người Nhận Được Cập Nhật Thành Nguyễn Thị B, 0912345678, 456 Đường Lê Lợi, Q3
 
 RT-DU-003 Cập nhật phí giao hàng thành công
@@ -57,14 +61,14 @@ RT-DU-003 Cập nhật phí giao hàng thành công
     ...    - Status code: 200
     ...    - Phí giao hàng được cập nhật trong CSDL thành 35,000đ
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    [Tags]    apiinvoice    update_invoice    update_delivery     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng 35000
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Phí Giao Hàng Được Cập Nhật Thành 35000 Đồng
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Điều chỉnh phí do khu vực xa"
 
-RT-DU-004 Cập nhật miễn phí giao hàng thành công
+RT-DU-004 Cập nhật thu hộ
     [Documentation]    Kiểm tra cập nhật miễn phí giao hàng thành công
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
@@ -77,12 +81,13 @@ RT-DU-004 Cập nhật miễn phí giao hàng thành công
     ...    - Phí giao hàng được cập nhật thành 0đ trong CSDL
     ...    - Cờ IsFreeShip được bật (1)
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Miễn Phí Giao Hàng
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Cập Nhật Miễn Phí Giao Hàng    ${REQUEST_DATA.InvoiceId}    1
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Khách VIP, miễn phí giao hàng"
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thu Hộ 
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
+    And Hóa Đơn Được Cập Nhật Thu Hộ
+
 
 RT-DU-005 Cập nhật trạng thái đã giao hàng thành công
     [Documentation]    Kiểm tra cập nhật trạng thái đã giao hàng thành công
@@ -95,12 +100,12 @@ RT-DU-005 Cập nhật trạng thái đã giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Completed" (3) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_COMPLETED}
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_COMPLETED}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_COMPLETED}
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Đã giao hàng thành công"
 
 RT-DU-006 Cập nhật trạng thái hủy giao hàng thành công
     [Documentation]    Kiểm tra cập nhật trạng thái hủy giao hàng thành công
@@ -113,12 +118,12 @@ RT-DU-006 Cập nhật trạng thái hủy giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Cancelled" (4) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng    ${DELIVERY_STATUS_CANCELLED}
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+   Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_CANCELLED}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_CANCELLED}
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Đã hủy giao hàng theo yêu cầu khách"
 
 RT-DU-007 Cập nhật mã vận đơn thành công
     [Documentation]    Kiểm tra cập nhật mã vận đơn thành công
@@ -131,14 +136,15 @@ RT-DU-007 Cập nhật mã vận đơn thành công
     ...    - Status code: 200
     ...    - Mã vận đơn được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
+     [Tags]    apiinvoice    update_invoice    update_delivery     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn TRACK123456789
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     And Mã Vận Đơn Được Cập Nhật Thành TRACK123456789
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Đã cập nhật mã vận đơn mới"
 
-RT-DU-008 Cập nhật đối tác giao hàng thành công
+
+RT-DU-008 Cập nhật đối tác giao hàng khác
     [Documentation]    Kiểm tra cập nhật đối tác giao hàng thành công
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
@@ -150,15 +156,15 @@ RT-DU-008 Cập nhật đối tác giao hàng thành công
     ...    - Status code: 200
     ...    - Phương thức giao hàng và mã đối tác được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Cập Nhật Đối Tác Giao Hàng    ${REQUEST_DATA.InvoiceId}    2    ${DELIVERY_PARTNER_2}
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Chuyển sang đối tác giao hàng khác"
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${DELIVERY_PARTNER_2}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
+    And Đối tác giao hàng được cập nhật thành ${DELIVERY_PARTNER_2}
 
-RT-DU-009 Cập nhật thông tin giao một phần thành công
-    [Documentation]    Kiểm tra cập nhật thông tin giao một phần thành công
+RT-DU-009 Cập nhật thông tin gói hàng
+    [Documentation]    Kiểm tra cập nhật thông tin gói hàng thành công
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
     ...    - IsPartialDelivery: true
@@ -170,12 +176,12 @@ RT-DU-009 Cập nhật thông tin giao một phần thành công
     ...    - Cờ IsPartialDelivery được bật (1) trong CSDL
     ...    - Số tiền giao một phần được cập nhật thành 50,000đ
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Giao Một Phần
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Cập Nhật Giao Một Phần    ${REQUEST_DATA.InvoiceId}    1    50000
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Giao một phần sản phẩm"
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Gói Hàng 100x100x100x100
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
+    And Xác Thực Sử Dụng Thông Tin Trọng Lượng 100 Và Kích Thước 100x100x100 cm
 
 RT-DU-010 Cập nhật ngày giao dự kiến thành công
     [Documentation]    Kiểm tra cập nhật ngày giao dự kiến thành công
@@ -188,12 +194,13 @@ RT-DU-010 Cập nhật ngày giao dự kiến thành công
     ...    - Status code: 200
     ...    - Ngày giao dự kiến được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Ngày Giao Dự Kiến
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
-    Then Response Status Code Should Be 200
-    And Response Should Have Id exist
-    And Xác Thực Cập Nhật Ngày Giao Dự Kiến    ${REQUEST_DATA.InvoiceId}    2024-06-15
-    And Ghi Chú Giao Hàng Được Cập Nhật Thành "Dự kiến giao vào ngày 15/06/2024"
+    [Tags]    apiinvoice    update_invoice    update_delivery    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Ngày Giao Dự Kiến và Ghi Chú
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
+    And Xác Thực Cập Nhật Ngày Giao Dự Kiến 
+    And Xác Thực Ghi Chú Giao Hàng ${EXPECTED_NOTE}
 
 RT-DU-011 Cập nhật giao hàng thất bại với mã hóa đơn không tồn tại
     [Documentation]    Kiểm tra cập nhật giao hàng thất bại với mã hóa đơn không tồn tại
@@ -213,13 +220,16 @@ RT-DU-012 Cập nhật giao hàng thất bại với trạng thái không hợp 
     [Documentation]    Kiểm tra cập nhật giao hàng thất bại với trạng thái không hợp lệ
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
-    ...    - Trạng thái: 9 (không hợp lệ, chỉ có 1-5)
+    ...    - Trạng thái: 20 (không hợp lệ, chỉ có 1-5)
     ...    - Logic kiểm tra: DeliveryService.UpdateDelivery kiểm tra trạng thái hợp lệ
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Response chứa thông báo lỗi "Trạng thái giao hàng không hợp lệ"
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Với Trạng Thái Không Hợp Lệ
-    When Gửi Yêu Cầu Cập Nhật Giao Hàng
+    [Tags]    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
+    And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng 20
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã trạng thái phải là 200
     Then Response Status Code Should Be 420
     And Response Should Have Error "Trạng thái giao hàng không hợp lệ"
 
@@ -292,3 +302,133 @@ RT-DU-016 Cập nhật mã vận đơn sử dụng tham số nhúng
     Then Response Status Code Should Be 200
     And Response Should Have Id exist
     And Mã Vận Đơn Được Cập Nhật Thành EXPRESS123456789 
+
+Cập nhật người bán từ MHQL
+   [Documentation]    Kiểm tra cập nhật người bán từ MHQL
+   ...    - Dữ liệu đầu vào:
+   ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+   ...    - Người bán: ${SELLER_ID}
+   ...    - Kỳ vọng:
+   ...    - Status code: 200
+   ...    - Người bán được cập nhật thành ${SELLER_ID}
+   [Tags]    apiinvoice    smoke   
+   Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+   And Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${SELLER_ID}
+   When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+   Then Mã Trạng Thái Phải Là 200
+   And Người Bán Được Cập Nhật Thành ${SELLER_ID}
+Cập nhật thời gian từ MHQL
+    [Documentation]    Kiểm tra cập nhật thời gian từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke   
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Trừ 3 Ngày
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL    
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+
+Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu Thanh Toán
+    [Documentation]    Kiểm tra cập nhập thời gian có thanh toán không thay đổi thời gian phiếu thanh toán
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke     test36635
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Không Thay Đổi Phiếu Thanh Toán
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+    And Thời Gian Phiếu Thanh Toán ${CURRENT_DATE_PAYMENT}  
+    
+ Cập Nhập Thời Gian Có Thanh Toán Có Thay Đổi Thời gian Phiếu Thanh Toán
+    [Documentation]    Kiểm tra cập nhập thời gian có thanh toán có thay đổi thời gian phiếu thanh toán
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke     test36635
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Có Thay Đổi Phiếu Thanh Toán
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+    And Thời Gian Phiếu Thanh Toán ${PURCHASE_DATE}
+
+Cập nhật thời gian tương lai từ MHQL
+    [Documentation]    Kiểm tra cập nhật thời gian tương lai từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Trạng thái: ${STATUS}
+    ...    - Thời gian: ${TIME_DELTA} ngày
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thời gian được cập nhật thành ${TIME}
+    [Tags]    apiinvoice    smoke      
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Thêm 3 Ngày
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL        
+    Then Mã Trạng Thái Phải Là 420
+    And Response Should Have Error "Bạn chỉ được cập nhật giao dịch trong vòng 12 tháng."
+
+
+Cập nhập kênh bán từ MHQL
+    [Documentation]    Kiểm tra cập nhập kênh bán từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Kênh bán: ${CHANNEL_ID}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Kênh bán được cập nhật thành ${CHANNEL_ID}
+    [Tags]    apiinvoice    smoke      test4243
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${CHANNEL_ID}
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Kênh Bán Được Cập Nhật Thành ${CHANNEL_ID}
+Cập nhật ghi chú từ MHQL
+    [Documentation]    Kiểm tra cập nhập ghi chú từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Ghi chú: ${NOTE}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Ghi chú được cập nhật thành ${NOTE}
+    [Tags]    apiinvoice    smoke     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 50 Kí Tự
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Ghi Chú Được Cập Nhật Thành ${NOTE}
+
+Cập nhật ghi chú quá nhiều kí tự từ MHQL
+    [Documentation]    Kiểm tra cập nhập ghi chú quá nhiều kí tự từ MHQL
+    ...    - Dữ liệu đầu vào:
+    ...    - Mã hóa đơn hiện có: ID hóa đơn có trong CSDL
+    ...    - Ghi chú: ${NOTE}
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Ghi chú được cập nhật thành ${NOTE}
+    [Tags]    apiinvoice    smoke     
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 5000 Kí Tự
+    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
+    Then Mã Trạng Thái Phải Là 200
+    And Ghi Chú Được Cập Nhật Thành ${NOTE}
+
+
+
+
+

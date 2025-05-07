@@ -9,6 +9,12 @@ Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           DateTime
+Library           OperatingSystem
+Library           Collections
+Library           String
+Library           json
+Resource          ../../Config/Env_api.robot
+Library           ../../Resources/RedisLibrary.py    ${REDIS_HOST}    ${REDIS_PORT}    ${REDIS_DB}    ${REDIS_PASSWORD}
 *** Variables ***
 ${CUSTOMER_OTHER_BRANCH}    1000009380
 ${BRANCH_NOT_EXIST}    4234325
@@ -401,3 +407,83 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${INACTIVE_SALE_CHANNEL_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+# Redis Operations for UUID tests
+Lưu UUID Vào Redis
+    [Arguments]    ${uuid}
+    ${redis_key}=    Set Variable    cache:InvoiceProcessing:retailerId_${RETAILER_ID}:${uuid}
+    ${timestamp}=    Get Current Date    result_format=%Y-%m-%dT%H:%M:%S
+    Create Key    ${redis_key}    ${timestamp}    ex=60
+    RETURN    ${redis_key}
+
+Kiểm Tra UUID Tồn Tại Trong Redis
+    [Arguments]    ${uuid}
+    ${redis_key}=    Set Variable    cache:InvoiceProcessing:retailerId_${RETAILER_ID}:${uuid}
+    Key Should Exist    ${redis_key}
+
+Xóa UUID Từ Redis
+    [Arguments]    ${redis_key}
+    Delete Key    ${redis_key}
+    Key Should Not Exist    ${redis_key}
+
+Xác Thực Redis UUID Đã Được Lưu
+    [Arguments]    ${uuid}
+    Kiểm Tra UUID Tồn Tại Trong Redis    ${uuid}
+
+Xóa Redis UUID
+    [Arguments]    ${redis_key}
+    Xóa UUID Từ Redis    ${redis_key}
+
+# Duplicate Invoice UUID test cases
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid
+    ${uuid}=    Set Variable    550e8400-e29b-41d4-a716-446655440000
+    ${invoice_code}=    Set Variable    HD001
+    
+    # Create Redis cache entry to simulate existing UUID
+    ${redis_key}=    Lưu UUID Vào Redis    ${uuid}
+    
+    # Prepare invoice data with duplicate UUID
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Uuid    ${uuid}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${invoice_code}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+# UUID Check Keywords
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Uuid    ${DUPLICATE_UUID}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.Code    HD001
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${DUPLICATE_CUSTOMER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}
+
+Tạo hóa đơn với UUID trùng lặp
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 200
+
+# Keywords for Promotion Limits Testing
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Có Giới Hạn Sử Dụng
+    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    
+    # Tạo dữ liệu khuyến mãi với giới hạn sử dụng
+    ${promotion_data}=    Create Dictionary
+    ...    PromotionId=${LIMITED_PROMOTION_ID}
+    ...    PromotionInfo=${LIMITED_PROMOTION_INFO}
+    ...    LimitPromotionUsage=${TRUE}
+    ...    LimitPromotionUsageType=2
+    ...    Type=1
+    ...    SalePromotionId=24747
+    ...    Discount=10000
+    ...    DiscountRatio=${None}
+    
+    @{promotions_list}=    Create List   ${promotion_data}
+    
+    # Cập nhật dữ liệu hóa đơn
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.CustomerId    ${LIMITED_CUSTOMER_ID}
+    ${request}=    Update Nested Dictionary Property  ${request}    Invoice.InvoicePromotions    ${promotions_list}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN     ${request}

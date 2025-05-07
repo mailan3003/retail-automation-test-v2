@@ -26,5 +26,8 @@
       - [Cập nhật hóa đơn](./18-1-3-UpdateInvoice.md)
       - [Xử lý đặc biệt cho KShipV4](./18-1-4-KShipV4Handling.md)
     - [Tạo hóa đơn mới](./18-2-CreateInvoice-CreateNewInvoice.md)
+      - [Kiểm tra và xử lý tác vụ vận chuyển bị lỗi](./18-2-1-CheckFailedTask.md)
+      - [Xử lý hủy vận đơn khi thay đổi phương thức giao hàng](./18-2-2-VoidDeliveryOrder.md)
+      - [Tạo và cập nhật hóa đơn](./18-2-3-CreateAndUpdateInvoice.md)
 
-Mỗi file chứa thông tin chi tiết về một bước xử lý cụ thể trong quy trình tạo/cập nhật hóa đơn của hệ thống KiotViet. Các bước này được thực hiện tuần tự để đảm bảo hóa đơn hợp lệ trước khi lưu vào cơ sở dữ liệu. 
+Mỗi file chứa thông tin chi tiết về một bước xử lý cụ thể trong quy trình tạo/cập nhật hóa đơn của hệ thống KiotViet. Các bước này được thực hiện tuần tự để đảm bảo hóa đơn hợp lệ trước khi lưu vào cơ sở dữ liệu.

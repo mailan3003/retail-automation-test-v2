@@ -9,7 +9,8 @@ ${KV_MESSAGE_PRESCRIPTION_CODE_IS_NOT_VALID}    Mã đơn thuốc không hợp l
 
 # Test Data Constants
 ${PRODUCT_MEDICINE_CODE_ID}    1000017642
-
+${PRODUCT_MEDICINE_CODE}    HHVAT0001
+${PRODUCT_MEDICINE_NAME}    Hàng khấu trừ
 # Base pharmacy invoice data
 &{PHARMACY_INVOICE_BASE}
 ...    Code=HD_TEST_001
@@ -97,3 +98,47 @@ ${PRODUCT_MEDICINE_CODE_ID}    1000017642
 ...    Date=2023-05-20
 ...    UsageNote=Sau ăn 30 phút
 ...    ExpiredDate=2023-06-20
+
+&{EMPTY_PRESCRIPTION}    
+...    Id=0    
+...    Code=${EMPTY}    
+...    DoctorId=${EMPTY}    
+...    ClinicId=${EMPTY}    
+...    Description=${EMPTY}
+
+&{EMPTY_PATIENT}    
+...    Id=0    
+...    Name=${EMPTY}    
+...    Age=${EMPTY}    
+...    Gender=${EMPTY}    
+...    Weight=${EMPTY}    
+...    IdentityCard=${EMPTY}    
+...    HealthInsuranceCard=${EMPTY}    
+...    Address=${EMPTY}    
+...    Guardian=${EMPTY}    
+...    PhoneNumber=${EMPTY}
+
+&{PRESCRIPTION_WITH_ID_NO_CODE}    
+...    Id=123    
+...    Code=${EMPTY}    
+...    DoctorId=456    
+...    ClinicId=789    
+...    Description=Viêm họng cấp tính
+
+
+@{LIST_MEDICINE_WITH_DESCRIPTION}
+...    &{MEDICINE_WITH_DESCRIPTION}
+&{MEDICINE_WITH_DESCRIPTION}    
+...    ProductId=${PRODUCT_MEDICINE_CODE_ID}
+...    Code=${PRODUCT_MEDICINE_CODE}
+...    Name=${PRODUCT_MEDICINE_NAME}
+...    IsExpired=false
+
+
+@{LIST_INVOICE_DETAILS_WITHOUT_NOTE}
+...    &{INVOICE_DETAILS_WITHOUT_NOTE}
+&{INVOICE_DETAILS_WITHOUT_NOTE}
+...    ProductId=${PRODUCT_MEDICINE_CODE_ID}
+...    ProductName=${PRODUCT_MEDICINE_NAME}
+...    IsMaster=true
+...    Note=${EMPTY}

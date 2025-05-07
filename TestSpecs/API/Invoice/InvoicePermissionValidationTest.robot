@@ -83,9 +83,9 @@ Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian h
 
 Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh 
     [Documentation]    Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh
-    [Tags]  
+    [Tags]  test3663
     Given Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000145 theo chi nhánh 1000000048
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 420
     And Response Should Have Error "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá Bảng giá kết hợp"
 

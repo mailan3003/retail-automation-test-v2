@@ -4,8 +4,6 @@
 
 ### 1. Khởi tạo và chuẩn bị dữ liệu
 - **Trích xuất và chuẩn bị dữ liệu ban đầu**:
-  - Lấy thông tin hóa đơn từ request (`invoice = req.Invoice`) để bắt đầu quá trình xử lý
-  - Kiểm tra tính hợp lệ: Nếu `invoice == null`, hệ thống sẽ ném ngoại lệ `KvValidateInvoiceException` với thông báo `KVMessage.NotFound` ("Dữ liệu này không còn tồn tại trên hệ thống. Vui lòng kiểm tra lại")
   - Kiểm tra cấu hình thuế VAT thông qua `TaxService.IsActiveProductVATToggle()` và lưu kết quả vào biến `isUsingProductVAT`
   - Nếu không sử dụng VAT theo sản phẩm (`isUsingProductVAT = false`), hệ thống đặt `invoice.TotalTax = null`
   - Xác định ngành hàng: `isCoffee = CurrentIndustryId == (int)IndustryList.Coffee` để áp dụng các quy tắc xử lý đặc thù
@@ -29,18 +27,6 @@
 ---
 
 ## Test Data JSON cho các trường hợp thất bại
-
-### 1. Invoice null
-```json
-{
-  "Invoice": null,
-  "ExpectedError": {
-    "Type": "KvValidateInvoiceException",
-    "Message": "Dữ liệu này không còn tồn tại trên hệ thống. Vui lòng kiểm tra lại"
-  }
-}
-```
-**Kết quả kiểm tra**: Hệ thống báo lỗi khi invoice null, đảm bảo rằng dữ liệu đầu vào phải tồn tại trước khi xử lý.
 
 ### 2. Thay đổi người bán không có quyền
 ```json

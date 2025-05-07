@@ -195,13 +195,7 @@ Xác Thực Số Tiền Thu Hộ
     Should Not Be Equal    ${delivery_data}    None    Thông tin giao hàng không tồn tại trong CSDL
     Should Be Equal As Numbers    ${delivery_data[0]}    ${expected_cod_fee}    Số tiền thu hộ không khớp
 
-Xác Thực Ghi Chú Giao Hàng
-    [Documentation]    Xác thực ghi chú giao hàng trong CSDL
-    [Arguments]    ${expected_note}
-    ${query}=    Set Variable    SELECT Note FROM DeliveryInfo WHERE InvoiceId = ?
-    ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
-    Should Not Be Equal    ${delivery_data}    None    Thông tin giao hàng không tồn tại trong CSDL
-    Should Be Equal    ${delivery_data[0]}    ${expected_note}    Ghi chú giao hàng không khớp 
+
 
 Xác Thực Khách Hàng ${expected_customer_id}
     ${query}=    Set Variable    SELECT CustomerId FROM Invoice WHERE Id = ?
@@ -239,5 +233,52 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Th
     ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery    ${expected_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hoạt Động
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với đối tác không hoạt động
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${NON_EXISTENT_KV_PARTNER_DELIVERY_CODE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    # Giả định đối tác không hoạt động (IsActive = false) sẽ được xử lý bởi mock service
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hỗ Trợ Nhà Bán Hàng
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với đối tác không hỗ trợ nhà bán hàng hiện tại
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${KV_PARTNER_DELIVERY_CODE_WRONG_SCOPE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    # Giả định đối tác không hỗ trợ nhà bán hàng hiện tại sẽ được xử lý bởi mock service
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thiếu Thông Tin Bên Trả Phí
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng thiếu thông tin bên trả phí
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${GHN_PARTNER_DELIVERY_CODE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    ${EMPTY}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thiết Lập Không Cho Phép COD Qua KiotViet
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với thiết lập không cho phép COD qua đối tác KiotViet
+    ${request}=    Deep Copy    ${invoice_request_body}
+    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${GHN_PARTNER_DELIVERY_CODE}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    # Giả định thiết lập nhà bán hàng không cho phép COD qua KiotViet sẽ được xử lý bởi mock service
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}

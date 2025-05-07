@@ -1,0 +1,27 @@
+==============================================================================
+TestSpecs                                                                     
+==============================================================================
+TestSpecs.API                                                                 
+==============================================================================
+TestSpecs.API.Invoice                                                         
+==============================================================================
+TestSpecs.API.Invoice.Invoice Payment :: Test cases API cho ph?n t?o phi?u ...
+==============================================================================
+RT-RC-018 Thanh toán k?t h?p ba ph??ng th?c thanh toán :: Ki?m tra... | FAIL |
+Variable '${BANK_ACCOUNT_ID}' not found.
+------------------------------------------------------------------------------
+RT-BP-003 T?o hóa ??n th?t b?i khi m?t trong nhi?u ph??ng th?c tha... | PASS |
+------------------------------------------------------------------------------
+TestSpecs.API.Invoice.Invoice Payment :: Test cases API cho ph?n t... | FAIL |
+2 tests, 1 passed, 1 failed
+==============================================================================
+TestSpecs.API.Invoice                                                 | FAIL |
+2 tests, 1 passed, 1 failed
+==============================================================================
+TestSpecs.API                                                         | FAIL |
+2 tests, 1 passed, 1 failed
+==============================================================================
+TestSpecs                                                             | FAIL |
+2 tests, 1 passed, 1 failed
+==============================================================================
+Output:  E:\automation_api\retail-automation-test-v2\reports\pabot_results\0\output-20250505-112642.xml
