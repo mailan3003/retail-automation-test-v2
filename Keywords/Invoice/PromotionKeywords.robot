@@ -724,3 +724,54 @@ Response Phải Có Lỗi
     ${response_body}=    Convert To String    ${RESPONSE.text}
     Should Contain    ${response_body}    ${expected_message}    Response không chứa thông báo lỗi "${expected_message}"
 
+# Các keywords mới cho test case promotion đã bị xóa
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Đã Bị Xóa
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi đã bị xóa
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${DELETE_PROMOTION_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    1
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Name    Giảm giá 50%: CT001
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount   10000
+    ${data_promo}  Create List    ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  10000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.DiscountByPromotion  10000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    90000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Hợp Lệ Và Khuyến Mãi Đã Bị Xóa
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi hợp lệ và khuyến mãi đã bị xóa
+    ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
+    ${data_promo_valid}=    Deep Copy    ${promotion_body}   
+    ${data_promo_deleted}=    Deep Copy    ${promotion_body}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
+    
+    # Khuyến mãi hợp lệ
+    ${data_promo_valid}=    Update Nested Dictionary Property     ${data_promo_valid}     PromotionId  ${VALID_PROMOTION_ID}
+    ${data_promo_valid}=    Update Nested Dictionary Property     ${data_promo_valid}     Type    1
+    ${data_promo_valid}=    Update Nested Dictionary Property     ${data_promo_valid}     Discount   10000
+    
+    # Khuyến mãi đã bị xóa
+    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     PromotionId  ${DELETE_PROMOTION_ID}
+    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Type    1
+    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Name    Tặng quà: CT002
+    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Discount   5000
+    
+    ${promotions}=    Create List    ${data_promo_valid}    ${data_promo_deleted}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${promotions}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  15000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.DiscountByPromotion  15000
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Total    85000
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

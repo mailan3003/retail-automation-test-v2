@@ -523,3 +523,32 @@ RT-PR-027: Tạo hóa đơn với khuyến mãi có điều kiện về số lư
     Then Mã Trạng Thái Phải Là 200
     And Sản Phẩm ${product_id_promotion} Có Chiết Khấu Khuyến Mãi 20%
     And Thông Tin Khuyến Mãi Có Loại 7 
+
+# =====================================================================
+# Kiểm tra trạng thái khuyến mãi đã bị xóa
+# =====================================================================
+
+RT-PR-028: Tạo hóa đơn với khuyến mãi đã bị xóa
+    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi đã bị xóa
+    ...                Khuyến mãi: Đã bị xóa trên hệ thống (nằm trong danh sách DeletedIdList)
+    ...                Kỳ vọng: API báo lỗi chương trình khuyến mãi đã ngừng hoạt động
+    [Tags]    promotion    deleted_promotion    negative    apiinvoice3    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi "Chương trình khuyến mại"
+    And Phản hồi phải bao gồm lỗi "ngừng hoạt động, vui lòng áp dụng khuyến mại khác"
+
+RT-PR-029: Tạo hóa đơn với nhiều khuyến mãi trong đó có khuyến mãi đã bị xóa
+    [Documentation]    Kiểm tra tạo hóa đơn với nhiều khuyến mãi, trong đó có khuyến mãi đã bị xóa
+    ...                Khuyến mãi 1: Còn hiệu lực (nằm trong ValidIdList)
+    ...                Khuyến mãi 2: Đã bị xóa (nằm trong DeletedIdList)
+    ...                Kỳ vọng: API báo lỗi về các chương trình khuyến mãi đã bị xóa
+    [Tags]    promotion    multiple    deleted_promotion    negative    apiinvoice3    AIGenerated
+    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Hợp Lệ Và Khuyến Mãi Đã Bị Xóa
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi "Chương trình khuyến mại"
+    And Phản hồi phải bao gồm lỗi "ngừng hoạt động, vui lòng áp dụng khuyến mại khác"

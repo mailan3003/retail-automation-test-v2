@@ -22,7 +22,7 @@
                         invoice.DocumentId > 0;
      ```
      - Hóa đơn được xem là offline nếu:
-       + Mã hóa đơn bắt đầu bằng tiền tố offline (`OFF_`), hoặc
+       + Mã hóa đơn bắt đầu bằng tiền tố offline (`HDO_`), hoặc
        + Có ID tài liệu (`DocumentId > 0`)
 
   3. **Xác định trạng thái cập nhật**:
