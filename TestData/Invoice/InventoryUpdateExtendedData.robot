@@ -1,7 +1,6 @@
 *** Settings ***
 Documentation     Dữ liệu mở rộng cho test cases cập nhật tồn kho
 Resource          ../CommonData.robot
-Resource          ./InventoryUpdateData.robot
 
 *** Variables ***
 # Dữ liệu hóa đơn với nhiều sản phẩm khác loại (các sản phẩm có cơ chế quản lý tồn kho khác nhau)
@@ -52,7 +51,6 @@ Resource          ./InventoryUpdateData.robot
 ...    ConversionValue=0.5
 
 # Dữ liệu cho hóa đơn với cập nhật tồn kho các chi nhánh khác nhau
-${MULTI_BRANCH_INVENTORY_DATA}    {"Invoice":{"Code":"HD_UPDATE_INV_BR_001","BranchId":${DEFAULT_BRANCH_ID},"RetailerId":${RETAILER_ID},"SoldById":${SOLD_BY_ID},"CustomerId":${DEFAULT_CUSTOMER_ID},"PurchaseDate":"2024-05-05T00:00:00.000Z","Status":1,"Total":350000,"Payments":[{"Method":"Cash","Amount":350000}],"InvoiceDetails":[{"ProductId":${PRODUCT_1},"ProductCode":"${PRODUCT_1_CODE}","Quantity":2,"Price":100000,"BranchId":${DEFAULT_BRANCH_ID}},{"ProductId":${PRODUCT_2},"ProductCode":"SP000002","Quantity":1,"Price":150000,"BranchId":${OTHER_BRANCH_ID}}]}}
-
+#${MULTI_BRANCH_INVENTORY_DATA}    {"Invoice":{"Code":"HD_UPDATE_INV_BR_001","BranchId":${DEFAULT_BRANCH_ID},"RetailerId":${RETAILER_ID},"SoldById":${SOLD_BY_ID},"CustomerId":${DEFAULT_CUSTOMER_ID},"PurchaseDate":"2024-05-05T00:00:00.000Z","Status":1,"Total":350000,"Payments":[{"Method":"Cash","Amount":350000}],"InvoiceDetails":[{"ProductId":${PRODUCT_1},"ProductCode":"${PRODUCT_1_CODE}","Quantity":2,"Price":100000,"BranchId":${DEFAULT_BRANCH_ID}},{"ProductId":${PRODUCT_2},"ProductCode":"SP000002","Quantity":1,"Price":150000,"BranchId":${OTHER_BRANCH_ID}}]}}
 # Dữ liệu cho hóa đơn với giao dịch tồn kho xử lý bất đồng bộ (FIFO/LIFO)
-${ASYNC_INVENTORY_PROCESSING_DATA}    {"Invoice":{"Code":"HD_UPDATE_INV_ASYNC_001","BranchId":${BRANCH_ID},"RetailerId":${RETAILER_ID},"SoldById":${SOLD_BY_ID},"CustomerId":${DEFAULT_CUSTOMER_ID},"PurchaseDate":"2024-05-05T00:00:00.000Z","Status":1,"Total":500000,"Payments":[{"Method":"Cash","Amount":500000}],"InvoiceDetails":[{"ProductId":${product_batch},"ProductCode":"BATCH001","Quantity":5,"Price":100000,"ProcessingType":"FIFO"}]}} 
+#${ASYNC_INVENTORY_PROCESSING_DATA}    {"Invoice":{"Code":"HD_UPDATE_INV_ASYNC_001","BranchId":${BRANCH_ID},"RetailerId":${RETAILER_ID},"SoldById":${SOLD_BY_ID},"CustomerId":${DEFAULT_CUSTOMER_ID},"PurchaseDate":"2024-05-05T00:00:00.000Z","Status":1,"Total":500000,"Payments":[{"Method":"Cash","Amount":500000}],"InvoiceDetails":[{"ProductId":${product_batch},"ProductCode":"BATCH001","Quantity":5,"Price":100000,"ProcessingType":"FIFO"}]}} 

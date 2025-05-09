@@ -1,9 +1,7 @@
 *** Settings ***
 Documentation     Keywords mở rộng cho test cases API phần cập nhật tồn kho
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../../TestData/Invoice/CommonData.robot
-Resource          ../../TestData/Invoice/TotalCalculationData.robot
-Resource          ../../TestData/Invoice/InventoryUpdateData.robot
+Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/InventoryUpdateExtendedData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot

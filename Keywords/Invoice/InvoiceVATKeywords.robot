@@ -1,7 +1,6 @@
 *** Settings ***
 Documentation     Keywords for handling VAT-related invoice operations
-
-Library           ../Libraries/Database/DatabaseLibrary.py
+Library           ../../Resources/DatabaseLibrary.py
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/RequestHelper.robot    
 Resource          ../Utilities/ResponseHelper.robot

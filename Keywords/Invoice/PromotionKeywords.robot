@@ -198,7 +198,7 @@ Update Khuyến Mãi Hàng Hóa Phần Trăm
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     DiscountRatio    ${value_promotion}
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     PromotionParentProductId    ${product_info[0]}
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     SalePromotionId    ${sale_promotion_id}
-    [Return]    ${data_product_promotion}
+    RETURN     ${data_product_promotion}
     
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Khuyến Mãi ${promotion_id_1} Và ${promotion_id_2}
     ${info_promotion_1}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id_1}
