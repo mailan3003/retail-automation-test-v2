@@ -34,11 +34,11 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
                 volumes = [
                     "reports:/reports"
                 ]
-                entrypoint = ["pabot","--processes","15","-d","/reports"[[ range .variables ]],"--variable","[[ . ]]"[[ end ]],"-i","[[ .include_tags ]]","TestSpecs"]
+                entrypoint = ["pabot","--processes","32","-d","/reports"[[ range .variables ]],"--variable","[[ . ]]"[[ end ]],"-i","[[ .include_tags ]]","TestSpecs"]
             }
             resources {
                 cpu = 2000 # Mhz
-                memory = 2128 # MB
+                memory = 3128 # MB
                 #memory_max = 15128 # MB
             }
         }
