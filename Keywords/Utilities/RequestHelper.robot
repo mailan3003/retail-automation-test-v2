@@ -13,6 +13,15 @@ POST
     ${response}=    RequestsLibrary.POST On Session    kvpos    ${url}    json=${json}    headers=${headers}    expected_status=anything
     RETURN    ${response}
 
+POST With File
+    [Arguments]    ${url}    ${data}=${None}    ${headers}=${None}
+    ${headers}=    Run Keyword If    ${headers} == ${None}    Create Dictionary    Content-Type=multipart/form-data
+    ...    ELSE    Set Variable    ${headers}
+    
+    Create Session    kvpos    ${url}    verify=True
+    ${response}=    RequestsLibrary.POST On Session    kvpos    ${url}    data=${data}    headers=${headers}    expected_status=anything
+    RETURN    ${response}
+
 Delete
     [Arguments]    ${url}    ${headers}=${None}
     ${headers}=    Run Keyword If    ${headers} == ${None}    Create Dictionary    Content-Type=application/json

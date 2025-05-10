@@ -22,13 +22,14 @@ ${BRANCH_ID}    1
 # Request templates
 &{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=${STANDARD_PRODUCT_CODE}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    Price=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}
 
-&{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    Price=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=2    IsActive=${TRUE}
+&{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    Price=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
 
 # Error messages
 ${ERROR_INVALID_REQUEST}    Tham số truyền vào không hợp lệ
-${ERROR_PRODUCT_LIMIT_COMBO}    Không thể gửi quá 50 sản phẩm combo trong một lần
-${ERROR_PRODUCT_LIMIT}    Không thể gửi quá 200 sản phẩm trong một lần
+${ERROR_PRODUCT_LIMIT_COMBO}    Hệ thống chỉ hỗ trợ tạo tối đa 50 hàng hóa combo cùng loại
+${ERROR_PRODUCT_LIMIT}    Hệ thống chỉ hỗ trợ tạo tối đa 200 hàng hóa cùng loại
 ${ERROR_DB_UPDATE}    Có lỗi trong quá trình cập nhật dữ liệu
+${JSON_ERROR_RESPONSE}    Expected ':' but got: t. Path '', line 1, position 5
 
 # SQL queries
 ${QUERY_GET_PRODUCT_BY_NAME}    SELECT Id, Name, Code, Cost FROM Product WHERE Name = ? AND RetailerId = ?
