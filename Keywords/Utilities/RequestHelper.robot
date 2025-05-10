@@ -1,7 +1,6 @@
 *** Settings ***
 Library    RequestsLibrary
 Library    Collections
-Library    Utilities.robot
 
 *** Keywords ***
 POST
