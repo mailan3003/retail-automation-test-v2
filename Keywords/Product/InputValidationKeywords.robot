@@ -19,7 +19,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Tiêu Chuẩn
     RETURN    ${REQUEST_DATA}
 
 Gửi Yêu Cầu Thêm Sản Phẩm
-    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}
+    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
     Set Test Variable    ${RESPONSE}    ${response}
     RETURN    ${response}
 
@@ -31,6 +31,11 @@ Nội dung phản hồi trả về phải tồn tại Id
 Chuẩn Bị Dữ Liệu Sản Phẩm Với JSON Không Hợp Lệ
     ${request}=    Create Dictionary    ListProductsString=${INVALID_JSON}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${files}=    Create Dictionary
+    ${stream}=    Get File For Streaming Upload    Resources/angularjs.png
+    ${files}=    Set To Dictionary    ${files}    randombytes1=${stream}
+
+    Set Test Variable    ${REQUEST_FILES}    ${files}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Với 51 Sản Phẩm Combo

@@ -11,3 +11,4 @@ ${DEFAULT_BRANCH_ID}        ${BRANCH_ID}
 ${BRANCH_ID}        1000000026  
 ${DEFAULT_USER_ID}          1000000468
 ${API_URL}               https://api-sale.kvpos.com/api/
+${REQUEST_FILES}    ${None}

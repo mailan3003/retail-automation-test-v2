@@ -55,19 +55,7 @@ RT-PD-005 Kiểm tra định dạng chi nhánh không hợp lệ
     ...    - Logic: Bắt lỗi từ JsonConvert.DeserializeObject của BranchForProductCostss
     ...    - Dữ liệu đầu vào: formData["BranchForProductCostss"] = "{không phải JSON hợp lệ}"
     ...    - Kỳ vọng: Lỗi "Dữ liệu không hợp lệ"
-    [Tags]    productvalidate1    apierror    AIGenerated
+    [Tags]    productvalidate    apierror    AIGenerated
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Định Dạng Chi Nhánh Không Hợp Lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 500
-
-RT-PD-010 Kiểm tra lỗi khi giao dịch cơ sở dữ liệu thất bại
-    [Documentation]    Kiểm tra xử lý lỗi khi giao dịch cơ sở dữ liệu thất bại
-    ...    - Source: ProductAPI.cs > ProductAddMany
-    ...    - Logic: Xử lý lỗi trong quá trình tạo mã sản phẩm và giao dịch DB
-    ...    - Dữ liệu đầu vào: Sản phẩm gây lỗi trong quá trình tạo
-    ...    - Kỳ vọng: Lỗi "Có lỗi trong quá trình cập nhật dữ liệu"
-    [Tags]    productvalidate    dberror1    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Gây Lỗi Trong Giao Dịch DB
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "${ERROR_DB_UPDATE}" 

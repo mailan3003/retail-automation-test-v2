@@ -20,6 +20,16 @@ Post request from data
     ${response}=     Post On Session    lolo    ${API_MAN_URL}${url}      files=${payload}      headers=${headers}
     RETURN    ${response}
 
+POST Form Data
+    [Arguments]    ${url}    ${data}=${None}    ${files}=${None}    ${headers}=${None}
+    Create Session    kvpos    ${url}    verify=True
+    IF    "${files}" == "${None}"
+        ${response}=    POST On Session    kvpos    ${url}    data=${data}    headers=${headers}    expected_status=anything
+    ELSE
+        ${response}=    POST On Session    kvpos    ${url}    data=${data}    files=${files}    headers=${headers}    expected_status=anything
+    END
+    RETURN    ${response}
+
 Delete
     [Arguments]    ${url}    ${headers}=${None}
     ${headers}=    Run Keyword If    ${headers} == ${None}    Create Dictionary    Content-Type=application/json

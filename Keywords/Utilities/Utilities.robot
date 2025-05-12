@@ -17,7 +17,7 @@ Create Auth Headers
 
 Create Auth Headers With File
     [Arguments]    ${token}=${AUTH_TOKEN}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/x-www-form-urlencoded      Retailer=${RETAILER_CODE}     BranchId=${BRANCH_ID}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Retailer=${RETAILER_CODE}     BranchId=${BRANCH_ID}
     RETURN    ${headers}
 
 Create Auth Headers With BranchId
@@ -32,9 +32,9 @@ Call API
     RETURN    ${response}
 
 Call API With Form Data
-    [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    [Arguments]    ${endpoint}    ${data}    ${files}=${None}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers With File    ${token}
-    ${response}=    POST With File   ${API_URL}${endpoint}    headers=${headers}    data=${data}
+    ${response}=    POST Form Data   ${API_URL}${endpoint}    headers=${headers}    data=${data}    files=${files}
     RETURN    ${response}
 
 Call API Man
