@@ -1,7 +1,6 @@
 *** Settings ***
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
-Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Resource          ../../TestData/Product/ProductInputData.robot
@@ -20,7 +19,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Tiêu Chuẩn
     RETURN    ${REQUEST_DATA}
 
 Gửi Yêu Cầu Thêm Sản Phẩm
-    ${response}=    Call API    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    POST
+    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}
     Set Test Variable    ${RESPONSE}    ${response}
     RETURN    ${response}
 
@@ -41,7 +40,8 @@ Chuẩn Bị Dữ Liệu Với 51 Sản Phẩm Combo
         ${product}=    Set To Dictionary    ${product}    Name=Combo Product ${index}
         Append To List    ${list_products}    ${product}
     END
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${REQUEST_DATA}
 
@@ -49,17 +49,19 @@ Chuẩn Bị Dữ Liệu Với 201 Sản Phẩm
     ${list_products}=    Create List
     FOR    ${index}    IN RANGE    201
         ${product}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-        ${product}=    Set To Dictionary    ${product}    Name=Product ${index}    Code=P${index}
+        ${product}=    Set To Dictionary    ${product}    Name=Product ${index}    Code=P${index}    ProductType=2
         Append To List    ${list_products}    ${product}
     END
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Định Dạng Chi Nhánh Không Hợp Lệ
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}    BranchForProductCostss=${INVALID_BRANCH_JSON}
+    ${list_products}=    Create List
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProducts=${json_string}    BranchForProductCostss=${INVALID_BRANCH_JSON}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${REQUEST_DATA}
 
