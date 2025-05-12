@@ -30,6 +30,7 @@ ${ERROR_PRODUCT_LIMIT_COMBO}    Hệ thống chỉ hỗ trợ tạo tối đa 50
 ${ERROR_PRODUCT_LIMIT}    Hệ thống chỉ hỗ trợ tạo tối đa 200 hàng hóa cùng loại
 ${ERROR_DB_UPDATE}    Có lỗi trong quá trình cập nhật dữ liệu
 ${JSON_ERROR_RESPONSE}    Expected ':' but got: t. Path '', line 1, position 5
+${ERROR_DUPLICATE_UNIT}    Tên đơn vị tính không được phép trùng nhau
 
 # SQL queries
 ${QUERY_GET_PRODUCT_BY_NAME}    SELECT Id, Name, Code, Cost FROM Product WHERE Name = ? AND RetailerId = ?

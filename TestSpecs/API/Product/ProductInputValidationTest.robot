@@ -59,3 +59,27 @@ RT-PD-005 Kiểm tra định dạng chi nhánh không hợp lệ
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Định Dạng Chi Nhánh Không Hợp Lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 500
+
+RT-PD-006 Kiểm tra lỗi khi đơn vị tính trùng nhau trong cùng sản phẩm
+    [Documentation]    Kiểm tra xử lý khi có đơn vị tính trùng nhau trong cùng sản phẩm
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra tính nhất quán của đơn vị
+    ...    - Dữ liệu đầu vào: Sản phẩm với các đơn vị tính trùng nhau (chiếc, Chiếc)
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
+
+RT-PD-007 Kiểm tra thành công khi đơn vị tính không trùng nhau trong cùng sản phẩm
+    [Documentation]    Kiểm tra xử lý thành công khi đơn vị tính không trùng nhau trong cùng sản phẩm
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra tính nhất quán của đơn vị
+    ...    - Dữ liệu đầu vào: Sản phẩm với các đơn vị tính khác nhau (Chiếc, Hộp, Thùng)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id

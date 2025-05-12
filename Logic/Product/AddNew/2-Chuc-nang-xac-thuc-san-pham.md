@@ -29,18 +29,6 @@
   - Giới hạn độ dài mô tả (thường là 2000 ký tự) để đảm bảo hiệu suất
   - Làm sạch nội dung mô tả khỏi các ký tự không hợp lệ
 
-### 3. Xác thực đơn vị sản phẩm
-- **Kiểm tra tính nhất quán của đơn vị**:
-  - Kiểm tra đơn vị trùng lặp trong cùng sản phẩm (phân biệt hoa/thường): 
-    ```csharp
-    var temp1 = listProducts.Select(x => new { unit = x.Unit.ToLower(), attribute = x.AttributedName });
-    var temp2 = temp1.Where(x => x.attribute == temp1.FirstOrDefault().attribute);
-    if (temp2.Select(x => x.unit.ToLower()).Distinct().Count() != temp2.Select(x => x.unit).Count()) {
-        throw new KvValidateProductException(KVMessage.duplicateUnitName); // "Tên đơn vị tính không được phép trùng nhau"
-    }
-    ```
-  - Đảm bảo tính duy nhất của đơn vị trong cùng một nhóm sản phẩm
-
 - **Xác thực đơn vị con (child units)**:
   - Gọi `ValidateDuplicateCodeChildProducts(childProducts)` để kiểm tra tính duy nhất của mã đơn vị con
   - Kiểm tra hệ số chuyển đổi (`ConversionValue`) giữa các đơn vị hợp lệ

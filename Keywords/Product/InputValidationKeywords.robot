@@ -79,4 +79,71 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Gây Lỗi Trong Giao Dịch DB
     ${list_products}=    Create List    ${request_data}
     ${request}=    Create Dictionary    ListProducts=${list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${REQUEST_DATA} 
+    RETURN    ${REQUEST_DATA}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
+    ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị trùng    Code=SPT001
+    
+    # Tạo danh sách các đơn vị cho sản phẩm, có hai đơn vị trùng tên (khác hoa/thường)
+    ${units}=    Create List
+    ${unit1}=    Create Dictionary    Unit=Chiếc    ConversionValue=1    IsDefault=${TRUE}    AttributedName=Sản phẩm đơn vị trùng
+    ${unit2}=    Create Dictionary    Unit=chiếc    ConversionValue=10    IsDefault=${FALSE}    AttributedName=Sản phẩm đơn vị trùng
+    ${unit3}=    Create Dictionary    Unit=Thùng    ConversionValue=50    IsDefault=${FALSE}    AttributedName=Sản phẩm đơn vị trùng
+    
+    Append To List    ${units}    ${unit1}
+    Append To List    ${units}    ${unit2}
+    Append To List    ${units}    ${unit3}
+    
+    ${list_products}=    Create List
+    FOR    ${unit}    IN    @{units}
+        ${product_copy}=    Deep Copy    ${product_base}
+        ${product_copy}=    Set To Dictionary    ${product_copy}    
+        ...    Unit=${unit["Unit"]}    
+        ...    ConversionValue=${unit["ConversionValue"]}    
+        ...    IsDefaultUnit=${unit["IsDefault"]}    
+        ...    AttributedName=${unit["AttributedName"]}
+        Append To List    ${list_products}    ${product_copy}
+    END
+    
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${REQUEST_DATA}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
+    ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị không trùng    Code=SPK001
+    
+    # Tạo danh sách các đơn vị cho sản phẩm, không có đơn vị trùng tên
+    ${units}=    Create List
+    ${unit1}=    Create Dictionary    Unit=Chiếc    ConversionValue=1    IsDefault=${TRUE}    AttributedName=Sản phẩm đơn vị không trùng
+    ${unit2}=    Create Dictionary    Unit=Hộp    ConversionValue=10    IsDefault=${FALSE}    AttributedName=Sản phẩm đơn vị không trùng
+    ${unit3}=    Create Dictionary    Unit=Thùng    ConversionValue=50    IsDefault=${FALSE}    AttributedName=Sản phẩm đơn vị không trùng
+    
+    Append To List    ${units}    ${unit1}
+    Append To List    ${units}    ${unit2}
+    Append To List    ${units}    ${unit3}
+    
+    ${list_products}=    Create List
+    FOR    ${unit}    IN    @{units}
+        ${product_copy}=    Deep Copy    ${product_base}
+        ${product_copy}=    Set To Dictionary    ${product_copy}    Unit=${unit["Unit"]}    ConversionValue=${unit["ConversionValue"]}    IsDefaultUnit=${unit["IsDefault"]}    AttributedName=${unit["AttributedName"]}
+        Append To List    ${list_products}    ${product_copy}
+    END
+    
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
+    ${files}=    Create Dictionary
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${REQUEST_FILES}    ${files}
+    RETURN    ${REQUEST_DATA}
+
+Xác Thực Sản Phẩm Đã Được Tạo Trong CSDL
+    [Arguments]    ${product_name}
+    ${query}=    Set Variable    ${QUERY_GET_PRODUCT_BY_NAME}
+    ${result}=    Fetch One    ${query}    ${product_name}    ${RETAILER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm với tên ${product_name}
+    ${id}=    Set Variable    ${result[0]}
+    Should Be True    ${id} > 0
+    RETURN    ${id} 
