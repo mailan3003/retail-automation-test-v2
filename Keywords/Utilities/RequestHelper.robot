@@ -12,6 +12,14 @@ POST
     ${response}=    RequestsLibrary.POST On Session    kvpos    ${url}    json=${json}    headers=${headers}    expected_status=anything
     RETURN    ${response}
 
+
+Post request from data  
+    [Arguments]    ${url}    ${payload}   
+    ${headers}=    Create Dictionary    Authorization=${AUTH_TOKEN}    Content-Type=multipart/form-data    Retailer=${RETAILER_CODE}  
+    Create Session     lolo     ${API_MAN_URL}   verify=True
+    ${response}=     Post On Session    lolo    ${API_MAN_URL}${url}      files=${payload}      headers=${headers}
+    RETURN    ${response}
+
 Delete
     [Arguments]    ${url}    ${headers}=${None}
     ${headers}=    Run Keyword If    ${headers} == ${None}    Create Dictionary    Content-Type=application/json

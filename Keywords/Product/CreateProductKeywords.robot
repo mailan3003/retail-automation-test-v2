@@ -15,10 +15,7 @@ ${API_URL}       https://api-man.kvpos.com
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
 Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản
-    ${request}=    Deep Copy    ${SAN_PHAM_CO_BAN}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
+    ${request}=    Set Variable   ${list_product_data}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -182,15 +179,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Combo Với Thành Phần Không Tồn T�
 
 # Keywords xử lý API
 Gửi Yêu Cầu Tạo Sản Phẩm
-    ${list_products}=    Create List    ${REQUEST_DATA}
-    ${branch_pr_cost}=        Set Variable     [{"Id":${BRANCH_ID},"Name":"Chi nhánh trung tâm"}]
-    ${request}=    Create Dictionary    ListProducts=${list_products}
-    
-   ${payload}    Create Dictionary    ListProducts=${request}     BranchForProductCostss=${branch_pr_cost}
-    
-    # Gọi API với form-data
-    ${response}=    Call API Man   products/addmany      ${payload} 
-    
+    ${response}    Post request from data       products/addmany        ${REQUEST_DATA}
     Set Test Variable    ${RESPONSE}    ${response}
     IF    '${RESPONSE.status_code}' == '200'
         ${product_id}=    Set Variable    ${RESPONSE.json()[0]['Id']}

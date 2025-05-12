@@ -11,10 +11,12 @@ ${PRODUCT_API_ENDPOINT}     /products/addmany
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Sản Phẩm Tiêu Chuẩn
-    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${branch_pr_cost}=        Set Variable     "Id":${BRANCH_ID},"Name":"Chi nhánh trung tâm"
+    ${branch_pr_cost}     Evaluate    (None, '[{${branch_pr_cost}}]')
+    ${form_data}=    Evaluate    str(${list_product_data}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProducts=${list_products}      BranchForProductCostss=${branch_pr_cost}
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
 Gửi Yêu Cầu Thêm Sản Phẩm

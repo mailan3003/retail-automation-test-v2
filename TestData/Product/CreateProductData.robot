@@ -6,7 +6,7 @@ Library           String
 *** Variables ***
 
 
-&{List_product_data}      Id=0
+&{list_product_data}     Id=0
 ...    ProductType=2
 ...    CategoryId=${CATEGORY_1_ID} 
 ...    CategoryName=
@@ -15,8 +15,8 @@ Library           String
 ...    AllowsSale=true
 ...    isDeleted=false
 ...    Code=
-...    BasePrice=
-...    Cost=
+...    BasePrice=50000
+...    Cost=6000
 ...    LatestPurchasePrice=0
 ...    OnHand=
 ...    OnHandCompareMin=0
@@ -38,12 +38,12 @@ Library           String
 ...    IsLotSerialControl=false
 ...    IsRewardPoint=false
 ...    ProductFormulas=[]
-...    Name=
+...    Name=TEST
 ...    ListPriceBookDetail=[]
 ...    ProductImages=[]   
 
 
-@{LIST_PRODUCT_DATA}    &{List_product_data}
+@{LIST_PRODUCT_DATA_BODY}    &{List_product_data}
 
 ${Branch_for_cost}   Id=${DEFAULT_BRANCH_ID}
 ...    Name=Chi nhánh trung tâm
