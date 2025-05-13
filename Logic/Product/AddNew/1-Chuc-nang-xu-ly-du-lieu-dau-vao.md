@@ -70,8 +70,7 @@
     }
     ```
   - Đảm bảo tính duy nhất của đơn vị trong cùng một nhóm sản phẩm
-
-### 4. Chuẩn bị dữ liệu cho xử lý tiếp theo
+  
 - **Chuyển đổi sang cấu trúc dữ liệu chuẩn**:
   - Gọi `ProductService.GetProductFromProductByBranch(listProducts)` để chuyển đổi từ `ProductByBranch` sang `Product`
   - Áp dụng các ràng buộc nghiệp vụ trong quá trình chuyển đổi

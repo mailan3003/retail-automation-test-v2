@@ -146,4 +146,109 @@ Xác Thực Sản Phẩm Đã Được Tạo Trong CSDL
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm với tên ${product_name}
     ${id}=    Set Variable    ${result[0]}
     Should Be True    ${id} > 0
-    RETURN    ${id} 
+    RETURN    ${id}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Trùng Lặp
+    ${existing_product}=    Fetch One    ${QUERY_GET_PRODUCT_BY_RETAILER}    ${RETAILER_ID}
+    Should Not Be Equal    ${existing_product}    None    Không tìm thấy sản phẩm để test trùng lặp mã
+    ${product_code}=    Set Variable    ${existing_product[1]}
+    
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    Code=${product_code}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    Mã hàng: ${product_code} đã tồn tại
+    Set Test Variable    ${ErrorMessage}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Trùng Lặp
+    ${existing_product}=    Fetch One    ${QUERY_GET_PRODUCT_BY_RETAILER_BARCODE}    ${RETAILER_ID}
+    Run Keyword If    ${existing_product} is None    Fail    Không tìm thấy sản phẩm với mã vạch để test trùng lặp
+    ${barcode}=    Set Variable    ${existing_product[2]}
+    
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${barcode}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    Mã vạch ${barcode} đã tồn tại
+    Set Test Variable    ${ErrorMessage}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Không Hợp Lệ
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formula}=    Create Dictionary    MaterialId=999999    Quantity=1
+    ${formulas}=    Create List    ${formula}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Vị Trí Không Tồn Tại
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${shelf}=    Create Dictionary    ShelvesId=999999
+    ${shelves}=    Create List
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductShelves=${shelves}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Giá Trị Chuyển Đổi Không Hợp Lệ
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    ConversionValue=0
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Xác Thực Giá Trị Chuyển Đổi Đã Được Chuẩn Hóa Thành 1
+    ${product_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${query}=    Set Variable    SELECT ConversionValue FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm sau khi tạo
+    ${conversion_value}=    Set Variable    ${result[0]}
+    Should Be Equal As Numbers    ${conversion_value}    1    Giá trị chuyển đổi không được chuẩn hóa thành 1
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    HasSerial=${TRUE}
+    ${unit}=    Create Dictionary    Unit=Chiếc    ConversionValue=1    IsDefault=${TRUE}
+    ${units}=    Create List    ${unit}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductUnits=${units}
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
+    ${long_code}=    Evaluate    "A" * 41
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    Code=${long_code}
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
+    ${long_barcode}=    Evaluate    "1" * 17
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${long_barcode}
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
+    ${long_name}=    Evaluate    "A" * 501
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}
+    ${list_products}=    Create List    ${request_data}
+    ${request}=    Create Dictionary    ListProducts=${list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request} 
