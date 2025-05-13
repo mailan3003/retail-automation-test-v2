@@ -241,3 +241,63 @@ RT-PD-024 Kiểm tra công thức hợp lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-025 Kiểm tra đơn vị tính trống
+    [Documentation]    Kiểm tra xử lý khi đơn vị tính của sản phẩm con bị trống
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm có MasterUnitId nhưng Unit trống
+    ...    - Dữ liệu đầu vào: Sản phẩm con với Unit trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_NOT_INPUT_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_NOT_INPUT_UNIT}
+
+RT-PD-026 Kiểm tra đơn vị tính nhiều cấp
+    [Documentation]    Kiểm tra xử lý khi sản phẩm con có sản phẩm cha cũng là sản phẩm con
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm cha có MasterUnitId không null
+    ...    - Dữ liệu đầu vào: Sản phẩm con với sản phẩm cha cũng là sản phẩm con
+    ...    - Kỳ vọng: Lỗi "${ERROR_INVALID_MASTER_UNIT}"
+    [Tags]    productvalidate    unitvalidation2    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_INVALID_MASTER_UNIT}
+
+RT-PD-027 Kiểm tra trùng tên đơn vị với sản phẩm cha
+    [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm cha
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm con có tên đơn vị trùng với sản phẩm cha
+    ...    - Dữ liệu đầu vào: Sản phẩm con với tên đơn vị giống sản phẩm cha
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Cha
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
+
+RT-PD-028 Kiểm tra trùng tên đơn vị với sản phẩm con khác
+    [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm con khác
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm con có tên đơn vị trùng với sản phẩm con khác của cùng sản phẩm cha
+    ...    - Dữ liệu đầu vào: Sản phẩm con với tên đơn vị giống sản phẩm con khác
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Con Khác
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
+
+RT-PD-029 Kiểm tra đơn vị tính hợp lệ
+    [Documentation]    Kiểm tra xử lý khi đơn vị tính hợp lệ
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra với đơn vị tính hợp lệ (không trống, không trùng, không nhiều cấp)
+    ...    - Dữ liệu đầu vào: Sản phẩm con với đơn vị tính hợp lệ
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    unitvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id

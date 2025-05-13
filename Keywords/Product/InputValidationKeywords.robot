@@ -361,4 +361,58 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Hợp Lệ
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request} 
+    RETURN    ${request}
+Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con không có đơn vị    MasterUnitId=${PARENT_PRODUCT_ID}    Unit=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con với cha là sản phẩm con    MasterUnitId=${CHILD_PRODUCT_ID}    Unit=Chiếc
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Cha
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con trùng đơn vị với cha    MasterUnitId=${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    Unit=${PARENT_PRODUCT_UNIT_NOT_EXIST_MASTER_UNIT}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Con Khác
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product}=    Create Dictionary    
+    ...    Code=SP_CON_004    
+    ...    Name=Sản phẩm con trùng đơn vị với con khác    
+    ...    MasterUnitId=${PARENT_PRODUCT_ID}    
+    ...    Unit=${EXISTING_CHILD_UNIT}
+    ${data}=    Set To Dictionary    ${data}    ${product}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product}=    Create Dictionary    
+    ...    Code=SP_CON_005    
+    ...    Name=Sản phẩm con với đơn vị hợp lệ    
+    ...    MasterUnitId=${PARENT_PRODUCT_ID}    
+    ...    Unit=Hộp
+    ${data}=    Set To Dictionary    ${data}    ${product}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

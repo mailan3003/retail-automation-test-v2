@@ -59,3 +59,11 @@ ${QUERY_GET_SUB_UNIT_PRODUCT}    SELECT TOP 1 Id, Code FROM Product WHERE Retail
 ${ERROR_RECURSIVE_FORMULA}    Hàng thành phần và hàng sản xuất không được lồng nhau
 ${ERROR_SUB_UNIT_IN_FORMULA}    Sản phẩm {0} không phải là đơn vị cơ bản, không thể tạo thành phần từ hàng hóa này
 ${ERROR_FORMULA_DEPTH}    Độ sâu công thức vượt quá giới hạn cho phép
+
+# Unit validation error messages
+${ERROR_NOT_INPUT_UNIT}    Chưa nhập đơn vị cơ bản
+${ERROR_INVALID_MASTER_UNIT}    MasterUnitId không hợp lệ
+${PARENT_PRODUCT_ID}    1000014200
+${CHILD_PRODUCT_ID}    1000014176
+${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    1000017738
+${PARENT_PRODUCT_UNIT_NOT_EXIST_MASTER_UNIT}    Chiếc

@@ -83,6 +83,17 @@ Với mỗi sản phẩm trong danh sách, thực hiện:
 - **Kiểm tra độ dài các trường thông tin**:
   - Mã sản phẩm không vượt quá 40 ký tự
   - Mã vạch không vượt quá 16 ký tự
+  - Kiểm tra đơn vị tính của sản phẩm:
+    - Nếu sản phẩm có đơn vị con (`MasterUnitId != null`):
+      - Đảm bảo trường `Unit` không được để trống, nếu trống thì ném ngoại lệ `KvValidateProductException` với thông báo `product_notInputUnit` ("Chưa nhập đơn vị cơ bản")
+      - Tìm sản phẩm cha trong danh sách `lsProductMasterUnit` dựa trên `MasterUnitId`
+      - Nếu sản phẩm cha có thuộc tính `MasterUnitId` không null, ném ngoại lệ `KvValidateProductException` với thông báo `invalidMasterUnitId` ("MasterUnitId không hợp lệ") (không cho phép đơn vị nhiều cấp)
+      - Nếu sản phẩm cha có cùng tên đơn vị với sản phẩm hiện tại:
+        - Kiểm tra trong danh sách đơn vị con của sản phẩm cha
+        - Nếu đã có đơn vị con nào đang hoạt động có cùng tên, ném ngoại lệ `KvValidateProductException` với thông báo `duplicateUnitName` ("Tên đơn vị tính không được phép trùng nhau")
+      - Kiểm tra tất cả các sản phẩm con khác của cùng sản phẩm cha:
+        - Lấy danh sách các sản phẩm con đang hoạt động (không bị xóa) có cùng `MasterUnitId`
+        - Nếu có sản phẩm con nào có cùng tên đơn vị, ném ngoại lệ `KvValidateProductException` với thông báo `duplicateUnitName` ("Tên đơn vị tính không được phép trùng nhau")
   - Tên đầy đủ không vượt quá 500 ký tự
 
 - **Tạo đối tượng sản phẩm mới**:

@@ -247,3 +247,26 @@ ${GHN_PARTNER_DELIVERY_ID}    6
 ${GHN_PARTNER_DELIVERY_CODE}    GHN
 ${GHN_PARTNER_DELIVERY_NAME}    Giao hàng nhanh
 
+# Product unit test data
+${PARENT_PRODUCT_ID}    1
+${CHILD_PRODUCT_ID}     2
+${PARENT_PRODUCT_UNIT}  Chiếc
+${EXISTING_CHILD_UNIT}  Hộp
+
+# Standard request template for product creation
+${STANDARD_REQUEST}    {
+    ...    "ListProducts": [],
+    ...    "ListProductsString": "",
+    ...    "PinnedImageId": null,
+    ...    "CommissionIds": [],
+    ...    "CloneProductId": 0,
+    ...    "DeletedImageId": [],
+    ...    "ProductImageSuggestUrl": "",
+    ...    "ProductImagesSalesChannelUrl": [],
+    ...    "BranchForProductCosts": [],
+    ...    "IsUpdateAllSystem": false,
+    ...    "IsSyncNationalPharmacy": false,
+    ...    "ListBranchsSelected": [],
+    ...    "isAddFromOtherForm": false
+    ...    }
+
