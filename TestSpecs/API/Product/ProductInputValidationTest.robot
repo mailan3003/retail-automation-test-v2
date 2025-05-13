@@ -187,12 +187,12 @@ RT-PD-020 Kiểm tra sản phẩm tự tham chiếu chính nó
     ...    - Source: ProductAPI.cs > ValidateListFormula
     ...    - Logic: Kiểm tra nếu sản phẩm tự tham chiếu chính nó trong công thức
     ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là chính nó
-    ...    - Kỳ vọng: Lỗi "${ERROR_RECURSIVE_FORMULA}"
-    [Tags]    productvalidate    formulavalidation    AIGenerated
+    ...    - Kỳ vọng: Lỗi "${PRODUCT_CODE}: ${ERROR_RECURSIVE_FORMULA}"
+    [Tags]    productvalidate    formulavalidation1    AIGenerated
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi ${ERROR_RECURSIVE_FORMULA}
+    And Phản hồi phải chứa lỗi ${PRODUCT_CODE}: ${ERROR_RECURSIVE_FORMULA}
 
 RT-PD-021 Kiểm tra sử dụng sản phẩm đơn vị con trong công thức
     [Documentation]    Kiểm tra xử lý khi sử dụng sản phẩm đơn vị con trong công thức
@@ -200,7 +200,7 @@ RT-PD-021 Kiểm tra sử dụng sản phẩm đơn vị con trong công thức
     ...    - Logic: Kiểm tra nếu có sản phẩm đơn vị con trong danh sách vật liệu
     ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là sản phẩm đơn vị con
     ...    - Kỳ vọng: Lỗi "${ERROR_SUB_UNIT_IN_FORMULA}"
-    [Tags]    productvalidate    formulavalidation    AIGenerated
+    [Tags]    productvalidate    formulavalidation2    AIGenerated
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420

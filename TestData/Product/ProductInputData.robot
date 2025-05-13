@@ -49,14 +49,13 @@ ${QUERY_GET_PRODUCT_BY_RETAILER_BARCODE}    SELECT TOP 1 Id, Code, Barcode FROM 
 
 # Formula validation
 ${MAX_FORMULA_DEPTH}    5
-${PRODUCT_ID}    1
-${PRODUCT_CODE}    SP001
-${RETAILER_ID}    1
+${PRODUCT_ID}    1000014184
+${PRODUCT_CODE}    HH0116
 
 # SQL queries for formula validation
 ${QUERY_GET_SUB_UNIT_PRODUCT}    SELECT TOP 1 Id, Code FROM Product WHERE RetailerId = ? AND MasterUnitId IS NOT NULL AND (isDeleted = 0 OR isDeleted IS NULL)
 
 # Error messages for formula validation
-${ERROR_RECURSIVE_FORMULA}    {0}: Hàng thành phần và hàng sản xuất không được lồng nhau
-${ERROR_SUB_UNIT_IN_FORMULA}    không cho phép sử dụng sản phẩm không phải đơn vị chính trong công thức
+${ERROR_RECURSIVE_FORMULA}    Hàng thành phần và hàng sản xuất không được lồng nhau
+${ERROR_SUB_UNIT_IN_FORMULA}    Sản phẩm {0} không phải là đơn vị cơ bản, không thể tạo thành phần từ hàng hóa này
 ${ERROR_FORMULA_DEPTH}    Độ sâu công thức vượt quá giới hạn cho phép

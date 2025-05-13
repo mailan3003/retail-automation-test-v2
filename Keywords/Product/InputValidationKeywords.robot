@@ -271,18 +271,17 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${formula}=    Create Dictionary    MaterialId=${PRODUCT_ID}    Quantity=1
     ${formulas}=    Create List    ${formula}
+    ${request_data}=    Set To Dictionary    ${request_data}    Id=${PRODUCT_ID}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
-    ${message}=    Set Variable    ${PRODUCT_CODE}: Hàng thành phần và hàng sản xuất không được lồng nhau
-    Set Test Variable    ${ERROR_RECURSIVE_FORMULA}    ${message}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
     ${sub_unit_product}=    Fetch One    ${QUERY_GET_SUB_UNIT_PRODUCT}    ${RETAILER_ID}
-    Should Not Be Equal    ${sub_unit_product}    None    Không tìm thấy sản phẩm đơn vị con để test
+    Run Keyword If    ${sub_unit_product} is None    Fail    Không tìm thấy sản phẩm đơn vị con để test
     ${sub_unit_id}=    Set Variable    ${sub_unit_product[0]}
     ${sub_unit_code}=    Set Variable    ${sub_unit_product[1]}
     
@@ -294,7 +293,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
-    ${message}=    Set Variable    không cho phép sử dụng sản phẩm không phải đơn vị chính trong công thức
+    ${message}=    Evaluate    '''${ERROR_SUB_UNIT_IN_FORMULA}'''.format('''${sub_unit_code}''')
     Set Test Variable    ${ERROR_SUB_UNIT_IN_FORMULA}    ${message}
     RETURN    ${request}
 
