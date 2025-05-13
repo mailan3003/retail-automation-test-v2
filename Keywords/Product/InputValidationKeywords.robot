@@ -157,7 +157,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Trùng Lặp
     ${request_data}=    Set To Dictionary    ${request_data}    Code=${product_code}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
-    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     ${message}=    Set Variable    Mã hàng: ${product_code} đã tồn tại
     Set Test Variable    ${ErrorMessage}    ${message}
@@ -172,7 +172,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Trùng Lặp
     ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${barcode}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
-    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     ${message}=    Set Variable    Mã vạch ${barcode} đã tồn tại
     Set Test Variable    ${ErrorMessage}    ${message}
@@ -184,18 +184,18 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Không Hợp Lệ
     ${formulas}=    Create List    ${formula}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${request}=    Create Dictionary    ListProductsString=${list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Vị Trí Không Tồn Tại
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${shelf}=    Create Dictionary    ShelvesId=999999
-    ${shelves}=    Create List
+    ${shelf}=    Create Dictionary    ShelvesId=999999    ProductId=0
+    ${shelves}=    Create List    ${shelf}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductShelves=${shelves}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
-    ${request}=    Create Dictionary    ListProducts=${json_list_products}
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -203,7 +203,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Giá Trị Chuyển Đổi Không H�
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${request_data}=    Set To Dictionary    ${request_data}    ConversionValue=0
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -222,7 +223,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
     ${units}=    Create List    ${unit}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductUnits=${units}
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -231,7 +233,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${request_data}=    Set To Dictionary    ${request_data}    Code=${long_code}
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -240,7 +243,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${long_barcode}
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -249,6 +253,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}
     ${list_products}=    Create List    ${request_data}
-    ${request}=    Create Dictionary    ListProducts=${list_products}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request} 

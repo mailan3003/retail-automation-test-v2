@@ -1,7 +1,6 @@
 *** Variables ***
 # Standard product data
 ${STANDARD_PRODUCT_NAME}    Sản phẩm test tự động
-${STANDARD_PRODUCT_CODE}    TEST001
 ${STANDARD_PRODUCT_PRICE}    100000
 ${STANDARD_PRODUCT_COST}    50000
 ${STANDARD_PRODUCT_CATEGORY_ID}    1000000705
@@ -20,7 +19,7 @@ ${PRODUCT_WITHOUT_COST_PERMISSION}    Sản phẩm không quyền giá vốn
 ${BRANCH_ID}    1
 
 # Request templates
-&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=${STANDARD_PRODUCT_CODE}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Barcode=123456789    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
+&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
 
 &{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
 
@@ -37,9 +36,9 @@ ${ERROR_DUPLICATE_BARCODE}    Mã vạch {0} đã tồn tại
 ${ERROR_INVALID_FORMULA}    Công thức sản phẩm không hợp lệ
 ${ERROR_SHELF_NOT_FOUND}    Vị trí không tồn tại
 ${ERROR_SERIAL_UNIT}    Sản phẩm kiểm soát serial không được có đơn vị phụ
-${ERROR_CODE_LENGTH}    Mã sản phẩm không được vượt quá 40 ký tự
+${ERROR_CODE_LENGTH}    Vui lòng nhập Mã hàng hóa không quá 40 kí tự
 ${ERROR_BARCODE_LENGTH}    Mã vạch không được vượt quá 16 ký tự
-${ERROR_NAME_LENGTH}    Tên sản phẩm không được vượt quá 500 ký tự
+${ERROR_NAME_LENGTH}    Tên đầy đủ của hàng hóa ( Tên hàng+Thuộc tính+Đơn vị tính) không vượt quá 500 kí tự
 
 # SQL queries
 ${QUERY_GET_PRODUCT_BY_NAME}    SELECT Id, Name, Code, Cost FROM Product WHERE Name = ? AND RetailerId = ?
