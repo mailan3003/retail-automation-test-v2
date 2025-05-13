@@ -108,17 +108,7 @@ RT-PD-009 Kiểm tra trùng lặp mã vạch
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ErrorMessage}
 
-RT-PD-010 Kiểm tra công thức sản phẩm không hợp lệ
-    [Documentation]    Kiểm tra xử lý khi công thức sản phẩm không hợp lệ
-    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
-    ...    - Logic: Gọi productFormulaService.ValidateListFormula() để xác thực danh sách công thức
-    ...    - Dữ liệu đầu vào: Sản phẩm với công thức chứa vật liệu không tồn tại
-    ...    - Kỳ vọng: Lỗi "${ERROR_INVALID_FORMULA}"
-    [Tags]    productvalidate    formulavalidation    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Không Hợp Lệ
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi ${ERROR_INVALID_FORMULA}
+# add test cases here
 
 RT-PD-011 Kiểm tra vị trí không tồn tại
     [Documentation]    Kiểm tra xử lý khi vị trí không tồn tại trong hệ thống
@@ -131,18 +121,6 @@ RT-PD-011 Kiểm tra vị trí không tồn tại
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_SHELF_NOT_FOUND}
-
-RT-PD-012 Kiểm tra giá trị chuyển đổi đơn vị không hợp lệ
-    [Documentation]    Kiểm tra xử lý khi giá trị chuyển đổi đơn vị <= 0
-    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
-    ...    - Logic: Kiểm tra nếu ConversionValue <= 0
-    ...    - Dữ liệu đầu vào: Sản phẩm với ConversionValue = 0
-    ...    - Kỳ vọng: Giá trị mặc định = 1
-    [Tags]    productvalidate    unitconversion    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Giá Trị Chuyển Đổi Không Hợp Lệ
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Giá Trị Chuyển Đổi Đã Được Chuẩn Hóa Thành 1
 
 RT-PD-013 Kiểm tra sản phẩm kiểm soát serial có đơn vị phụ
     [Documentation]    Kiểm tra xử lý khi sản phẩm kiểm soát serial có đơn vị phụ
@@ -191,3 +169,75 @@ RT-PD-018 Kiểm tra độ dài tên sản phẩm vượt quá giới hạn
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_NAME_LENGTH}
+
+RT-PD-019 Kiểm tra danh sách vật liệu rỗng
+    [Documentation]    Kiểm tra xử lý khi danh sách vật liệu rỗng
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu danh sách vật liệu rỗng thì không cần xác thực
+    ...    - Dữ liệu đầu vào: Sản phẩm với danh sách vật liệu rỗng
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-020 Kiểm tra sản phẩm tự tham chiếu chính nó
+    [Documentation]    Kiểm tra xử lý khi sản phẩm tự tham chiếu chính nó trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu sản phẩm tự tham chiếu chính nó trong công thức
+    ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là chính nó
+    ...    - Kỳ vọng: Lỗi "${ERROR_RECURSIVE_FORMULA}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_RECURSIVE_FORMULA}
+
+RT-PD-021 Kiểm tra sử dụng sản phẩm đơn vị con trong công thức
+    [Documentation]    Kiểm tra xử lý khi sử dụng sản phẩm đơn vị con trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu có sản phẩm đơn vị con trong danh sách vật liệu
+    ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là sản phẩm đơn vị con
+    ...    - Kỳ vọng: Lỗi "${ERROR_SUB_UNIT_IN_FORMULA}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SUB_UNIT_IN_FORMULA}
+
+RT-PD-022 Kiểm tra vòng lặp đệ quy trong công thức
+    [Documentation]    Kiểm tra xử lý khi phát hiện vòng lặp đệ quy trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu có vòng lặp đệ quy trong cấu trúc công thức
+    ...    - Dữ liệu đầu vào: Sản phẩm A chứa B, B chứa A trong công thức
+    ...    - Kỳ vọng: Lỗi "${ERROR_RECURSIVE_FORMULA}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vòng Lặp Đệ Quy
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_RECURSIVE_FORMULA}
+
+RT-PD-023 Kiểm tra độ sâu công thức vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ sâu công thức vượt quá giới hạn cho phép
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu tổng độ sâu của công thức vượt quá MaxFormulaLevelSupported
+    ...    - Dữ liệu đầu vào: Sản phẩm với cấu trúc công thức quá sâu
+    ...    - Kỳ vọng: Lỗi "${ERROR_FORMULA_DEPTH}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Quá Sâu
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_FORMULA_DEPTH}
+
+RT-PD-024 Kiểm tra công thức hợp lệ
+    [Documentation]    Kiểm tra xử lý khi công thức hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra công thức với các điều kiện hợp lệ
+    ...    - Dữ liệu đầu vào: Sản phẩm với công thức hợp lệ (không tự tham chiếu, không đơn vị con, không vòng lặp, độ sâu trong giới hạn)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    formulavalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id

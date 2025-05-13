@@ -218,8 +218,8 @@ Xác Thực Giá Trị Chuyển Đổi Đã Được Chuẩn Hóa Thành 1
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    HasSerial=${TRUE}
-    ${unit}=    Create Dictionary    Unit=Chiếc    ConversionValue=1    IsDefault=${TRUE}
+    ${request_data}=    Set To Dictionary    ${request_data}    IsLotSerialControl=${TRUE}
+    ${unit}=    Create Dictionary    Unit=Chiếc    ConversionValue=1
     ${units}=    Create List    ${unit}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductUnits=${units}
     ${list_products}=    Create List    ${request_data}
@@ -252,6 +252,112 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
     ${long_name}=    Evaluate    "A" * 501
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${EMPTY}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formula}=    Create Dictionary    MaterialId=${PRODUCT_ID}    Quantity=1
+    ${formulas}=    Create List    ${formula}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    ${PRODUCT_CODE}: Hàng thành phần và hàng sản xuất không được lồng nhau
+    Set Test Variable    ${ERROR_RECURSIVE_FORMULA}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
+    ${sub_unit_product}=    Fetch One    ${QUERY_GET_SUB_UNIT_PRODUCT}    ${RETAILER_ID}
+    Should Not Be Equal    ${sub_unit_product}    None    Không tìm thấy sản phẩm đơn vị con để test
+    ${sub_unit_id}=    Set Variable    ${sub_unit_product[0]}
+    ${sub_unit_code}=    Set Variable    ${sub_unit_product[1]}
+    
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formula}=    Create Dictionary    MaterialId=${sub_unit_id}    Quantity=1
+    ${formulas}=    Create List    ${formula}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    không cho phép sử dụng sản phẩm không phải đơn vị chính trong công thức
+    Set Test Variable    ${ERROR_SUB_UNIT_IN_FORMULA}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Vòng Lặp Đệ Quy
+    ${product_a}=    Fetch One    ${QUERY_GET_PRODUCT_BY_RETAILER}    ${RETAILER_ID}
+    Should Not Be Equal    ${product_a}    None    Không tìm thấy sản phẩm A để test vòng lặp đệ quy
+    ${product_b}=    Fetch One    ${QUERY_GET_PRODUCT_BY_RETAILER}    ${RETAILER_ID}
+    Should Not Be Equal    ${product_b}    None    Không tìm thấy sản phẩm B để test vòng lặp đệ quy
+    
+    # Tạo công thức cho sản phẩm A chứa B
+    ${request_data_a}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formula_a}=    Create Dictionary    MaterialId=${product_b[0]}    Quantity=1
+    ${formulas_a}=    Create List    ${formula_a}
+    ${request_data_a}=    Set To Dictionary    ${request_data_a}    ProductFormulas=${formulas_a}
+    
+    # Tạo công thức cho sản phẩm B chứa A
+    ${request_data_b}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formula_b}=    Create Dictionary    MaterialId=${product_a[0]}    Quantity=1
+    ${formulas_b}=    Create List    ${formula_b}
+    ${request_data_b}=    Set To Dictionary    ${request_data_b}    ProductFormulas=${formulas_b}
+    
+    ${list_products}=    Create List    ${request_data_a}    ${request_data_b}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    ${product_a[1]},${product_b[1]}: Hàng thành phần và hàng sản xuất không được lồng nhau
+    Set Test Variable    ${ERROR_RECURSIVE_FORMULA}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Quá Sâu
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formulas}=    Create List
+    
+    # Tạo chuỗi công thức với độ sâu vượt quá giới hạn
+    ${current_id}=    Set Variable    ${PRODUCT_ID}
+    FOR    ${index}    IN RANGE    ${MAX_FORMULA_DEPTH} + 1
+        ${formula}=    Create Dictionary    MaterialId=${current_id}    Quantity=1
+        Append To List    ${formulas}    ${formula}
+        ${current_id}=    Evaluate    ${current_id} + 1
+    END
+    
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
+    ${list_products}=    Create List    ${request_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${message}=    Set Variable    Độ sâu công thức vượt quá giới hạn cho phép
+    Set Test Variable    ${ERROR_FORMULA_DEPTH}    ${message}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Hợp Lệ
+    ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${formulas}=    Create List
+    
+    # Tạo công thức hợp lệ với độ sâu trong giới hạn
+    ${current_id}=    Set Variable    ${PRODUCT_ID}
+    FOR    ${index}    IN RANGE    ${MAX_FORMULA_DEPTH}
+        ${formula}=    Create Dictionary    MaterialId=${current_id}    Quantity=1
+        Append To List    ${formulas}    ${formula}
+        ${current_id}=    Evaluate    ${current_id} + 1
+    END
+    
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}

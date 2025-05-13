@@ -35,7 +35,7 @@ ${ERROR_DUPLICATE_PRODUCT_CODE}    Mã hàng: {0} đã tồn tại
 ${ERROR_DUPLICATE_BARCODE}    Mã vạch {0} đã tồn tại
 ${ERROR_INVALID_FORMULA}    Công thức sản phẩm không hợp lệ
 ${ERROR_SHELF_NOT_FOUND}    Vị trí không tồn tại
-${ERROR_SERIAL_UNIT}    Sản phẩm kiểm soát serial không được có đơn vị phụ
+${ERROR_SERIAL_UNIT}    Sản phẩm Serial/Imei không được có sản phẩm đơn vị tính
 ${ERROR_CODE_LENGTH}    Vui lòng nhập Mã hàng hóa không quá 40 kí tự
 ${ERROR_BARCODE_LENGTH}    Mã vạch không được vượt quá 16 ký tự
 ${ERROR_NAME_LENGTH}    Tên đầy đủ của hàng hóa ( Tên hàng+Thuộc tính+Đơn vị tính) không vượt quá 500 kí tự
@@ -46,3 +46,17 @@ ${QUERY_GET_PRODUCT_BY_CODE}    SELECT Id, Name, Code, Cost FROM Product WHERE C
 ${QUERY_GET_PRODUCT_BRANCHES}    SELECT BranchId FROM ProductBranch WHERE ProductId = ? AND RetailerId = ?
 ${QUERY_GET_PRODUCT_BY_RETAILER}    SELECT TOP 1 Id, Code, Barcode FROM Product WHERE RetailerId = ? AND (isDeleted = 0 OR isDeleted IS NULL)
 ${QUERY_GET_PRODUCT_BY_RETAILER_BARCODE}    SELECT TOP 1 Id, Code, Barcode FROM Product WHERE RetailerId = ? AND Barcode IS NOT NULL AND Barcode <> '' AND (isDeleted = 0 OR isDeleted IS NULL)
+
+# Formula validation
+${MAX_FORMULA_DEPTH}    5
+${PRODUCT_ID}    1
+${PRODUCT_CODE}    SP001
+${RETAILER_ID}    1
+
+# SQL queries for formula validation
+${QUERY_GET_SUB_UNIT_PRODUCT}    SELECT TOP 1 Id, Code FROM Product WHERE RetailerId = ? AND MasterUnitId IS NOT NULL AND (isDeleted = 0 OR isDeleted IS NULL)
+
+# Error messages for formula validation
+${ERROR_RECURSIVE_FORMULA}    {0}: Hàng thành phần và hàng sản xuất không được lồng nhau
+${ERROR_SUB_UNIT_IN_FORMULA}    không cho phép sử dụng sản phẩm không phải đơn vị chính trong công thức
+${ERROR_FORMULA_DEPTH}    Độ sâu công thức vượt quá giới hạn cho phép
