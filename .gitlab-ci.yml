@@ -43,7 +43,7 @@ integrate with testlink:
     - linux
   stage: integrate
   variables:
-    PROJECT_NAME: Retail
+    PROJECT_NAME: KV-Retail
     TESTSUITES_DIR: /retail-automation-test-v2/TestSpecs
     TESTLINK_XMLRPC: https://testlink.kvpos.com/lib/api/xmlrpc/v1/xmlrpc.php
     TESTLINK_DEV_KEY: c50de366d2e7869a1f8f4a35addd6184
