@@ -59,8 +59,8 @@ integrate with testlink:
     - echo "Integrating with TestLink"
     - docker run
       -v "${PWD}:/retail-automation-test-v2" 
-      -e PROJECT_NAME=$PROJECT_NAME
-      -e TESTSUITES_DIR=$TESTSUITES_DIR
+      -e PROJECT_NAME="$PROJECT_NAME"
+      -e TESTSUITES_DIR="$TESTSUITES_DIR"
       -e IS_UPDATE_TESTLINK=$IS_UPDATE_TESTLINK
       -e TESTLINK_XMLRPC=$TESTLINK_XMLRPC
       -e TESTLINK_DEV_KEY=$TESTLINK_DEV_KEY
