@@ -19,7 +19,7 @@ ${PRODUCT_WITHOUT_COST_PERMISSION}    Sản phẩm không quyền giá vốn
 ${BRANCH_ID}    1
 
 # Request templates
-&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
+&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=""    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
 
 &{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
 
@@ -67,3 +67,7 @@ ${PARENT_PRODUCT_ID}    1000014200
 ${CHILD_PRODUCT_ID}    1000014176
 ${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    1000017550
 ${DUPLICATE_UNIT_NAME}    hộp tự gen
+
+# New variables for product attribute validation test cases
+${ERROR_ATTRIBUTE_NOT_FOUND}    Thuộc tính đã bị xóa. Vui lòng kiểm tra lại.
+${VALID_ATTRIBUTE_ID}    1

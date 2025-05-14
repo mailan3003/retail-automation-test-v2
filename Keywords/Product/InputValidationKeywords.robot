@@ -402,3 +402,14 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
+    ${product_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${invalid_attributes}=    Create List
+    ${attribute}=    Create Dictionary    AttributeId=999999    Value=Test Value
+    Append To List    ${invalid_attributes}    ${attribute}
+    ${product_data}=    Set To Dictionary    ${product_data}    ProductAttributes=${invalid_attributes}
+    ${list_products}=    Create List    ${product_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

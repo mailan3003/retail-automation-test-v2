@@ -289,3 +289,15 @@ RT-PD-029 Kiểm tra đơn vị tính hợp lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-033 Kiểm tra xác thực thuộc tính sản phẩm không tồn tại
+    [Documentation]    Kiểm tra xử lý khi thuộc tính không tồn tại trong hệ thống
+    ...    - Source: ProductAPI.cs > ValidateProductAttributes
+    ...    - Logic: Ném ngoại lệ khi có thuộc tính không tồn tại
+    ...    - Dữ liệu đầu vào: Sản phẩm với thuộc tính có ID không tồn tại trong DB
+    ...    - Kỳ vọng: Lỗi "${ERROR_ATTRIBUTE_NOT_FOUND}"
+    [Tags]    productvalidate    attributevalidation1    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ATTRIBUTE_NOT_FOUND}

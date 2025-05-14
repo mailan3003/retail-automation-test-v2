@@ -6,12 +6,7 @@
 - **Kiểm tra tồn tại của thuộc tính**:
   - Thu thập tất cả ID thuộc tính từ sản phẩm: `lsAttrIds = req.ListProducts.SelectMany(v => v.ProductAttributes).Select(iv => iv.AttributeId).Distinct().ToList()`
   - Gọi hàm `ValidateProductAttributes(lsAttrIds)` để kiểm tra thuộc tính tồn tại trong hệ thống
-  - Ném ngoại lệ nếu thuộc tính không tồn tại hoặc không được phép sử dụng (`KVMessage.attributeIsDeleted`) - "Thuộc tính đã bị xóa. Vui lòng kiểm tra lại."
-
-- **Kiểm tra giá trị thuộc tính**:
-  - Xác thực kiểu dữ liệu của giá trị thuộc tính (văn bản, số, ngày tháng)
-  - Đảm bảo giá trị thuộc tính tuân thủ định dạng và giới hạn quy định
-  - Hỗ trợ xác thực đặc biệt cho thuộc tính có danh sách giá trị từ điển (predefined values)
+  - Chi tiết logic xác thực thuộc tính được mô tả trong file [ValidateProductAttributes-Business-Logic.md](../ValidateProductAttributes-Business-Logic.md)
 
 ### 2. Xác thực mã và dữ liệu sản phẩm
 - **Xác thực tính duy nhất của mã sản phẩm**:
