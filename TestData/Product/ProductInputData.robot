@@ -19,7 +19,7 @@ ${PRODUCT_WITHOUT_COST_PERMISSION}    Sản phẩm không quyền giá vốn
 ${BRANCH_ID}    1
 
 # Request templates
-&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=""    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
+&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=${EMPTY}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
 
 &{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
 
@@ -39,6 +39,7 @@ ${ERROR_SERIAL_UNIT}    Sản phẩm Serial/Imei không được có sản phẩ
 ${ERROR_CODE_LENGTH}    Vui lòng nhập Mã hàng hóa không quá 40 kí tự
 ${ERROR_BARCODE_LENGTH}    Mã vạch không được vượt quá 16 ký tự
 ${ERROR_NAME_LENGTH}    Tên đầy đủ của hàng hóa ( Tên hàng+Thuộc tính+Đơn vị tính) không vượt quá 500 kí tự
+${ERROR_DESCRIPTION_SIZE}    Mô tả hàng hóa không được lớn quá ${MAX_SIZE_PRODUCT_DESCRIPTION} MB
 
 # SQL queries
 ${QUERY_GET_PRODUCT_BY_NAME}    SELECT Id, Name, Code, Cost FROM Product WHERE Name = ? AND RetailerId = ?
@@ -71,3 +72,5 @@ ${DUPLICATE_UNIT_NAME}    hộp tự gen
 # New variables for product attribute validation test cases
 ${ERROR_ATTRIBUTE_NOT_FOUND}    Thuộc tính đã bị xóa. Vui lòng kiểm tra lại.
 ${VALID_ATTRIBUTE_ID}    1
+
+${MAX_SIZE_PRODUCT_DESCRIPTION}    1    # Giới hạn kích thước mô tả sản phẩm (MB)

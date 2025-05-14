@@ -301,3 +301,37 @@ RT-PD-033 Kiểm tra xác thực thuộc tính sản phẩm không tồn tại
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_ATTRIBUTE_NOT_FOUND}
+
+RT-PD-035 Kiểm tra mô tả sản phẩm rỗng
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm rỗng
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Bỏ qua xác thực nếu mô tả rỗng
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả rỗng
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-036 Kiểm tra mô tả sản phẩm vượt quá giới hạn kích thước
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm vượt quá giới hạn kích thước
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước vượt quá giới hạn
+    ...    - Kỳ vọng: Lỗi "${ERROR_DESCRIPTION_SIZE}"
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DESCRIPTION_SIZE}
+
+RT-PD-037 Kiểm tra mô tả sản phẩm hợp lệ
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước trong giới hạn
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200

@@ -8,26 +8,56 @@
   - Gọi hàm `ValidateProductAttributes(lsAttrIds)` để kiểm tra thuộc tính tồn tại trong hệ thống
   - Chi tiết logic xác thực thuộc tính được mô tả trong file [ValidateProductAttributes-Business-Logic.md](../ValidateProductAttributes-Business-Logic.md)
 
-### 2. Xác thực mã và dữ liệu sản phẩm
-- **Xác thực tính duy nhất của mã sản phẩm**:
-  - Kiểm tra mã trùng lặp trong danh sách sản phẩm đang tạo: `lsParentProduct.Count != lsParentProduct.Select(x => x.Code).Distinct().Count()`
-  - Nếu phát hiện mã trùng, thu thập danh sách mã trùng lặp và tạo thông báo lỗi chi tiết
-  - Ném ngoại lệ `KvValidateProductException` với thông báo rõ ràng về các mã trùng lặp (`KVMessage._GlobalDuplicateData`) - "{0} đã tồn tại"
+### 2. Xác thực và tạo mã sản phẩm
+- **Thu thập mã sản phẩm người dùng nhập**:
+  - Thu thập danh sách mã người dùng đã nhập: `listCodeUserInput = new List<string>()`
+  - Lọc và thêm các mã không rỗng vào danh sách: `if (!string.IsNullOrEmpty(productAdded.Code)) { listCodeUserInput.Add(productAdded.Code); }`
 
-- **Kiểm tra mã sản phẩm đã tồn tại**:
-  - Truy vấn cơ sở dữ liệu để kiểm tra mã đã tồn tại trong hệ thống
-  - Ném ngoại lệ nếu mã đã tồn tại, tránh xung đột trong hệ thống
-  - Hỗ trợ tự động tạo mã mới nếu không cung cấp hoặc mã tạo từ giao dịch riêng biệt
+- **Tạo mã sản phẩm tự động**:
+  - Sử dụng giao dịch cơ sở dữ liệu để đảm bảo tính toàn vẹn khi tạo mã:
+    ```csharp
+    using (var dbContextTransaction = Db.Database.BeginTransaction())
+    {
+        try
+        {
+            await ProductService.BatchCreateUniqCodeAsync(listProductsToAdd);
+            dbContextTransaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            dbContextTransaction.Rollback();
+            Log.Error(ex.Message, ex);
+            throw ex;
+        }
+    }
+    ```
+  - Hàm `BatchCreateUniqCodeAsync` sẽ tạo mã duy nhất cho các sản phẩm chưa có mã
+  - Sử dụng cơ chế transaction để đảm bảo hoặc tất cả mã được tạo thành công, hoặc không có mã nào được tạo
+
+### 3. Xác thực tính duy nhất của mã sản phẩm
+- **Kiểm tra mã sản phẩm trùng lặp**:
+  - Nhóm các sản phẩm cha (parent products) dựa trên MasterCode: `lsParentProduct = listProductsToAdd.GroupBy(p => p.MasterCode, (key, g) => g.First()).ToList()`
+  - Kiểm tra xem có mã sản phẩm trùng lặp trong danh sách sản phẩm cha không:
+    ```csharp
+    if (lsParentProduct.Count != lsParentProduct.Select(x => x.Code).Distinct().Count())
+    {
+        var codeUnitsDuplicate = lsParentProduct.GroupBy(x => x.Code).Where(x => x.Skip(1).Any())
+            .SelectMany(g => g).Distinct();
+        if (codeUnitsDuplicate.Any())
+        {
+            duplicateUnitCodes = codeUnitsDuplicate.Select(x => x.Code).Distinct().Join(", ").ToString();
+        }
+    }
+    ```
+  - Nếu phát hiện mã trùng lặp, hệ thống sẽ tạo chuỗi chứa tất cả các mã bị trùng, phân cách bằng dấu phẩy
+  - Ném ngoại lệ `KvValidateProductException` với thông báo lỗi định dạng: `string.Format(KVMessage._GlobalDuplicateData, KVMessage.ProductLog_UnitCode + ": " + duplicateUnitCodes)`
+  - Thông báo lỗi sẽ có dạng: "Dữ liệu bị trùng: Mã đơn vị: CODE1, CODE2, ..."
 
 - **Xác thực mô tả sản phẩm**:
-  - Gọi `ValidateMaxSizeDescription(firstParent.Description)` để kiểm tra độ dài mô tả
-  - Giới hạn độ dài mô tả (thường là 2000 ký tự) để đảm bảo hiệu suất
-  - Làm sạch nội dung mô tả khỏi các ký tự không hợp lệ
-
-- **Xác thực đơn vị con (child units)**:
-  - Gọi `ValidateDuplicateCodeChildProducts(childProducts)` để kiểm tra tính duy nhất của mã đơn vị con
-  - Kiểm tra hệ số chuyển đổi (`ConversionValue`) giữa các đơn vị hợp lệ
-  - Đảm bảo tính nhất quán giữa đơn vị cha và đơn vị con
+  - Lấy sản phẩm cha đầu tiên và đặt MasterCode thành chuỗi rỗng: `firstParent.MasterCode = string.Empty`
+  - Kiểm tra độ dài mô tả sản phẩm: `ValidateMaxSizeDescription(firstParent.Description)`
+  - Đảm bảo mô tả không vượt quá giới hạn kích thước cho phép, thường được đo bằng MB thay vì số ký tự
+  - Chi tiết logic xác thực mô tả sản phẩm được mô tả trong file [ValidateProductDescription-Business-Logic.md](../ValidateProductDescription-Business-Logic.md)
 
 ### 4. Xác thực thông tin đặc thù ngành
 - **Xác thực thông tin dược phẩm**:
