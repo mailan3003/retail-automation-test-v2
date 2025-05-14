@@ -7,54 +7,86 @@ Resource          ../Utilities/DataUtilities.robot
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Product/CreateProductData.robot
 Library           ../../Resources/DatabaseLibrary.py
+Library           ../../Resources/Databasepromotion.py
+Resource          ../../TestData/Product/ProductInputData.robot
 Library           String
 
 *** Variables ***
-${API_URL}       https://api-man.kvpos.com
+${PRODUCT_API_ENDPOINT}     products/addmany
+${WARRANTY_API_SAVE_ENDPOINT}    warranty/save
+${PRODUCT_UPDATE_API_ENDPOINT}   api/products/photo
+${PRODUCT_DELETE_API_ENDPOINT}   api/products/{0}
 
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
 Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản
-    ${request}=    Set Variable   ${list_product_data}  
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
+    ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    HHA${random_code}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}        BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Không Có Mã
-    ${request}=    Deep Copy    ${SAN_PHAM_CO_BAN}
-    Set To Dictionary    ${request}    Code=${EMPTY}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Đơn Vị Tính
-    ${request}=    Deep Copy    ${SAN_PHAM_NHIEU_DON_VI_TINH}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${list_product_data}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Tồn Kho Ban Đầu
-    ${request}=    Deep Copy    ${SAN_PHAM_VOI_TON_KHO}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Tồn Kho ${on_hand} Ban Đầu
+    ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+     ${request}    Update Dictionary Property    ${request}    OnHand    ${on_hand}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
-    ${request}=    Deep Copy    ${SAN_PHAM_QUAN_LY_LO}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial
-    ${request}=    Deep Copy    ${SAN_PHAM_QUAN_LY_SERIAL}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+     ${request}    Update Dictionary Property    ${request}    IsLotSerialControl    true
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính
@@ -66,27 +98,63 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
-    ${request}=    Deep Copy    ${SAN_PHAM_LA_THUOC}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+  ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
+   ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    T${random_code}
+     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
+     ${request}    Update Dictionary Property    ${request}    Name    ${product_info["Name"]}
+     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    ${product_info["IsSyncNationalPharmacy"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info["GlobalMedicineId"]}
+     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info["MedicineCode"]}
+     ${request}    Update Dictionary Property    ${request}    RegistrationNo    ${product_info["RegistrationNo"]}
+     ${request}    Update Dictionary Property    ${request}    ActiveElement    ${product_info["ActiveElement"]}
+     ${request}    Update Dictionary Property    ${request}    Content    ${product_info["Content"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerName    ${product_info["GlobalManufacturerName"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName    ${product_info["GlobalManufacturerCountryName"]}
+     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info["PackagingSize"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId    ${product_info["GlobalManufacturerId"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${product_info["GlobalRoaId"]}
+     ${request}    Update Dictionary Property    ${request}    RetailerRoaId    ${product_info["RetailerRoaId"]}
+     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    ${product_info["GlobalManufacturerCountryId"]}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế
-    ${request}=    Deep Copy    ${SAN_PHAM_CO_THUE}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    SP${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} %
+    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
+    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
+    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
+    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
+    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+    ${request}=    Deep Copy     ${list_product_data}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo
-    ${request}=    Deep Copy    ${SAN_PHAM_COMBO}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${product_code}=    Set Variable    COMBO${random_code}
-    Set To Dictionary    ${request}    Code=${product_code}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${formula}=     Deep Copy    ${PRODUCT_FORMULAS}
+    ${formula}    Create List    ${formula}
+     ${random_code}=    Generate Random String    6    [NUMBERS]
+     ${request}    Update Dictionary Property    ${request}    Code    CB${random_code}
+     ${request}    Update Dictionary Property    ${request}    ProductType    1
+     ${request}    Update Dictionary Property    ${request}    ProductFormulas    ${formula}
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${request}        
+    Log     ${payload}
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
 # Keywords cho các trường hợp lỗi
@@ -179,11 +247,11 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Combo Với Thành Phần Không Tồn T�
 
 # Keywords xử lý API
 Gửi Yêu Cầu Tạo Sản Phẩm
-    ${response}    Post request from data       products/addmany        ${REQUEST_DATA}
+    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
     Set Test Variable    ${RESPONSE}    ${response}
     IF    '${RESPONSE.status_code}' == '200'
-        ${product_id}=    Set Variable    ${RESPONSE.json()[0]['Id']}
-        ${product_code}=    Set Variable    ${RESPONSE.json()[0]['Code']}
+        ${product_id}=    Set Variable     ${RESPONSE.json()["Data"][0]["Id"]}
+        ${product_code}=    Set Variable    ${RESPONSE.json()["Data"][0]["Code"]}
         Set Test Variable    ${CREATED_PRODUCT_ID}    ${product_id}
         Set Test Variable    ${CREATED_PRODUCT_CODE}    ${product_code}
     END
@@ -199,8 +267,8 @@ Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     Set Test Variable    ${DB_PRODUCT_NAME}    ${result[2]}
 
 Xác Thực Sản Phẩm Có Thông Tin Chính Xác Theo Dữ Liệu Đã Gửi
-    Should Be Equal As Strings    ${DB_PRODUCT_CODE}    ${REQUEST_DATA['Code']}
-    Should Be Equal As Strings    ${DB_PRODUCT_NAME}    ${REQUEST_DATA['Name']}
+    Should Be Equal As Strings    ${DB_PRODUCT_CODE}    ${REQUEST_DATA["ListProductsString"][0]["Code"]}
+    Should Be Equal As Strings    ${DB_PRODUCT_NAME}    ${REQUEST_DATA["ListProductsString"][0]["Name"]}
 
 Xác Thực Sản Phẩm Được Tạo Với Mã Tự Sinh
     Should Not Be Empty    ${DB_PRODUCT_CODE}
@@ -217,23 +285,32 @@ Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi
         Should Be Equal As Numbers    ${unit_result[0]}    ${DON_VI_TINH_PHU['ConversionValue']}
     END
 
-Xác Thực Sản Phẩm Có Tồn Kho Ban Đầu Theo Dữ Liệu Đã Gửi
+Xác Thực Sản Phẩm Có Tồn Kho ${on_hand} Ở Chi Nhánh ${name_branch}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
     ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${TON_KHO_BAN_DAU['BranchId']}
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${branch_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho cho sản phẩm đã tạo
-    Should Be Equal As Numbers    ${result[0]}    ${TON_KHO_BAN_DAU['OnHand']}
+    Should Be Equal As Numbers    ${result[0]}    ${on_hand}
 
+
+Lấy Thông tin Chi Nhánh
+    [Arguments]    ${name_branch}
+    ${query}=    Set Variable    SELECT Id, Name FROM Branch WHERE Name = ?
+    ${result}=    Fetch One    ${query}    ${name_branch}
+    Set Test Variable    ${DB_BRANCH_ID}    ${result[0]}
+    RETURN    ${DB_BRANCH_ID}
+    
 Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
     ${query}=    Set Variable    SELECT IsBatchExpireControl FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
-    Should Be Equal As Strings    ${result[0]}    1
+    Should Be Equal As Strings    ${result[0]}    True
 
 Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
     ${query}=    Set Variable    SELECT IsLotSerialControl FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
-    Should Be Equal As Strings    ${result[0]}    1
+    Should Be Equal As Strings    ${result[0]}    True
 
 Xác Thực Sản Phẩm Có Thuộc Tính Theo Dữ Liệu Đã Gửi
     ${query}=    Set Variable    SELECT AttributeName, AttributeValue FROM ProductAttribute WHERE ProductId = ?
@@ -255,11 +332,16 @@ Xác Thực Sản Phẩm Tự Động Được Cấu Hình Quản Lý Lô Và H�
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm thuốc đã tạo trong database
     Should Be Equal As Strings    ${result[0]}    1
 
-Xác Thực Sản Phẩm Có Thuế Theo Dữ Liệu Đã Gửi
-    ${query}=    Set Variable    SELECT TaxId FROM Product WHERE Id = ?
+Xác Thực Sản Phẩm Có Thuế ${tax_rate} Theo Dữ Liệu Đã Gửi
+    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
+    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
+    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
+    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
+    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+    ${query}=    Set Variable    SELECT TaxId FROM ProductTax WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thuế cho sản phẩm đã tạo
-    Should Be Equal As Strings    ${result[0]}    ${SAN_PHAM_CO_THUE['TaxId']}
+    Should Be Equal As Strings    ${result[0]}     ${tax_ID}  
 
 Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần Theo Dữ Liệu Đã Gửi
     ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductComboDetail WHERE ComboId = ?
@@ -271,3 +353,17 @@ Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần Theo Dữ Liệu Đ
 Xác Thực Lỗi "${error_message}"
     Should Be Equal As Strings    ${RESPONSE.status_code}    420
     Should Contain    ${RESPONSE.text}    ${error_message} 
+
+
+Lấy thông tin thuốc từ danh mục thuốc
+    [Arguments]    ${product_id}
+    ${query}=    Set Variable    Select m.Id,m.Code,m.Name,m.RegistrationNo,m.ActiveElement,m.Content,m.PackagingSize,m.GlobalManufacturerId, g.name from GlobalMedicine m JOIN GlobalManufacturer g ON m.GlobalManufacturerId=g.Id  where m.Id=?
+    ${result}=    Select One Master    ${query}    ${product_id}
+    RETURN    ${result}
+
+
+Lấy ID thuộc tính  
+    [Arguments]    ${attribute_name}
+    ${query}=    Set Variable    Select Id from Attribute Where Name='${attribute_name}'  And IsDeleted=NULL
+    ${result}=    Fetch One    ${query}    
+    RETURN    ${result}

@@ -34,7 +34,7 @@ Call API
 Call API With Form Data
     [Arguments]    ${endpoint}    ${data}    ${files}=${None}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers With File    ${token}
-    ${response}=    POST Form Data   ${API_URL}${endpoint}    headers=${headers}    data=${data}    files=${files}
+    ${response}=    POST Form Data    ${API_MAN_URL}${endpoint}    headers=${headers}    data=${data}    files=${files}
     RETURN    ${response}
 
 Call API Man

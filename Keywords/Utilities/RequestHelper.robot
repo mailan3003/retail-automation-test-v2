@@ -15,9 +15,9 @@ POST
 
 Post request from data  
     [Arguments]    ${url}    ${payload}   
-    ${headers}=    Create Dictionary    Authorization=${AUTH_TOKEN}    Content-Type=multipart/form-data    Retailer=${RETAILER_CODE}  
+    ${headers}=    Create Dictionary     Authorization=Bearer ${AUTH_TOKEN}    Content-Type=multipart/form-data    Retailer=${RETAILER_CODE}      BranchId=${BRANCH_ID}
     Create Session     lolo     ${API_MAN_URL}   verify=True
-    ${response}=     Post On Session    lolo    ${API_MAN_URL}${url}      files=${payload}      headers=${headers}
+    ${response}=    POST On Session   lolo    ${API_MAN_URL}${url}        files=${payload}      headers=${headers}     expected_status=anything
     RETURN    ${response}
 
 POST Form Data

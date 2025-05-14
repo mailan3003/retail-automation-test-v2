@@ -31,7 +31,7 @@ RT-PD-003 Kiểm tra vượt quá giới hạn sản phẩm combo
     ...    - Logic: Kiểm tra nếu req.ListProducts.Count > 50 và ProductType = Manufactured
     ...    - Dữ liệu đầu vào: Danh sách 51 sản phẩm combo (ProductType = 2)
     ...    - Kỳ vọng: Lỗi "${ERROR_PRODUCT_LIMIT_COMBO}"
-    [Tags]    productvalidate    limit    AIGenerated
+    [Tags]    productvalidate    limit    AIGenerated     productvalidate     test434
     Given Chuẩn Bị Dữ Liệu Với 51 Sản Phẩm Combo
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -43,7 +43,7 @@ RT-PD-004 Kiểm tra vượt quá giới hạn tổng số sản phẩm
     ...    - Logic: Kiểm tra nếu req.ListProducts.Count > 200
     ...    - Dữ liệu đầu vào: Danh sách 201 sản phẩm
     ...    - Kỳ vọng: Lỗi "${ERROR_PRODUCT_LIMIT}"
-    [Tags]    productvalidate    limit    AIGenerated
+    [Tags]    productvalidate    limit    AIGenerated   
     Given Chuẩn Bị Dữ Liệu Với 201 Sản Phẩm
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -55,7 +55,7 @@ RT-PD-005 Kiểm tra định dạng chi nhánh không hợp lệ
     ...    - Logic: Bắt lỗi từ JsonConvert.DeserializeObject của BranchForProductCostss
     ...    - Dữ liệu đầu vào: formData["BranchForProductCostss"] = "{không phải JSON hợp lệ}"
     ...    - Kỳ vọng: Lỗi "Dữ liệu không hợp lệ"
-    [Tags]    productvalidate    apierror    AIGenerated
+    [Tags]    productvalidate    apierror    AIGenerated   
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Định Dạng Chi Nhánh Không Hợp Lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 500

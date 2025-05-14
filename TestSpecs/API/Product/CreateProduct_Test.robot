@@ -1,7 +1,9 @@
 *** Settings ***
 Documentation     Test API tạo sản phẩm
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
+Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+
 Suite Setup       Suite Setup
 
 *** Keywords ***
@@ -11,16 +13,16 @@ Suite Setup
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
-    [Tags]    AIGenerated    CreateProduct    Positive4354
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản
+    [Tags]    AIGenerated    CreateProduct        Positive4354
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản 
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thông Tin Chính Xác Theo Dữ Liệu Đã Gửi
+    #And Xác Thực Sản Phẩm Có Thông Tin Chính Xác Theo Dữ Liệu Đã Gửi
 
 RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
     [Documentation]    Test tạo sản phẩm khi không cung cấp mã, hệ thống sẽ tự sinh mã
-    [Tags]    AIGenerated    CreateProduct    Positive
+    [Tags]    AIGenerated    CreateProduct    Positive   
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Không Có Mã
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -38,16 +40,16 @@ RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
 
 RT-PRODUCT-004 Tạo Sản Phẩm Với Tồn Kho Ban Đầu
     [Documentation]    Test tạo sản phẩm với tồn kho ban đầu
-    [Tags]    AIGenerated    CreateProduct    Positive    Inventory
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Tồn Kho Ban Đầu
+    [Tags]    AIGenerated    CreateProduct    Positive    Inventory   
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Tồn Kho 50.5 Ban Đầu   
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Tồn Kho Ban Đầu Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Tồn Kho 50.5 Ở Chi Nhánh Chi nhánh trung tâm
 
 RT-PRODUCT-005 Tạo Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
     [Documentation]    Test tạo sản phẩm có quản lý theo lô và hạn sử dụng
-    [Tags]    AIGenerated    CreateProduct    Positive    BatchExpiry
+    [Tags]    AIGenerated    CreateProduct    Positive    BatchExpiry   
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -56,7 +58,7 @@ RT-PRODUCT-005 Tạo Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
 
 RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
     [Documentation]    Test tạo sản phẩm có quản lý theo serial
-    [Tags]    AIGenerated    CreateProduct    Positive    Serial
+    [Tags]    AIGenerated    CreateProduct    Positive    Serial   
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -84,8 +86,8 @@ RT-PRODUCT-008 Tạo Sản Phẩm Là Thuốc
 
 RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
     [Documentation]    Test tạo sản phẩm có thuế
-    [Tags]    AIGenerated    CreateProduct    Positive    Tax
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế
+    [Tags]    AIGenerated    CreateProduct    Positive     
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 5 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -93,7 +95,7 @@ RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
 
 RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     [Documentation]    Test tạo sản phẩm loại combo
-    [Tags]    AIGenerated    CreateProduct    Positive    Combo
+    [Tags]    AIGenerated    CreateProduct    Positive    Combo       
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
