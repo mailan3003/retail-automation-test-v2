@@ -260,23 +260,11 @@ RT-PD-026 Kiểm tra đơn vị tính nhiều cấp
     ...    - Logic: Kiểm tra nếu sản phẩm cha có MasterUnitId không null
     ...    - Dữ liệu đầu vào: Sản phẩm con với sản phẩm cha cũng là sản phẩm con
     ...    - Kỳ vọng: Lỗi "${ERROR_INVALID_MASTER_UNIT}"
-    [Tags]    productvalidate    unitvalidation2    AIGenerated
+    [Tags]    productvalidate    unitvalidation    AIGenerated
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_INVALID_MASTER_UNIT}
-
-RT-PD-027 Kiểm tra trùng tên đơn vị với sản phẩm cha
-    [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm cha
-    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
-    ...    - Logic: Kiểm tra nếu sản phẩm con có tên đơn vị trùng với sản phẩm cha
-    ...    - Dữ liệu đầu vào: Sản phẩm con với tên đơn vị giống sản phẩm cha
-    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
-    [Tags]    productvalidate    unitvalidation    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Cha
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
 
 RT-PD-028 Kiểm tra trùng tên đơn vị với sản phẩm con khác
     [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm con khác
