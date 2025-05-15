@@ -503,3 +503,137 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+
+# Các keywords mới cho chức năng ValidateMedicine
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    RouteOfAdministration=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    ActiveElement=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    Content=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    PackagingSize=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    Unit=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Trống
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${NULL}    GlobalManufacturerId=${NULL}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Dài 101 Ký Tự Đồng Bộ DQG
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${long_name}=    Evaluate    "M" * 101
+    ${data}=    Set To Dictionary    ${data}    Name=${long_name}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Dài 21 Ký Tự Đồng Bộ DQG
+    ${long_reg_no}=    Evaluate    "R" * 21
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${long_reg_no}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Dài 201 Ký Tự Đồng Bộ DQG
+    ${long_active}=    Evaluate    "A" * 201
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    ActiveElement=${long_active}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Dài 201 Ký Tự Đồng Bộ DQG
+    ${long_content}=    Evaluate    "C" * 201
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    Content=${long_content}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Dài 51 Ký Tự Đồng Bộ DQG
+    ${long_packaging}=    Evaluate    "P" * 51
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    PackagingSize=${long_packaging}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Nhà Sản Xuất Dài 101 Ký Tự Đồng Bộ DQG
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${EXCEED_NAME_MEDICINE_MANUFACTURER_ID}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Dài 101 Ký Tự Đồng Bộ DQG
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${long_unit}=    Evaluate    "U" * 101
+    ${data}=    Set To Dictionary    ${data}    Unit=${long_unit}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

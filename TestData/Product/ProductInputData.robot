@@ -50,6 +50,10 @@ ${BRANCH_ID}    1
     ...    RouteOfAdministration=Đường dùng hợp lệ    
     ...    GlobalManufacturerCountryName=Việt Nam    
     ...    GlobalManufacturerId=${VALID_MANUFACTURER_ID}
+    ...    RegistrationNo=Số đăng ký hợp lệ
+    ...    ActiveElement=Hoạt chất hợp lệ
+    ...    Content=Hàm lượng hợp lệ
+    ...    PackagingSize=Quy cách đóng gói hợp lệ
 
 # Error messages
 ${ERROR_INVALID_REQUEST}    Tham số truyền vào không hợp lệ
@@ -115,3 +119,25 @@ ${VALID_MANUFACTURER_COUNTRY_ID}    1
 
 # List product data for standard request
 ${list_product_data}    {"Name":"${STANDARD_PRODUCT_NAME}","Code":"","CategoryId":${STANDARD_PRODUCT_CATEGORY_ID},"BasePrice":${STANDARD_PRODUCT_PRICE},"Cost":${STANDARD_PRODUCT_COST},"ProductType":${STANDARD_PRODUCT_TYPE},"IsActive":true,"Description":"Mô tả sản phẩm test","ConversionValue":1,"Unit":"Chiếc"}
+
+# Error messages for medicine product validation
+${ERROR_MANUFACTURER_COUNTRY}    Nước sản xuất không hợp lệ
+${ERROR_SHORT_NAME_LENGTH}    Vui lòng nhập Tên viết tắt không quá 100 kí tự
+${ERROR_ROUTE_LENGTH}    Vui lòng nhập Đường dùng không quá 200 kí tự
+${ERROR_EMPTY_ROUTE_OF_ADMINISTRATION}    Vui lòng nhập Đường dùng trước khi lưu
+${ERROR_EMPTY_REGISTRATION_NO}    Vui lòng nhập Số đăng ký trước khi lưu
+${ERROR_EMPTY_ACTIVE_ELEMENT}    Vui lòng nhập Hoạt chất trước khi lưu
+${ERROR_EMPTY_CONTENT}    Vui lòng nhập Hàm lượng trước khi lưu
+${ERROR_EMPTY_PACKAGING_SIZE}    Vui lòng nhập Quy cách đóng gói trước khi lưu
+${ERROR_EMPTY_UNIT}    Vui lòng nhập Đơn vị cơ bản trước khi lưu
+${ERROR_EMPTY_MANUFACTURER}    Vui lòng nhập Hãng sản xuất trước khi lưu
+${ERROR_EMPTY_MANUFACTURER_COUNTRY}    Vui lòng nhập Nước sản xuất trước khi lưu
+${ERROR_MAX_LENGTH_NAME}    Tên thuốc không được vượt quá 100 kí tự.
+${ERROR_MAX_LENGTH_REGISTRATION_NO}    Số đăng ký không được vượt quá 20 kí tự.
+${ERROR_MAX_LENGTH_ACTIVE_ELEMENT}    Hoạt chất không được vượt quá 200 kí tự.
+${ERROR_MAX_LENGTH_CONTENT}    Hàm lượng không được vượt quá 200 kí tự.
+${ERROR_MAX_LENGTH_PACKAGING_SIZE}    Quy cách đóng gói không được vượt quá 50 kí tự.
+${ERROR_MAX_LENGTH_MANUFACTURER}    Hãng sản xuất không được vượt quá 100 kí tự.
+${ERROR_MAX_LENGTH_UNIT}    Đơn vị cơ bản không được vượt quá 100 kí tự.
+
+${EXCEED_NAME_MEDICINE_MANUFACTURER_ID}    1000000002
