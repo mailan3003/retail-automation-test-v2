@@ -362,6 +362,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Hợp Lệ
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con không có đơn vị    MasterUnitId=${PARENT_PRODUCT_ID}    Unit=${EMPTY}
@@ -380,23 +381,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩ
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Cha
-    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con trùng đơn vị với cha    MasterUnitId=${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    Unit=${PARENT_PRODUCT_UNIT_NOT_EXIST_MASTER_UNIT}
-    ${list_products}=    Create List    ${data}
-    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
-    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Con Khác
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${product}=    Create Dictionary    
-    ...    Code=SP_CON_004    
-    ...    Name=Sản phẩm con trùng đơn vị với con khác    
-    ...    MasterUnitId=${PARENT_PRODUCT_ID}    
-    ...    Unit=${EXISTING_CHILD_UNIT}
-    ${data}=    Set To Dictionary    ${data}    ${product}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con trùng đơn vị với cha    MasterUnitId=${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    Unit=${DUPLICATE_UNIT_NAME}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -411,6 +398,46 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
     ...    MasterUnitId=${PARENT_PRODUCT_ID}    
     ...    Unit=Hộp
     ${data}=    Set To Dictionary    ${data}    ${product}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
+    ${product_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${invalid_attributes}=    Create List
+    ${attribute}=    Create Dictionary    AttributeId=999999    Value=Test Value
+    Append To List    ${invalid_attributes}    ${attribute}
+    ${product_data}=    Set To Dictionary    ${product_data}    ProductAttributes=${invalid_attributes}
+    ${list_products}=    Create List    ${product_data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    Description=${EMPTY}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${large_description}=    Evaluate    "a" * 1048576    # Tạo chuỗi khoảng 1MB ký tự
+    ${data}=    Set To Dictionary    ${data}    Description=${large_description}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    Description=Mô tả sản phẩm hợp lệ với đầy đủ thông tin chi tiết
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}

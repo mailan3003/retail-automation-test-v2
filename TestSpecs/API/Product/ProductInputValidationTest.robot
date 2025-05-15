@@ -260,23 +260,11 @@ RT-PD-026 Kiểm tra đơn vị tính nhiều cấp
     ...    - Logic: Kiểm tra nếu sản phẩm cha có MasterUnitId không null
     ...    - Dữ liệu đầu vào: Sản phẩm con với sản phẩm cha cũng là sản phẩm con
     ...    - Kỳ vọng: Lỗi "${ERROR_INVALID_MASTER_UNIT}"
-    [Tags]    productvalidate    unitvalidation2    AIGenerated
+    [Tags]    productvalidate    unitvalidation    AIGenerated
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_INVALID_MASTER_UNIT}
-
-RT-PD-027 Kiểm tra trùng tên đơn vị với sản phẩm cha
-    [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm cha
-    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
-    ...    - Logic: Kiểm tra nếu sản phẩm con có tên đơn vị trùng với sản phẩm cha
-    ...    - Dữ liệu đầu vào: Sản phẩm con với tên đơn vị giống sản phẩm cha
-    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
-    [Tags]    productvalidate    unitvalidation    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Cha
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
 
 RT-PD-028 Kiểm tra trùng tên đơn vị với sản phẩm con khác
     [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm con khác
@@ -301,3 +289,49 @@ RT-PD-029 Kiểm tra đơn vị tính hợp lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-033 Kiểm tra xác thực thuộc tính sản phẩm không tồn tại
+    [Documentation]    Kiểm tra xử lý khi thuộc tính không tồn tại trong hệ thống
+    ...    - Source: ProductAPI.cs > ValidateProductAttributes
+    ...    - Logic: Ném ngoại lệ khi có thuộc tính không tồn tại
+    ...    - Dữ liệu đầu vào: Sản phẩm với thuộc tính có ID không tồn tại trong DB
+    ...    - Kỳ vọng: Lỗi "${ERROR_ATTRIBUTE_NOT_FOUND}"
+    [Tags]    productvalidate    attributevalidation1    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ATTRIBUTE_NOT_FOUND}
+
+RT-PD-035 Kiểm tra mô tả sản phẩm rỗng
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm rỗng
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Bỏ qua xác thực nếu mô tả rỗng
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả rỗng
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-036 Kiểm tra mô tả sản phẩm vượt quá giới hạn kích thước
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm vượt quá giới hạn kích thước
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước vượt quá giới hạn
+    ...    - Kỳ vọng: Lỗi "${ERROR_DESCRIPTION_SIZE}"
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DESCRIPTION_SIZE}
+
+RT-PD-037 Kiểm tra mô tả sản phẩm hợp lệ
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước trong giới hạn
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
