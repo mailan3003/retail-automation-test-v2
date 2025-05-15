@@ -335,3 +335,75 @@ RT-PD-037 Kiểm tra mô tả sản phẩm hợp lệ
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
+
+RT-PD-038 Kiểm tra xác thực thông tin dược phẩm khi không phải nhà thuốc GPP
+    [Documentation]    Kiểm tra xử lý khi không phải nhà thuốc GPP
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra điều kiện IsActiveGppDrugStore
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với IsActiveGppDrugStore = false
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-039 Kiểm tra xác thực quốc gia sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi quốc gia sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra quốc gia sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quốc gia sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER_COUNTRY}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER_COUNTRY}
+
+RT-PD-040 Kiểm tra xác thực nhà sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi nhà sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra nhà sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER}
+
+RT-PD-041 Kiểm tra độ dài tên ngắn vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài tên ngắn > 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên ngắn, (hiện code chưa truyền ShortName nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên ngắn dài 101 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_SHORT_NAME_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation1    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SHORT_NAME_LENGTH}
+
+RT-PD-042 Kiểm tra độ dài đường dùng vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài đường dùng > 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài đường dùng (hiện code chưa truyền RouteOfAdministration nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng dài 201 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_ROUTE_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ROUTE_LENGTH}
+
+RT-PD-043 Kiểm tra thông tin dược phẩm hợp lệ
+    [Documentation]    Kiểm tra xử lý khi thông tin dược phẩm hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra với thông tin dược phẩm hợp lệ
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với thông tin hợp lệ
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id

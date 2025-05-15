@@ -443,3 +443,63 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    
+    ...    Code=DP001    
+    ...    IsActiveGppDrugStore=${FALSE}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không Tồn Tại
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    
+    ...    Code=DP002    
+    ...    GlobalManufacturerCountryName=Quốc gia không tồn tại
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${ERROR_MESSAGE}    ${ERROR_MANUFACTURER_COUNTRY}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    
+    ...    Code=DP003    
+    ...    GlobalManufacturerId=999999
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${ERROR_MESSAGE}    ${ERROR_MANUFACTURER}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
+    ${long_short_name}=    Evaluate    "A" * 101
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}
+    ...    ShortName=${long_short_name}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
+    ${long_route}=    Evaluate    "A" * 201
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    
+    ...    RouteOfAdministration=${long_route}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Set To Dictionary    ${data}    Code=DP006
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}

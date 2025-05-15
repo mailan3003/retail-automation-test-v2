@@ -19,9 +19,37 @@ ${PRODUCT_WITHOUT_COST_PERMISSION}    Sản phẩm không quyền giá vốn
 ${BRANCH_ID}    1
 
 # Request templates
-&{STANDARD_PRODUCT_REQUEST}    Name=${STANDARD_PRODUCT_NAME}    Code=${EMPTY}    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=${STANDARD_PRODUCT_TYPE}    IsActive=${TRUE}    Description=Mô tả sản phẩm test    ConversionValue=1    Unit=Chiếc
+&{STANDARD_PRODUCT_REQUEST}    
+...    Name=${STANDARD_PRODUCT_NAME}    
+...    Code=${EMPTY}    
+...    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    
+...    BasePrice=${STANDARD_PRODUCT_PRICE}    
+...    Cost=${STANDARD_PRODUCT_COST}    
+...    ProductType=${STANDARD_PRODUCT_TYPE}    
+...    IsActive=${TRUE}    
+...    Description=Mô tả sản phẩm test    
+...    ConversionValue=1    
+...    Unit=Chiếc
 
 &{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
+
+# Medicine product data
+&{STANDARD_MEDICINE_PRODUCT}    
+    ...    Name=Sản phẩm dược phẩm test
+    ...    Code=${EMPTY}
+    ...    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}
+    ...    BasePrice=${STANDARD_PRODUCT_PRICE}
+    ...    Cost=${STANDARD_PRODUCT_COST}
+    ...    ProductType=${STANDARD_PRODUCT_TYPE}
+    ...    IsActive=${TRUE}
+    ...    Description=Mô tả sản phẩm dược phẩm test
+    ...    ConversionValue=1
+    ...    Unit=Viên
+    ...    IsMedicineProduct=${TRUE}
+    ...    ShortName=Tên ngắn hợp lệ
+    ...    RouteOfAdministration=Đường dùng hợp lệ    
+    ...    GlobalManufacturerCountryName=Việt Nam    
+    ...    GlobalManufacturerId=${VALID_MANUFACTURER_ID}
 
 # Error messages
 ${ERROR_INVALID_REQUEST}    Tham số truyền vào không hợp lệ
@@ -74,3 +102,16 @@ ${ERROR_ATTRIBUTE_NOT_FOUND}    Thuộc tính đã bị xóa. Vui lòng kiểm t
 ${VALID_ATTRIBUTE_ID}    1
 
 ${MAX_SIZE_PRODUCT_DESCRIPTION}    1    # Giới hạn kích thước mô tả sản phẩm (MB)
+
+# Medicine validation error messages
+${ERROR_MANUFACTURER_COUNTRY}    Nước sản xuất không hợp lệ
+${ERROR_MANUFACTURER}    Nhà sản xuất không tồn tại
+${ERROR_SHORT_NAME_LENGTH}    Vui lòng nhập Tên viết tắt không quá 100 kí tự
+${ERROR_ROUTE_LENGTH}    Vui lòng nhập Đường dùng không quá 200 kí tự
+
+# Valid IDs for testing
+${VALID_MANUFACTURER_ID}    1
+${VALID_MANUFACTURER_COUNTRY_ID}    1
+
+# List product data for standard request
+${list_product_data}    {"Name":"${STANDARD_PRODUCT_NAME}","Code":"","CategoryId":${STANDARD_PRODUCT_CATEGORY_ID},"BasePrice":${STANDARD_PRODUCT_PRICE},"Cost":${STANDARD_PRODUCT_COST},"ProductType":${STANDARD_PRODUCT_TYPE},"IsActive":true,"Description":"Mô tả sản phẩm test","ConversionValue":1,"Unit":"Chiếc"}
