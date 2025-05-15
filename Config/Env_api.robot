@@ -12,7 +12,7 @@ ${DEFAULT_USER_ID}          1000000467
 ${DEFAULT_CUSTOMER_ID}      1000009032
 ${DEFAULT_BRANCH_NAME}       "Chi nhánh trung tâm"
 
-${API_URL}               http://localhost:81/api/
+${API_URL}                  https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
 ${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
 

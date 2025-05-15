@@ -4,16 +4,17 @@ Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 
-Suite Setup       Suite Setup
 
-*** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    CreateProductTest
 
+*** Variables ***
+@{value_attribute_1}   L  M   S
+&{dict_attribute_name_1}    SIZE=@{value_attribute_1}
+@{name_unit}     hai    nửa
+@{value}    2    3
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
-    [Tags]    AIGenerated    CreateProduct        Positive4354
+    [Tags]    AIGenerated    CreateProduct         
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản 
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -31,8 +32,8 @@ RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
 
 RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
     [Documentation]    Test tạo sản phẩm có nhiều đơn vị tính với tỷ lệ quy đổi
-    [Tags]    AIGenerated    CreateProduct    Positive    UnitConversion
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Đơn Vị Tính
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitConversion   
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính Và List Quy Đổi ${name_unit} Với ${value}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -67,8 +68,8 @@ RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
 
 RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
     [Documentation]    Test tạo sản phẩm có thuộc tính
-    [Tags]    AIGenerated    CreateProduct    Positive    Attributes
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính
+    [Tags]    AIGenerated    CreateProduct    Positive    Attributes    
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính ${dict_attribute_name_1}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -76,7 +77,7 @@ RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
 
 RT-PRODUCT-008 Tạo Sản Phẩm Là Thuốc
     [Documentation]    Test tạo sản phẩm là thuốc với thông tin đầy đủ theo yêu cầu GPP
-    [Tags]    AIGenerated    CreateProduct    Positive    Medicine
+    [Tags]    AIGenerated    CreateProduct    Positive    Medicine   Positive4354
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -95,12 +96,12 @@ RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
 
 RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     [Documentation]    Test tạo sản phẩm loại combo
-    [Tags]    AIGenerated    CreateProduct    Positive    Combo       
+    [Tags]    AIGenerated    CreateProduct    Positive    Combo        
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_id} Với Số Lượng ${product_material_quantity} 
 
 RT-PRODUCT-011 Tạo Sản Phẩm Thiếu Tên
     [Documentation]    Test tạo sản phẩm khi thiếu tên (bắt buộc)

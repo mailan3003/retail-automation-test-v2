@@ -24,15 +24,14 @@ Library           String
 ...    CompareOnHand=0
 ...    CompareCost=0
 ...    CompareBasePrice=0
-...    CompareUnit=
 ...    Reserved=0
 ...    MinQuantity=0
 ...    MaxQuantity=999999999
 ...    CustomId=0
+...    Unit=mot
+...    ConversionValue=1
 ...    CustomValue=0
 ...    MasterProductId=0
-...    Unit=
-...    ConversionValue=1
 ...    OrderTemplate=
 ...    IsLotSerialControl=false
 ...    IsRewardPoint=false
@@ -47,8 +46,11 @@ Library           String
 &{branch_for_cost}   Id=${DEFAULT_BRANCH_ID}
 ...    Name=Chi trung
 
-# Dữ liệu cơ bản cho tạo sản phẩm
 
+&{standard_product_attributes}    AttributeId=361
+...    ProductId=0
+...    Value=L
+# Dữ liệu cơ bản cho tạo sản phẩm
 &{PRODUCT_FORMULAS}    MaterialId=1000016616
 ...    MaterialName=
 ...    MaterialCode=
@@ -56,15 +58,16 @@ Library           String
 ...    Cost=50000
 ...    BasePrice=70000
 ...    $$hashKey=object:2290
-...    
+ 
 
 &{PRODUCT_UNITS}    Id=0
 ...    Unit=
 ...    Code=
-...    ConversionValue=
-...    BasePrice=
-...    Cost=
-...    OnHand=
+...    ConversionValue=1
+...    BasePrice=0
+...    Cost=0
+
+
 
 
 &{GENUINE_GUARANTEES}    Uuid=
@@ -74,12 +77,12 @@ Library           String
 ...    TimeType=6
 ...    WarrantyType=1
 ...    ProductId=0
-...    RetailerId=${DEFAULT_RETAILER_ID}
+...    RetailerId=
 
 
 &{Pricebook_book}                   __type=
 ...    Id=0
-...    PriceBookId=${DEFAULT_PRICEBOOK_ID}
+...    PriceBookId=
 ...    PriceBookName=BCBBB1
 ...    ProductId=0
 ...    IsAuto=false
@@ -89,13 +92,13 @@ Library           String
 ...    Price=65656
 ...    isEnable=true
 
-&{PRODUCT_ATTRIBUTES}    AttributeId=361
-...    ProductId=0
-...    Value=L
+
 
 &{PRODUCT_WITH_WAREHOUSE_STOCK_TAKES}    BranchId=0
 ...    OnHand=0
 
+&{PRODUCT_WITH_SHELVES}    ProductId=0
+...    ShelvesId=0
 
 
 
