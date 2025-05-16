@@ -96,7 +96,62 @@
   - Kiểm tra `RouteOfAdministration` không vượt quá 200 ký tự, nếu vượt quá ném ngoại lệ `KvValidateProductMedicineException` với thông báo `KVMessage.product_RouteOfAdministrationMaxLength`
 
 
+### 5. Xử lý lưu sản phẩm cha
+
+- **Lưu sản phẩm cha đầu tiên**:
+  - Hệ thống tạo sản phẩm cha đầu tiên bằng cách gọi `ProductService.CreateProductWithTransaction(firstParent)`
+  - Thêm ID sản phẩm vào danh sách theo dõi đồng bộ tìm kiếm: `listEventSyncProductSearch.Add(new KeyValuePair<long, IEnumerable<long>>(firstParent.SyncProductSearchEventId, new[] { firstParent.Id }))`
+  - Sản phẩm cha đầu tiên được lưu riêng biệt vì nó sẽ được sử dụng làm sản phẩm chính (master product) cho các sản phẩm cha khác
+
+- **Cập nhật thông tin cho các sản phẩm cha khác**:
+  - Hệ thống duyệt qua danh sách sản phẩm cha (`lsParentProduct`) và xử lý các sản phẩm không phải sản phẩm đầu tiên
+  - Với mỗi sản phẩm cha khác (kiểm tra bằng điều kiện `p.Code != firstParent.Code`):
+    - Cập nhật `MasterCode` bằng mã của sản phẩm cha đầu tiên để thiết lập mối quan hệ phân cấp
+    - Cập nhật `MasterProductId` bằng ID của sản phẩm cha đầu tiên để tham chiếu đến sản phẩm chính
+    - Đồng bộ các thuộc tính quan trọng như `CreatedDate`, `RetailerId`, `IsMedicineProduct`, `IsBatchExpireControl`, `isActive` từ sản phẩm cha đầu tiên
+
+- **Lưu các sản phẩm cha khác**:
+  - Hệ thống lọc ra các sản phẩm cha không phải sản phẩm đầu tiên: `lsParentProductNotMaster = lsParentProduct.Where(p => p != firstParent).ToList()`
+  - Nếu có các sản phẩm cha khác, hệ thống sẽ lưu chúng vào cơ sở dữ liệu
+  - Nếu tính năng theo dõi đồng bộ tìm kiếm được bật (kiểm tra bằng `SyncProductSearchEventTrackToggle().Enable()`):
+    - Tạo danh sách sự kiện đồng bộ `lstEventTrack`
+    - Bắt đầu giao dịch cơ sở dữ liệu với `Db.Database.BeginTransaction()`
+    - Thực hiện `BulkInsertAsync` để chèn hàng loạt các sản phẩm cha vào cơ sở dữ liệu
+    - Với mỗi sản phẩm, tạo sự kiện đồng bộ tìm kiếm với `SyncEsEventHelper.Instance.CreateEvent(product, SyncProductSearchEventAction.AddOrUpdate)`
+    - Nếu tạo sự kiện thành công, thêm vào danh sách `lstEventTrack`
+    - Nếu không tạo được sự kiện, thêm ID sản phẩm vào danh sách theo dõi với eventId = 0
+    - Lưu hàng loạt các sự kiện đồng bộ vào cơ sở dữ liệu
+    - Commit giao dịch nếu thành công, hoặc rollback nếu có lỗi
+    - Cập nhật danh sách theo dõi đồng bộ tìm kiếm với ID sự kiện và ID sản phẩm
+  - Nếu tính năng không được bật, chỉ thực hiện `BulkInsertAsync` các sản phẩm cha
+
+- **Xử lý thông tin vật liệu bổ sung**:
+  - Hệ thống tạo danh sách `newExtMats` để lưu thông tin vật liệu bổ sung
+  - Với mỗi sản phẩm cha trong `lsParentProductNotMaster`:
+    - Kiểm tra xem ngành hiện tại có phải là xây dựng không: `isConstruction = CurrentIndustryId == (int)IndustryList.Construction`
+    - Lấy thông tin vật liệu bổ sung đầu tiên của sản phẩm: `currentExtraMat = prd.ProductExtraMaterials.FirstOrDefault()`
+    - Nếu có thông tin vật liệu, cập nhật các trường:
+      - `ProductId` = ID sản phẩm hiện tại
+      - `CreatedDate` = thời gian hiện tại
+      - `RetailerId` = ID nhà bán lẻ hiện tại
+      - `CreatedBy` = ID người dùng hiện tại
+      - `BranchId` = ID chi nhánh hiện tại
+    - Thêm vào danh sách vật liệu mới nếu sản phẩm có trọng lượng (`prd.Weight.HasValue && prd.Weight > 0`) hoặc thuộc ngành xây dựng
+  - Nếu có vật liệu bổ sung, thực hiện `BulkInsertAsync` để lưu hàng loạt vào cơ sở dữ liệu
+
+- **Xử lý thông tin dược phẩm**:
+  - Kiểm tra điều kiện `AuthService.Context.IsActiveGppDrugStore` để xác định cửa hàng thuốc GPP được kích hoạt
+  - Lấy danh sách ID của tất cả sản phẩm cha: `parentIds = lsParentProduct.Select(p => p.Id).Distinct().ToList()`
+  - Nếu sản phẩm là thuốc trong danh mục quốc gia (`globalMedicineId > 0 || isRetailerMedicine`):
+    - Tạo mẫu sản phẩm (`sampleProduct`) với các thông tin dược phẩm từ sản phẩm đầu tiên
+    - Thêm thông tin dược phẩm từ kho quốc gia cho tất cả sản phẩm cha bằng cách gọi `ProductMedicineService.BatchAddProductMedicineFromNationalRepoAsync`
+  - Nếu là hàng hóa thông thường:
+    - Tạo danh sách thông tin dược phẩm cơ bản cho mỗi sản phẩm cha
+    - Thực hiện thêm hàng loạt thông tin dược phẩm bằng cách gọi `ProductMedicineService.BatchAddProductMedicineAsync`
+
+
+
 **Điều hướng**
 - Trước đó: [1-Chuc-nang-xu-ly-du-lieu-dau-vao.md](./1-Chuc-nang-xu-ly-du-lieu-dau-vao.md)
-- Tiếp theo: [3-Chuc-nang-quan-ly-hinh-anh.md](./3-Chuc-nang-quan-ly-hinh-anh.md)
+- Tiếp theo: [3-Tong-quan-xu-ly-vong-lap-cha-con.md](./3-Tong-quan-xu-ly-vong-lap-cha-con.md)
 - Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
