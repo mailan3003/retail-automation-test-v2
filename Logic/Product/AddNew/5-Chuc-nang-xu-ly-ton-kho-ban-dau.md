@@ -7,73 +7,86 @@ Sau khi hoàn tất việc xử lý chi nhánh và giá vốn, hệ thống ti�
 
 ### 1. Quản lý tồn kho ban đầu (Product Stock Take)
 - **Xử lý kiểm kê kho mặc định**:
-  - Tạo phiếu kiểm kê tồn kho ban đầu cho các sản phẩm mới thông qua `CreateStockTakeForUpdateMultiProductAsync`
-  - Cập nhật số lượng tồn kho ban đầu dựa trên danh sách `lsProductAddStockTake`
+  - Hệ thống kiểm tra nếu danh sách `lsProductAddStockTake` có dữ liệu thông qua `lsProductAddStockTake.Any()`
+  - Tạo phiếu kiểm kê tồn kho ban đầu cho các sản phẩm mới thông qua `StockTakeService.CreateStockTakeForUpdateMultiProductAsync`
+  - Truyền các tham số: ID nhà bán lẻ hiện tại (`CurrentRetailerId`), ID chi nhánh (`branchId`), danh sách sản phẩm cần kiểm kê, và cờ `true` để xác nhận đây là kiểm kê ban đầu
 
-- **Xử lý đặc biệt khi sử dụng nhiều kho (isUsingWarehouse)**:
+- **Xử lý đặc biệt khi sử dụng nhiều kho (isUsingWarehouse = true)**:
   - **Kho chính (Master Stock)**:
-    - Xác định sản phẩm không chỉ kiểm tra kho: `Where(e => !e.IsOnlyCheckWarehouse)`
-    - Tạo phiếu kiểm kê riêng cho kho chính
+    - Lọc ra các sản phẩm không chỉ kiểm tra kho: `masterStock = lsProductAddStockTake.Where(e => !e.IsOnlyCheckWarehouse).ToList()`
+    - Kiểm tra nếu danh sách này có dữ liệu: `masterStock != null && masterStock.Any()`
+    - Tạo phiếu kiểm kê riêng cho kho chính với tham số `true` để xác nhận đây là kiểm kê ban đầu
   
   - **Kho phụ (Warehouse)**:
-    - Tạo các nhóm kiểm kê theo từng kho (`GroupOfProductWarehouseStockTake`)
-    - Xây dựng cấu trúc dữ liệu phân cấp cho từng kho và sản phẩm tương ứng
-    - Tạo phiếu kiểm kê riêng cho từng kho phụ
-    - Ghi nhật ký kiểm kê kho thông qua `LogWarehouseStockTake`
+    - Lọc ra các sản phẩm có dữ liệu kiểm kê kho phụ: `lsStockTakeForWarehouses = lsProductAddStockTake.Where(e => e.ProductWithWarehouseStockTakes != null && e.ProductWithWarehouseStockTakes.Any()).ToList()`
+    - Tạo cấu trúc dữ liệu `GroupOfProductWarehouseStockTake` để nhóm các sản phẩm theo từng kho
+    - Với mỗi sản phẩm trong `lsStockTakeForWarehouses`, duyệt qua từng bản ghi kiểm kê kho phụ (`ProductWithWarehouseStockTakes`)
+    - Tạo đối tượng `ProductAddStockTake` mới với thông tin sản phẩm và số lượng tồn kho thực tế (`ActualCount = stk.OnHand ?? 0`)
+    - Nhóm các bản ghi theo ID chi nhánh (kho) và thêm vào danh sách `lsGroupWarehouseStockTake`
+    - Với mỗi nhóm kho phụ khác với chi nhánh hiện tại, tạo phiếu kiểm kê riêng
+    - Ghi nhật ký kiểm kê kho thông qua `LogWarehouseStockTake` với thông tin kho và kho mặc định
+
+- **Xử lý khi không sử dụng nhiều kho (isUsingWarehouse = false)**:
+  - Tạo một phiếu kiểm kê duy nhất cho tất cả sản phẩm trong `lsProductAddStockTake`
+  - Sử dụng `StockTakeService.CreateStockTakeForUpdateMultiProductAsync` với tham số tương tự như trên
 
 ### 2. Cập nhật đơn vị tính cho sản phẩm theo chi nhánh
-- Thực hiện cập nhật hàng loạt đơn vị tính cho sản phẩm theo chi nhánh thông qua `BatchUpdateProductBranchUnit`
-- Sử dụng danh sách `lsChangeProductBranchUnit` chứa thông tin thay đổi
-- Áp dụng cho nhà bán lẻ hiện tại (`AuthService.Context.RetailerId`) và chi nhánh hiện tại (`AuthService.Context.BranchId`)
+- Kiểm tra nếu danh sách `lsChangeProductBranchUnit` có dữ liệu thông qua `lsChangeProductBranchUnit.Any()`
+- Thực hiện cập nhật hàng loạt đơn vị tính cho sản phẩm theo chi nhánh thông qua `ProductBranchService.BatchUpdateProductBranchUnit`
+- Truyền các tham số: danh sách thay đổi (`lsChangeProductBranchUnit`), ID nhà bán lẻ (`AuthService.Context.RetailerId`), và ID chi nhánh hiện tại (`AuthService.Context.BranchId`)
 
 ### 3. Cập nhật thuộc tính sản phẩm
-- Thực hiện thêm hàng loạt thuộc tính cho nhiều sản phẩm qua `BatchAddMultiProductAsync`
-- Sử dụng danh sách `lsProductAttributes` chứa các thuộc tính cần thêm
+- Kiểm tra nếu danh sách `lsProductAttributes` có dữ liệu thông qua `lsProductAttributes.Any()`
+- Thực hiện thêm hàng loạt thuộc tính cho nhiều sản phẩm qua `ProductAttributeService.BatchAddMultiProductAsync`
+- Truyền danh sách thuộc tính sản phẩm (`lsProductAttributes`) làm tham số
 
 ### 4. Quản lý vị trí kệ hàng cho sản phẩm
+- Kiểm tra nếu danh sách `lsProductShelves` có dữ liệu thông qua `lsProductShelves.Any()`
 - **Xóa thông tin kệ hàng cũ**:
-  - Lấy danh sách ID sản phẩm từ `lsProductShelves`
-  - Xóa tất cả dữ liệu kệ hàng hiện có của các sản phẩm này
+  - Lấy danh sách ID sản phẩm từ `lsProductShelves`: `delShelvesProductIds = lsProductShelves.Select(ps => ps.ProductId).ToArray()`
+  - Xóa tất cả dữ liệu kệ hàng hiện có của các sản phẩm này: `Db.ProductShelves.WhereIn(delShelvesProductIds, ps => ps.ProductId).DeleteFromQueryAsync()`
   
 - **Thêm thông tin kệ hàng mới**:
-  - Cập nhật ID nhà bán lẻ cho từng mục
-  - Sử dụng `BulkMergeAsync` để thêm hàng loạt dữ liệu
-  - Xác định khóa chính bằng tổ hợp ShelvesId, ProductId và RetailerId
+  - Cập nhật ID nhà bán lẻ cho từng mục: `lsProductShelves.ForEach(s => s.RetailerId = CurrentRetailerId)`
+  - Sử dụng `Db.BulkMergeAsync` để thêm hàng loạt dữ liệu kệ hàng mới
+  - Xác định khóa chính bằng biểu thức: `ps => new { ps.ShelvesId, ps.ProductId, ps.RetailerId }`
 
 ### 5. Xử lý hình ảnh sản phẩm
 - **Xác định phạm vi lưu hình ảnh**:
-  - Kiểm tra cờ `SaveImagesForAllProducts` từ dữ liệu form
-  - Nếu bật: áp dụng hình ảnh cho tất cả sản phẩm trong nhóm (`listObjReturn`)
-  - Nếu tắt: chỉ áp dụng cho sản phẩm đầu tiên trong danh sách
+  - Kiểm tra cờ `SaveImagesForAllProducts` từ dữ liệu form: `formData != null && ConvertHelper.ToBoolean(formData.Get("SaveImagesForAllProducts"))`
+  - Khởi tạo danh sách sản phẩm cần sao chép hình ảnh: `productsListToCloneImages = new List<Product>()`
+  - Nếu `saveForAllProductsInGroup = true`: thêm tất cả sản phẩm từ `listObjReturn` vào danh sách
+  - Nếu `saveForAllProductsInGroup = false`: chỉ thêm sản phẩm đầu tiên từ `listObjReturn` vào danh sách
 
 - **Xử lý sao chép hình ảnh**:
   - Gọi `ProcessCloneProduct` để xử lý sao chép hình ảnh cho sản phẩm
-  - Sử dụng danh sách `globalProductsImages` chứa thông tin hình ảnh toàn cục
+  - Truyền các tham số: yêu cầu (`req`), danh sách sản phẩm cần sao chép (`productsListToCloneImages`), và danh sách hình ảnh sản phẩm toàn cục (`globalProductsImages`)
 
 ## Luồng xử lý chức năng
 
 1. **Xử lý tồn kho ban đầu**
-   - Kiểm tra điều kiện sử dụng nhiều kho
+   - Kiểm tra điều kiện sử dụng nhiều kho thông qua biến `isUsingWarehouse`
    - Nếu sử dụng nhiều kho:
-     - Tạo phiếu kiểm kê cho kho chính
-     - Tạo và nhóm dữ liệu cho các kho phụ
-     - Tạo phiếu kiểm kê cho từng kho phụ
+     - Tạo phiếu kiểm kê cho kho chính với các sản phẩm không chỉ kiểm tra kho
+     - Tạo và nhóm dữ liệu cho các kho phụ theo ID chi nhánh
+     - Tạo phiếu kiểm kê cho từng kho phụ và ghi nhật ký
    - Nếu không sử dụng nhiều kho:
-     - Tạo phiếu kiểm kê duy nhất cho tất cả sản phẩm
+     - Tạo phiếu kiểm kê duy nhất cho tất cả sản phẩm trong `lsProductAddStockTake`
 
 2. **Cập nhật đơn vị tính theo chi nhánh**
-   - Thực hiện cập nhật hàng loạt nếu có thay đổi
+   - Thực hiện cập nhật hàng loạt nếu `lsChangeProductBranchUnit` có dữ liệu
 
 3. **Cập nhật thuộc tính sản phẩm**
-   - Thêm thuộc tính cho nhiều sản phẩm nếu có
+   - Thêm thuộc tính cho nhiều sản phẩm nếu `lsProductAttributes` có dữ liệu
 
 4. **Quản lý kệ hàng**
-   - Xóa dữ liệu kệ hàng cũ
-   - Thêm dữ liệu kệ hàng mới
+   - Xóa dữ liệu kệ hàng cũ dựa trên ID sản phẩm
+   - Cập nhật ID nhà bán lẻ cho các bản ghi mới
+   - Thêm dữ liệu kệ hàng mới với khóa chính phù hợp
 
 5. **Xử lý hình ảnh**
-   - Xác định phạm vi áp dụng hình ảnh
-   - Thực hiện sao chép hình ảnh cho sản phẩm
+   - Xác định phạm vi áp dụng hình ảnh dựa trên cờ `SaveImagesForAllProducts`
+   - Thực hiện sao chép hình ảnh cho sản phẩm thông qua `ProcessCloneProduct`
 
 ## Điều hướng tài liệu
 - Trước đó: [4-Chuc-nang-xu-ly-sau-luu-san-pham.md](./4-Chuc-nang-xu-ly-sau-luu-san-pham.md)
