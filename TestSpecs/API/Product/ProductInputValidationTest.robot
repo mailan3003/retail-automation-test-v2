@@ -335,3 +335,243 @@ RT-PD-037 Kiểm tra mô tả sản phẩm hợp lệ
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
+
+RT-PD-038 Kiểm tra xác thực thông tin dược phẩm khi không phải nhà thuốc GPP
+    [Documentation]    Kiểm tra xử lý khi không phải nhà thuốc GPP
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra điều kiện IsActiveGppDrugStore
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với IsActiveGppDrugStore = false
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-039 Kiểm tra xác thực quốc gia sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi quốc gia sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra quốc gia sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quốc gia sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER_COUNTRY}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER_COUNTRY}
+
+RT-PD-040 Kiểm tra xác thực nhà sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi nhà sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra nhà sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER}
+
+RT-PD-041 Kiểm tra độ dài tên ngắn vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài tên ngắn > 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên ngắn, (hiện code chưa truyền ShortName nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên ngắn dài 101 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_SHORT_NAME_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SHORT_NAME_LENGTH}
+
+RT-PD-042 Kiểm tra độ dài đường dùng vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài đường dùng > 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài đường dùng (hiện code chưa truyền RouteOfAdministration nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng dài 201 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_ROUTE_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ROUTE_LENGTH}
+
+RT-PD-043 Kiểm tra thông tin dược phẩm hợp lệ
+    [Documentation]    Kiểm tra xử lý khi thông tin dược phẩm hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra với thông tin dược phẩm hợp lệ
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với thông tin hợp lệ
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
+RT-PD-044 Kiểm tra đường dùng thuốc trống
+    [Documentation]    Kiểm tra xử lý khi đường dùng thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường RouteOfAdministration không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_ROUTE_OF_ADMINISTRATION}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_ROUTE_OF_ADMINISTRATION}
+
+RT-PD-045 Kiểm tra số đăng ký thuốc trống
+    [Documentation]    Kiểm tra xử lý khi số đăng ký thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường RegistrationNo không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với số đăng ký trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_REGISTRATION_NO}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_REGISTRATION_NO}
+
+RT-PD-046 Kiểm tra hoạt chất thuốc trống
+    [Documentation]    Kiểm tra xử lý khi hoạt chất thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường ActiveElement không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hoạt chất trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_ACTIVE_ELEMENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_ACTIVE_ELEMENT}
+
+RT-PD-047 Kiểm tra hàm lượng thuốc trống
+    [Documentation]    Kiểm tra xử lý khi hàm lượng thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường Content không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hàm lượng trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_CONTENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_CONTENT}
+
+RT-PD-048 Kiểm tra quy cách đóng gói thuốc trống
+    [Documentation]    Kiểm tra xử lý khi quy cách đóng gói thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường PackagingSize không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quy cách đóng gói trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_PACKAGING_SIZE}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_PACKAGING_SIZE}
+
+RT-PD-049 Kiểm tra đơn vị cơ bản thuốc trống
+    [Documentation]    Kiểm tra xử lý khi đơn vị cơ bản thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường Unit không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đơn vị cơ bản trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_UNIT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_UNIT}
+
+RT-PD-050 Kiểm tra nhà sản xuất thuốc trống
+    [Documentation]    Kiểm tra xử lý khi nhà sản xuất thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường ManufacturerId hoặc GlobalManufacturerId không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_MANUFACTURER}
+
+RT-PD-052 Kiểm tra vượt quá độ dài tên thuốc khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài tên thuốc vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên thuốc khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_NAME}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_NAME}
+
+RT-PD-053 Kiểm tra vượt quá độ dài số đăng ký khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài số đăng ký vượt quá 20 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài số đăng ký khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với số đăng ký dài 21 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_REGISTRATION_NO}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Dài 21 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_REGISTRATION_NO}
+
+RT-PD-054 Kiểm tra vượt quá độ dài hoạt chất khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài hoạt chất vượt quá 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài hoạt chất khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hoạt chất dài 201 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_ACTIVE_ELEMENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Dài 201 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_ACTIVE_ELEMENT}
+
+RT-PD-055 Kiểm tra vượt quá độ dài hàm lượng khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài hàm lượng vượt quá 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài hàm lượng khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hàm lượng dài 201 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_CONTENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Dài 201 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_CONTENT}
+
+RT-PD-056 Kiểm tra vượt quá độ dài quy cách đóng gói khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài quy cách đóng gói vượt quá 50 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài quy cách đóng gói khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quy cách đóng gói dài 51 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_PACKAGING_SIZE}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Dài 51 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_PACKAGING_SIZE}
+
+RT-PD-057 Kiểm tra vượt quá độ dài tên nhà sản xuất khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài tên nhà sản xuất vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên nhà sản xuất khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên nhà sản xuất dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Nhà Sản Xuất Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_MANUFACTURER}
+
+RT-PD-058 Kiểm tra vượt quá độ dài đơn vị cơ bản khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài đơn vị cơ bản vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài đơn vị cơ bản khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đơn vị cơ bản dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_UNIT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_UNIT}
