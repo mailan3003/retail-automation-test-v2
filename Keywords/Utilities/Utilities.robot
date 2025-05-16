@@ -20,6 +20,12 @@ Create Auth Headers With File
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Retailer=${RETAILER_CODE}     BranchId=${BRANCH_ID}
     RETURN    ${headers}
 
+
+Create Auth Headers With BranchId
+    [Arguments]    ${token}=${AUTH_TOKEN}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${BRANCH_ID}
+    RETURN    ${headers}
+
 Create Auth Headers With BranchId
     [Arguments]    ${token}=${AUTH_TOKEN}
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${BRANCH_ID}
