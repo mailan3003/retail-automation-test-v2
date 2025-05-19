@@ -575,3 +575,61 @@ RT-PD-058 Kiểm tra vượt quá độ dài đơn vị cơ bản khi đồng b�
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_UNIT}
+
+RT-PD-059 Kiểm tra thêm sản phẩm với kiểm kê kho hợp lệ
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với kiểm kê kho hợp lệ
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Xử lý kiểm kê kho với sản phẩm thông thường qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với thông tin kiểm kê kho hợp lệ (các kho tồn tại và đang hoạt động)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Kiểm Kê Kho Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+
+RT-PD-060 Kiểm tra thêm sản phẩm với kho đã xóa
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với mã kho đã xóa
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra xác thực trạng thái hoạt động của kho hàng thông qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã kho đã xóa
+    ...    - Kỳ vọng: Lỗi "${ERROR_WAREHOUSE_NOT_FOUND}"
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Kho Đã Xóa
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi ${ERROR_WAREHOUSE_NOT_FOUND}
+
+RT-PD-061 Kiểm tra thêm sản phẩm với kho không hoạt động
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với kho không hoạt động
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra xác thực trạng thái hoạt động của kho hàng thông qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với kho không hoạt động
+    ...    - Kỳ vọng: Lỗi "${ERROR_WAREHOUSE_INACTIVE}"
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Không Hoạt Động
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi ${ERROR_WAREHOUSE_INACTIVE}
+
+RT-PD-062 Kiểm tra thêm sản phẩm với sản phẩm kiểm soát lô có kiểm kê kho
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm kiểm soát lô có kiểm kê kho
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra điều kiện xử lý kiểm kê kho (IsBatchExpireControl != true)
+    ...    - Dữ liệu đầu vào: Sản phẩm kiểm soát lô (IsBatchExpireControl = true) với thông tin kiểm kê kho
+    ...    - Kỳ vọng: Tạo thành công, status code 200 (kiểm kê kho bị bỏ qua)
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Lô Với Kiểm Kê Kho
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-063 Kiểm tra thêm sản phẩm với sản phẩm kiểm soát serial có kiểm kê kho
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm kiểm soát serial có kiểm kê kho
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra điều kiện xử lý kiểm kê kho (IsLotSerialControl != true)
+    ...    - Dữ liệu đầu vào: Sản phẩm kiểm soát serial (IsLotSerialControl = true) với thông tin kiểm kê kho
+    ...    - Kỳ vọng: Tạo thành công, status code 200 (kiểm kê kho bị bỏ qua)
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200

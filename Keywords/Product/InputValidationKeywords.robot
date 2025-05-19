@@ -637,3 +637,83 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản 
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+# Warehouse stocktake validation keywords
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Kiểm Kê Kho Hợp Lệ
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    
+    # Tạo thông tin kiểm kê kho hợp lệ
+    ${stocktakes}=    Create List
+    ${stocktake1}=    Create Dictionary    BranchId=${ACTIVE_WAREHOUSE_ID}    OnHand=10
+    ${stocktake2}=    Create Dictionary    BranchId=${ACTIVE_WAREHOUSE_ID_2}    OnHand=20
+    Append To List    ${stocktakes}    ${stocktake1}
+    Append To List    ${stocktakes}    ${stocktake2}
+    
+    ${data}=    Set To Dictionary    ${data}    ProductWithWarehouseStockTakes=${stocktakes}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Kho Đã Xóa
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    
+    ${stocktakes}=    Create List
+    ${stocktake1}=    Create Dictionary    BranchId=${DELETED_WAREHOUSE_ID}    OnHand=10
+    Append To List    ${stocktakes}    ${stocktake1}
+    
+    ${data}=    Set To Dictionary    ${data}    ProductWithWarehouseStockTakes=${stocktakes}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Không Hoạt Động
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    
+    # Tạo thông tin kiểm kê kho với kho không hoạt động
+    ${stocktakes}=    Create List
+    ${stocktake1}=    Create Dictionary    BranchId=${INACTIVE_WAREHOUSE_ID}    OnHand=10
+    Append To List    ${stocktakes}    ${stocktake1}
+    
+    ${data}=    Set To Dictionary    ${data}    ProductWithWarehouseStockTakes=${stocktakes}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Lô Với Kiểm Kê Kho
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    IsBatchExpireControl=${TRUE}
+    
+    # Tạo thông tin kiểm kê kho
+    ${stocktakes}=    Create List
+    ${stocktake1}=    Create Dictionary    BranchId=${ACTIVE_WAREHOUSE_ID}    OnHand=10
+    Append To List    ${stocktakes}    ${stocktake1}
+    
+    ${data}=    Set To Dictionary    ${data}    ProductWithWarehouseStockTakes=${stocktakes}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
+    ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${data}=    Set To Dictionary    ${data}    IsLotSerialControl=${TRUE}    Name=Hàng hóa kiểm soát lô
+    
+    # Tạo thông tin kiểm kê kho
+    ${stocktakes}=    Create List
+    ${stocktake1}=    Create Dictionary    BranchId=${ACTIVE_WAREHOUSE_ID}    OnHand=10
+    Append To List    ${stocktakes}    ${stocktake1}
+    
+    ${data}=    Set To Dictionary    ${data}    ProductWithWarehouseStockTakes=${stocktakes}
+    ${list_products}=    Create List    ${data}
+    ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_list_products}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+    
