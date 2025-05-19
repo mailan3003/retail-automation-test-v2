@@ -42,3 +42,4 @@ Trong quá trình xử lý sản phẩm cha, hệ thống cần thực hiện vi
 **Điều hướng**
 - Trước đó: [3-1-Xu-ly-thong-tin-thue-san-pham.md](./3-1-Xu-ly-thong-tin-thue-san-pham.md)
 - Tiếp theo: [3-3-Xu-ly-du-lieu-bang-lien-quan.md](./3-3-Xu-ly-du-lieu-bang-lien-quan.md) 
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 

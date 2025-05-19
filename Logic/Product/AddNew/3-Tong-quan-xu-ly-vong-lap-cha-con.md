@@ -67,4 +67,4 @@ Sau khi vòng lặp xử lý hoàn tất, các danh sách kết quả chứa th�
 ## Điều hướng tài liệu
 - Trước đó: [2-Chuc-nang-xac-thuc-san-pham.md](./2-Chuc-nang-xac-thuc-san-pham.md)
 - Tiếp theo: [4-Chuc-nang-xu-ly-sau-luu-san-pham.md](./4-Chuc-nang-xu-ly-sau-luu-san-pham.md)
-- Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 

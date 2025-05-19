@@ -59,4 +59,4 @@ Khi biến `isUsingProductBranchSelect` là false, hệ thống thực hiện:
 ## Điều hướng tài liệu
 - Trước đó: [3-Tong-quan-xu-ly-vong-lap-cha-con.md](./3-Tong-quan-xu-ly-vong-lap-cha-con.md)
 - Tiếp theo: [5-Chuc-nang-xu-ly-ton-kho-ban-dau.md](./5-Chuc-nang-xu-ly-ton-kho-ban-dau.md)
-- Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 
