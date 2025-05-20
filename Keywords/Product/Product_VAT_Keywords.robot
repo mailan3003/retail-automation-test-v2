@@ -12,7 +12,7 @@ Resource          ../../TestData/Product/ProductInputData.robot
 Resource          Product_KeywordsCommand.robot
 Library           String
 *** Variables ***
-${CATEGORY_ID_HANG_HOA}    1000000754
+${CATEGORY_ID_HANG_HOA_VLXD}    1000000753
 *** Keywords ***
 Tạo Sản Phẩm Và Xác Thực Thuế
     [Arguments]    ${tax_rate}
@@ -22,38 +22,33 @@ Tạo Sản Phẩm Và Xác Thực Thuế
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     ${clean_rate}=    Remove String    ${tax_rate}    %
     And Xác Thực Sản Phẩm Có Thuế ${clean_rate} Theo Dữ Liệu Đã Gửi
+Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} %
+        ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+        ${request}=    Deep Copy     ${list_product_data}
+        ${random_code}=    Generate Random String    6    [NUMBERS]
+        ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+       ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+        ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
+        ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+        ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+        ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+        ${list_products}     Evaluate    (None, '[${form_data}]')
+        ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
+        Set Test Variable    ${REQUEST_DATA}    ${payload}
+        
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế    ${tax_rate}
-    ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
-    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
-    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
-    ${list_products}     Evaluate    (None, '[${form_data}]')
-    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
-    Set Test Variable    ${REQUEST_DATA}    ${payload}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế Trực Tiếp ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
-    ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
-    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
-    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
-    ${list_products}     Evaluate    (None, '[${form_data}]')
-    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
-    Set Test Variable    ${REQUEST_DATA}    ${payload}
 
-Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Với Thuế Trực Tiếp ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    DV${random_code}
+    ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
     ${request}    Update Dictionary Property    ${request}    ProductType    3
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -65,13 +60,16 @@ Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Với Thuế Trực Tiếp ${tax_rate
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Với Thuế ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế    ${tax_rate}
+Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-     ${request}    Update Dictionary Property    ${request}    IsLotSerialControl    true
-     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
+    ${random_code}=    Generate Random String    6    [NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+   ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+    ${request}    Update Dictionary Property    ${request}    IsLotSerialControl    true
+    ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
     ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
@@ -80,11 +78,14 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Với Thuế ${tax_rate}
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Với Thuế ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế    ${tax_rate}
+Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+   ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -95,21 +96,39 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Với
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request} 
 
-
-Chuẩn Bị Dữ Liệu Cập Nhật Thuế ${tax_rate} % Cho Sản Phẩm
-    ${tax_ID}   Lấy taxid từ giá trị thuế    ${tax_rate}
-    ${request}=    Create Dictionary    ProductId=${CREATED_PRODUCT_ID}    TaxId=${tax_ID}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${formula}          Deep Copy     ${PRODUCT_FORMULAS}  
+    ${formula}     Create List    ${formula}
+    ${random_code}=    Generate Random String    6    [NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    HSX${random_code}
+   ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+    ${request}    Update Dictionary Property    ${request}    ProductFormulas    ${formula}   
+    ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID} 
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}        BranchForProductCostss=${branch_pr_cost}  
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Combo Với Thuế ${tax_rate} %
-    ${tax_ID}   Lấy taxid từ giá trị thuế    ${tax_rate}
+
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Combo Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${request}=    Deep Copy     ${list_product_data}
     ${formula}=     Deep Copy    ${PRODUCT_FORMULAS}
     ${formula}    Create List    ${formula}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    CB${random_code}
     ${request}    Update Dictionary Property    ${request}    ProductType    1
+   ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
     ${request}    Update Dictionary Property    ${request}    ProductFormulas    ${formula}
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -120,12 +139,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Combo Với Thuế ${tax_rate} %
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Thuế ${tax_rate} %
-            ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
-            ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
-            ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
-            ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-            ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
     ${request}=    Deep Copy     ${list_product_data}
@@ -156,8 +172,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Thuế ${tax_rate} %
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Đơn Vị Quy Đổi ${name_unit} Với ${value}
-    ${tax_ID}     Lấy taxid từ giá trị thuế    ${tax_rate}
+Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} % Và Đơn Vị Quy Đổi ${name_unit} Với ${value}
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
     ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
     ${list_products}      Deep Copy    ${list_product_data}
@@ -178,6 +195,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Đơn Vị 
         ${random_code}=    Generate Random String    6    [NUMBERS]
         ${code}=    Set Variable    QD${random_code}
         ${request}    Update Dictionary Property    ${request}    Code    ${code}
+        ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'       Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
         ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
         ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
         ${request}    Update Dictionary Property    ${request}    TaxId    ${tax_ID}
@@ -192,8 +211,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Đơn Vị 
     Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Thuộc Tính ${dict_attribute_name_1}
-    ${tax_ID}     Lấy taxid từ giá trị thuế    ${tax_rate}
+Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} % Và Thuộc Tính ${dict_attribute_name_1}
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${list_products}=    Create List
     
     # Lấy thông tin thuộc tính từ dictionary đầu vào
@@ -227,6 +247,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Thuộc Tí
         ${code}=    Set Variable    HHTT${random_code}
         Append To List    ${list_products_code}    ${code}
         ${request}=    Update Nested Dictionary Property    ${request}    Code    ${code}
+        ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+         ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
         ${request}=    Update Nested Dictionary Property    ${request}    TaxId    ${tax_ID}
         
         # Tạo tên sản phẩm từ tổ hợp thuộc tính
@@ -267,21 +289,80 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} % Và Thuộc Tí
     Set Test Variable    ${LIST_PRODUCTS_CODE}    ${list_products_code}
     RETURN    ${REQUEST_DATA}
 
+Chuẩn Bị Dữ Liệu Cập Nhật Thuế ${type_tax} Với ${tax_rate} % Cho Sản Phẩm
+    Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với 5 % 
+    ${tax_old}     Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp   5
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế  5
+    Gửi Yêu Cầu Tạo Sản Phẩm
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    ${request}      Deep Copy     ${list_product_data}
+    ${request}    Update Dictionary Property    ${request}    TaxId    ${tax_ID}
+    ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+    ${request}    Update Dictionary Property    ${request}    Id    ${CREATED_PRODUCT_ID}
+    ${request}    Update Dictionary Property    ${request}    Code    ${CREATED_PRODUCT_CODE}
+    ${request}    Update Dictionary Property    ${request}    CompareTaxId     ${tax_old} 
+    ${request}    Update Dictionary Property    ${request}    VariantCount    1
+    ${request}    Update Dictionary Property    ${request}    CompareCode     ${CREATED_PRODUCT_CODE}
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '${form_data}')
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${payload}    Create Dictionary    Product=${list_products}         BranchForProductCostss=${branch_pr_cost}  
+    Log     ${payload}
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
 
-Lấy taxid từ giá trị thuế
-    [Arguments]    ${tax_rate}
-    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
-    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
-    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
-    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
-    RETURN    ${tax_ID}
 
-Lấy taxid từ giá trị thuế trực tiếp
-    [Arguments]    ${tax_rate}
-    ${tax_ID}     Run Keyword If  '${tax_rate}'=='1'     Set Variable    6
-    ...     ELSE IF   '${tax_rate}'=='2'     Set Variable    7
-    ...     ELSE IF   '${tax_rate}'=='3'     Set Variable    8
-    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    9
-    RETURN    ${tax_ID}
+Sao chép hàng hóa Thuế ${type_tax} Với ${tax_rate} % Cho Sản Phẩm
+    Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${type_tax} Với 5 % 
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    Gửi Yêu Cầu Tạo Sản Phẩm
+    ${request}      Deep Copy     ${list_product_data}
+    ${request}    Update Dictionary Property    ${request}    TaxId    ${tax_ID}
+    ${request}    Update Dictionary Property    ${request}    ProductId    ${CREATED_PRODUCT_ID}
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '${form_data}')
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${payload}    Create Dictionary    Product=${list_products}         BranchForProductCostss=${branch_pr_cost}      CloneProductId=${CREATED_PRODUCT_ID}
+    Log     ${payload}
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
 
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form Khác Với Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${random_code}=    Generate Random String    6    [NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+    ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+    ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}     isAddFromOtherForm=true 
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form MHBH Với Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${random_code}=    Generate Random String    6    [NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
+    ${request}    Run Keyword If  '${type_tax}'=='Trực Tiếp'      Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'      Set Variable    ${request}
+    ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProducts=${list_products}         
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}

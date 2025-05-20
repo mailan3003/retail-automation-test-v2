@@ -10,110 +10,142 @@ Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 *** Variables ***
 @{value_attribute_1}   L  M   S
 &{dict_attribute_name_1}    SIZE=@{value_attribute_1}
-@{name_unit}     hai    nửa
-@{value}    2    3
-@{tax_rates}    0    5    8    10    Không chịu thuế
-@{invalid_tax_ids}    999    -1    0
+@{name_unit}     Một    nửa
+@{value}    1    2
 *** Test Cases ***
 
 
 RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
     [Documentation]    Test tạo sản phẩm có thuế
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT2
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 5 %
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 5%
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 5 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 5 Theo Dữ Liệu Đã Gửi
 
 RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
     [Documentation]    Test tạo sản phẩm có thuế 0%
     [Tags]    AIGenerated    CreateProduct    Positive    VAT
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 0 %
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 0%
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 0 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 0 % Theo Dữ Liệu Đã Gửi
 
-RT-PRODUCT-011 Tạo Sản Phẩm Với Thuế 8%
-    [Documentation]    Test tạo sản phẩm có thuế 8%
+RT-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế 8%
+    [Documentation]    Test tạo sản phẩm dịch vụ có thuế 8%
     [Tags]    AIGenerated    CreateProduct    Positive    VAT
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 8 %
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dịch Vụ Thuế Khấu Trừ Với 8 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 8 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 8 Theo Dữ Liệu Đã Gửi
 
-RT-PRODUCT-012 Tạo Sản Phẩm Với Thuế 10%
-    [Documentation]    Test tạo sản phẩm có thuế 10%
+RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế 10%
+    [Documentation]    Test tạo sản phẩm serial có thuế 10%
     [Tags]    AIGenerated    CreateProduct    Positive    VAT
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 10 %
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Thuế Khấu Trừ Với 10 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 10 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 10 Theo Dữ Liệu Đã Gửi
 
-RT-PRODUCT-013 Tạo Sản Phẩm Không Chịu Thuế
+RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Không Chịu Thuế
     [Documentation]    Test tạo sản phẩm không chịu thuế
     [Tags]    AIGenerated    CreateProduct    Positive    VAT
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế Không chịu thuế %
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thuế Trực Tiếp Với KCT %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế Không chịu thuế Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với KCT Theo Dữ Liệu Đã Gửi
 
-RT-PRODUCT-014 Tạo Nhiều Sản Phẩm Với Các Mức Thuế Khác Nhau
-    [Documentation]    Test tạo nhiều sản phẩm với các mức thuế khác nhau
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Template
-    [Template]    Tạo Sản Phẩm Và Xác Thực Thuế
-    # tax_rate
-    0 %
-    5 %
-    8 %
-    10 %
-    Không chịu thuế %
-
-RT-PRODUCT-015 Tạo Sản Phẩm Dịch Vụ Với Thuế
-    [Documentation]    Test tạo sản phẩm dịch vụ có thuế
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Service
-    Given Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Với Thuế 5 %
+RT-PRODUCT-014 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế 5%
+    [Documentation]    Test tạo sản phẩm loại hàng sản xuất có thuế 5%
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Product
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Thuế Khấu Trừ Với 5 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 5 Theo Dữ Liệu Đã Gửi
-    And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 5 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
 
-RT-PRODUCT-016 Cập Nhật Thuế Cho Sản Phẩm
-    [Documentation]    Test cập nhật mức thuế cho sản phẩm đã tạo
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Update
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 5 %
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Có Thuế 5 Theo Dữ Liệu Đã Gửi
-    When Chuẩn Bị Dữ Liệu Cập Nhật Thuế 10 % Cho Sản Phẩm
-    And Gửi Yêu Cầu Cập Nhật Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Có Thuế 10 Theo Dữ Liệu Đã Gửi
 
-RT-PRODUCT-017 Tạo Sản Phẩm Với Mã Thuế Không Hợp Lệ
-    [Documentation]    Test tạo sản phẩm với mã thuế không tồn tại
-    [Tags]    AIGenerated    CreateProduct    Negative    VAT    InvalidData
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Thuế Không Hợp Lệ 999
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Xác Thực Lỗi "Mã thuế không tồn tại"
-
-RT-PRODUCT-018 Tạo Sản Phẩm Combo Với Thuế
+RT-PRODUCT-015 Tạo Sản Phẩm Combo Với Thuế Khấu Trừ Với KKKNT %
     [Documentation]    Test tạo sản phẩm combo có thuế
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Combo
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Combo Với Thuế 10 %
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Service
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Combo Thuế Khấu Trừ Với KKKNT %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 10 Theo Dữ Liệu Đã Gửi
-    And Xác Thực Sản Phẩm Có Loại Là Combo
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với KKKNT Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
 
-RT-PRODUCT-019 Cập Nhật Thuế Sản Phẩm Không Tồn Tại
+
+RT-PRODUCT-017 Tạo Sản Phẩm Với Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive   VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Trực Tiếp Với 2 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 2 Theo Dữ Liệu Đã Gửi
+
+T-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm dịch vụ có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dịch Vụ Thuế Trực Tiếp Với 3 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 3 Theo Dữ Liệu Đã Gửi
+
+RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm serial có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Thuế Trực Tiếp Với 5 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+
+RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm lô và hạn sử dụng có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thuế Trực Tiếp Với 3 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 3 Theo Dữ Liệu Đã Gửi
+
+
+RT-PRODUCT-018 Tạo Sản Phẩm Combo Với Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm combo có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Combo
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Combo Thuế Trực Tiếp Với 1 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 1 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
+
+RT-PRODUCT-019 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế Trực Tiếp
+    [Documentation]    Test tạo sản phẩm loại hàng sản xuất có thuế trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT24   Product
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Thuế Trực Tiếp Với 5 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
+
+RT-PRODUCT-020 Cập Nhật Thuế Sản Phẩm Không Tồn Tại
     [Documentation]    Test cập nhật thuế với sản phẩm không tồn tại
     [Tags]    AIGenerated    CreateProduct    Negative    VAT    InvalidData
     Given Chuẩn Bị Dữ Liệu Cập Nhật Thuế Cho Sản Phẩm Không Tồn Tại
@@ -132,35 +164,97 @@ RT-PRODUCT-020 Cập Nhật Thuế Không Hợp Lệ Cho Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Xác Thực Lỗi "Mã thuế không tồn tại"
 
-RT-PRODUCT-021 Tạo Sản Phẩm Thuốc Với Thuế
-    [Documentation]    Test tạo sản phẩm thuốc có thuế
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Medicine
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Thuế 5 %
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 5 Theo Dữ Liệu Đã Gửi
-    And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
 
 RT-PRODUCT-022 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi
     [Documentation]    Test tạo sản phẩm có thuế và đơn vị quy đổi
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Units
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 10 % Và Đơn Vị Quy Đổi
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT   Units
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 10 % Và Đơn Vị Quy Đổi ${name_unit} Với ${value}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế 10 Theo Dữ Liệu Đã Gửi
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
+    And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCT_CODE} Có Thuế Khấu Trừ Với 10 %
+
+
 
 RT-PRODUCT-023 Tạo Sản Phẩm Với Thuế và Thuộc Tính
     [Documentation]    Test tạo sản phẩm có thuế và thuộc tính
-    [Tags]    AIGenerated    CreateProduct    Positive    VAT    Attributes
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 5 % Và Thuộc Tính
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT2    Attributes
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 8 % Và Thuộc Tính ${dict_attribute_name_1}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra
-    And Xác Thực Tất Cả Sản Phẩm Con Có Thuế 5 %
+    And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCTS_CODE} Có Thuế Khấu Trừ Với 8 %
+
+
+RT-PRODUCT-024 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi Trực Tiếp
+    [Documentation]    Test tạo sản phẩm có thuế và đơn vị quy đổi trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT   Units
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Trực Tiếp Với 1 % Và Đơn Vị Quy Đổi ${name_unit} Với ${value}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
+    And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCT_CODE} Có Thuế Trực Tiếp Với 1 %
+
+
+
+RT-PRODUCT-025 Tạo Sản Phẩm Với Thuế và Thuộc Tính Trực Tiếp
+    [Documentation]    Test tạo sản phẩm có thuế và thuộc tính trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT2    Attributes
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Trực Tiếp Với 2 % Và Thuộc Tính ${dict_attribute_name_1}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra
+    And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCTS_CODE} Có Thuế Trực Tiếp Với 2 %
+
+RT-PRODUCT-026 Tạo Sản Phẩm Với Mã Thuế Không Hợp Lệ
+    [Documentation]    Test tạo sản phẩm với mã thuế không tồn tại
+    [Tags]    AIGenerated    CreateProduct    Negative    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Combo Thuế Khấu Trừ Với null %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Xác Thực Lỗi "Có lỗi khi cập nhật dữ liệu"
+
+
+RT-PRODUCT-027 Tạo Sản Phẩm Thế Trực Tiếp Từ From Khác
+    [Documentation]    Test tạo sản phẩm thế trực tiếp từ from khác
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form Khác Với Thuế Trực Tiếp Với 5 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+
+RT-PRODUCT-028 Tạo Sản Phẩm Thế Khấu Trừ Từ From Khác
+    [Documentation]    Test tạo sản phẩm thế khấu trừ từ from khác
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form Khác Với Thuế Khấu Trừ Với 8 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 8 Theo Dữ Liệu Đã Gửi
+
+RT-PRODUCT-029 Tạo Sản Phẩm Thuế Trực Tiếp Từ MHBH
+    [Documentation]    Test tạo sản phẩm thuế trực tiếp từ mhbh
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form MHBH Với Thuế Trực Tiếp Với 5 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+
+RT-PRODUCT-030 Tạo Sản Phẩm Thuế Khấu Trừ Từ MHBH
+    [Documentation]    Test tạo sản phẩm thuế khấu trừ từ mhbh
+    [Tags]    AIGenerated    CreateProduct    Positive    VAT
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form MHBH Với Thuế Khấu Trừ Với 10 %
+    When Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 10 Theo Dữ Liệu Đã Gửi
+
 
 *** Keywords ***
 

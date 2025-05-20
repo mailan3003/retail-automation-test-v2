@@ -11,7 +11,6 @@ Library           String
 ...    CategoryId=${CATEGORY_1_ID} 
 ...    CategoryName=
 ...    isActive=false
-...    VariantCount=0
 ...    AllowsSale=true
 ...    isDeleted=false
 ...    Code=
@@ -19,12 +18,6 @@ Library           String
 ...    Cost=0
 ...    LatestPurchasePrice=0
 ...    OnHand=0
-...    OnHandCompareMin=0
-...    OnHandCompareMax=0
-...    CompareOnHand=0
-...    CompareCost=0
-...    CompareBasePrice=0
-...    Reserved=0
 ...    MinQuantity=0
 ...    MaxQuantity=999999999
 ...    CustomId=0

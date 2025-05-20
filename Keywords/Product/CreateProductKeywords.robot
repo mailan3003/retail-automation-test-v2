@@ -195,35 +195,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính ${dict_attribute_name}
     Set Test Variable    ${LIST_PRODUCTS_CODE}    ${list_products_code}
     RETURN    ${REQUEST_DATA}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
-  ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
-  ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
-   ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    T${random_code}
-     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
-     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-     ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
-     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
-     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
-     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
-     ${request}    Update Dictionary Property    ${request}    RegistrationNo    ${product_info[3]}
-     ${request}    Update Dictionary Property    ${request}    ActiveElement    ${product_info[4]}
-     ${request}    Update Dictionary Property    ${request}    Content    ${product_info[5]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerName    ${manufacturer_info[1]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
-     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-     ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-     ${request}    Update Dictionary Property    ${request}    RouteOfAdministration  1000000001
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
-    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
-    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
-    ${list_products}     Evaluate    (None, '[${form_data}]')
-    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
-    Set Test Variable    ${REQUEST_DATA}    ${payload}
-    RETURN    ${request}
 
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo

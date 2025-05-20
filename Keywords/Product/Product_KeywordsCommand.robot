@@ -14,14 +14,14 @@ Library           String
 *** Variables ***
 ${PRODUCT_API_ENDPOINT}     products/addmany
 ${WARRANTY_API_SAVE_ENDPOINT}    warranty/save
-${PRODUCT_UPDATE_API_ENDPOINT}   api/products/photo
-${PRODUCT_DELETE_API_ENDPOINT}   api/products/{0}
+${PRODUCT_UPDATE_API_ENDPOINT}   products/photo
+${PRODUCT_DELETE_API_ENDPOINT}   products/{0}
 ${REQUEST_FILES}    ${None}
 
 *** Keywords ***
 # Tạo request  
 Gửi Yêu Cầu Tạo Sản Phẩm
-    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
+    ${response}=    Call API With Form Data    ${API_MAN_URL}    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
     Set Test Variable    ${RESPONSE}    ${response}
     IF    '${RESPONSE.status_code}' == '200'
         ${product_id}=    Set Variable     ${RESPONSE.json()["Data"][0]["Id"]}
@@ -30,7 +30,28 @@ Gửi Yêu Cầu Tạo Sản Phẩm
         Set Test Variable    ${CREATED_PRODUCT_CODE}    ${product_code}
     END
     RETURN    ${response}
- 
+
+Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
+    ${response}=    Call API With Form Data    ${API_URL}    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
+    Set Test Variable    ${RESPONSE}    ${response}
+    IF    '${RESPONSE.status_code}' == '200'
+        ${product_id}=    Set Variable     ${RESPONSE.json()["Data"][0]["Id"]}
+        ${product_code}=    Set Variable    ${RESPONSE.json()["Data"][0]["Code"]}
+        Set Test Variable    ${CREATED_PRODUCT_ID}    ${product_id}
+        Set Test Variable    ${CREATED_PRODUCT_CODE}    ${product_code}
+    END
+    RETURN    ${response}
+
+Gửi Yêu Cầu Cập Nhật Sản Phẩm
+    ${response}=    Call API With Form Data    ${API_MAN_URL}   ${PRODUCT_UPDATE_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
+    Set Test Variable    ${RESPONSE}    ${response}
+    IF    '${RESPONSE.status_code}' == '200'
+        ${product_id}=    Set Variable     ${RESPONSE.json()["Data"][0]["Id"]}
+        ${product_code}=    Set Variable    ${RESPONSE.json()["Data"][0]["Code"]}
+        Set Test Variable    ${CREATED_PRODUCT_ID}    ${product_id}
+        Set Test Variable    ${CREATED_PRODUCT_CODE}    ${product_code}
+    END
+    RETURN    ${response}
 Tạo danh sách tổ hợp thuộc tính
     [Arguments]    ${dict_attribute_name}
     ${attribute_names}=    Get Dictionary Keys    ${dict_attribute_name}
@@ -358,12 +379,9 @@ Lấy Thông tin Sản Phẩm
     ${result}=    Fetch One    ${query}    ${product_code}
     RETURN    ${result[0]}
 
-Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${tax_rate} %
-    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
-    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
-    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
-    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${type_tax} Với ${tax_rate} %
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     
     FOR    ${code}    IN    @{list_product_code}
         ${query}=    Set Variable    SELECT p.Id FROM Product p JOIN ProductTax t ON p.Id = t.Id WHERE p.Code = ? AND t.TaxId = ?
@@ -371,16 +389,33 @@ Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${tax_rate} 
         Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm ${code} với thuế ${tax_rate}% trong database
     END
 
-Xác Thực Sản Phẩm Có Thuế ${tax_rate} Theo Dữ Liệu Đã Gửi
+Xác Thực Sản Phẩm Có Thuế ${type_tax} Với ${tax_rate} Theo Dữ Liệu Đã Gửi
+    ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
+    ${query}=    Set Variable    SELECT TaxId FROM ProductTax WHERE ProductId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thuế cho sản phẩm đã tạo
+    Should Be Equal As Strings    ${result[0]}     ${tax_ID}  
+
+Lấy taxid từ giá trị thuế
+    [Arguments]    ${tax_rate}
     ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
     ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
     ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
     ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
-    ${query}=    Set Variable    SELECT TaxId FROM ProductTax WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
-    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thuế cho sản phẩm đã tạo
-    Should Be Equal As Strings    ${result[0]}     ${tax_ID}  
+    ...     ELSE IF   '${tax_rate}'=='KCT'     Set Variable   5
+    ...     ELSE IF   '${tax_rate}'=='KKKNT'     Set Variable   12
+    ...     ELSE    Set Variable   9999
+    RETURN    ${tax_ID}
+
+Lấy taxid từ giá trị thuế trực tiếp
+    [Arguments]    ${tax_rate}
+    ${tax_ID}     Run Keyword If  '${tax_rate}'=='1'     Set Variable    6
+    ...     ELSE IF   '${tax_rate}'=='2'     Set Variable    7
+    ...     ELSE IF   '${tax_rate}'=='3'     Set Variable    8
+    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    9
+    ...     ELSE    Set Variable   9999
+    RETURN    ${tax_ID}
 
 Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_id} Với Số Lượng ${product_material_quantity} 
     ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ?
@@ -391,4 +426,20 @@ Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_
 Xác Thực Lỗi "${error_message}"
     Should Be Equal As Strings    ${RESPONSE.status_code}    420
     Should Contain    ${RESPONSE.text}    ${error_message} 
+
+Delete Sản Phẩm ${product_code}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${endpoint}=    Format String    ${PRODUCT_DELETE_API_ENDPOINT}    ${product_id}
+    Delete Data    ${endpoint}
+
+
+Delete Sản Phẩm ${list_product_code}
+    FOR    ${product_code}    IN    @{list_product_code}
+        Delete Sản Phẩm ${product_code}
+    END
+
+Save warranty for product
+    [Arguments]    ${payload}=${PAYLOAD_WARRANTY}
+    ${response}=    Call API Man  ${WARRANTY_API_SAVE_ENDPOINT}      ${payload}
+    RETURN    ${response}
 
