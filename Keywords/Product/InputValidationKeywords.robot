@@ -716,4 +716,71 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
+    ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính
     
+    # Tạo danh sách các đơn vị con, có hai đơn vị con có mã trùng lặp
+    
+    ${child1}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1
+    ...    Code=${DUPLICATE_CHILD_CODE}    # Mã trùng lặp
+    ...    Unit=Hộp
+    ...    ConversionValue=10
+    ...    BasePrice=${STANDARD_PRODUCT_PRICE}
+    ...    Cost=${STANDARD_PRODUCT_COST}
+    ...    OnHand=5
+    
+    ${child2}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2
+    ...    Code=${DUPLICATE_CHILD_CODE}    # Mã trùng lặp
+    ...    Unit=Thùng
+    ...    ConversionValue=50
+    ...    BasePrice=${STANDARD_PRODUCT_PRICE}
+    ...    Cost=${STANDARD_PRODUCT_COST}
+    ...    OnHand=2
+    
+    ${list_products}=    Create List
+    Append To List    ${list_products}    ${product_base}
+    Append To List    ${list_products}    ${child1}
+    Append To List    ${list_products}    ${child2}
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${REQUEST_DATA}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Không Trùng
+    ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính
+    ${UNIQUE_CHILD_CODE}=    Generate Random String    6    [UPPER]
+    ${UNIQUE_CHILD_CODE_2}=    Generate Random String    6    [UPPER]
+    
+    # Tạo danh sách các đơn vị con, có hai đơn vị con có mã trùng lặp
+    
+    ${child1}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1
+    ...    Code=${UNIQUE_CHILD_CODE}    # Mã trùng lặp
+    ...    Unit=Hộp
+    ...    ConversionValue=10
+    ...    BasePrice=${STANDARD_PRODUCT_PRICE}
+    ...    Cost=${STANDARD_PRODUCT_COST}
+    ...    OnHand=5
+    
+    ${child2}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2
+    ...    Code=${UNIQUE_CHILD_CODE_2}    # Mã trùng lặp
+    ...    Unit=Thùng
+    ...    ConversionValue=50
+    ...    BasePrice=${STANDARD_PRODUCT_PRICE}
+    ...    Cost=${STANDARD_PRODUCT_COST}
+    ...    OnHand=2
+    
+    ${list_products}=    Create List
+    Append To List    ${list_products}    ${product_base}
+    Append To List    ${list_products}    ${child1}
+    Append To List    ${list_products}    ${child2}
+    ${json_string}=    Evaluate    json.dumps(${list_products})    json
+    ${request}=    Create Dictionary    ListProductsString=${json_string}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${REQUEST_DATA}
