@@ -152,6 +152,6 @@
 
 
 **Điều hướng**
-- Trước đó: [1-Chuc-nang-xu-ly-du-lieu-dau-vao.md](./1-Chuc-nang-xu-ly-du-lieu-dau-vao.md)
-- Tiếp theo: [3-Tong-quan-xu-ly-vong-lap-cha-con.md](./3-Tong-quan-xu-ly-vong-lap-cha-con.md)
-- Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
+- Trang tổng quan: [Tổng quan quy trình thêm sản phẩm](./0-Tong-quan-Product-AddMany.md)
+- Trước đó: [Xử lý dữ liệu đầu vào](./1-Chuc-nang-xu-ly-du-lieu-dau-vao.md)
+- Tiếp theo: [Tổng quan xử lý vòng lặp cha-con](./3-Tong-quan-xu-ly-vong-lap-cha-con.md) 

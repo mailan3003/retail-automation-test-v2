@@ -61,34 +61,8 @@ Sau khi hoàn tất việc xử lý chi nhánh và giá vốn, hệ thống ti�
 - **Xử lý sao chép hình ảnh**:
   - Gọi `ProcessCloneProduct` để xử lý sao chép hình ảnh cho sản phẩm
   - Truyền các tham số: yêu cầu (`req`), danh sách sản phẩm cần sao chép (`productsListToCloneImages`), và danh sách hình ảnh sản phẩm toàn cục (`globalProductsImages`)
-
-## Luồng xử lý chức năng
-
-1. **Xử lý tồn kho ban đầu**
-   - Kiểm tra điều kiện sử dụng nhiều kho thông qua biến `isUsingWarehouse`
-   - Nếu sử dụng nhiều kho:
-     - Tạo phiếu kiểm kê cho kho chính với các sản phẩm không chỉ kiểm tra kho
-     - Tạo và nhóm dữ liệu cho các kho phụ theo ID chi nhánh
-     - Tạo phiếu kiểm kê cho từng kho phụ và ghi nhật ký
-   - Nếu không sử dụng nhiều kho:
-     - Tạo phiếu kiểm kê duy nhất cho tất cả sản phẩm trong `lsProductAddStockTake`
-
-2. **Cập nhật đơn vị tính theo chi nhánh**
-   - Thực hiện cập nhật hàng loạt nếu `lsChangeProductBranchUnit` có dữ liệu
-
-3. **Cập nhật thuộc tính sản phẩm**
-   - Thêm thuộc tính cho nhiều sản phẩm nếu `lsProductAttributes` có dữ liệu
-
-4. **Quản lý kệ hàng**
-   - Xóa dữ liệu kệ hàng cũ dựa trên ID sản phẩm
-   - Cập nhật ID nhà bán lẻ cho các bản ghi mới
-   - Thêm dữ liệu kệ hàng mới với khóa chính phù hợp
-
-5. **Xử lý hình ảnh**
-   - Xác định phạm vi áp dụng hình ảnh dựa trên cờ `SaveImagesForAllProducts`
-   - Thực hiện sao chép hình ảnh cho sản phẩm thông qua `ProcessCloneProduct`
-
+  
 ## Điều hướng tài liệu
 - Trước đó: [4-Chuc-nang-xu-ly-sau-luu-san-pham.md](./4-Chuc-nang-xu-ly-sau-luu-san-pham.md)
 - Tiếp theo: [6-Chuc-nang-xu-ly-tim-kiem-va-hoan-tat.md](./6-Chuc-nang-xu-ly-tim-kiem-va-hoan-tat.md)
-- Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 

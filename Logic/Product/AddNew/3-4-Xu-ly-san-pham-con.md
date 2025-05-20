@@ -182,3 +182,4 @@ Sau khi đã xử lý sản phẩm cha (parent product), hệ thống tiến hà
 
 **Điều hướng**
 - Trước đó: [3-3-Xu-ly-du-lieu-bang-lien-quan.md](./3-3-Xu-ly-du-lieu-bang-lien-quan.md)
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md)

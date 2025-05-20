@@ -148,4 +148,5 @@ Sau khi đã xác định sản phẩm và chi nhánh, hệ thống tiến hành
 
 **Điều hướng**
 - Trước đó: [3-2-Xu-ly-anh-xa-ma-san-pham.md](./3-2-Xu-ly-anh-xa-ma-san-pham.md)
-- Tiếp theo: [3-4-Xu-ly-san-pham-con.md](./3-4-Xu-ly-san-pham-con.md) 
+- Tiếp theo: [3-4-Xu-ly-san-pham-con.md](./3-4-Xu-ly-san-pham-con.md)
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 

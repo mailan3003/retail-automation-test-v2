@@ -43,3 +43,4 @@ Trong quá trình xử lý sản phẩm cha (parent product), hệ thống cần
 **Điều hướng**
 - Trước đó: [2-Chuc-nang-xac-thuc-san-pham.md](./2-Chuc-nang-xac-thuc-san-pham.md)
 - Tiếp theo: [3-2-Xu-ly-anh-xa-ma-san-pham.md](./3-2-Xu-ly-anh-xa-ma-san-pham.md) 
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md) 

@@ -4,7 +4,7 @@ ${STANDARD_PRODUCT_NAME}    Sản phẩm test tự động
 ${STANDARD_PRODUCT_PRICE}    100000
 ${STANDARD_PRODUCT_COST}    50000
 ${STANDARD_PRODUCT_CATEGORY_ID}    1000000705
-${STANDARD_PRODUCT_TYPE}    1    # Regular product
+${STANDARD_PRODUCT_TYPE}    2    # Regular product
 
 # Common data
 ${INVALID_JSON}    {không phải JSON hợp lệ}
@@ -30,6 +30,7 @@ ${BRANCH_ID}    1
 ...    Description=Mô tả sản phẩm test    
 ...    ConversionValue=1    
 ...    Unit=Chiếc
+...    OnHand=10
 
 &{COMBO_PRODUCT_TEMPLATE}    Name=Combo Product    CategoryId=${STANDARD_PRODUCT_CATEGORY_ID}    BasePrice=${STANDARD_PRODUCT_PRICE}    Cost=${STANDARD_PRODUCT_COST}    ProductType=1    IsActive=${TRUE}
 
@@ -141,3 +142,13 @@ ${ERROR_MAX_LENGTH_MANUFACTURER}    Hãng sản xuất không được vượt q
 ${ERROR_MAX_LENGTH_UNIT}    Đơn vị cơ bản không được vượt quá 100 kí tự.
 
 ${EXCEED_NAME_MEDICINE_MANUFACTURER_ID}    1000000002
+
+
+# Warehouse validation error messages
+${ERROR_WAREHOUSE_NOT_FOUND}    không hợp lệ
+${ERROR_WAREHOUSE_INACTIVE}    đã ngừng hoạt động
+${ERROR_QUANTITY_DECIMAL}    Số lượng chỉ được phép tối đa 4 chữ số thập phân
+${DELETED_WAREHOUSE_ID}    1000000068
+${INACTIVE_WAREHOUSE_ID}    1000000069
+${ACTIVE_WAREHOUSE_ID}    1000000056
+${ACTIVE_WAREHOUSE_ID_2}    1000000054

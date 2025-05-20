@@ -79,5 +79,5 @@
 
 ---
 **Điều hướng**
-- Tiếp theo: [2-Chuc-nang-xac-thuc-san-pham.md](./2-Chuc-nang-xac-thuc-san-pham.md)
-- Tổng quan: [Tong-quan-Product-AddMany.md](./Tong-quan-Product-AddMany.md) 
+- Trang tổng quan: [Tổng quan quy trình thêm sản phẩm](./0-Tong-quan-Product-AddMany.md)
+- Tiếp theo: [Chức năng xác thực sản phẩm](./2-Chuc-nang-xac-thuc-san-pham.md) 

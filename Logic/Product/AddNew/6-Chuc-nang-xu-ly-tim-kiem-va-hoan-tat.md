@@ -5,13 +5,7 @@ Sau khi xử lý thông tin cơ bản và thuộc tính sản phẩm, hệ thố
 
 ## Các chức năng xử lý tìm kiếm và hoàn tất
 
-### 1. Xử lý bảng giá cho sản phẩm được nhân bản
-- Hệ thống gọi phương thức `ProcessCloneProductPriceBook` với tham số là yêu cầu (`req`) và danh sách sản phẩm đã được xử lý (`listObjReturn`)
-- Kết quả được lưu trong biến `priceBookDetailCloned` để sử dụng trong các bước tiếp theo
-- Chức năng này giải quyết vấn đề #10886: Sao chép hình ảnh từ sản phẩm gốc sang bảng giá của sản phẩm được nhân bản
-- Đảm bảo thông tin bảng giá được duy trì khi nhân bản sản phẩm, giúp duy trì tính nhất quán về giá
-
-### 2. Xử lý hình ảnh sản phẩm từ nhiều nguồn
+### 1. Xử lý hình ảnh sản phẩm từ nhiều nguồn
 
 - **Xác định danh sách sản phẩm cần lưu hình ảnh**:
   ```csharp
@@ -66,4 +60,74 @@ Sau khi xử lý thông tin cơ bản và thuộc tính sản phẩm, hệ thố
   - Gọi phương thức `ProcessProductImages` để xử lý các hình ảnh mới được tải lên từ người dùng
   - Truyền danh sách sản phẩm cần lưu hình ảnh và danh sách hình ảnh toàn cục
 
-### 3. Tạo đơn vị tính mới cho gợi ý
+### 2. Tạo đơn vị tính mới cho gợi ý
+- **Thu thập đơn vị tính mới**:
+  ```csharp
+  var listUnit = new List<string>();
+  foreach (var productToAdd in listProductsToAdd)
+  {
+      if (!string.IsNullOrEmpty(productToAdd.Unit))
+      {
+          listUnit.Add(productToAdd.Unit);
+      }
+  }
+  ```
+  - Khởi tạo danh sách để lưu các đơn vị tính mới
+  - Duyệt qua từng sản phẩm trong danh sách sản phẩm cần thêm
+  - Kiểm tra nếu sản phẩm có đơn vị tính (`Unit`) không rỗng
+  - Thêm đơn vị tính vào danh sách để xử lý sau
+
+- **Lưu đơn vị tính mới vào hệ thống**:
+  ```csharp
+  if (listUnit.Any())
+  {
+      await ProductUnitSuggestionService.CreateNewUnitAsync(listUnit.ToList());
+  }
+  ```
+  - Kiểm tra nếu danh sách đơn vị tính có dữ liệu
+  - Gọi phương thức `CreateNewUnitAsync` của `ProductUnitSuggestionService` để lưu các đơn vị tính mới
+  - Mục đích: Tạo gợi ý đơn vị tính cho các sản phẩm mới thêm vào hệ thống, giúp người dùng dễ dàng chọn đơn vị tính phù hợp trong tương lai
+
+  ### 3. Lưu thay đổi và đồng bộ dữ liệu tìm kiếm
+  - **Lưu thay đổi vào cơ sở dữ liệu**:
+    ```csharp
+    await Db.SaveChangesAsync();
+    ```
+    - Gọi phương thức `SaveChangesAsync` để lưu tất cả các thay đổi đã thực hiện vào cơ sở dữ liệu
+    - Đảm bảo tính toàn vẹn dữ liệu bằng cách lưu đồng bộ tất cả các thay đổi
+
+  - **Đồng bộ dữ liệu với Elasticsearch (nếu được kích hoạt)**:
+    ```csharp
+    if (AppConfigInfo.EnableEsIntegration)
+    {
+    }
+    ```
+    - Kiểm tra nếu tính năng tích hợp Elasticsearch được kích hoạt
+    - Đồng bộ thông tin sản phẩm mới thêm vào Elasticsearch để phục vụ tìm kiếm
+    - Xử lý đồng bộ thông tin bảng giá:
+      - Kết hợp danh sách bảng giá gốc và bảng giá đã sao chép
+      - Nhóm các sản phẩm theo ID bảng giá
+      - Gửi sự kiện cập nhật bảng giá lên Elasticsearch
+
+  ### 4. Xử lý thuế sản phẩm
+  ```csharp
+  if (IsUsingProductVAT)
+  {
+      for (var i = 0; i < listObjReturn.Count; i++)
+      {
+      }
+  }
+  ```
+  - Kiểm tra nếu tính năng thuế sản phẩm được kích hoạt
+  - Duyệt qua từng sản phẩm trong danh sách sản phẩm đã lưu
+  - Xử lý thuế cho sản phẩm có ID thuế hợp lệ:
+    - Kiểm tra xem sản phẩm đã có thông tin thuế chưa
+    - Nếu có: cập nhật ID thuế mới cho các bản ghi thuế hiện có
+    - Nếu chưa: tạo mới bản ghi thuế cho sản phẩm
+  - Đảm bảo tính nhất quán của thông tin thuế trong hệ thống
+
+## Điều hướng tài liệu
+- Trước đó: [5-Chuc-nang-xu-ly-ton-kho-ban-dau.md](./5-Chuc-nang-xu-ly-ton-kho-ban-dau.md)
+- Tiếp theo: [7-Quan-ly-lich-su-thao-tac.md](./7-Quan-ly-lich-su-thao-tac.md)
+- Tổng quan: [0-Tong-quan-Product-AddMany.md](./0-Tong-quan-Product-AddMany.md)
+

@@ -202,6 +202,7 @@ Phương thức `InsertRelatedTableOfProduct` là một thành phần quan trọ
   await ProductBranchService.UpdateManufacturedCostByMaterialAsync(objReturn.Id);
   ```
 - Đảm bảo giá vốn của sản phẩm sản xuất phản ánh đúng chi phí của các nguyên liệu thành phần
+- Chi tiết về quy trình cập nhật giá vốn có thể tìm thấy tại [UpdateManufacturedCostByMaterial-Business-Logic.md](./UpdateManufacturedCostByMaterial-Business-Logic.md)
 
 ### 8. Trả về kết quả
 - Trả về một tuple với 4 thành phần:
