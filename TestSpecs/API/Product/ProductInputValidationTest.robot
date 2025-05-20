@@ -633,3 +633,26 @@ RT-PD-063 Kiểm tra thêm sản phẩm với sản phẩm kiểm soát serial c
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
+
+RT-PD-064 Kiểm tra lỗi khi mã sản phẩm con trùng lặp
+    [Documentation]    Kiểm tra xử lý khi có mã sản phẩm con trùng lặp trong cùng một sản phẩm
+    ...    - Source: ValidateDuplicateCodeChildProducts
+    ...    - Logic: Phương thức kiểm tra mã sản phẩm con trùng lặp bằng cách so sánh số lượng mã trong danh sách với số lượng mã duy nhất
+    ...    - Dữ liệu đầu vào: Sản phẩm chính với các sản phẩm con có mã trùng nhau (CHILD001 xuất hiện 2 lần)
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_CHILD_CODE}", status code 420
+    [Tags]    productvalidate    duplicatechildcode    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_CHILD_CODE}
+
+RT-PD-065 Kiểm tra thành công khi mã sản phẩm con không trùng lặp
+    [Documentation]    Kiểm tra xử lý thành công khi không có mã sản phẩm con trùng lặp
+    ...    - Source: ValidateDuplicateCodeChildProducts
+    ...    - Logic: Phương thức kiểm tra mã sản phẩm con trùng lặp bằng cách so sánh số lượng mã trong danh sách với số lượng mã duy nhất
+    ...    - Dữ liệu đầu vào: Sản phẩm chính với các sản phẩm con có mã không trùng nhau (CHILD101, CHILD102, CHILD103)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    duplicatechildcode1    AIGenerated
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Không Trùng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
