@@ -8,7 +8,7 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Product/CreateProductData.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
-Resource          ../../TestData/Product/ProductInputData.robot
+#Resource          ../../TestData/Product/ProductInputData.robot
 Library           String
 Resource          Product_KeywordsCommand.robot
 *** Variables ***
@@ -225,22 +225,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế ${tax_rate} %
-    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
-    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
-    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
-    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
-    ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
-    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
-    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
-    ${list_products}     Evaluate    (None, '[${form_data}]')
-    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
-    Set Test Variable    ${REQUEST_DATA}    ${payload}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo
     ${request}=    Deep Copy     ${list_product_data}
@@ -303,26 +287,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Kinh Doanh Ở Chi Nhánh ${list_name_bran
 
 
 
-Xác Thực Sản Phẩm Có Thuế ${tax_rate} Theo Dữ Liệu Đã Gửi
-    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
-    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
-    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
-    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
-    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
-    ${query}=    Set Variable    SELECT TaxId FROM ProductTax WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
-    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thuế cho sản phẩm đã tạo
-    Should Be Equal As Strings    ${result[0]}     ${tax_ID}  
-
-Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_id} Với Số Lượng ${product_material_quantity} 
-    ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
-    Should Not Be Equal    ${result}    None    Không tìm thấy thành phần cho sản phẩm combo đã tạo
-    Should Be Equal As Strings    ${result[0]}   ${product_material_id}
-    Should Be Equal As Numbers    ${result[1]}    ${product_material_quantity}
-Xác Thực Lỗi "${error_message}"
-    Should Be Equal As Strings    ${RESPONSE.status_code}    420
-    Should Contain    ${RESPONSE.text}    ${error_message} 
 
 
 
@@ -448,25 +412,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Hình Ảnh
     RETURN    ${REQUEST_DATA}
 
 
-
-Chuẩn Bị Dữ Liệu Sản Phẩm Có Kích Thước ${width}x${height} ${unit}
-    ${unit}    Run Keyword If    "${unit}" == "cm"    Set Variable    1    ELSE IF    "${unit}" == "m"
-    ...   Set Variable    2   ELSE    Set Variable    0
-    ${request}=    Deep Copy     ${list_product_data}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${request}    Update Dictionary Property    ${request}    Code    KT${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId    1000000753
-    ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
-    ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
-    ${request}    Update Dictionary Property    ${request}    Type1    1
-    ${request}    Update Dictionary Property    ${request}    Type2   ${unit}  
-    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
-    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
-    ${list_products}     Evaluate    (None, '[${form_data}]')
-    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
-    Set Test Variable    ${REQUEST_DATA}    ${payload}
-    RETURN    ${REQUEST_DATA}
 
 
 
@@ -858,7 +803,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể Có Tồn Kho Khá
     Set Test Variable    ${VARIANT_INVENTORIES}    ${inventories}
     
     # Chuẩn bị dữ liệu sản phẩm cơ bản với thuộc tính
-    ${request_data}=    Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính    ${dict_kich_thuoc}
+    ${request_data}=     Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính    ${dict_kich_thuoc}
     
     # Cập nhật tồn kho cho các biến thể trong yêu cầu
     ${product_list}=    Evaluate    json.loads(${REQUEST_DATA}["ListProductsString"][1])    json

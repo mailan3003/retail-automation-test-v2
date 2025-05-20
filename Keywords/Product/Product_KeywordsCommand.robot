@@ -30,10 +30,33 @@ Gửi Yêu Cầu Tạo Sản Phẩm
         Set Test Variable    ${CREATED_PRODUCT_CODE}    ${product_code}
     END
     RETURN    ${response}
-#Get thông tin  
-
-
-
+ 
+Tạo danh sách tổ hợp thuộc tính
+    [Arguments]    ${dict_attribute_name}
+    ${attribute_names}=    Get Dictionary Keys    ${dict_attribute_name}
+    ${length}=    Get Length    ${attribute_names}
+    
+    # Tạo danh sách các giá trị thuộc tính cho mỗi thuộc tính
+    ${all_attribute_values}=    Create List
+    FOR    ${attr_name}    IN    @{attribute_names}
+        ${attr_values}=    Get From Dictionary    ${dict_attribute_name}    ${attr_name}
+        Append To List    ${all_attribute_values}    ${attr_values}
+    END
+    
+    # Tạo tất cả các tổ hợp thuộc tính
+    ${combinations}=    Create List    ${EMPTY}
+    FOR    ${attr_values}    IN    @{all_attribute_values}
+        ${new_combinations}=    Create List
+        FOR    ${combination}    IN    @{combinations}
+            FOR    ${value}    IN    @{attr_values}
+                ${new_combination}=    Set Variable    ${combination}${value}|
+                Append To List    ${new_combinations}    ${new_combination}
+            END
+        END
+        ${combinations}=    Set Variable    ${new_combinations}
+    END
+    RETURN    ${combinations}    ${attribute_names}
+ 
 Lấy Thông tin Chi Nhánh
     [Arguments]    ${name_branch}
     ${query}=    Set Variable    SELECT Id FROM Branch WHERE Name = ?
@@ -132,13 +155,28 @@ Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
 Xác Thực Sản Phẩm Có Kích Thước ${width}x${height} ${unit}
     ${unit}    Run Keyword If    "${unit}" == "cm"    Set Variable    1    ELSE IF    "${unit}" == "m"
     ...   Set Variable    2   ELSE    Set Variable    0
-    ${query}=    Set Variable    SELECT Attribute1, Attribute2, Type2 FROM ProductExtraMaterial WHERE ProductId = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
-    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin kích thước cho sản phẩm đã tạo
+    ${result}=    Lấy thông tin kích thước sản phẩm    ${CREATED_PRODUCT_ID}
     Should Be Equal As Numbers    ${result[0]}    ${width}
     Should Be Equal As Numbers    ${result[1]}    ${height}
     Should Be Equal As Numbers    ${result[2]}    ${unit}
 
+
+Xác Thực Sản Phẩm ${list_product_code} Có Kích Thước ${width}x${height} ${unit}
+    ${unit}    Run Keyword If    "${unit}" == "cm"    Set Variable    1    ELSE IF    "${unit}" == "m"
+    ...   Set Variable    2   ELSE    Set Variable    0
+    FOR    ${product_code}    IN    @{list_product_code}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+        ${result}=    Lấy thông tin kích thước sản phẩm    ${product_id}
+        Should Be Equal As Numbers    ${result[0]}    ${width}
+        Should Be Equal As Numbers    ${result[1]}    ${height}
+        Should Be Equal As Numbers    ${result[2]}    ${unit}
+    END
+
+Lấy thông tin kích thước sản phẩm
+    [Arguments]    ${product_id}
+    ${query}=    Set Variable    SELECT Attribute1, Attribute2, Type2 FROM ProductExtraMaterial WHERE ProductId = ?
+    ${result}=    Fetch One    ${query}    ${product_id}
+    RETURN    ${result}
 
 Xác Thực Sản Phẩm Có Hình Ảnh Được Lưu Trữ
     ${query}=    Set Variable    SELECT COUNT(*) FROM ProductImage WHERE ProductId = ?
@@ -192,26 +230,44 @@ Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
     Should Be Equal As Strings    ${result[0]}    True
 
-Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra 
-    FOR    ${code}    IN    @{LIST_PRODUCTS_CODE}
-        ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ?
-        ${result}=    Fetch One    ${query}    ${code}
+Xác Thực Sản Phẩm Có ${list_product_code} Được Tạo Ra 
+    FOR    ${code}    IN    @{list_product_code}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
         ${query2}=    Set Variable    SELECT AttributeId, Value FROM ProductAttribute WHERE ProductId = ?
-        ${result2}=    Fetch One    ${query2}    ${result[0]}
+        ${result2}=    Fetch One    ${query2}    ${product_id}
         Should Not Be Equal    ${result2}    None    Không tìm thấy thuộc tính cho sản phẩm đã tạo
     END
 
-Xác Thực Sản Phẩm Có Tồn Kho ${on_hand} Ở Chi Nhánh ${name_branch}
-    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
-    Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${CREATED_PRODUCT_ID}    ${branch_id}    ${on_hand}
+Xác Thực Sản Phẩm Có ${list_product_code} Được Tạo Ra Có ${dict_attribute_name}
+    ${combinations}    ${attribute_names}=    Tạo danh sách tổ hợp thuộc tính    ${dict_attribute_name}
+    FOR    ${index}    ${code}    IN ENUMERATE    @{list_product_code}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
+        ${query2}=    Set Variable    SELECT AttributeId, Value FROM ProductAttribute WHERE ProductId = ?
+        ${result2}=    Fetch All   ${query2}    ${product_id}
+        Should Not Be Equal    ${result2}    None    Không tìm thấy thuộc tính cho sản phẩm đã tạo
+        
+        # Lấy combination tương ứng với sản phẩm hiện tại
+        ${combination}=    Get From List    ${combinations}    ${index}
+        ${combination_values}=    Split String    ${combination}    |
+        
+        # Kiểm tra từng thuộc tính trong kết quả truy vấn
+        FOR    ${attr_result}    IN    @{result2}
+            ${attr_id}=    Set Variable    ${attr_result[0]}
+            ${attr_value}=    Set Variable    ${attr_result[1]}
+            # Kiểm tra giá trị thuộc tính có nằm trong combination không
+            Should Contain    ${combination}    ${attr_value}    Giá trị thuộc tính ${attr_value} không khớp với tổ hợp thuộc tính
+        END
+    END
 
-Thông tin tồn kho sản phẩm 
-    [Arguments]    ${product_id}    ${branch_id}    ${on_hand}
-    ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
-    ${result}=    Fetch One    ${query}    ${product_id}    ${branch_id}
-    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho cho sản phẩm đã tạo
-    Should Be Equal As Numbers    ${result[0]}    ${on_hand}
-
+Xác Thực Sản Phẩm Có ${List_product_code} Được Tạo Ra Có Đơn Vị ${list_unit} Và ${list_value}
+    FOR    ${code}    ${unit}    ${value}    IN ZIP    ${List_product_code}    ${list_unit}    ${list_value}
+        ${value}     Convert To Number      ${value}
+        ${query}=    Set Variable    SELECT Id, Unit, ConversionValue FROM Product WHERE Code = ?
+        ${result}=    Fetch One    ${query}    ${code}
+        Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
+        Should Be Equal As Strings    ${result[1]}    ${unit}
+        Should Be Equal As Numbers    ${result[2]}    ${value}
+    END
 
     
 
@@ -256,15 +312,83 @@ Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${
         ${item_value}=    Convert To Number    ${item_value}
         Should Be Equal As Numbers    ${unit_result[0]}    ${item_value}
     END
+#dakho   
+Xác Thực Sản Phẩm Có Tồn Kho ${on_hand} Ở Chi Nhánh ${name_branch}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
+    Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${CREATED_PRODUCT_ID}    ${branch_id}    ${on_hand}
 
-Tồn Kho ${onhand} và ${total_onhand}
+Thông tin tồn kho sản phẩm 
+    [Arguments]    ${product_id}    ${branch_id}    ${on_hand}
+    ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+    ${result}=    Fetch One    ${query}    ${product_id}    ${branch_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho cho sản phẩm đã tạo
+    Should Be Equal As Numbers    ${result[0]}    ${on_hand}
+
+Tồn Kho ${onhand} và ${total_onhand} của ${product_id}
     ${query}=    Set Variable    SELECT OnHand, TotalOnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${DEFAULT_BRANCH_ID}
+    ${result}=    Fetch One    ${query}    ${product_id}    ${branch_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho cho sản phẩm đã tạo
     Should Be Equal As Numbers    ${result[0]}    ${onhand}
     Should Be Equal As Numbers    ${result[1]}    ${total_onhand}
 
 
 Xác Thực Sản Phẩm Ở Kho Bán Hàng Có Tồn Kho ${onhand} Và ${total_onhand}
-   Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand} và ${total_onhand}
+   Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand} và ${total_onhand} của ${CREATED_PRODUCT_ID} 
+
+Xác Thực Sản Phẩm ${list_product_code} Ở Kho Bán Hàng Có Tồn Kho ${list_onhand} Và ${list_total_onhand}
+  FOR    ${product_code}    ${onhand}    ${total_onhand}    IN ZIP    ${list_product_code}    ${list_onhand}    ${list_total_onhand}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand} và ${total_onhand} của ${product_id} 
+  END
+
+Xác Thực Sản Phẩm ${list_product_code} Tồn ${list_onhand} Ở Kho ${list_name_branch}
+  FOR     ${product_code}    ${index}    IN ENUMERATE    ${list_product_code}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}[${index}]
+    ${ton_kho_list}=    Get From List    ${list_onhand}   ${index}
+    ${ton_kho_values}=    Split String    ${ton_kho_list}    ,
+    FOR    ${ton_kho_value}    ${name_branch}    IN ZIP    ${ton_kho_values}    ${list_name_branch}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
+    Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${ton_kho_value} của ${product_id} Ở Chi Nhánh ${branch_id}
+    END
+  END
+
+Lấy Thông tin Sản Phẩm  
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${product_code}
+    RETURN    ${result[0]}
+
+Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${tax_rate} %
+    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
+    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
+    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
+    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
+    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+    
+    FOR    ${code}    IN    @{list_product_code}
+        ${query}=    Set Variable    SELECT p.Id FROM Product p JOIN ProductTax t ON p.Id = t.Id WHERE p.Code = ? AND t.TaxId = ?
+        ${result}=    Fetch One    ${query}    ${code}    ${tax_ID}
+        Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm ${code} với thuế ${tax_rate}% trong database
+    END
+
+Xác Thực Sản Phẩm Có Thuế ${tax_rate} Theo Dữ Liệu Đã Gửi
+    ${tax_ID}     Run Keyword If  '${tax_rate}'=='0'     Set Variable    1
+    ...     ELSE IF   '${tax_rate}'=='5'     Set Variable    2
+    ...     ELSE IF   '${tax_rate}'=='8'     Set Variable    3
+    ...     ELSE IF   '${tax_rate}'=='10'     Set Variable    4
+    ...     ELSE IF   '${tax_rate}'=='Không chịu thuế'     Set Variable   5
+    ${query}=    Set Variable    SELECT TaxId FROM ProductTax WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thuế cho sản phẩm đã tạo
+    Should Be Equal As Strings    ${result[0]}     ${tax_ID}  
+
+Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_id} Với Số Lượng ${product_material_quantity} 
+    ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thành phần cho sản phẩm combo đã tạo
+    Should Be Equal As Strings    ${result[0]}   ${product_material_id}
+    Should Be Equal As Numbers    ${result[1]}    ${product_material_quantity}
+Xác Thực Lỗi "${error_message}"
+    Should Be Equal As Strings    ${RESPONSE.status_code}    420
+    Should Contain    ${RESPONSE.text}    ${error_message} 
 

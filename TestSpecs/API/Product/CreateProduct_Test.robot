@@ -307,7 +307,7 @@ RT-PRODUCT-044 Tạo Sản Phẩm Với Thuộc Tính Có Giá Bán Khác Nhau
 
 RT-PRODUCT-045 Tạo Sản Phẩm Với Thuộc Tính Có Tồn Kho Khác Nhau
     [Documentation]    Test tạo sản phẩm với các biến thể có tồn kho ban đầu khác nhau
-    [Tags]    AIGenerated    CreateProduct    Positive    VariantInventory    regression
+    [Tags]    AIGenerated    CreateProduct    Positive    VariantInventory    regression1
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể Có Tồn Kho Khác Nhau
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
