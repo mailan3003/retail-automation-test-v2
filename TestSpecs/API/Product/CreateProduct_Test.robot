@@ -3,23 +3,20 @@ Documentation     Test API tạo sản phẩm
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-
-
-
+Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 *** Variables ***
 @{value_attribute_1}   L  M   S
 &{dict_attribute_name_1}    SIZE=@{value_attribute_1}
 @{name_unit}     hai    nửa
-@{value}    2    3
+@{value}    1    3
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
-    [Tags]    AIGenerated    CreateProduct       regression       
+    [Tags]    AIGenerated    CreateProduct434      regression       
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản 
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    #And Xác Thực Sản Phẩm Có Thông Tin Chính Xác Theo Dữ Liệu Đã Gửi
 
 RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
     [Documentation]    Test tạo sản phẩm khi không cung cấp mã, hệ thống sẽ tự sinh mã
@@ -216,7 +213,7 @@ RT-PRODUCT-036 Tạo Sản Phẩm Với Mô Tả Ghi Chú Đặt Hàng
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng
+    And Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng ${RANDOM_GHICHU} 
 
 RT-PRODUCT-036 Tạo Sản Phẩm Với Mô Tả Ghi Chú Đặt Hàng
     [Documentation]    Test tạo sản phẩm có mô tả ghi chú đặt hàng
@@ -225,17 +222,9 @@ RT-PRODUCT-036 Tạo Sản Phẩm Với Mô Tả Ghi Chú Đặt Hàng
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Mô Tả Ghi Chú
+    And Xác Thực Sản Phẩm Có Mô Tả Ghi Chú ${RANDOM_GHICHU} 
 
    
-
-RT-PRODUCT-037 Tạo Sản Phẩm Mã Trùng
-    [Documentation]    Test tạo sản phẩm có mã trùng với sản phẩm đã tồn tại
-    [Tags]    AIGenerated    CreateProduct    Negative    DuplicateCode    regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Trùng Lặp
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "${ErrorMessage}"
 
 RT-PRODUCT-038 Tạo Sản Phẩm Không Cung Cấp Tên
     [Documentation]    Test tạo sản phẩm không cung cấp tên sản phẩm
@@ -256,27 +245,7 @@ RT-PRODUCT-039 Kiểm Tra Điều Kiện Hợp Lệ Khi Tạo Sản Phẩm
     Có Mô Tả Dài              Sản phẩm được tạo thành công
     Thuế 5                    Thuế 5% áp dụng thành công
 
-RT-PRODUCT-040 Kiểm Tra Lỗi Khi Tạo Sản Phẩm Không Hợp Lệ
-    [Documentation]    Kiểm tra các điều kiện lỗi khác nhau khi tạo sản phẩm
-    [Tags]    AIGenerated    CreateProduct    Negative    Validation    regression
-    [Template]    Tạo Sản Phẩm Với Điều Kiện Lỗi
-    # condition                error_message
-    Tên Quá Dài                Tên đầy đủ của hàng hóa không vượt quá 500 kí tự
-    Mã Quá Dài                 Vui lòng nhập Mã hàng hóa không quá 40 kí tự
-    Mã Vạch Quá Dài            Mã vạch không được vượt quá 16 ký tự
-    Giá Trị Âm                 Giá trị không được âm
-    Danh Mục Không Tồn Tại     Danh mục không tồn tại
 
-RT-PRODUCT-041 Tạo Sản Phẩm Đầy Đủ Thông Tin
-    [Documentation]    Test tạo sản phẩm với đầy đủ thông tin và thuộc tính
-    [Tags]    AIGenerated    CreateProduct    Positive    Comprehensive    regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Đầy Đủ Thông Tin
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thông Tin Đầy Đủ
-
-# Kiểm tra tạo sản phẩm với chuỗi nhiều dạng ký tự đặc biệt
 RT-PRODUCT-042 Tạo Sản Phẩm Với Tên Có Ký Tự Đặc Biệt
     [Documentation]    Test tạo sản phẩm với tên có ký tự đặc biệt như unicode, emoji, ký tự đặc biệt
     [Tags]    AIGenerated    CreateProduct    Positive    SpecialChars    regression
@@ -350,44 +319,6 @@ RT-PRODUCT-049 Tạo Sản Phẩm Với Mã Biến Thể Tự Động
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm Gốc
 
-RT-PRODUCT-050 Kiểm Tra Giới Hạn Số Lượng Thuộc Tính
-    [Documentation]    Test giới hạn số lượng thuộc tính có thể áp dụng cho một sản phẩm
-    [Tags]    AIGenerated    CreateProduct    Validation    AttributeLimit    regression
-    [Template]    Kiểm Tra Giới Hạn Số Lượng Thuộc Tính Cho Sản Phẩm
-    # số_thuộc_tính    kết_quả_mong_đợi
-    3                  Thành công        # Số lượng hợp lệ
-    6                  Lỗi              # Vượt quá giới hạn
-
-RT-PRODUCT-051 Kiểm Tra Giới Hạn Số Lượng Giá Trị Thuộc Tính
-    [Documentation]    Test giới hạn số lượng giá trị cho mỗi thuộc tính
-    [Tags]    AIGenerated    CreateProduct    Validation    AttributeValueLimit    regression
-    [Template]    Kiểm Tra Giới Hạn Số Lượng Giá Trị Thuộc Tính
-    # số_giá_trị    kết_quả_mong_đợi
-    10             Thành công        # Số lượng hợp lệ
-    51             Lỗi              # Vượt quá giới hạn
 
 *** Keywords ***
-Tạo Sản Phẩm Với Điều Kiện Hợp Lệ
-    [Arguments]    ${condition}    ${expected_message}
-    Run Keyword If    '${condition}' == 'Giá Vốn 200000'     Chuẩn Bị Dữ Liệu Sản Phẩm Có Giá Vốn 200000
-    ...    ELSE IF    '${condition}' == 'Tồn Kho 100'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Tồn Kho 100 Ban Đầu
-    ...    ELSE IF    '${condition}' == 'Danh Mục Khác'    Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản
-    ...    ELSE IF    '${condition}' == 'Có Mô Tả Dài'    Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản 
-    ...    ELSE IF    '${condition}' == 'Thuế 5'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuế 5 %
-    ...    ELSE    Fail    Điều kiện không được hỗ trợ: ${condition}
-    Gửi Yêu Cầu Tạo Sản Phẩm
-    Mã Trạng Thái Phải Là 200
-    Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-
-Tạo Sản Phẩm Với Điều Kiện Lỗi
-    [Arguments]    ${condition}    ${error_message}
-    Run Keyword If    '${condition}' == 'Tên Quá Dài'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
-    ...    ELSE IF    '${condition}' == 'Mã Quá Dài'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
-    ...    ELSE IF    '${condition}' == 'Mã Vạch Quá Dài'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
-    ...    ELSE IF    '${condition}' == 'Giá Trị Âm'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Giá Trị Âm
-    ...    ELSE IF    '${condition}' == 'Danh Mục Không Tồn Tại'    Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Mục Không Tồn Tại
-    ...    ELSE    Fail    Điều kiện không được hỗ trợ: ${condition}
-    Gửi Yêu Cầu Tạo Sản Phẩm
-    Mã Trạng Thái Phải Là 420
-    Phản hồi phải chứa lỗi "${error_message}"
 

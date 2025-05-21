@@ -28,7 +28,7 @@ RT-PRODUCT-037 Tạo Sản Phẩm Với Kích Thước mm
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Kích Thước 10x20 mm
+    And Xác Thực Sản Phẩm Có Kích Thước 5x7 mm
 
 RT-PRODUCT-038 Tạo Sản Phẩm Với Kích Thước m
     [Documentation]    Test tạo sản phẩm có thông tin kích thước
@@ -42,7 +42,7 @@ RT-PRODUCT-038 Tạo Sản Phẩm Với Kích Thước m
 RT-PRODUCT-039 Tạo Sản Phẩm Series Với Kích Thước m
     [Documentation]    Test tạo sản phẩm có thông tin kích thước
     [Tags]    AIGenerated    CreateProduct    Positive    Dimensions    vlxd  
-    Given Chuẩn Bị Dữ Liệu Hàng Serial Có Kích Thước 60x60 m
+    Given Chuẩn Bị Dữ Liệu Hàng Serial Gạch Có Kích Thước 60x60 m
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -51,7 +51,7 @@ RT-PRODUCT-039 Tạo Sản Phẩm Series Với Kích Thước m
 RT-PRODUCT-040 Tạo Sản Phẩm Lô Với Kích Thước mm
     [Documentation]    Test tạo sản phẩm có thông tin kích thước
     [Tags]    AIGenerated    CreateProduct    Positive    Dimensions    vlxd  
-    Given Chuẩn Bị Dữ Liệu Hàng Lô Có Kích Thước 60x5.22 mm
+    Given Chuẩn Bị Dữ Liệu Hàng Lô Viên Có Kích Thước 60x5.22 mm
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database

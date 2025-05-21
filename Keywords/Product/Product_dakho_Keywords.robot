@@ -56,20 +56,16 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Đơn Vị Tính ${name_unit} Có ${value}
         ${total_onhand}=    Evaluate    ${total_onhand} + ${ton_kho}
     END    
 
-    FOR    ${item_name}   ${item_value}  IN ZIP   ${name_unit}    ${value}
-        ${unit_body}    Deep Copy    ${PRODUCT_UNITS}
-        ${unit_body}    Update Dictionary Property    ${unit_body}    Unit    ${item_name}
-        ${unit_body}    Update Dictionary Property    ${unit_body}    ConversionValue    ${item_value}
-        Append To List    ${list_unit_body}    ${unit_body}
-    END
-
 
     ${list_product_code}     Create List
     FOR    ${item_name}   ${item_value}  IN ZIP    ${name_unit}  ${value}
+       ${unit_body}    Deep Copy    ${PRODUCT_UNITS}
+        ${unit_body}    Update Dictionary Property    ${unit_body}    Unit    ${item_name}
+        ${unit_body}    Update Dictionary Property    ${unit_body}    ConversionValue    ${item_value}
+        Append To List    ${list_unit_body}    ${unit_body}
         ${request}=    Deep Copy    ${list_product_data}
-        ${random_code}=    Generate Random String    6    [NUMBERS]
-        ${code}=    Set Variable    QD${random_code}
-        ${request}    Update Dictionary Property    ${request}    Code    ${code}
+        ${random_code}=    Generate Random String    8    [NUMBERS]
+        ${request}    Update Dictionary Property    ${request}    Code    ${random_code}
         ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
         ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
         ${request}    Update Dictionary Property    ${request}    Code    ${random_code}
@@ -79,7 +75,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Đơn Vị Tính ${name_unit} Có ${value}
         ${request}    Update Dictionary Property    ${request}    TotalWarehouseOnHand      ${total_onhand}    
         ${request}    Update Dictionary Property    ${request}    ProductUnits    ${list_unit_body}
         Append To List   ${list_product_unit_body}     ${request}
-        Append To List   ${list_product_code}    ${code}
+        Append To List   ${list_product_code}    ${random_code}
     END
 
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -176,6 +172,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuộc Tính ${dict_attribute_name} Kho C
         Log     ${payload}
         Set Test Variable    ${REQUEST_DATA}    ${payload}
         Set Test Variable    ${LIST_PRODUCTS_CODE}    ${list_products_code}
+        Set Test Variable    ${TOTAL_ONHAND}    ${total_onhand}
         RETURN    ${REQUEST_DATA}
 
 

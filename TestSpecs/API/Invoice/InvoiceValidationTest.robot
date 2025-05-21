@@ -17,7 +17,7 @@ Suite Setup
 *** Test Cases ***
 RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
     [Documentation]    Kiểm tra tạo hóa đơn thành công với dữ liệu đầu vào hợp lệ
-    [Tags]        smoke   apiinvoice   invoicevalidate 
+    [Tags]        smoke   apiinvoice   invoicevalidate   regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
@@ -38,7 +38,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
-    [Tags]    invoicevalidate    smoke    apiinvoice
+    [Tags]    invoicevalidate    smoke    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -46,7 +46,7 @@ RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
 
 RT-IV-004 Kiểm tra chi nhánh không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với chi nhánh không tồn tại
-    [Tags]    invoicevalidate    smoke     apiinvoice   
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chi Nhánh Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -62,7 +62,7 @@ RT-IV-005 Kiểm tra khách hàng không thuộc chi nhánh
 
 RT-IV-006 Kiểm tra khách hàng không tồn tại
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không tồn tại
-    [Tags]    invoicevalidate    smoke    apiinvoice     
+    [Tags]    invoicevalidate    smoke    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -71,7 +71,7 @@ RT-IV-006 Kiểm tra khách hàng không tồn tại
 
 RT-IV-007 Kiểm tra thiếu thông tin người bán
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin người bán
-    [Tags]    invoicevalidate    smoke     apiinvoice    
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Người Bán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -79,7 +79,7 @@ RT-IV-007 Kiểm tra thiếu thông tin người bán
 
 RT-IV-008 Kiểm tra người bán không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với người bán không tồn tại
-    [Tags]    invoicevalidate    smoke     apiinvoice     
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -87,7 +87,7 @@ RT-IV-008 Kiểm tra người bán không hợp lệ
 
 RT-IV-009 Kiểm tra ngày tạo hóa đơn trong tương lai
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với ngày trong tương lai
-    [Tags]    invoicevalidate    smoke     apiinvoice      
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trong Tương Lai
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -118,7 +118,7 @@ RT-IV-016 Kiểm tra giá bán âm
 
 RT-IV-017 Kiểm tra sản phẩm không còn hoạt động
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm đã ngừng kinh doanh    
-    [Tags]    invoicevalidate    smoke     apiinvoice        
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đã Ngừng Kinh Doanh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -532,3 +532,13 @@ RT-IV-PL-001 Kiểm tra giới hạn sử dụng khuyến mãi khi khách hàng 
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải bao gồm lỗi "Khách hàng đã được hưởng các khuyến mại"
     And Phản hồi phải bao gồm lỗi "vui lòng kiểm tra lại."
+
+RT-VAL-001 Tạo hóa đơn không có sản phẩm
+    [Documentation]    Kiểm tra tạo hóa đơn không có sản phẩm
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn không có chi tiết sản phẩm nào
+    ...    - Logic xử lý: InvoiceService.Validate() kiểm tra chi tiết sản phẩm
+    ...    - Kỳ vọng:
+    ...    - Status code: 400
+    ...    - Thông báo lỗi: "Chi tiết sản phẩm không được để trống"
+    [Tags]        smoke   apiinvoice   invoicevalidate    regression

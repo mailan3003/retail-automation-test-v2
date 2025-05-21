@@ -15,7 +15,7 @@ RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
 
 RT-INPV-002 Kiểm tra quyền thay đổi người bán khi người tạo khác người bán
     [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     Given Chuẩn bị dữ liệu hóa đơn với người bán ${SOLD_BY_ID}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -24,7 +24,7 @@ RT-INPV-002 Kiểm tra quyền thay đổi người bán khi người tạo khá
 
 Tạo Hóa Đơn Có Kênh Bán
     [Documentation]      tạo hóa đơn có kênh bán
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu hóa đơn với kênh bán ${CHANNEL_ID_1}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -33,7 +33,7 @@ Tạo Hóa Đơn Có Kênh Bán
 
 Tạo Hóa Đơn Có Kênh Bán Không Tồn Tại
     [Documentation]     tạo hóa đơn có kênh bán không tồn tại
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu hóa đơn với kênh bán ${valid_channel_id}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -41,7 +41,7 @@ Tạo Hóa Đơn Có Kênh Bán Không Tồn Tại
 
 Tạo Hóa Đơn Có Thay Đổi Thời Gian  
     [Documentation]     tạo hóa đơn có thay đổi thời gian
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu thay đổi thời gian lùi 2 ngày so với ngày hiện tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -50,7 +50,7 @@ Tạo Hóa Đơn Có Thay Đổi Thời Gian
 
 Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng hóa đơn tự lấy thời gian theo ngày hiện tại
-    [Tags]    apiinvoice    validation    permission     
+    [Tags]    apiinvoice    validation    permission    regression
     Given Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -283,3 +283,12 @@ RT-INPV-020 Kiểm tra quyền hủy hóa đơn điện tử
     When Gửi yêu cầu cập nhật hóa đơn với token user không có quyền hủy
     Then Response Status Code Should Be 403
     And Response Should Have Error "Bạn không có quyền hủy hóa đơn điện tử"
+
+RT-PER-001 Kiểm tra quyền không cho phép tạo hóa đơn
+    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với tài khoản không có quyền tạo hóa đơn
+    ...    - Dữ liệu đầu vào:
+    ...    - Token không có quyền "Invoice.Create"
+    ...    - Kỳ vọng:
+    ...    - Status code: 401
+    ...    - Thông báo lỗi: "Bạn không có quyền thực hiện chức năng này"
+    [Tags]    apiinvoice    validation    permission    regression

@@ -285,11 +285,29 @@ Xác thực thông tin cơ bản hàng hóa
 
 
 # Các keyword mới
-Chuẩn Bị Dữ Liệu Sản Phẩm Ngừng Kinh Doanh
+Chuẩn Bị Dữ Liệu Sản Phẩm Ngừng Kinh Doanh Theo Chi Nhánh ${list_name_branch}
+    ${list_branch}    Create List
+    FOR    ${name_branch}    IN    @{list_name_branch}
+        ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
+        Append To List    ${list_branch}    ${branch_id}
+    END
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-    ${request}    Update Dictionary Property    ${request}    isActive    True
+    ${request}    Update Dictionary Property    ${request}    isActive    False
+    ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
+    ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
+    ${form_data}=    Evaluate     str(${request}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '[${form_data}]')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}       ListBranchsSelected=${list_branch}
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
+    RETURN    ${REQUEST_DATA}
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Không Được Bán Trực Tiếp
+    ${request}=    Deep Copy     ${list_product_data}
+    ${random_code}=    Generate Random String    8    GIA[NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    ${random_code}
+    ${request}    Update Dictionary Property    ${request}    AllowSale    False
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
     ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
@@ -629,7 +647,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Thương Hiệu
 
 
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Có Trọng Lượng ${weight} Kg
+Chuẩn Bị Dữ Liệu Sản Phẩm Có Trọng Lượng ${weight} ${unit}
+    
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TL${random_code}

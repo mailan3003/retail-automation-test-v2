@@ -73,15 +73,12 @@ Library           String
 ...    RetailerId=
 
 
-&{Pricebook_book}                   __type=
+&{Pricebook_body_standard}                   __type=
 ...    Id=0
 ...    PriceBookId=
 ...    PriceBookName=BCBBB1
 ...    ProductId=0
 ...    IsAuto=false
-...    ListDependencies=
-...    ParentId=0
-...    Value=-20000
 ...    Price=65656
 ...    isEnable=true
 

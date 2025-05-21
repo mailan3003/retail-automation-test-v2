@@ -11,7 +11,7 @@ Suite Setup
 
 *** Test Cases ***
 RT-INU-001 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm thường
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm thường
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ${PRODUCT_CODE_NOMAL}, Số lượng=5, Giá=100,000đ
@@ -29,7 +29,7 @@ RT-INU-001 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm thư�
     And Lịch sử tồn kho được tạo với số lượng 5 đơn vị cho sản phẩm ${product_id}
 
 RT-INU-002 Cập nhật tồn kho khi tạo hóa đơn với số lượng thập phân
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với số lượng thập phân
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ID=${PRODUCT_CODE_DECIMAL}, Số lượng=100.555, Giá=100,000đ
@@ -47,7 +47,7 @@ RT-INU-002 Cập nhật tồn kho khi tạo hóa đơn với số lượng thậ
     And Lịch sử tồn kho được tạo với số lượng 100.555 đơn vị cho sản phẩm ${product_id}
 
 RT-INU-003 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm combo ${PRODUCT_CODE_COMBO}, Số lượng=1, Giá=150,000đ
@@ -64,7 +64,7 @@ RT-INU-003 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
 
 
 RT-INU-006 Cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển đổi
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển đổi
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ${PRODUCT_CODE_QD}, Số lượng=2, Giá=100,000đ, UnitId=2, ConversionValue=12
@@ -81,7 +81,7 @@ RT-INU-006 Cập nhật tồn kho khi tạo hóa đơn với đơn vị chuyển
     And Tồn kho sản phẩm ${PRODUCT_ID_DVCB} đã giảm theo đơn vị chuyển đổi 2 x 5.5
 
 RT-INU-007 Cập nhật tồn kho khi tạo hóa đơn với hàng dịch vụ
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với hàng dịch vụ
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm 1: ${PRODUCT_CODE_SERVICE} Số lượng=2, Giá=100,000đ
@@ -97,7 +97,7 @@ RT-INU-007 Cập nhật tồn kho khi tạo hóa đơn với hàng dịch vụ
     And Lịch sử tồn kho được tạo với số lượng 2 đơn vị cho sản phẩm ${product_id}
 
 RT-INU-008 Cập nhật tồn kho âm khi cho phép bán hàng khi hết tồn
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho âm khi cho phép bán hàng khi hết tồn
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ${PRODUCT_CODE_AM}, Số lượng=1000, Giá=100,000đ
@@ -117,7 +117,7 @@ RT-INU-008 Cập nhật tồn kho âm khi cho phép bán hàng khi hết tồn
 
 
 RT-INU-005 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo lô
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo lô
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm ${PRODUCT_BATCH_NAME}, Số lượng=1, Giá=100,000đ,  BatchName=${BATCH_NAME}
@@ -134,7 +134,7 @@ RT-INU-005 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo l
     And Số lượng lô ${product_batch_id} đã giảm 1 đơn vị
 
 RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo serial
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo serial
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm  ${PRODUCT_CODE_SERIAL} Số lượng=1, Giá=100,000đ, Serial=${SERIAL_NUMBER}
@@ -152,7 +152,7 @@ RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo s
     And Serial ${SERIAL_NUMBER} chuyển sang trạng thái đã bán
  
 RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm khác nhau
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm 1: ${PRODUCT_CODE_NOMAL}, Số lượng=3, Giá=100,000đ
@@ -175,7 +175,7 @@ RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩ
     And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm ${product_id_1}
 
 RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiều dòng
-    [Tags]    inventory    smoke   apiinvoice
+    [Tags]    inventory    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm khác nhau
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm 1: ${PRODUCT_CODE_NOMAL}, Số lượng=3, Giá=100,000đ
@@ -213,7 +213,7 @@ RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiề
 #     And Số lượng đặt hàng của sản phẩm ${PRODUCT_1} được giảm 5 đơn vị 
 
 RT-INU-010 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo 2 cấp 
-    [Tags]    inventory    smoke   apiinvoice  test4723754
+    [Tags]    inventory    smoke   apiinvoice  test4723754    regression
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với sản phẩm combo
     ...    - Dữ liệu đầu vào:
     ...    - Sản phẩm combo ${PRODUCT_CODE_COMBO}, Số lượng=1, Giá=150,000đ

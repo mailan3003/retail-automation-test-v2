@@ -80,9 +80,11 @@ Tạo danh sách tổ hợp thuộc tính
  
 Lấy Thông tin Chi Nhánh
     [Arguments]    ${name_branch}
-    ${query}=    Set Variable    SELECT Id FROM Branch WHERE Name = ?
-    ${result}=    Fetch One    ${query}     ${name_branch}
+    ${query}=    Set Variable    SELECT Id FROM Branch WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}     ${name_branch}    ${RETAILER_ID}
     RETURN    ${result[0]}
+
+
 
 Lấy thông tin thuốc từ danh mục thuốc
     [Arguments]    ${product_id}
@@ -102,17 +104,17 @@ Lấy ID thuộc tính
     ${result}=    Fetch One    ${query}     ${attribute_name}    ${RETAILER_ID}
     RETURN    ${result[0]}
 # Validate 
-Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng
+Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng ${note}
     ${query}=    Set Variable    SELECT OrderTemplate FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin ghi chú đặt hàng cho sản phẩm đã tạo
-    Should Be Equal    ${result[0]}    ${RANDOM_GHICHU}
+    Should Be Equal    ${result[0]}    ${note}
 
-Xác Thực Sản Phẩm Có Mô Tả Ghi Chú
+Xác Thực Sản Phẩm Có Mô Tả Ghi Chú ${note}
     ${query}=    Set Variable    SELECT Description FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin mô tả ghi chú cho sản phẩm đã tạo
-    Should Be Equal    ${result[0]}    ${RANDOM_GHICHU}
+    Should Be Equal    ${result[0]}    ${note}
 
 Xác Thực Sản Phẩm Có Giá Vốn ${cost} Ở Chi Nhánh ${branch_name}
     ${branch_id}   Lấy Thông tin Chi Nhánh    ${branch_name}
@@ -121,7 +123,7 @@ Xác Thực Sản Phẩm Có Giá Vốn ${cost} Ở Chi Nhánh ${branch_name}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin giá vốn
     Should Be Equal As Numbers    ${result[0]}    ${cost}
 
-Xác Thực Sản Phẩm Có Trọng Lượng ${weight} Kg
+Xác Thực Sản Phẩm Có Trọng Lượng ${weight} ${unit}
     ${query}=    Set Variable    SELECT Weight FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin trọng lượng
@@ -139,7 +141,20 @@ Xác Thực Sản Phẩm Có Vị Trí Lưu Trữ Đúng
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin vị trí lưu trữ
     Should Be True    ${result[0]} > 0
 
+Xác Thực Sản Phẩm Có Lưu Trữ ${list_shelves_id} Vị Trí
+    FOR    ${shelves_id}    IN    @{list_shelves_id}
+        ${query}=    Set Variable    SELECT COUNT(*) FROM ProductShelves WHERE ProductId = ? AND ShelvesId = ?
+        ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${shelves_id}
+        Should Not Be Equal    ${result}    None    Không tìm thấy thông tin vị trí lưu trữ
+        Should Be True    ${result[0]} > 0
+    END
 
+Xác Thực Sản Phẩm Có Trạng Thái ${status} Bán Trực Tiếp
+    ${status}    Run Keyword If    "${status}" == "Không"    Set Variable    False    ELSE    Set Variable    True
+    ${query}=    Set Variable    SELECT AllowsSale FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin trạng thái bán trực tiếp
+    Should Be Equal As Strings    ${result[0]}    ${status}
 
 Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${product_material_id} Với Số Lượng ${product_material_quantity} 
     ${query}=    Set Variable    SELECT ProductType FROM Product WHERE Id = ?
@@ -233,11 +248,13 @@ Xác Thực Sản Phẩm Có Giới Hạn Tồn Kho Tối Thiểu ${min_stock} V
     Should Be Equal As Numbers    ${result[1]}    ${max_stock}
 
 
-Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh
-    ${query}=    Set Variable    SELECT IsActive FROM Product WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+Xác Thực Sản Phẩm Có Trạng Thái ${status} Kinh Doanh Ở Chi Nhánh ${branch_name}
+    ${status}    Run Keyword If    "${status}" == "Ngừng"    Set Variable    False    ELSE    Set Variable    True
+    ${branch_id}   Lấy Thông tin Chi Nhánh    ${branch_name}
+    ${query}=    Set Variable    SELECT IsActive FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${branch_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
-    Should Be Equal As Strings    ${result[0]}    0
+    Should Be Equal As Strings    ${result[0]}    ${status}
 
 Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
     ${query}=    Set Variable    SELECT IsBatchExpireControl FROM Product WHERE Id = ?
@@ -292,10 +309,22 @@ Xác Thực Sản Phẩm Có ${List_product_code} Được Tạo Ra Có Đơn V�
 
     
 
-Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
-    ${query}=    Set Variable    SELECT * FROM ProductMedicine WHERE ProductId = ?
+Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác 
+    ${query}=    Set Variable    SELECT RegistrationNo, ActiveElement, Content, PackagingSize, GlobalManufacturerName, GlobalManufacturerCountryName, GlobalManufacturerId, RouteOfAdministration, GlobalManufacturerCountryId FROM ProductMedicine WHERE ProductId = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm thuốc đã tạo trong database
+    ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
+    ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    Should Be Equal As Strings    ${result[0]}    ${product_info[3]}
+    Should Be Equal As Strings    ${result[1]}    ${product_info[4]}
+    Should Be Equal As Strings    ${result[2]}    ${product_info[5]}
+    Should Be Equal As Strings    ${result[3]}    ${product_info[6]}
+    Should Be Equal As Strings    ${result[4]}    ${manufacturer_info[1]}
+    Should Be Equal As Strings    ${result[5]}    Ấn Độ
+    Should Be Equal As Strings    ${result[6]}    ${product_info[7]}
+    Should Be Equal As Strings    ${result[7]}    Đường Miệng
+    Should Be Equal As Strings    ${result[8]}    2
+        
 
 Xác Thực Sản Phẩm Tự Động Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
     ${query}=    Set Variable    SELECT IsBatchExpireControl FROM Product WHERE Id = ?
@@ -315,8 +344,14 @@ Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     Set Test Variable    ${DB_PRODUCT_NAME}    ${result[2]}
 
 Xác Thực Sản Phẩm Có Thông Tin Chính Xác Theo Dữ Liệu Đã Gửi
-    Should Be Equal As Strings    ${DB_PRODUCT_CODE}    ${REQUEST_DATA["ListProductsString"][0]["Code"]}
-    Should Be Equal As Strings    ${DB_PRODUCT_NAME}    ${REQUEST_DATA["ListProductsString"][0]["Name"]}
+    ${query}=    Set Variable    SELECT Id, Code, Name, BasePrice,Unit FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
+    Should Be Equal As Strings    ${result[1]}    ${REQUEST_DATA["ListProductsString"][0]["Code"]}
+    Should Be Equal As Strings    ${result[2]}    ${REQUEST_DATA["ListProductsString"][0]["Name"]}
+    Should Be Equal As Numbers    ${result[3]}    ${REQUEST_DATA["ListProductsString"][0]["BasePrice"]}
+    Should Be Equal As Strings    ${result[4]}    ${REQUEST_DATA["ListProductsString"][0]["Unit"]}
+
 
 Xác Thực Sản Phẩm Được Tạo Với Mã Tự Sinh
     Should Not Be Empty    ${DB_PRODUCT_CODE}
@@ -338,6 +373,14 @@ Xác Thực Sản Phẩm Có Tồn Kho ${on_hand} Ở Chi Nhánh ${name_branch}
     ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
     Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${CREATED_PRODUCT_ID}    ${branch_id}    ${on_hand}
 
+Xác Thực Sản Phẩm ${list_product_code} Có DVT ${list_value} Tồn Kho ${list_onhand} Ở ${list_name_branch}
+    FOR    ${product_code}    ${on_hand}      ${value}      ${name_branch}    IN ZIP    ${list_product_code}    ${list_onhand}     ${list_value}        ${list_name_branch}
+        ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
+        ${onhand_values}=    Evaluate    round(${on_hand} / ${value}, 3)
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+        Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${product_id}    ${branch_id}    ${onhand_values}
+    END
+
 Thông tin tồn kho sản phẩm 
     [Arguments]    ${product_id}    ${branch_id}    ${on_hand}
     ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
@@ -353,23 +396,45 @@ Tồn Kho ${onhand} và ${total_onhand} của ${product_id}
     Should Be Equal As Numbers    ${result[1]}    ${total_onhand}
 
 
+Xác Thực Sản Phẩm ${list_product_code} Có DVT ${list_value} Tồn Kho ${onhand} Và ${total_onhand} Ở Kho Bán Hàng 
+    FOR    ${product_code}      ${value}    IN ZIP  ${list_product_code}         ${list_value}
+        ${onhand_values}=    Evaluate    round(${on_hand} / ${value}, 3)
+        ${total_onhand_values}=    Evaluate    round(${total_onhand} / ${value}, 3)
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+        Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand_values} và ${total_onhand_values} của ${product_id} 
+    END
+
+
+Xác Thực Sản Phẩm Thuộc Tính ${list_product_code} Có DVT ${list_value} Tồn Kho ${list_onhand} Ở ${list_kho_hang}
+    ${list_onhand_dvt}=    Create List
+    FOR    ${onhand}    ${value}    IN ZIP    ${list_onhand}    ${list_value}
+        ${onhand_dvt}=    Evaluate    round(${onhand} / ${value}, 3)
+        Append To List    ${list_onhand_dvt}    ${onhand_dvt}
+    END
+    ${list_product_onhand_dvt}=    Combine Lists    ${list_onhand}    ${list_onhand_dvt}
+    
+    FOR    ${product_code}    ${on_hand}       ${name_branch}    IN ZIP   ${list_product_code}  ${list_product_onhand_dvt}         ${list_kho_hang}
+        ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+        Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${product_id}    ${branch_id}    ${on_hand}
+    END
 Xác Thực Sản Phẩm Ở Kho Bán Hàng Có Tồn Kho ${onhand} Và ${total_onhand}
    Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand} và ${total_onhand} của ${CREATED_PRODUCT_ID} 
 
-Xác Thực Sản Phẩm ${list_product_code} Ở Kho Bán Hàng Có Tồn Kho ${list_onhand} Và ${list_total_onhand}
-  FOR    ${product_code}    ${onhand}    ${total_onhand}    IN ZIP    ${list_product_code}    ${list_onhand}    ${list_total_onhand}
+Xác Thực Sản Phẩm ${list_product_code} Ở Kho Bán Hàng Có Tồn Kho ${onhand} Và ${total_onhand}
+  FOR    ${product_code}     IN ZIP    ${list_product_code}   
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${onhand} và ${total_onhand} của ${product_id} 
   END
 
 Xác Thực Sản Phẩm ${list_product_code} Tồn ${list_onhand} Ở Kho ${list_name_branch}
-  FOR     ${product_code}    ${index}    IN ENUMERATE    ${list_product_code}
+  FOR   ${index}     ${product_code}     IN ENUMERATE    ${list_product_code}
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}[${index}]
     ${ton_kho_list}=    Get From List    ${list_onhand}   ${index}
     ${ton_kho_values}=    Split String    ${ton_kho_list}    ,
-    FOR    ${ton_kho_value}    ${name_branch}    IN ZIP    ${ton_kho_values}    ${list_name_branch}
-    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${name_branch}
-    Wait Until Keyword Succeeds    10x    1s    Tồn Kho ${ton_kho_value} của ${product_id} Ở Chi Nhánh ${branch_id}
+    FOR    ${item_tonkho}    ${name_branch}    IN ZIP    ${ton_kho_values}    ${list_name_branch}
+    ${branch_id}  Run Keyword If    "${name_branch}" == "Kho bán hàng"    Set Variable    ${DEFAULT_BRANCH_ID}    ELSE    Lấy Thông tin Chi Nhánh    ${name_branch}
+    Wait Until Keyword Succeeds    10x    1s    Thông tin tồn kho sản phẩm    ${product_id}    ${branch_id}     ${item_tonkho}
     END
   END
 
@@ -443,3 +508,25 @@ Save warranty for product
     ${response}=    Call API Man  ${WARRANTY_API_SAVE_ENDPOINT}      ${payload}
     RETURN    ${response}
 
+Get Pricebook Id 
+    [Arguments]    ${pricebook_name}
+    ${query}=    Set Variable    SELECT Id FROM PriceBook WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${pricebook_name}    ${RETAILER_ID}
+    RETURN    ${result[0]}
+
+Xác Thực Giá Sản Phẩm ${product_code} Ở Pricebook ${pricebook_name} Là ${price}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${price}    Convert To Number    ${price}
+    ${pricebook_id}=    Get Pricebook Id    ${pricebook_name}
+    ${query}=    Set Variable    SELECT Price FROM PriceBookDetail WHERE ProductId = ? AND PriceBookId = ?
+    ${result}=    Fetch One    ${query}    ${product_id}    ${pricebook_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy giá sản phẩm ${product_id} ở pricebook ${pricebook_name}
+    Should Be Equal As Numbers    ${result[0]}    ${price}
+
+Xác Thực Giá Sản Phẩm ${product_code} Là ${price}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${price}    Convert To Number    ${price}
+    ${query}=    Set Variable    SELECT BasePrice FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy giá sản phẩm ${product_id}
+    Should Be Equal As Numbers    ${result[0]}    ${price}

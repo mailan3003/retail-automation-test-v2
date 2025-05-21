@@ -30,7 +30,7 @@ RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy �
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin giao hàng đầy đủ
     ...    - UsingCod được bật trong hóa đơn
-    [Tags]    apiinvoice    delivery    
+    [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -60,7 +60,7 @@ RT-DP-006 Tạo hóa đơn COD thành công với đối tác giao hàng Để t
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin đối tác giao hàng
-     [Tags]    apiinvoice    delivery    
+     [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Đối Tác Để trống
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -82,7 +82,7 @@ RT-DP-007 Tạo hóa đơn giao hàng thay đổi thông tin gói hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng cao
-    [Tags]    apiinvoice    delivery    
+    [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Có khối lượng 1000 g Và Kích thước 20x10x15 cm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -105,7 +105,7 @@ RT-DP-008 Tạo hóa đơn Giao hàng gắn với Khách hàng và miễn phí g
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng = 0 và cờ IsFreeShip = true
-     [Tags]    apiinvoice    delivery    
+     [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${CUSTOMER_ID} Và Phí Giao Hàng 0
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -128,7 +128,7 @@ RT-DP-009 Tạo hóa đơn giao hàng có thanh toán
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Pending
-     [Tags]    apiinvoice    delivery    
+     [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thu Hộ và Thanh Toán 30000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -150,7 +150,7 @@ RT-DP-010 Tạo hóa đơn giao hàng có thời gian giao hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Processing
-    [Tags]    apiinvoice    delivery    
+    [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thời Gian 4 Ngày Sau Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -173,7 +173,7 @@ RT-DP-011 Tạo hóa đơn COD thành công với trạng thái đang giao hàng
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Đang giao hàng
-    [Tags]    apiinvoice    delivery    
+    [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái Đang Giao Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -195,7 +195,7 @@ RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Cancelled
-    [Tags]    apiinvoice    delivery    
+    [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Thu Hộ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -214,7 +214,7 @@ RT-DP-013 Tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn th
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
-    [Tags]    apiinvoice    delivery    AIGenerated    
+    [Tags]    apiinvoice    delivery    AIGenerated    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -231,7 +231,7 @@ RT-DP-014 Tạo hóa đơn thất bại khi thời gian giao hàng trùng với 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
-    [Tags]    apiinvoice    delivery    AIGenerated    
+    [Tags]    apiinvoice    delivery    AIGenerated    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -250,7 +250,7 @@ RT-DP-015 Tạo hóa đơn thất bại khi đối tác giao hàng không hợp 
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
-    [Tags]    apiinvoice    delivery123    AIGenerated    
+    [Tags]    apiinvoice    delivery123    AIGenerated    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -269,7 +269,7 @@ RT-DP-016 Tạo hóa đơn thất bại khi đối tác giao hàng không hỗ t
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
-    [Tags]    apiinvoice    delivery123    AIGenerated    
+    [Tags]    apiinvoice    delivery123    AIGenerated    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hỗ Trợ Nhà Bán Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -288,7 +288,7 @@ RT-DP-017 Tạo hóa đơn thất bại khi thiết lập nhà bán hàng không
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
-    [Tags]    apiinvoice    delivery123    AIGenerated    
+    [Tags]    apiinvoice    delivery123    AIGenerated    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thiết Lập Không Cho Phép COD Qua KiotViet
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420

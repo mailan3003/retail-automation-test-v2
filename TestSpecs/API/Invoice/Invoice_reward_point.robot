@@ -15,7 +15,7 @@ RT-RP-001 Tính điểm thưởng theo sản phẩm có điểm cố định
     ...    - Sản phẩm: Điểm cố định = 5 điểm
     ...    - Số lượng: 1
     ...    - Điểm dự kiến: 5 điểm
-    [Tags]    apiinvoice    reward-point    positive
+    [Tags]    apiinvoice    reward-point    positive    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Có Điểm Cố Định
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -31,7 +31,7 @@ RT-RP-005 Tính điểm thưởng theo sản phẩm có số lượng lớn
     ...    - Số lượng: 5
     ...    - Điểm dự kiến: 362.5 điểm (5 điểm * 72.5)
     ...    - Số lẻ: 0.5
-    [Tags]    apiinvoice    reward-point    positive
+    [Tags]    apiinvoice    reward-point    positive    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Có Tích Điểm Với Số Lượng 72.5
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -45,7 +45,7 @@ RT-RP-006 Tính điểm thưởng theo sản phẩm hỗn hợp
     ...    - Sản phẩm 1: IsRewardPoint = True, Điểm = 5 (tính theo giá)
     ...    - Sản phẩm 2: IsRewardPoint = False, Điểm = 0
     ...    - Điểm dự kiến:5 điểm
-    [Tags]    apiinvoice    reward-point    positive
+    [Tags]    apiinvoice    reward-point    positive    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Và Không Tích Điểm Sản Phẩm ${PRODUCT_1}  
@@ -62,7 +62,7 @@ RT-RP-007 Tính điểm thưởng theo nhiều sản phẩm tích điểm
     ...    - Sản phẩm 1: IsRewardPoint = True, Điểm = 5 (tính theo giá)
     ...    - Sản phẩm 2: IsRewardPoint = True, Điểm = 7 (tính theo giá)
     ...    - Điểm dự kiến:15 điểm
-    [Tags]    apiinvoice    reward-point    positive
+    [Tags]    apiinvoice    reward-point    positive    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Và Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT_7}    
@@ -78,7 +78,7 @@ RT-RP-008 Không tích điểm cho hóa đơn không có khách hàng
     ...    - Logic: Nếu CustomerId = 0, không tích điểm
     ...    - CustomerId = 0 (khách vãng lai)
     ...    - Điểm dự kiến: 0 điểm
-    [Tags]    apiinvoice    reward-point    negative
+    [Tags]    apiinvoice    reward-point    negative    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn không có khách hàng
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
@@ -219,7 +219,7 @@ RT-RP-014 Không tích điểm cho sản phẩm có tính điểm phần điểm
     ...    - Sản phẩm 1: Giá = 0đ, Số lượng = 1
     ...    - Sản phẩm 2: Giá = 100,000đ, Số lượng = 1
     ...    - Điểm dự kiến: 10 điểm (chỉ tính điểm cho sản phẩm 2)
-    [Tags]    apiinvoice    reward-point    negative    zero-price
+    [Tags]    apiinvoice    reward-point    negative    zero-price    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm giá 0đ
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_ID_REWARD_POINT_ZERO} Có Điểm Cố Định

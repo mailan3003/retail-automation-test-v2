@@ -26,7 +26,7 @@ RT-PU-001 Cập nhật thanh toán tiền mặt cho hóa đơn
     ...    - Thanh toán mới được thêm vào hóa đơn
     ...    - Công nợ hóa đơn giảm đúng số tiền
     ...    - Mô tả thanh toán lưu đúng nội dung
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 10000
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -49,7 +49,7 @@ RT-PU-002 Cập nhật thanh toán bằng thẻ cho hóa đơn
     ...    - Mã trạng thái: 200
     ...    - Thanh toán mới được thêm vào hóa đơn
     ...    - Thông tin tài khoản thẻ được lưu chính xác
-        [Tags]    apiinvoice    update_invoice   update_payment
+        [Tags]    apiinvoice    update_invoice   update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Với Số Tiền 5300
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -72,7 +72,7 @@ RT-PU-003 Cập nhật hóa đơn thêm khách hàng và thanh toán
     ...    - Mã trạng thái: 200
     ...    - Thanh toán mới được thêm vào hóa đơn
     ...    - Thông tin tài khoản được lưu chính xác
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Với Số Tiền 5300 Với Khách Hàng ${CUSTOMER_ID}
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -95,7 +95,7 @@ RT-PU-004 Cập nhật thêm hàng hóa cho hóa đơn
     ...    - Mã trạng thái: 200
     ...    - Cả hai thanh toán được thêm vào hóa đơn
     ...    - Tổng tiền thanh toán bổ sung là 50,000đ
-    [Tags]    apiinvoice    update_invoice    update_payment       
+    [Tags]    apiinvoice    update_invoice    update_payment    regression     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_update} 
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id_update} Với Số Lượng 5.44
@@ -115,7 +115,7 @@ RT-PU-005 Cập nhật số lượng hàng hóa trong đơn hàng
     ...    - Thanh toán được thêm vào hóa đơn
     ...    - Kỳ vọng: 200
     ...    - Số lượng hàng hóa trong đơn là 200000
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Số Lượng 200000 Hàng hóa trong đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -136,7 +136,7 @@ RT-PU-006 Cập Nhập Hóa Đơn Không Tồn Tại
     ...    - Kỳ vọng:
     ...    - Mã trạng thái: 404
     ...    - Thông báo lỗi: "Không tìm thấy hóa đơn"
-    [Tags]    apiinvoice    update_invoice1    update_payment
+    [Tags]    apiinvoice    update_invoice1    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 500
@@ -146,7 +146,7 @@ RT-PU-007 Cập nhật với hóa đơn đã hủy
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có ID = ${EXISTING_INVOICE_ID}
     ...    - Thanh toán tiền mặt: -10,000đ
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Đã Hủy
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -162,7 +162,7 @@ RT-PU-008 Cập nhật thanh toán tổng tiền hàng trong đơn
     ...    - Kỳ vọng:
     ...    - Mã trạng thái: 400
     ...    - Thông báo lỗi: "Số tiền thanh toán phải khác 0"
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Thành Tiền 5550000
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -301,7 +301,7 @@ RT-PU-015 Cập nhật mô tả hóa đơn
     ...    - Mã trạng thái: 200
     ...    - Thanh toán được thêm vào hóa đơn
     ...    - Mô tả thanh toán lưu đúng nội dung
-    [Tags]    apiinvoice    update_invoice    update_payment
+    [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Cập Nhập Mô Tả Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn

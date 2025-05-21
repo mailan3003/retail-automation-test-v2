@@ -15,7 +15,7 @@ Suite Setup
 
 *** Test Cases ***
 RT-GP-001 Tạo hóa đơn thành công với quà tặng sản phẩm
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng sản phẩm theo hóa đơn
     ...    - Dữ liệu đầu vào:
     ...    - Tổng tiền: 100,0000đ
@@ -40,7 +40,7 @@ RT-GP-001 Tạo hóa đơn thành công với quà tặng sản phẩm
     And Tồn kho sản phẩm ${product_promotion_id} đã giảm ${quantity_promotion} đơn vị
 
 RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sản phẩm
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng theo sản phẩm cụ thể
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -62,7 +62,7 @@ RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sả
     And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_GIFT_ID_2}
 
 RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng voucher theo hóa đơn
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -85,7 +85,7 @@ RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     And Thông Tin Khuyến Mãi Có Loại 9
 
 RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản phẩm
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng voucher theo sản phẩm cụ thể
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -107,7 +107,7 @@ RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản ph�
     And Thông Tin Khuyến Mãi Có Loại 10
 
 RT-GP-005 Tạo hóa đơn thành công với quà tặng điểm
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng điểm theo hóa đơn
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -132,7 +132,7 @@ RT-GP-005 Tạo hóa đơn thành công với quà tặng điểm
     And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
 RT-GP-006 Tạo hóa đơn thành công với quà tặng điểm theo sản phẩm
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng điểm theo sản phẩm cụ thể
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -156,7 +156,7 @@ RT-GP-006 Tạo hóa đơn thành công với quà tặng điểm theo sản ph�
     And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
 RT-GP-007 Tạo hóa đơn thành công với nhiều quà tặng cùng lúc
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều loại quà tặng cùng lúc
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT001"
@@ -178,7 +178,7 @@ RT-GP-007 Tạo hóa đơn thành công với nhiều quà tặng cùng lúc
     And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
 RT-GP-008 Tạo hóa đơn thành công với quà tặng nhiều sản phẩm khác nhau
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với quà tặng sản phẩm số lượng lớn
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT002"
@@ -198,7 +198,7 @@ RT-GP-008 Tạo hóa đơn thành công với quà tặng nhiều sản phẩm k
     And Xác Thực Số Lượng Quà Tặng ${product_promotion_id_1} Với Số Lượng 1
 
 RT-GP-009 Tạo hóa đơn thành công với nhiều voucher quà tặng
-    [Tags]    gift    smoke   apiinvoice
+    [Tags]    gift    smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều voucher quà tặng
     ...    - Dữ liệu đầu vào:
     ...    - Mã hóa đơn: "HD_TEST_GIFT002"

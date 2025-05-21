@@ -29,7 +29,7 @@ RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     ...    - Ngày tạo phiếu thu là ngày hiện tại
     ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
     ...    - Công nợ của hóa đơn = 0
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment    smoke    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -53,7 +53,7 @@ RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     ...    - Thanh toán bằng thẻ được ghi nhận trong DB
     ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
     ...    - Công nợ của hóa đơn = 0
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment      smoke   apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CARD} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -64,7 +64,7 @@ RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment      smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán bằng chuyển khoản
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -87,7 +87,7 @@ RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment      smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo phiếu thu với nhiều phương thức thanh toán
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -110,7 +110,7 @@ RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-005 Tạo phiếu thu với thanh toán thừa
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment      smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thừa tính vào công nợ khách hàng 
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -131,7 +131,7 @@ RT-RC-005 Tạo phiếu thu với thanh toán thừa
     And Xác Thực Công Nợ Của Hóa Đơn 0
 
 RT-RC-006 Tạo phiếu thu với thanh toán thiếu
-    [Tags]    payment      smoke   apiinvoice
+    [Tags]    payment      smoke   apiinvoice    regression
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thiếu
     ...    - Dữ liệu đầu vào:
     ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -152,7 +152,24 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
     And Xác Thực Công Nợ Của Hóa Đơn 20000
     And Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn 1
 
-#RT-RC-007 Tạo phiếu thu với mô tả phiếu này không nằm trong 
+RT-RC-007 Tạo phiếu thu với thanh toán bằng tiền mặt kết hợp phương thức khác
+    [Tags]    payment      smoke   apiinvoice    regression
+    [Documentation]    Kiểm tra tạo phiếu thu với thanh toán bằng tiền mặt kết hợp phương thức khác
+    ...    - Dữ liệu đầu vào:
+    ...    - Hóa đơn có tổng tiền = 100,000đ
+    ...    - Phương thức thanh toán: tiền mặt
+    ...    - Số tiền thanh toán: 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
+    ...    - Mã phiếu thu bắt đầu với tiền tố "PT"
+    ...    - Ngày tạo phiếu thu là ngày hiện tại
+    ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
+    ...    - Công nợ của hóa đơn = 0
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+RT-RC-007 Tạo phiếu thu với mô tả phiếu này không nằm trong 
     # [Documentation]    Kiểm tra tạo phiếu thu với mô tả chi tiết
     # ...    - Dữ liệu đầu vào:
     # ...    - Hóa đơn có tổng tiền = 100,000đ
@@ -764,7 +781,7 @@ RT-BP-001 Tạo hóa đơn thất bại với tài khoản ngân hàng không t�
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice
+    [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${INVALID_BANK_ACCOUNT_ID} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
