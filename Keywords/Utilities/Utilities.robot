@@ -12,8 +12,14 @@ Resource          ../../Config/Env_${ENV}.robot
 *** Keywords ***
 Create Auth Headers
     [Arguments]    ${token}=${AUTH_TOKEN}
-    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}     
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}     Content-Type=application/json  Retailer=${RETAILER_CODE}     
     RETURN    ${headers}
+
+Create Auth Headers With File
+    [Arguments]    ${token}=${AUTH_TOKEN}
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Retailer=${RETAILER_CODE}     BranchId=${BRANCH_ID}
+    RETURN    ${headers}
+
 
 Create Auth Headers With BranchId
     [Arguments]    ${token}=${AUTH_TOKEN}
@@ -24,6 +30,12 @@ Call API
     [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers    ${token}
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
+
+Call API With Form Data
+    [Arguments]     ${url}   ${endpoint}    ${data}    ${files}=${None}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With File    ${token}
+    ${response}=    POST Form Data    ${url}${endpoint}    headers=${headers}    data=${data}    files=${files}
     RETURN    ${response}
 
 Call API Man
@@ -62,5 +74,5 @@ Should Contain Nested Property
 Delete Data
     [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
     ${headers}=    Create Auth Headers    ${token}
-    ${response}=    DELETE    ${API_URL}${endpoint}    headers=${headers}    
+    ${response}=    DELETE    ${API_MAN_URL}${endpoint}    headers=${headers}    
     RETURN    ${response}

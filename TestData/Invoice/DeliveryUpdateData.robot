@@ -47,11 +47,7 @@ Resource          ../CommonData.robot
 ...    TrackingCode=TRACK123456789    
 ...    Note=Đã cập nhật mã vận đơn mới
 
-# Cập nhật đối tác giao hàng
-&{UPDATED_DELIVERY_PARTNER}    
-...    DeliveryBy=2    
-...    PartnerId=${DELIVERY_PARTNER_2}    
-...    Note=Chuyển sang đối tác giao hàng khác
+
 
 # Cập nhật thông tin giao một phần
 &{PARTIAL_DELIVERY_INFO}    

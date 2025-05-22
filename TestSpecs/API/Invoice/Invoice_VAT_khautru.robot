@@ -28,7 +28,7 @@ RT-VAT-001 Tạo hóa đơn với thuế VAT mặc định
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 10,000đ
     ...    - Tổng tiền sau thuế = 110,000đ
-    [Tags]    apiinvoice    vat   
+    [Tags]    apiinvoice    vat    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế Mặc Định Với Sản Phẩm HH0052 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -50,7 +50,7 @@ RT-VAT-002 Tạo hóa đơn VAT với hàng hóa giảm giá
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 8,000đ
     ...    - Tổng tiền sau thuế = 108,000đ
-    [Tags]    apiinvoice    vat   
+    [Tags]    apiinvoice    vat    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Hàng Hóa HH0053 Giảm Giá 10000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -70,7 +70,7 @@ RT-VAT-003 Tạo hóa đơn Hàng hóa nhiều dòng có VAT
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 0đ
     ...    - Tổng tiền sau thuế = 100,000đ
-    [Tags]    apiinvoice    vat   
+    [Tags]    apiinvoice    vat    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm HH0053 có 2 Dòng 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -95,7 +95,7 @@ RT-VAT-004 Tạo hóa đơn với nhiều sản phẩm có thuế VAT khác nhau
     ...    - Tổng tiền trước thuế = 300,000đ
     ...    - Tổng tiền thuế = 20,000đ
     ...    - Tổng tiền sau thuế = 320,000đ
-    [Tags]    apiinvoice    vat   
+    [Tags]    apiinvoice    vat    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm HH0050 Và HH0052 Có Thuế VAT Khác Nhau
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200

@@ -17,7 +17,7 @@ Suite Setup
 *** Test Cases ***
 RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
     [Documentation]    Kiểm tra tạo hóa đơn thành công với dữ liệu đầu vào hợp lệ
-    [Tags]        smoke   apiinvoice   invoicevalidate 
+    [Tags]        smoke   apiinvoice   invoicevalidate   regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
@@ -38,7 +38,7 @@ RT-IV-002 Kiểm tra mã hóa đơn trùng
 
 RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
     [Documentation]     ...    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin chi nhán 
-    [Tags]    invoicevalidate    smoke    apiinvoice
+    [Tags]    invoicevalidate    smoke    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -46,7 +46,7 @@ RT-IV-003 Kiểm tra thiếu thông tin chi nhánh
 
 RT-IV-004 Kiểm tra chi nhánh không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với chi nhánh không tồn tại
-    [Tags]    invoicevalidate    smoke     apiinvoice   
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Chi Nhánh Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -62,7 +62,7 @@ RT-IV-005 Kiểm tra khách hàng không thuộc chi nhánh
 
 RT-IV-006 Kiểm tra khách hàng không tồn tại
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không tồn tại
-    [Tags]    invoicevalidate    smoke    apiinvoice     
+    [Tags]    invoicevalidate    smoke    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -71,7 +71,7 @@ RT-IV-006 Kiểm tra khách hàng không tồn tại
 
 RT-IV-007 Kiểm tra thiếu thông tin người bán
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn thiếu thông tin người bán
-    [Tags]    invoicevalidate    smoke     apiinvoice    
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Người Bán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -79,7 +79,7 @@ RT-IV-007 Kiểm tra thiếu thông tin người bán
 
 RT-IV-008 Kiểm tra người bán không hợp lệ
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với người bán không tồn tại
-    [Tags]    invoicevalidate    smoke     apiinvoice     
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -87,7 +87,7 @@ RT-IV-008 Kiểm tra người bán không hợp lệ
 
 RT-IV-009 Kiểm tra ngày tạo hóa đơn trong tương lai
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với ngày trong tương lai
-    [Tags]    invoicevalidate    smoke     apiinvoice      
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trong Tương Lai
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -118,7 +118,7 @@ RT-IV-016 Kiểm tra giá bán âm
 
 RT-IV-017 Kiểm tra sản phẩm không còn hoạt động
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với sản phẩm đã ngừng kinh doanh    
-    [Tags]    invoicevalidate    smoke     apiinvoice        
+    [Tags]    invoicevalidate    smoke     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đã Ngừng Kinh Doanh
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -195,7 +195,8 @@ RT-IV-026 Kiểm tra sản phẩm serial không tồn tại
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số serial không tồn tại trong hệ thống"
-    [Tags]  invoicevalidate    smoke     apiinvoice      
+    [Tags]    apiinvoice    validation    permission    regression
+
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Serial Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -209,7 +210,7 @@ RT-IV-027 Kiểm tra sản phẩm serial đã bán
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Serial đã được bán hoặc không khả dụng"
-    [Tags]    invoicevalidate    apiinvoice    
+    [Tags]    invoicevalidate    apiinvoice     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial Đã Bán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -223,7 +224,7 @@ Kiểm tra sản phẩm serial số lượng không hợp lệ
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số lượng Serial không hợp lệ"
-    [Tags]    invoicevalidate    apiinvoice    
+    [Tags]    invoicevalidate    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial Số Lượng Không Hợp Lệ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -252,7 +253,7 @@ RT-IV-029 Kiểm tra sản phẩm lô date không đủ số lượng
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số lượng trong lô không đủ để bán"
-    [Tags]    invoicevalidate    apiinvoice    
+    [Tags]    invoicevalidate    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Lô Date FTLD00003 Không Đủ Số Lượng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -260,7 +261,7 @@ RT-IV-029 Kiểm tra sản phẩm lô date không đủ số lượng
     
 RT-IV-030 Kiểm tra điều kiện về ngày không được trước ngày khóa sổ
     [Documentation]    Kiểm tra validate ngày tạo hóa đơn không được trước ngày khóa sổ
-    [Tags]     invoicevalidate    apiinvoice      3435
+    [Tags]     invoicevalidate    apiinvoice      regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Ngày Trước Ngày Khóa Sổ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -291,7 +292,7 @@ RT-CD-001 Tạo hóa đơn với khách hàng không còn hoạt động
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice
+    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -307,7 +308,7 @@ RT-CD-002 Tạo hóa đơn với khách hàng đã bị xóa
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
-    [Tags]    invoicevalidate    customer    validation    AIGenerated   apiinvoice
+    [Tags]    invoicevalidate    customer    validation    AIGenerated   apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Đã Bị Xóa
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -324,7 +325,7 @@ RT-SV-001 Tạo hóa đơn mới với người bán không hoạt động
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Người bán ${INACTIVE_SOLD_BY_NAME} đã bị ngừng hoạt động"
-    [Tags]    invoicevalidate    salesperson    validation    AIGenerated     apiinvoice    
+    [Tags]    invoicevalidate    salesperson    validation    AIGenerated     apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Người Bán Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -335,7 +336,7 @@ RT-CV-001 Tạo hóa đơn với ID khách hàng không hợp lệ
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: invoice.CustomerId != null && invoice.CustomerId < -0.0000001
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateCustomerException
-    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice
+    [Tags]    invoicevalidate    customer    validation    AIGenerated    apiinvoice     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với ID Khách Hàng Không Hợp Lệ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -346,7 +347,7 @@ RT-CV-002 Tạo hóa đơn với kênh bán không tồn tại
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: invoice.SaleChannelId > 0 nhưng saleChannelInDB == null
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice    
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice      regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -357,7 +358,7 @@ RT-CV-003 Tạo hóa đơn với kênh bán không thuộc cửa hàng hiện t�
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: saleChannelInDB.RetailerId != CurrentRetailerId
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice    
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Khác Cửa Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -368,7 +369,7 @@ RT-CV-004 Tạo hóa đơn với kênh bán không hoạt động
     ...    - Source: CreateInvoice - CustomerAndChannel logic
     ...    - Điều kiện: saleChannelInDB.IsActive == false
     ...    - Kỳ vọng: Hệ thống ném ngoại lệ KvValidateSaleChannelException
-    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice     
+    [Tags]    invoicevalidate    salechannel    validation    AIGenerated    apiinvoice     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Kênh Bán Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -382,7 +383,7 @@ RT-IV-031 Kiểm tra thay đổi thông tin giao hàng của hóa đơn đã có
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true, Status=1
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryInfoId=${DELIVERY_DETAIL_ID_USE_DEFAULT_PARTNER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server"
-    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Thông Tin Giao Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -395,7 +396,7 @@ RT-IV-032 Kiểm tra thay đổi khách hàng khi hóa đơn đã có thanh toá
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_OLD_CUSTOMER_ID}, TotalPayment=${UPDATE_INVOICE_ID_WRONG_CUSTOMER_TOTAL_PAYMENT}
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, UpdateInvoiceId=${UPDATE_INVOICE_ID_WRONG_CUSTOMER}, Code=${UPDATE_INVOICE_CODE_WRONG_CUSTOMER}, CustomerId=${UPDATE_INVOICE_CUSTOMER_ID_WRONG_CUSTOMER}
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thay Đổi Khách Hàng Đã Thanh Toán
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -408,7 +409,7 @@ RT-IV-033 Kiểm tra cập nhật hóa đơn đã có trả hàng
     ...    - Hóa đơn gốc: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, UpdateInvoiceId=${UPDATE_INVOICE_ID_CONTAIN_RETURN}, Code=${UPDATE_INVOICE_ID_CONTAIN_RETURN_CODE}
     ...    - Kỳ vọng: Lỗi "Hóa đơn đã có trả hàng, không thể mở phiếu để cập nhật"
-    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated
+    [Tags]    invoicevalidate     update-invoice    apiinvoice    AIGenerated     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Hóa Đơn Đã Có Trả Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -424,7 +425,7 @@ RT-VC-001 Kiểm tra xung đột phiên bản khi cập nhật thông tin đối
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryDetail.UseDefaultPartner=false
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated        apiinvoice
+    [Tags]    invoicevalidate    versionconflict    delivery-partner    AIGenerated        apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Đối Tác Vận Chuyển
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -439,7 +440,7 @@ RT-VC-002 Kiểm tra xung đột phiên bản khi cập nhật trạng thái hó
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID}, Status=1 (Đã hoàn thành)
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID}, Status=3 (Đang xử lý)
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    status    AIGenerated        apiinvoice
+    [Tags]    invoicevalidate    versionconflict    status    AIGenerated        apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Xung Đột Trạng Thái
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -455,7 +456,7 @@ RT-VC-003 Kiểm tra xung đột phiên bản khi cập nhật không có thông
     ...    - Hóa đơn hiện tại: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, Code=${UPDATE_INVOICE_CODE_USE_DEFAULT_PARTNER}, DeliveryInfo.UseDefaultPartner=true
     ...    - Hóa đơn cập nhật: Id=${UPDATE_INVOICE_ID_USE_DEFAULT_PARTNER}, DeliveryDetail=null
     ...    - Kỳ vọng: Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
-    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated        apiinvoice
+    [Tags]    invoicevalidate    versionconflict    delivery-info    AIGenerated        apiinvoice     regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Với Thiếu Thông Tin Giao Hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
@@ -470,7 +471,7 @@ RT-IV-UUID-001 Kiểm tra UUID trùng lặp với cùng khách hàng và tổng 
     ...    - Hóa đơn mới: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
     ...    - Hóa đơn đã tồn tại: UUID="${DUPLICATE_UUID}", CustomerId=${DUPLICATE_CUSTOMER_ID}, Total=${STANDARD_INVOICE_TOTAL}
     ...    - Kỳ vọng: Lỗi "Mã hóa đơn online bị trùng: HD050 - HD001"
-    [Tags]    invoicevalidate    duplicate    uuid2    AIGenerated  apiinvoice
+    [Tags]    invoicevalidate    duplicate    uuid2    AIGenerated  apiinvoice    regression
     Given Tạo hóa đơn với UUID trùng lặp
     And Chuẩn Bị Dữ Liệu Hóa Đơn Với Trùng Uuid Trong Cơ sở dữ liệu
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -532,3 +533,4 @@ RT-IV-PL-001 Kiểm tra giới hạn sử dụng khuyến mãi khi khách hàng 
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải bao gồm lỗi "Khách hàng đã được hưởng các khuyến mại"
     And Phản hồi phải bao gồm lỗi "vui lòng kiểm tra lại."
+

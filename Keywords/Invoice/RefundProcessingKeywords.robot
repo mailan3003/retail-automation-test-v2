@@ -1,7 +1,6 @@
 *** Settings ***
 Documentation     Keywords liên quan đến xử lý hoàn tiền khi tạo hóa đơn
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/RefundProcessingData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -202,27 +201,27 @@ Check Invoice Exists
     ${result}=    Query    SELECT COUNT(*) as count FROM Invoices WHERE Id = '${invoice_id}'
     ${count}=    Set Variable    ${result[0]['count']}
     ${exists}=    Evaluate    ${count} > 0
-    [Return]    ${exists}
+    RETURN    ${exists}
 
 Get Invoice Total
     [Arguments]    ${invoice_id}
     ${result}=    Query    SELECT Total FROM Invoices WHERE Id = '${invoice_id}'
     ${total}=    Set Variable    ${result[0]['Total']}
-    [Return]    ${total}
+    RETURN    ${total}
 
 Get Invoice Total Payment
     [Arguments]    ${invoice_id}
     ${result}=    Query    SELECT TotalPayment FROM Invoices WHERE Id = '${invoice_id}'
     ${total_payment}=    Set Variable    ${result[0]['TotalPayment']}
-    [Return]    ${total_payment}
+    RETURN    ${total_payment}
 
 Get Payment Receipts For Invoice
     [Arguments]    ${invoice_id}
     ${result}=    Query    SELECT * FROM PaymentReceipts WHERE InvoiceId = '${invoice_id}'
-    [Return]    ${result}
+    RETURN    ${result}
 
 Get Customer Debt
     [Arguments]    ${customer_id}
     ${result}=    Query    SELECT Debt FROM Customers WHERE Id = '${customer_id}'
     ${debt}=    Set Variable    ${result[0]['Debt']}
-    [Return]    ${debt} 
+    RETURN    ${debt} 

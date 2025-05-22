@@ -1,7 +1,6 @@
 *** Settings ***
 Library    RequestsLibrary
 Library    Collections
-Library    Utilities.robot
 
 *** Keywords ***
 POST
@@ -11,6 +10,24 @@ POST
     
     Create Session    kvpos    ${url}    verify=True
     ${response}=    RequestsLibrary.POST On Session    kvpos    ${url}    json=${json}    headers=${headers}    expected_status=anything
+    RETURN    ${response}
+
+
+Post request from data  
+    [Arguments]    ${url}    ${payload}   
+    ${headers}=    Create Dictionary     Authorization=Bearer ${AUTH_TOKEN}    Content-Type=multipart/form-data    Retailer=${RETAILER_CODE}      BranchId=${BRANCH_ID}
+    Create Session     lolo     ${API_MAN_URL}   verify=True
+    ${response}=    POST On Session   lolo    ${API_MAN_URL}${url}        files=${payload}      headers=${headers}     expected_status=anything
+    RETURN    ${response}
+
+POST Form Data
+    [Arguments]    ${url}    ${data}=${None}    ${files}=${None}    ${headers}=${None}
+    Create Session    kvpos    ${url}    verify=True
+    IF    "${files}" == "${None}"
+        ${response}=    POST On Session    kvpos    ${url}    data=${data}    headers=${headers}    expected_status=anything
+    ELSE
+        ${response}=    POST On Session    kvpos    ${url}    data=${data}    files=${files}    headers=${headers}    expected_status=anything
+    END
     RETURN    ${response}
 
 Delete

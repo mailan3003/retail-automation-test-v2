@@ -20,7 +20,7 @@ RT-IWR-001 Tạo hóa đơn thành công với sản phẩm chỉnh sửa bảo 
     ...    - Hóa đơn được tạo thành công trong CSDL
     ...    - Thông tin bảo hành được lưu trong bảng InvoiceWarranties với WarrantyPeriod=12
     ...    - Tồn kho sản phẩm BHBT được cập nhật giảm 1 đơn vị
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Có Thời Hạn Bảo Hành Là 12 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -44,7 +44,7 @@ RT-IWR-002 Tạo hóa đơn thành công có sản phẩm BHBT nhập serial t�
     ...    - Phiếu bảo hành được tạo tự động trong bảng WarrantyTickets
     ...    - Phiếu bảo hành có thông tin serial BH001
     ...    - Tồn kho sản phẩm BHBT giảm 1 đơn vị, serial BH001 chuyển sang trạng thái đã bán
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression  
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${WARRANTY_PRODUCT_SERIAL_ID} Có Imei ${WARRANTY_SERIAL_NUMBER} Bảo Hành 35 Ngày
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -62,7 +62,7 @@ RT-IWR-003 Tạo hóa đơn thành công với sản phẩm BHBT có thời hạ
     ...    - Hóa đơn được tạo thành công trong CSDL
     ...    - Thông tin bảo hành được lưu cho cả 2 sản phẩm với thời hạn tương ứng
     ...    - Tồn kho cả 2 sản phẩm BHBT được cập nhật giảm mỗi loại 1 đơn vị
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression  
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Nhiều Thời Hạn BH @{warranty_name} @{number_time} @{number_time_type} Và BT 1 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
@@ -85,7 +85,7 @@ RT-IWR-004 Tạo hóa đơn với nhiều sản phẩm có thông tin bảo hàn
     ...    - Hóa đơn được tạo thành công trong CSDL
     ...    - Thông tin bảo hành được lưu với thời hạn tùy chỉnh 18 tháng (không phải 12 tháng mặc định)
     ...    - Tồn kho sản phẩm BHBT được cập nhật giảm 1 đơn vị
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression  
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 30 Ngày Và ${WARRANTY_PRODUCT_ID_2} Thời hạn Bảo Hành 18 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -109,7 +109,7 @@ RT-IWR-005 Tạo hóa đơn với sản phẩm lô date có bảo hành
     ...    - Thông tin bảo hành được lưu với thời hạn 12 tháng
     ...    - Tồn kho lô date được cập nhật giảm 1 đơn vị
     ...    - Thông tin lô được ghi nhận trong chi tiết hóa đơn
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression  
     Given Chuẩn Bị Dữ liệu Hóa Đơn Với Hàng Lodate ${WARRANTY_PRODUCT_BATCH_CODE} Có Lô ${WARRANTY_PRODUCT_BATCH_NAME} Thời hạn Bảo Trì 12 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -129,7 +129,7 @@ RT-IWR-006 Tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     ...    - Thông tin bảo hành được lưu cho từng dòng sản phẩm với thời hạn tương ứng
     ...    - Tồn kho sản phẩm nhiều dòng được cập nhật giảm 1 đơn vị
     ...    - Thông tin các dòng được ghi nhận trong chi tiết hóa đơn
-    [Tags]    warranty    apiinvoice     
+    [Tags]    warranty    apiinvoice    regression  
     Given Chuẩn Bị Dữ Liệu Hóa Đơn 3 Dòng Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 2 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200

@@ -22,7 +22,7 @@ RT-DU-001 Cập nhật trạng thái giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Processing" (2) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_PROCESSING}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -43,7 +43,7 @@ RT-DU-002 Cập nhật thông tin người nhận thành công
     ...    - Status code: 200
     ...    - Thông tin người nhận được cập nhật trong CSDL
     ...    - Cột ReceiverName, ReceiverPhone, ReceiverAddress được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -61,7 +61,7 @@ RT-DU-003 Cập nhật phí giao hàng thành công
     ...    - Status code: 200
     ...    - Phí giao hàng được cập nhật trong CSDL thành 35,000đ
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery     
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng 
     And Chuẩn Bị Dữ Liệu Cập Nhật Phí Giao Hàng 35000
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -81,7 +81,7 @@ RT-DU-004 Cập nhật thu hộ
     ...    - Phí giao hàng được cập nhật thành 0đ trong CSDL
     ...    - Cờ IsFreeShip được bật (1)
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Thu Hộ 
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -100,7 +100,7 @@ RT-DU-005 Cập nhật trạng thái đã giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Completed" (3) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_COMPLETED}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -118,7 +118,7 @@ RT-DU-006 Cập nhật trạng thái hủy giao hàng thành công
     ...    - Status code: 200
     ...    - Trạng thái giao hàng được cập nhật thành "Cancelled" (4) trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
    Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${STATUS_CANCELLED}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -136,7 +136,7 @@ RT-DU-007 Cập nhật mã vận đơn thành công
     ...    - Status code: 200
     ...    - Mã vận đơn được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-     [Tags]    apiinvoice    update_invoice    update_delivery     
+     [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn TRACK123456789
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -156,7 +156,7 @@ RT-DU-008 Cập nhật đối tác giao hàng khác
     ...    - Status code: 200
     ...    - Phương thức giao hàng và mã đối tác được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${DELIVERY_PARTNER_2}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -176,7 +176,7 @@ RT-DU-009 Cập nhật thông tin gói hàng
     ...    - Cờ IsPartialDelivery được bật (1) trong CSDL
     ...    - Số tiền giao một phần được cập nhật thành 50,000đ
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Gói Hàng 100x100x100x100
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -194,7 +194,7 @@ RT-DU-010 Cập nhật ngày giao dự kiến thành công
     ...    - Status code: 200
     ...    - Ngày giao dự kiến được cập nhật trong CSDL
     ...    - Ghi chú giao hàng được cập nhật
-    [Tags]    apiinvoice    update_invoice    update_delivery    
+    [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Ngày Giao Dự Kiến và Ghi Chú
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -311,7 +311,7 @@ Cập nhật người bán từ MHQL
    ...    - Kỳ vọng:
    ...    - Status code: 200
    ...    - Người bán được cập nhật thành ${SELLER_ID}
-   [Tags]    apiinvoice    smoke   
+   [Tags]    apiinvoice    smoke    regression
    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
    And Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${SELLER_ID}
    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -326,7 +326,7 @@ Cập nhật thời gian từ MHQL
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Thời gian được cập nhật thành ${TIME}
-    [Tags]    apiinvoice    smoke   
+    [Tags]    apiinvoice    smoke    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
     And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Trừ 3 Ngày
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL    
@@ -342,7 +342,7 @@ Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu 
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Thời gian được cập nhật thành ${TIME}
-    [Tags]    apiinvoice    smoke     test36635
+    [Tags]    apiinvoice    smoke     test36635    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
     And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Không Thay Đổi Phiếu Thanh Toán
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -359,7 +359,7 @@ Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu 
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Thời gian được cập nhật thành ${TIME}
-    [Tags]    apiinvoice    smoke     test36635
+    [Tags]    apiinvoice    smoke     test36635    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
     And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian 5 Ngày Có Thay Đổi Phiếu Thanh Toán
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -376,7 +376,7 @@ Cập nhật thời gian tương lai từ MHQL
     ...    - Kỳ vọng:
     ...    - Status code: 420
     ...    - Thời gian được cập nhật thành ${TIME}
-    [Tags]    apiinvoice    smoke      
+    [Tags]    apiinvoice    smoke       regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
     And Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Thêm 3 Ngày
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL        
@@ -392,7 +392,7 @@ Cập nhập kênh bán từ MHQL
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Kênh bán được cập nhật thành ${CHANNEL_ID}
-    [Tags]    apiinvoice    smoke      test4243
+    [Tags]    apiinvoice    smoke      test4243    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
     And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${CHANNEL_ID}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -406,7 +406,7 @@ Cập nhật ghi chú từ MHQL
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Ghi chú được cập nhật thành ${NOTE}
-    [Tags]    apiinvoice    smoke     
+    [Tags]    apiinvoice    smoke      regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
     And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 50 Kí Tự
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
@@ -421,7 +421,7 @@ Cập nhật ghi chú quá nhiều kí tự từ MHQL
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Ghi chú được cập nhật thành ${NOTE}
-    [Tags]    apiinvoice    smoke     
+    [Tags]    apiinvoice    smoke      regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
     And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 5000 Kí Tự
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL

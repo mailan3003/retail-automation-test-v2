@@ -1,6 +1,6 @@
 robot_tasks:
     -   name: "apiinvoice-task"
-        include_tags: "apiinvoice"
+        include_tags: "regression"
         variables:
         - "ENV:api"
     -   name: "vlxd-task"
