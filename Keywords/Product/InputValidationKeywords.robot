@@ -6,7 +6,7 @@ Library           ../../Resources/DatabaseLibrary.py
 Resource          ../../TestData/Product/ProductInputData.robot
 
 *** Variables ***
-${PRODUCT_API_ENDPOINT}     /products/addmany
+${PRODUCT_API_ENDPOINT}     products/addmany
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Sản Phẩm Tiêu Chuẩn
@@ -19,7 +19,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Tiêu Chuẩn
     RETURN    ${REQUEST_DATA}
 
 Gửi Yêu Cầu Thêm Sản Phẩm
-    ${response}=    Call API With Form Data    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
+    ${response}=    Call API With Form Data    ${API_MAN_URL}    ${PRODUCT_API_ENDPOINT}    ${REQUEST_DATA}    ${REQUEST_FILES}
     Set Test Variable    ${RESPONSE}    ${response}
     RETURN    ${response}
 
@@ -113,7 +113,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
     ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị không trùng    Code=SPK001
+    ${random_code}=    Generate Random String    10    [LOWER]
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị không trùng    Code=${random_code}
     
     # Tạo danh sách các đơn vị cho sản phẩm, không có đơn vị trùng tên
     ${units}=    Create List
@@ -445,9 +446,10 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
-    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}    
+    ${random_code}=    Generate Random String    10    [LOWER]
     ${data}=    Set To Dictionary    ${data}    
-    ...    Code=DP001    
+    ...    Code=${random_code}
     ...    IsActiveGppDrugStore=${FALSE}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json

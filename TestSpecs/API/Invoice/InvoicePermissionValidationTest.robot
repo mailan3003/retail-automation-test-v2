@@ -58,7 +58,7 @@ Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạn
 
 Chuẩn bị dữ liệu hóa đơn gắn với bảng giá 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu hóa đơn với bảng giá ${PRICEBOOK_ID}   
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
@@ -67,7 +67,7 @@ Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
 
 Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu hóa đơn với bảng giá 53253
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -75,7 +75,7 @@ Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
 
 Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
-    [Tags]    apiinvoice    validation    permission      
+    [Tags]    apiinvoice    validation    permission    regression
     And Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000153
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
@@ -92,7 +92,7 @@ Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh
 
 Tạo hóa đơn với user không có quyền tạo hóa đơn
     [Documentation]    Tạo hóa đơn với user không có quyền tạo hóa đơn
-    [Tags]    apiinvoice    validation    permission    
+    [Tags]    apiinvoice    validation    permission    regression
     Given Chuẩn bị hóa đơn tiêu chuẩn
     When Get BearerToken by user    anh.nk     Kiotviet123456
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -284,11 +284,3 @@ RT-INPV-020 Kiểm tra quyền hủy hóa đơn điện tử
     Then Response Status Code Should Be 403
     And Response Should Have Error "Bạn không có quyền hủy hóa đơn điện tử"
 
-RT-PER-001 Kiểm tra quyền không cho phép tạo hóa đơn
-    [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với tài khoản không có quyền tạo hóa đơn
-    ...    - Dữ liệu đầu vào:
-    ...    - Token không có quyền "Invoice.Create"
-    ...    - Kỳ vọng:
-    ...    - Status code: 401
-    ...    - Thông báo lỗi: "Bạn không có quyền thực hiện chức năng này"
-    [Tags]    apiinvoice    validation    permission    regression

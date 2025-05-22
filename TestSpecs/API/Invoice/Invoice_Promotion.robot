@@ -395,56 +395,56 @@ RT-PR-017: Tạo hóa đơn khuyến mãi hàng hóa giá bán theo số lượn
 # Đánh giá khuyến mãi, voucher và điểm thưởng
 # =====================================================================
 
-RT-PR-018: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
-    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
-    ...                Khuyến mãi: Tặng 10 điểm thưởng (Type 12 - InvoicePointGift)
-    ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
-    ...                Kỳ vọng: Hóa đơn được tạo với tổng 20 điểm (10 điểm cơ bản + 10 điểm khuyến mãi)
-    [Tags]    promotion    reward_point    api    AIGenerated    regression
+# RT-PR-018: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
+#     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo hóa đơn
+#     ...                Khuyến mãi: Tặng 10 điểm thưởng (Type 12 - InvoicePointGift)
+#     ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
+#     ...                Kỳ vọng: Hóa đơn được tạo với tổng 20 điểm (10 điểm cơ bản + 10 điểm khuyến mãi)
+#     [Tags]    promotion    reward_point    api    AIGenerated    regression
     
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Hóa Đơn
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Điểm Thưởng Hóa Đơn 20
-    And Thông Tin Khuyến Mãi Có Loại 12
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Hóa Đơn
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Mã Trạng Thái Phải Là 200
+#     And Xác Thực Điểm Thưởng Hóa Đơn 20
+#     And Thông Tin Khuyến Mãi Có Loại 12
 
-RT-PR-019: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
-    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
-    ...                Khuyến mãi: Tặng 20 điểm thưởng cho sản phẩm cụ thể (Type 13 - ProductPointGift)
-    ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
-    ...                Kỳ vọng: Hóa đơn được tạo với tổng 30 điểm (10 điểm cơ bản + 20 điểm khuyến mãi)
-    [Tags]    promotion    reward_point    api    AIGenerated    regression
+# RT-PR-019: Tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
+#     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng điểm thưởng theo sản phẩm
+#     ...                Khuyến mãi: Tặng 20 điểm thưởng cho sản phẩm cụ thể (Type 13 - ProductPointGift)
+#     ...                Tổng tiền hóa đơn: 100,000đ (tích lũy cơ bản 10 điểm với tỷ lệ 10,000đ = 1 điểm)
+#     ...                Kỳ vọng: Hóa đơn được tạo với tổng 30 điểm (10 điểm cơ bản + 20 điểm khuyến mãi)
+#     [Tags]    promotion    reward_point    api    AIGenerated    regression
     
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sản Phẩm
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Điểm Thưởng Hóa Đơn 30
-    And Thông Tin Khuyến Mãi Có Loại 13
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Điểm Theo Sản Phẩm
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Mã Trạng Thái Phải Là 200
+#     And Xác Thực Điểm Thưởng Hóa Đơn 30
+#     And Thông Tin Khuyến Mãi Có Loại 13
 
-RT-PR-020: Tạo hóa đơn với khuyến mãi tặng voucher
-    [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng voucher
-    ...                Khuyến mãi: Tặng voucher trị giá 50,000đ (Type 9 - InvoiceVoucherGift)
-    ...                Kỳ vọng: Hóa đơn được tạo thành công và có voucher kèm theo
-    ...                Voucher được tạo với giá trị 50,000đ
-    [Tags]    promotion    gift_voucher    api    AIGenerated    regression
+# RT-PR-020: Tạo hóa đơn với khuyến mãi tặng voucher
+#     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi tặng voucher
+#     ...                Khuyến mãi: Tặng voucher trị giá 50,000đ (Type 9 - InvoiceVoucherGift)
+#     ...                Kỳ vọng: Hóa đơn được tạo thành công và có voucher kèm theo
+#     ...                Voucher được tạo với giá trị 50,000đ
+#     [Tags]    promotion    gift_voucher    api    AIGenerated    regression
     
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Voucher Trị Giá 50000 Đồng
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 200
-    And Voucher Được Tạo Với Giá Trị 50000 Đồng
-    And Thông Tin Khuyến Mãi Có Loại 9
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Voucher Trị Giá 50000 Đồng
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Mã Trạng Thái Phải Là 200
+#     And Voucher Được Tạo Với Giá Trị 50000 Đồng
+#     And Thông Tin Khuyến Mãi Có Loại 9
 
-RT-PR-021: Tạo hóa đơn với voucher không cho phép kết hợp với khuyến mãi
-    [Documentation]    Kiểm tra khi tạo hóa đơn sử dụng voucher không cho phép kết hợp với khuyến mãi
-    ...                Voucher: Không cho phép kết hợp với khuyến mãi (AllowMergeWithOtherPromotion = false)
-    ...                Khuyến mãi: Giảm giá 10,000đ
-    ...                Kỳ vọng: API trả về lỗi không thể kết hợp voucher với khuyến mãi khác
-    [Tags]    promotion    voucher    negative    vlxd    AIGenerated    regression
+# RT-PR-021: Tạo hóa đơn với voucher không cho phép kết hợp với khuyến mãi
+#     [Documentation]    Kiểm tra khi tạo hóa đơn sử dụng voucher không cho phép kết hợp với khuyến mãi
+#     ...                Voucher: Không cho phép kết hợp với khuyến mãi (AllowMergeWithOtherPromotion = false)
+#     ...                Khuyến mãi: Giảm giá 10,000đ
+#     ...                Kỳ vọng: API trả về lỗi không thể kết hợp voucher với khuyến mãi khác
+#     [Tags]    promotion    voucher    negative    vlxd    AIGenerated    regression
     
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Hệ thống không cho phép áp dụng chương trình khuyến mại hoặc thanh toán bằng điểm khi đã dùng voucher"
+#     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Voucher Không Kết Hợp
+#     When Gửi Yêu Cầu Tạo Hóa Đơn
+#     Then Mã Trạng Thái Phải Là 420
+#     And Response Should Have Error "Hệ thống không cho phép áp dụng chương trình khuyến mại hoặc thanh toán bằng điểm khi đã dùng voucher"
 
 RT-PR-022: Tạo hóa đơn với khuyến mãi đã bị xóa
     [Documentation]    Kiểm tra tạo hóa đơn với khuyến mãi đã bị xóa

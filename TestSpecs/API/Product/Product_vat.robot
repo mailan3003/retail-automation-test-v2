@@ -18,7 +18,7 @@ Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
     [Documentation]    Test tạo sản phẩm có thuế
     [Tags]    AIGenerated    CreateProduct    Positive    VAT      regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 5%
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 5 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -27,7 +27,7 @@ RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
 RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
     [Documentation]    Test tạo sản phẩm có thuế 0%
     [Tags]    AIGenerated    CreateProduct    Positive    VAT      regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 0%
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Thuế Khấu Trừ Với 0 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -36,7 +36,7 @@ RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
 RT-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế 8%
     [Documentation]    Test tạo sản phẩm dịch vụ có thuế 8%
     [Tags]    AIGenerated    CreateProduct    Positive    VAT      regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dịch Vụ Thuế Khấu Trừ Với 8 %
+    Given Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Thuế Khấu Trừ Với 8 %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -56,7 +56,7 @@ RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế 10%
 RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Không Chịu Thuế
     [Documentation]    Test tạo sản phẩm không chịu thuế
     [Tags]    AIGenerated    CreateProduct    Positive    VAT      regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thuế Trực Tiếp Với KCT %
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thuế Khấu Trừ Với KCT %
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database

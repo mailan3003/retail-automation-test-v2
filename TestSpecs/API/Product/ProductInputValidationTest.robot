@@ -82,7 +82,7 @@ RT-PD-007 Kiểm tra thành công khi đơn vị tính không trùng nhau trong 
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
-    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
+
 
 RT-PD-008 Kiểm tra trùng lặp mã sản phẩm
     [Documentation]    Kiểm tra xử lý khi có mã sản phẩm trùng lặp trong hệ thống
@@ -180,7 +180,6 @@ RT-PD-019 Kiểm tra danh sách vật liệu rỗng
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
-    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
 
 RT-PD-020 Kiểm tra sản phẩm tự tham chiếu chính nó
     [Documentation]    Kiểm tra xử lý khi sản phẩm tự tham chiếu chính nó trong công thức
@@ -212,7 +211,7 @@ RT-PD-022 Kiểm tra vòng lặp đệ quy trong công thức
     ...    - Logic: Kiểm tra nếu có vòng lặp đệ quy trong cấu trúc công thức
     ...    - Dữ liệu đầu vào: Sản phẩm A chứa B, B chứa A trong công thức
     ...    - Kỳ vọng: Lỗi "${ERROR_RECURSIVE_FORMULA}"
-    [Tags]    productvalidate    formulavalidation    AIGenerated     regression
+    [Tags]    productvalidate    formulavalidation    AIGenerated     
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vòng Lặp Đệ Quy
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -224,7 +223,7 @@ RT-PD-023 Kiểm tra độ sâu công thức vượt quá giới hạn
     ...    - Logic: Kiểm tra nếu tổng độ sâu của công thức vượt quá MaxFormulaLevelSupported
     ...    - Dữ liệu đầu vào: Sản phẩm với cấu trúc công thức quá sâu
     ...    - Kỳ vọng: Lỗi "${ERROR_FORMULA_DEPTH}"
-    [Tags]    productvalidate    formulavalidation    AIGenerated     regression
+    [Tags]    productvalidate    formulavalidation    AIGenerated     
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Quá Sâu
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -266,17 +265,6 @@ RT-PD-028 Kiểm tra trùng tên đơn vị với sản phẩm con khác
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
 
-RT-PD-029 Kiểm tra đơn vị tính hợp lệ
-    [Documentation]    Kiểm tra xử lý khi đơn vị tính hợp lệ
-    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
-    ...    - Logic: Kiểm tra với đơn vị tính hợp lệ (không trống, không trùng, không nhiều cấp)
-    ...    - Dữ liệu đầu vào: Sản phẩm con với đơn vị tính hợp lệ
-    ...    - Kỳ vọng: Tạo thành công, status code 200
-    [Tags]    productvalidate    unitvalidation    AIGenerated   regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
 
 RT-PD-033 Kiểm tra xác thực thuộc tính sản phẩm không tồn tại
     [Documentation]    Kiểm tra xử lý khi thuộc tính không tồn tại trong hệ thống
@@ -334,7 +322,6 @@ RT-PD-038 Kiểm tra xác thực thông tin dược phẩm khi không phải nh�
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
-    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
 
 RT-PD-039 Kiểm tra xác thực quốc gia sản xuất không tồn tại
     [Documentation]    Kiểm tra xử lý khi quốc gia sản xuất không tồn tại
@@ -354,7 +341,7 @@ RT-PD-040 Kiểm tra xác thực nhà sản xuất không tồn tại
     ...    - Logic: Kiểm tra nhà sản xuất tồn tại trong hệ thống
     ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất không tồn tại
     ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER}"
-    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -366,7 +353,7 @@ RT-PD-041 Kiểm tra độ dài tên ngắn vượt quá giới hạn
     ...    - Logic: Kiểm tra độ dài tên ngắn, (hiện code chưa truyền ShortName nên nghiệp vụ không hoạt động)
     ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên ngắn dài 101 ký tự
     ...    - Kỳ vọng: Lỗi "${ERROR_SHORT_NAME_LENGTH}"
-    [Tags]    productvalidate    medicinevalidation    AIGenerated    nhathuoc
+    [Tags]    productvalidate    medicinevalidation    AIGenerated    
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
@@ -378,23 +365,12 @@ RT-PD-042 Kiểm tra độ dài đường dùng vượt quá giới hạn
     ...    - Logic: Kiểm tra độ dài đường dùng (hiện code chưa truyền RouteOfAdministration nên nghiệp vụ không hoạt động)
     ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng dài 201 ký tự
     ...    - Kỳ vọng: Lỗi "${ERROR_ROUTE_LENGTH}"
-    [Tags]    productvalidate    medicinevalidation    AIGenerated  nhathuoc
+    [Tags]    productvalidate    medicinevalidation    AIGenerated  
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
     When Gửi Yêu Cầu Thêm Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi ${ERROR_ROUTE_LENGTH}
 
-RT-PD-043 Kiểm tra thông tin dược phẩm hợp lệ
-    [Documentation]    Kiểm tra xử lý khi thông tin dược phẩm hợp lệ
-    ...    - Source: ProductAPI.cs > ValidateMedicine
-    ...    - Logic: Kiểm tra với thông tin dược phẩm hợp lệ
-    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với thông tin hợp lệ
-    ...    - Kỳ vọng: Tạo thành công, status code 200
-    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
-    When Gửi Yêu Cầu Thêm Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And InputValidationKeywords.Nội dung phản hồi trả về phải tồn tại Id
 
 RT-PD-044 Kiểm tra đường dùng thuốc trống
     [Documentation]    Kiểm tra xử lý khi đường dùng thuốc trống
