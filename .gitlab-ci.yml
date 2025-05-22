@@ -5,6 +5,7 @@ stages:
   - integrate
 
 variables:
+  AUTOTEST_INTEGRATION_IMAGE: docker.citigo.com.vn/elkcluster/autotest-integration-v2
   DOCKER_IMAGE_BASE: docker.citigo.com.vn/elkcluster/retail-automation-test-v2
   DOCKER_IMAGE: ${DOCKER_IMAGE_BASE}:$CI_COMMIT_SHA
 
@@ -35,3 +36,32 @@ deploy to nomad agent:
     - echo "Deploying to Nomad agent"
     - cp deploy/nomadhcl.levant /opt/retail-automation-test-v2/nomadhcl.levant
     - cp deploy/robot_tasks.yml /opt/retail-automation-test-v2/robot_tasks.yml
+
+integrate with testlink:
+  tags:
+    - retail-build
+    - linux
+  stage: integrate
+  variables:
+    PROJECT_NAME: KV Retail
+    TESTSUITES_DIR: /retail-automation-test-v2/TestSpecs
+    TESTLINK_XMLRPC: https://testlink.kvpos.com/lib/api/xmlrpc/v1/xmlrpc.php
+    TESTLINK_DEV_KEY: c50de366d2e7869a1f8f4a35addd6184
+    IS_UPDATE_TESTLINK: 1
+  only:
+    - develop-integrate-testlink
+    - develop
+  # when: manual
+  before_script:
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker pull $AUTOTEST_INTEGRATION_IMAGE
+  script:
+    - echo "Integrating with TestLink"
+    - docker run
+      -v "${PWD}:/retail-automation-test-v2" 
+      -e PROJECT_NAME="$PROJECT_NAME"
+      -e TESTSUITES_DIR="$TESTSUITES_DIR"
+      -e IS_UPDATE_TESTLINK=$IS_UPDATE_TESTLINK
+      -e TESTLINK_XMLRPC=$TESTLINK_XMLRPC
+      -e TESTLINK_DEV_KEY=$TESTLINK_DEV_KEY
+      $AUTOTEST_INTEGRATION_IMAGE
