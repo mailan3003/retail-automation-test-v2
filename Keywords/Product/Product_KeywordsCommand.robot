@@ -123,6 +123,13 @@ Xác Thực Sản Phẩm Có Giá Vốn ${cost} Ở Chi Nhánh ${branch_name}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin giá vốn
     Should Be Equal As Numbers    ${result[0]}    ${cost}
 
+Lây thông tin giá vốn của sản phẩm 
+    [Arguments]    ${product_id}    ${branch_name}
+    ${branch_id}   Lấy Thông tin Chi Nhánh    ${branch_name}
+    ${query}=    Set Variable    SELECT Cost FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+    ${result}=    Fetch One    ${query}    ${product_id}    ${branch_id}
+    RETURN    ${result[0]}
+
 Xác Thực Sản Phẩm Có Trọng Lượng ${weight} ${unit}
     ${query}=    Set Variable    SELECT Weight FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
@@ -169,6 +176,15 @@ Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${produ
     Should Be Equal As Numbers    ${result1[1]}    ${product_material_quantity}
 
 
+Xác Thực Sản Phẩm Có Hàng Thành Phần ${dict_product_tp} Với Số Lượng ${list_quantity}
+    FOR    ${product_material_id}    ${product_material_quantity}    IN ZIP    ${dict_product_tp}    ${list_quantity}
+        ${product_material_quantity}   Convert To Number   ${product_material_quantity}
+        ${query_1}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ? AND MaterialId = ?
+        ${result1}=    Fetch One    ${query_1}    ${CREATED_PRODUCT_ID}    ${product_material_id}
+        Should Not Be Equal    ${result1}    None    Không tìm thấy thành phần cho sản phẩm combo đã tạo
+        Should Be Equal As Strings    ${result1[0]}   ${product_material_id}
+        Should Be Equal As Numbers    ${result1[1]}    ${product_material_quantity}
+    END
 Xác Thực Tên Sản Phẩm Được Chuẩn Hóa Đúng
     ${query}=    Set Variable    SELECT Name FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
@@ -233,6 +249,13 @@ Xác Thực Sản Phẩm Có Tích Điểm Thưởng
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
     Should Be Equal As Strings    ${result[0]}    True
+
+Xác Thực Sản Phẩm Có Điểm Thưởng ${point}
+    ${query}=    Set Variable    SELECT RewardPoint FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
+    Should Be Equal As Numbers    ${result[0]}    ${point}
+
 Xác Thực Sản Phẩm Có Giá Bán ${price}
     ${query}=    Set Variable    SELECT BasePrice FROM Product WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
@@ -444,6 +467,7 @@ Lấy Thông tin Sản Phẩm
     ${result}=    Fetch One    ${query}    ${product_code}
     RETURN    ${result[0]}
 
+
 Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${type_tax} Với ${tax_rate} %
     ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
     ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
@@ -488,6 +512,8 @@ Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${product_material_
     Should Not Be Equal    ${result}    None    Không tìm thấy thành phần cho sản phẩm combo đã tạo
     Should Be Equal As Strings    ${result[0]}   ${product_material_id}
     Should Be Equal As Numbers    ${result[1]}    ${product_material_quantity}
+
+
 Xác Thực Lỗi "${error_message}"
     Should Be Equal As Strings    ${RESPONSE.status_code}    420
     Should Contain    ${RESPONSE.text}    ${error_message} 
@@ -504,7 +530,7 @@ Delete Sản Phẩm ${list_product_code}
     END
 
 Save warranty for product
-    [Arguments]    ${payload}=${PAYLOAD_WARRANTY}
+    [Arguments]    ${payload}
     ${response}=    Call API Man  ${WARRANTY_API_SAVE_ENDPOINT}      ${payload}
     RETURN    ${response}
 
@@ -530,3 +556,109 @@ Xác Thực Giá Sản Phẩm ${product_code} Là ${price}
     ${result}=    Fetch One    ${query}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy giá sản phẩm ${product_id}
     Should Be Equal As Numbers    ${result[0]}    ${price}
+
+
+Xác Thực Tất Cả Biến Thể Sản Phẩm Đã Được Tạo Thành Công
+    # Lấy số lượng biến thể dự kiến từ danh sách mã sản phẩm
+    ${expected_variant_count}=    Get Length    ${LIST_PRODUCTS_CODE}
+    
+    # Truy vấn số lượng biến thể thực tế được tạo ra trong cơ sở dữ liệu
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Product WHERE MasterProductId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    
+    # Xác nhận rằng số lượng biến thể thực tế bằng số lượng dự kiến
+    Should Be Equal As Numbers    ${result[0]}    ${expected_variant_count}
+    Log    Đã tạo thành công ${result[0]} biến thể sản phẩm
+
+Xác Thực Biến Thể Sản Phẩm Được Gắn Với Sản Phẩm Gốc Đúng
+    # Kiểm tra xem các biến thể có liên kết với sản phẩm gốc không
+    ${query}=    Set Variable    SELECT Id, Code FROM Product WHERE MasterProductId = ?
+    ${results}=    Fetch All    ${query}    ${CREATED_PRODUCT_ID}
+    
+    # Kiểm tra từng biến thể
+    FOR    ${result}    IN    @{results}
+        ${variant_id}=    Set Variable    ${result[0]}
+        
+        # Kiểm tra mối quan hệ thuộc tính
+        ${attr_query}=    Set Variable    SELECT COUNT(*) FROM ProductAttribute WHERE ProductId = ?
+        ${attr_result}=    Fetch One    ${attr_query}    ${variant_id}
+        
+        # Một biến thể phải có ít nhất một thuộc tính
+        Should Be True    ${attr_result[0]} > 0
+    END
+
+Xác Thực Các Biến Thể Có Tồn Kho Theo Cấu Hình
+    # Kiểm tra tồn kho của từng biến thể
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    Chi nhánh trung tâm
+    
+    FOR    ${i}    ${inventory}    ${code}    IN ZIP    RANGE    ${VARIANT_INVENTORIES}    ${LIST_PRODUCTS_CODE}
+        ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = (SELECT Id FROM Product WHERE Code = ?) AND BranchId = ?
+        ${result}=    Fetch One    ${query}    ${code}    ${branch_id}
+        
+        Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho cho biến thể ${code}
+        Should Be Equal As Numbers    ${result[0]}    ${inventory}
+    END
+
+Xác Thực Tổng Tồn Kho Sản Phẩm Chính Bằng Tổng Các Biến Thể
+    # Tính tổng tồn kho từ các biến thể
+    ${total_inventory}=    Evaluate    sum([int(x) for x in $VARIANT_INVENTORIES])
+    
+    # Lấy tồn kho của sản phẩm chính
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    Chi nhánh trung tâm
+    ${query}=    Set Variable    SELECT OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}    ${branch_id}
+    
+    # Kiểm tra tổng tồn kho
+    Should Be Equal As Numbers    ${result[0]}    ${total_inventory}    Tổng tồn kho sản phẩm chính (${result[0]}) không bằng tổng tồn kho các biến thể (${total_inventory})
+
+Xác Thực Các Biến Thể Có Mã Vạch Theo Cấu Hình
+    # Kiểm tra mã vạch của từng biến thể
+    FOR    ${barcode}    ${code}    IN ZIP    ${VARIANT_BARCODES}    ${LIST_PRODUCTS_CODE}
+        ${query}=    Set Variable    SELECT Barcode FROM Product WHERE Code = ?
+        ${result}=    Fetch One    ${query}    ${code}
+        
+        Should Not Be Equal    ${result}    None    Không tìm thấy thông tin mã vạch cho biến thể ${code}
+        Should Be Equal    ${result[0]}    ${barcode}
+    END
+
+Xác Thực Tên Các Biến Thể Được Tạo Đúng Theo Cấu Trúc
+    # Kiểm tra tên của từng biến thể
+    ${query}=    Set Variable    SELECT Id, Name FROM Product WHERE MasterProductId = ?
+    ${results}=    Fetch All    ${query}    ${CREATED_PRODUCT_ID}
+    
+    FOR    ${result}    IN    @{results}
+        ${variant_id}=    Set Variable    ${result[0]}
+        ${variant_name}=    Set Variable    ${result[1]}
+        
+        # Lấy thông tin thuộc tính của biến thể
+        ${attr_query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+        ${attr_results}=    Fetch All    ${attr_query}    ${variant_id}
+        
+        # Kiểm tra tên biến thể chứa giá trị thuộc tính
+        FOR    ${attr_result}    IN    @{attr_results}
+            ${attr_name}=    Set Variable    ${attr_result[0]}
+            ${attr_value}=    Set Variable    ${attr_result[1]}
+            Should Contain    ${variant_name}    ${attr_value}
+        END
+        
+        # Kiểm tra tên biến thể bắt đầu bằng tên sản phẩm gốc
+        Should Start With    ${variant_name}    ${BASE_PRODUCT_NAME}
+    END
+
+Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm Gốc
+    # Kiểm tra mã của từng biến thể
+    ${query}=    Set Variable    SELECT Code FROM Product WHERE MasterProductId = ?
+    ${results}=    Fetch All    ${query}    ${CREATED_PRODUCT_ID}
+    
+    FOR    ${result}    IN    @{results}
+        ${variant_code}=    Set Variable    ${result[0]}
+        
+        # Kiểm tra mã biến thể bắt đầu bằng mã sản phẩm gốc
+        Should Start With    ${variant_code}    ${BASE_PRODUCT_CODE}
+    END
+
+Lấy Thông tin Nhóm Hàng 
+    [Arguments]    ${group_name}
+    ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ?
+    ${result}=    Fetch One    ${query}    ${group_name}
+    RETURN    ${result[0]}

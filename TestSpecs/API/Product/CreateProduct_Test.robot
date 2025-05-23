@@ -9,6 +9,13 @@ Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 &{dict_attribute_name_1}    SIZE=@{value_attribute_1}
 @{name_unit}     hai    nửa
 @{value}    1    3
+@{list_name_branch}    Chi nhánh trung tâm   Nhánh A
+@{list_shelves}    Vị trí 1    Vị trí 2
+@{list_pricebook}    Bảng giá chi nhánh    Bảng giá đặt hàng
+@{list_price}    1000.05    200000
+&{dict_product_tp_cb}   	TPC001=4     TPC002=5.98
+&{dict_product_tp}    TP001=1.55     TP002=2.7
+&{dict_product_tp_cb_combo}   		FTSX00003=7   	DTCombo07=1 
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
@@ -82,6 +89,29 @@ RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
 
+Tạo Sản Phẩm Loại Combo Với Nhiều Hàng Thành Phần
+    [Documentation]    Test tạo sản phẩm loại combo với nhiều hàng thành phần
+    [Tags]    AIGenerated    CreateProduct    Positive    Combo          regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Combo Có Thành Phần ${dict_product_tp_cb}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Hàng Thành Phần ${LIST_MATERIAL_ID} Với Số Lượng ${LIST_MATERIAL_QUANTITY}
+    And Xác Thực Sản Phẩm Có Giá Vốn ${TOTAL_COST} Ở Chi Nhánh Chi nhánh trung tâm
+
+Tạo Sản Phẩm Loại Sản Xuất Hàng Thành Phần Là Hàng Combo Khác
+    [Documentation]    Test tạo sản phẩm loại sản xuất hàng thành phần là hàng combo 
+    [Tags]    AIGenerated    CreateProduct    Positive    Manufactured          regression17
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Với Hàng Thành Phần ${dict_product_tp_cb_combo}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Response Error Message Là "Mã sản phẩm đã tồn tại"
+
+
+
+
+
+
 
 
 
@@ -103,6 +133,17 @@ RT-PRODUCT-022 Tạo Sản Phẩm Loại Hàng Sản Xuất
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
 
+
+Tạo Sản Phẩm Hàng Sản Xuất Có Nhiều Hàng Thành Phần
+    [Documentation]    Test tạo sản phẩm hàng sản xuất có nhiều hàng thành phần
+    [Tags]    AIGenerated    CreateProduct    Positive    Manufactured    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Với Hàng Thành Phần ${dict_product_tp}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Hàng Thành Phần ${LIST_MATERIAL_ID} Với Số Lượng ${LIST_MATERIAL_QUANTITY}
+
+
 RT-PRODUCT-023 Tạo Sản Phẩm Có Vị Trí Lưu Trữ
     [Documentation]    Test tạo sản phẩm có vị trí lưu trữ
     [Tags]    AIGenerated    CreateProduct    Positive    Location    regression
@@ -111,6 +152,15 @@ RT-PRODUCT-023 Tạo Sản Phẩm Có Vị Trí Lưu Trữ
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Vị Trí Lưu Trữ Đúng
+
+Tạo Sản Phẩm Có Chứa Nhiều Vị Trí Lưu Trữ
+    [Documentation]    Test tạo sản phẩm có chứa nhiều vị trí lưu trữ
+    [Tags]    AIGenerated    CreateProduct    Positive    MultipleLocations    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có ${list_shelves} Vị Trí Lưu Trữ 
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Lưu Trữ ${SHELVES_ID} Vị Trí
 
 RT-PRODUCT-024 Tạo Sản Phẩm Có Thương Hiệu
     [Documentation]    Test tạo sản phẩm có thương hiệu
@@ -139,7 +189,7 @@ RT-PRODUCT-026 Tạo Sản Phẩm Có Mã Barcode
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mã Barcode Đúng
 
-RT-PRODUCT-027 Tạo Sản Phẩm Có Giá Vốn
+RT-PRODUCT-027 Tạo Sản Phẩm Có Giá Vốn Ở Một chi nhánh
     [Documentation]    Test tạo sản phẩm có giá vốn
     [Tags]    AIGenerated    CreateProduct    Positive    Cost    regression
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Giá Vốn 100000
@@ -148,18 +198,38 @@ RT-PRODUCT-027 Tạo Sản Phẩm Có Giá Vốn
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Vốn 100000 Ở Chi Nhánh Chi nhánh trung tâm
     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh A
+    And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
 
-RT-PRODUCT-028 Tạo Sản Phẩm Ngừng Kinh Doanh
-    [Documentation]    Test tạo sản phẩm đã ngừng kinh doanh
-    [Tags]    AIGenerated    CreateProduct    Positive    Inactive    regression17
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Ngừng Kinh Doanh
+RT-PRODUCT-028 Tạo Sản Phẩm Không Được Bán Trực Tiếp
+    [Documentation]    Test tạo sản phẩm không được bán trực tiếp
+    [Tags]    AIGenerated    CreateProduct    Positive    Inactive    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Không Được Bán Trực Tiếp
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh
+    And Xác Thực Sản Phẩm Có Trạng Thái Không Bán Trực Tiếp
 
+Tạo Sản Phẩm Kinh Doanh Theo Chi Nhánh
+    [Documentation]    Test tạo sản phẩm kinh doanh theo chi nhánh
+    [Tags]    AIGenerated    CreateProduct    Positive    Branch    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Kinh Doanh Theo Chi Nhánh ${list_name_branch}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_name_branch[0]}
+    And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_name_branch[1]}
+     And Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh Ở Chi Nhánh Nhánh B
 
-
+RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Vốn Áp Dụng Nhiều Chi Nhánh
+    [Documentation]    Test tạo sản phẩm có giá bán 0
+    [Tags]    AIGenerated    CreateProduct    Positive    ZeroPrice    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Giá Vốn 3000.77 Áp Dụng Cho Chi Nhánh ${list_name_branch}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Giá Vốn 3000.77 Ở Chi Nhánh ${list_name_branch[0]}
+    And Xác Thực Sản Phẩm Có Giá Vốn 3000.77 Ở Chi Nhánh ${list_name_branch[1]}
+     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
 RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán 0
     [Documentation]    Test tạo sản phẩm có giá bán 0
     [Tags]    AIGenerated    CreateProduct    Positive    ZeroPrice    regression
@@ -168,6 +238,17 @@ RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán 0
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Bán 0
+
+RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán Và Thiết Lập Bảng Giá
+    [Documentation]    Test tạo sản phẩm có giá bán 0
+    [Tags]    AIGenerated    CreateProduct    Positive    ZeroPrice    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Giá 4000.44 Và Giá Bảng Giá ${list_pricebook} Với ${list_price}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Là 4000.44
+    And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Ở Pricebook ${list_pricebook[0]} Là ${list_price[0]}
+    And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Ở Pricebook ${list_pricebook[1]} Là ${list_price[1]}
 
 RT-PRODUCT-032 Tạo Sản Phẩm Với Giới Hạn Tồn Kho
     [Documentation]    Test tạo sản phẩm có thiết lập giới hạn tồn kho tối thiểu và tối đa
@@ -178,7 +259,7 @@ RT-PRODUCT-032 Tạo Sản Phẩm Với Giới Hạn Tồn Kho
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giới Hạn Tồn Kho Tối Thiểu 10 Và Tối Đa 100 Ở Chi Nhánh Chi Nhánh Trung Tâm
 
-RT-PRODUCT-033 Tạo Sản Phẩm Với Điểm Thưởng
+RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm
     [Documentation]    Test tạo sản phẩm có tích điểm thưởng
     [Tags]    AIGenerated    CreateProduct    Positive    RewardPoints    regression
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tích Điểm
@@ -187,14 +268,46 @@ RT-PRODUCT-033 Tạo Sản Phẩm Với Điểm Thưởng
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Tích Điểm Thưởng
 
-RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành
-    [Documentation]    Test tạo sản phẩm có thời gian bảo hành
-    [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian Bảo Hành 12 Tháng
+RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm Và Có Điểm Thưởng
+    [Documentation]    Test tạo sản phẩm tích điểm và có điểm thưởng
+    [Tags]    AIGenerated    CreateProduct    Positive    RewardPoints    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tích Điểm Với Số Điểm 5
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-   # And Xác Thực Sản Phẩm Có Thời Gian Bảo Hành 12 Tháng
+    And Xác Thực Sản Phẩm Có Điểm Thưởng 5
+
+RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm Và Có Điểm Thưởng Số Lẻ
+    [Documentation]    Test tạo sản phẩm tích điểm và có điểm thưởng
+    [Tags]    AIGenerated    CreateProduct    Positive    RewardPoints    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tích Điểm Với Số Điểm 5.55
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 500
+
+Tạo Sản Phẩm Với Nhóm Hàng Không Tồn Tại
+    [Documentation]    Chuẩn bị dữ liệu sản phẩm có nhóm hàng
+    [Tags]    AIGenerated    CreateProduct    Positive    Group    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhóm Hàng Không Tồn Tại
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Có lỗi khi cập nhật dữ liệu"
+
+Tạo Sản Phẩm Để Trống Nhóm Hàng
+    [Documentation]    Chuẩn bị dữ liệu sản phẩm để trống nhóm hàng
+    [Tags]    AIGenerated    CreateProduct    Positive    Group    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Để Trống Nhóm Hàng
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 500
+
+RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành
+    [Documentation]    Test tạo sản phẩm có thời gian bảo hành
+    [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression178
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian Bảo Hành Là 12 Tháng
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    And Save warranty for product    ${PAYLOAD_WARRANTY}
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thời Gian Bảo Hành 12 Tháng
 
 RT-PRODUCT-035 Tạo Sản Phẩm Với Hình Ảnh
     [Documentation]    Test tạo sản phẩm có hình ảnh đính kèm
@@ -229,11 +342,17 @@ RT-PRODUCT-037 Tạo Sản Phẩm Với Mô Tả Ghi Chú
 RT-PRODUCT-038 Tạo Sản Phẩm Không Cung Cấp Tên
     [Documentation]    Test tạo sản phẩm không cung cấp tên sản phẩm
     [Tags]    AIGenerated    CreateProduct    Negative    MissingName    regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Không Có Tên
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tên 0 Ký Tự
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
-   # And Phản hồi phải chứa lỗi "Tên hàng hóa không được để trống"
-
+    And Phản hồi phải chứa lỗi "Property: Name Error: Name is required"
+RT-PRODUCT-038 Tạo Sản Phẩm Có Tên Hàng Hóa Dài
+    [Documentation]    Test tạo sản phẩm có tên hàng hóa dài
+    [Tags]    AIGenerated    CreateProduct    Negative        regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tên 3000 Ký Tự
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Tên đầy đủ của hàng hóa ( Tên hàng+Thuộc tính+Đơn vị tính) không vượt quá 500 kí tự"
 
 RT-PRODUCT-042 Tạo Sản Phẩm Với Tên Có Ký Tự Đặc Biệt
     [Documentation]    Test tạo sản phẩm với tên có ký tự đặc biệt như unicode, emoji, ký tự đặc biệt
@@ -308,6 +427,21 @@ RT-PRODUCT-049 Tạo Sản Phẩm Với Mã Biến Thể Tự Động
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm Gốc
 
+Tạo Sản Phẩm Ở MHBH
+    [Documentation]    Test tạo sản phẩm ở MHBH
+    [Tags]    AIGenerated    CreateProduct    Positive    MHBH    regression3
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Ở MHBH
+    When Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+
+Tạo Sản Phẩm Ở Form Khác
+    [Documentation]    Test tạo sản phẩm ở form khác
+    [Tags]    AIGenerated    CreateProduct    Positive    OtherForm    regression3
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Ở Form Khác
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
 
 *** Keywords ***
 
