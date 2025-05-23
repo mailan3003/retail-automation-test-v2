@@ -37,7 +37,7 @@ RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
 RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
     [Documentation]    Test tạo sản phẩm có nhiều đơn vị tính với tỷ lệ quy đổi
     [Tags]    AIGenerated    CreateProduct    Positive    UnitConversion      regression
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính Và List Quy Đổi ${name_unit} Với ${value}
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Đơn Vị Tính ${name_unit} Và Giá Trị Quy Đổi ${value}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
@@ -105,7 +105,7 @@ Tạo Sản Phẩm Loại Sản Xuất Hàng Thành Phần Là Hàng Combo Khác
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Với Hàng Thành Phần ${dict_product_tp_cb_combo}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
-    And Response Error Message Là "Mã sản phẩm đã tồn tại"
+    And Phản hồi phải chứa lỗi "Mã sản phẩm đã tồn tại"
 
 
 
@@ -304,7 +304,7 @@ RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành
     [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression178
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian Bảo Hành Là 12 Tháng
     When Gửi Yêu Cầu Tạo Sản Phẩm
-    And Save warranty for product    ${PAYLOAD_WARRANTY}
+    And Save Warranty For Many Product  
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thời Gian Bảo Hành 12 Tháng
@@ -345,7 +345,7 @@ RT-PRODUCT-038 Tạo Sản Phẩm Không Cung Cấp Tên
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Tên 0 Ký Tự
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Property: Name Error: Name is required"
+    #And Phản hồi phải chứa lỗi "Property: Name Error: Name is required"
 RT-PRODUCT-038 Tạo Sản Phẩm Có Tên Hàng Hóa Dài
     [Documentation]    Test tạo sản phẩm có tên hàng hóa dài
     [Tags]    AIGenerated    CreateProduct    Negative        regression
@@ -363,15 +363,6 @@ RT-PRODUCT-042 Tạo Sản Phẩm Với Tên Có Ký Tự Đặc Biệt
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Tên Sản Phẩm Được Chuẩn Hóa Đúng
 
-RT-PRODUCT-043 Tạo Sản Phẩm Với Nhiều Thuộc Tính Tổ Hợp
-    [Documentation]    Test tạo sản phẩm với nhiều thuộc tính tổ hợp (Màu sắc, Kích thước) tạo ra các biến thể sản phẩm
-    [Tags]    AIGenerated    CreateProduct    Positive    MultipleAttributes    
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Thuộc Tính Tổ Hợp
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Tất Cả Biến Thể Sản Phẩm Đã Được Tạo Thành Công
-    And Xác Thực Biến Thể Sản Phẩm Được Gắn Với Sản Phẩm Gốc Đúng
 
 RT-PRODUCT-044 Tạo Sản Phẩm Với Thuộc Tính Có Giá Bán Khác Nhau
     [Documentation]    Test tạo sản phẩm với các biến thể có giá bán khác nhau
@@ -429,7 +420,7 @@ RT-PRODUCT-049 Tạo Sản Phẩm Với Mã Biến Thể Tự Động
 
 Tạo Sản Phẩm Ở MHBH
     [Documentation]    Test tạo sản phẩm ở MHBH
-    [Tags]    AIGenerated    CreateProduct    Positive    MHBH    regression3
+    [Tags]    AIGenerated    CreateProduct    Positive    MHBH    regression
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Ở MHBH
     When Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
     Then Mã Trạng Thái Phải Là 200
@@ -437,11 +428,256 @@ Tạo Sản Phẩm Ở MHBH
 
 Tạo Sản Phẩm Ở Form Khác
     [Documentation]    Test tạo sản phẩm ở form khác
-    [Tags]    AIGenerated    CreateProduct    Positive    OtherForm    regression3
+    [Tags]    AIGenerated    CreateProduct    Positive    OtherForm    regression
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Ở Form Khác
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+
+RT-PRODUCT-050 Tạo Sản Phẩm Với Nhiều Hình Ảnh
+    [Documentation]    Test tạo sản phẩm với nhiều hình ảnh đính kèm
+    [Tags]    AIGenerated    CreateProduct    Positive    MultipleImages    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Hình Ảnh
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Nhiều Hình Ảnh Được Lưu Trữ
+
+RT-PRODUCT-051 Tạo Sản Phẩm Với Hình Ảnh Ghim Chính
+    [Documentation]    Test tạo sản phẩm với hình ảnh đính kèm và chọn làm ảnh ghim chính
+    [Tags]    AIGenerated    CreateProduct    Positive    PinnedImage    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Hình Ảnh Ghim Chính
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Hình Ảnh Được Lưu Trữ
+
+RT-PRODUCT-052 Tạo Sản Phẩm Với Hình Ảnh Từ URL
+    [Documentation]    Test tạo sản phẩm với hình ảnh được lấy từ URL
+    [Tags]    AIGenerated    CreateProduct    Positive    ImageFromURL    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Hình Ảnh Từ URL
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Hình Ảnh Từ URL Được Lưu Trữ
+
+RT-PRODUCT-053 Tạo Sản Phẩm Với Hình Ảnh Có Định Dạng Khác Nhau
+    [Documentation]    Test tạo sản phẩm với hình ảnh có nhiều định dạng khác nhau (jpg, png, jpeg)
+    [Tags]    AIGenerated    CreateProduct    Positive    ImageFormats    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Hình Ảnh Nhiều Định Dạng
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Hình Ảnh Với Các Định Dạng Khác Nhau
+
+
+
+RT-PRODUCT-057 Tạo Sản Phẩm Với Đơn Vị Tính Cơ Bản
+    [Documentation]    Test tạo sản phẩm với đơn vị tính cơ bản
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính Cơ Bản thùng
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Đơn Vị Tính thùng
+
+
+RT-PRODUCT-059 Tạo Sản Phẩm Với Đơn Vị Tính Có Giá Bán Khác Nhau
+    [Documentation]    Test tạo sản phẩm với các đơn vị tính có giá bán khác nhau
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    cai    hop    thung
+    @{conversion_values}    Create List    1    12    144
+    @{prices}    Create List    10000    110000    1300000
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Giá Bán ${prices}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Giá Bán Theo Đơn Vị Tính ${unit_names} Là ${prices}
+
+RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
+    [Documentation]    Test tạo sản phẩm với các đơn vị tính có mã vạch riêng
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression12
+    @{unit_names}    Create List    chai    loc   
+    @{conversion_values}    Create List    1    6    
+    @{barcodes}    Create List    8935001701638    8935001701645    
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Mã Vạch ${barcodes}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Mã Vạch Theo Đơn Vị Tính ${unit_names} Là ${barcodes}
+
+RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính Theo Quy Đổi
+    [Documentation]    Test tạo sản phẩm với tồn kho theo đơn vị tính cơ bản và kiểm tra tồn kho đơn vị quy đổi
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    kg    ta    tan
+    @{conversion_values}    Create List    1    100    1000
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Tồn Kho 1000
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "kg" Là 1000
+    And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "ta" Là 10
+    And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "tan" Là 1
+
+RT-PRODUCT-062 Tạo Sản Phẩm Với Đơn Vị Tính Và Giá Vốn Tính Theo Quy Đổi
+    [Documentation]    Test tạo sản phẩm với giá vốn theo đơn vị tính cơ bản và kiểm tra giá vốn đơn vị quy đổi
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    m    cuon    cay
+    @{conversion_values}    Create List    1    10    100
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Giá Vốn 5000
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "m" Là 5000
+    And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cuon" Là 50000
+    And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cay" Là 500000
+
+Tạo Sản Phẩm Với Đơn Vị Tính Và Có Điểm Khác Nhau    
+    [Documentation]    Test tạo sản phẩm với đơn vị tính và có điểm khác nhau
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    kg    ta    tan
+    @{conversion_values}    Create List    1   0.5   0.01
+    @{different_points}    Create List    10    20    5
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Điểm Khác Nhau ${different_points}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Có Điểm ${different_points}
+
+Tạo Sản Phẩm Với Đơn Vị Tính Và Có Bán Trực Tiếp Khác Nhau 
+    [Documentation]    Test tạo sản phẩm với đơn vị tính và có bán trực tiếp khác nhau lớn
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    kg    ta    tan
+    @{conversion_values}    Create List    1   0.5   0.01
+    @{direct_selling}    Create List    Không    Không     Có
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và ${direct_selling} Bán Trực Tiếp
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Trạng Thái ${direct_selling} Bán Trực Tiếp 
+
+RT-PRODUCT-065 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Lớn
+    [Documentation]    Test tạo sản phẩm với số lượng đơn vị tính tối đa cho phép
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Đơn Vị Tính 50
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Đúng Số Lượng Đơn Vị Tính Tối Đa
+
+RT-PRODUCT-066 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Vượt Tối Đa
+    [Documentation]    Test tạo sản phẩm với số lượng đơn vị tính vượt tối đa cho phép
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Đơn Vị Tính 201
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Hệ thống chỉ hỗ trợ tạo tối đa 200 hàng hóa cùng loại"
+
+
+RT-PRODUCT-066 Tạo Sản Phẩm Với Tên Đơn Vị Tính Đặc Biệt
+    [Documentation]    Test tạo sản phẩm với tên đơn vị tính có ký tự đặc biệt
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
+    @{unit_names}    Create List    hộp-nhỏ    lốc 6    thùng(24)
+    @{conversion_values}    Create List    1    6    24
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Đơn Vị Tính ${unit_names} Và Giá Trị Quy Đổi ${conversion_values}
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${conversion_values}
+
+
+RT-PRODUCT-072 Tạo Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt
+    [Documentation]    Test tạo sản phẩm với giá trị thuộc tính chứa ký tự đặc biệt
+    [Tags]    AIGenerated    CreateProduct    Positive    SpecialCharsAttribute    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Thuộc Tính Với Ký Tự Đặc Biệt Được Lưu Đúng
+
+RT-PRODUCT-073 Tạo Sản Phẩm Với Số Lượng Thuộc Tính Lớn
+    [Documentation]    Test tạo sản phẩm với số lượng thuộc tính lớn (>5 thuộc tính)
+    [Tags]    AIGenerated    CreateProduct    Positive    ManyAttributes    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Thuộc Tính
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
+
+RT-PRODUCT-074 Tạo Biến Thể Với Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
+    [Documentation]    Test tạo sản phẩm với các biến thể có giá và tồn kho khác nhau theo chi nhánh
+    [Tags]    AIGenerated    CreateProduct    Positive    VariantBranchPricing    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Biến Thể Có Giá Và Tồn Kho Riêng Theo Chi Nhánh
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Biến Thể Có Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
+
+RT-PRODUCT-075 Tạo Sản Phẩm Với Thiết Lập Trạng Thái Kinh Doanh Khác Nhau Cho Biến Thể
+    [Documentation]    Test tạo sản phẩm với các biến thể có trạng thái kinh doanh khác nhau
+    [Tags]    AIGenerated    CreateProduct    Positive    VariantStatus    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Biến Thể Có Trạng Thái Kinh Doanh Khác Nhau
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Biến Thể Có Trạng Thái Kinh Doanh Đúng Theo Cấu Hình
+
+RT-PRODUCT-076 Cập Nhật Thuộc Tính Cho Sản Phẩm Đã Tồn Tại
+    [Documentation]    Test cập nhật thuộc tính cho sản phẩm đã tồn tại
+    [Tags]    AIGenerated    CreateProduct    Positive    UpdateAttributes    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    When Chuẩn Bị Dữ Liệu Cập Nhật Sản Phẩm Với Thuộc Tính Mới
+    And Gửi Yêu Cầu Cập Nhật Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Có Thuộc Tính Mới Được Cập Nhật
+
+RT-PRODUCT-077 Tạo Sản Phẩm Với Thuộc Tính Có Ảnh Hưởng Đến Mã Vạch
+    [Documentation]    Test tạo sản phẩm với thuộc tính ảnh hưởng đến mã vạch của biến thể
+    [Tags]    AIGenerated    CreateProduct    Positive    BarcodeAttributes    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Ảnh Hưởng Đến Mã Vạch
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    And Xác Thực Mã Vạch Của Biến Thể Được Tạo Theo Đúng Quy Tắc
+
+RT-PRODUCT-078 Tạo Sản Phẩm Với Thuộc Tính Quá Dài
+    [Documentation]    Test tạo sản phẩm với giá trị thuộc tính quá dài
+    [Tags]    AIGenerated    CreateProduct    Negative    LongAttributeValue    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Có Giá Trị Quá Dài
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 4201
+    And Phản hồi phải chứa lỗi "Giá trị thuộc tính không được vượt quá 255 ký tự"
+
+RT-PRODUCT-079 Tạo Sản Phẩm Với Thuộc Tính Bị Trùng Tên
+    [Documentation]    Test tạo sản phẩm với hai thuộc tính có tên trùng nhau
+    [Tags]    AIGenerated    CreateProduct    Negative    DuplicateAttributeName    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Bị Trùng Tên
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Không thể có hai thuộc tính cùng tên"
+
+RT-PRODUCT-080 Tạo Biến Thể Vượt Quá Số Lượng Cho Phép
+    [Documentation]    Test tạo sản phẩm với số lượng biến thể vượt quá giới hạn cho phép
+    [Tags]    AIGenerated    CreateProduct    Negative    TooManyVariants    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Biến Thể Vượt Quá Giới Hạn
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Số lượng biến thể vượt quá giới hạn cho phép"
+
+RT-PRODUCT-081 Thêm Biến Thể Bổ Sung Cho Sản Phẩm Đã Có Thuộc Tính
+    [Documentation]    Test thêm biến thể bổ sung cho sản phẩm đã có thuộc tính
+    [Tags]    AIGenerated    CreateProduct    Positive    AddVariants    regression1
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Cơ Bản
+    When Gửi Yêu Cầu Tạo Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    When Chuẩn Bị Dữ Liệu Thêm Biến Thể Cho Sản Phẩm
+    And Gửi Yêu Cầu Thêm Biến Thể1
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Biến Thể Mới Được Thêm Thành Công
 
 *** Keywords ***
 

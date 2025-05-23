@@ -5,7 +5,7 @@ Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Resource          ../../../Resources/DatabaseLibrary.py
+Library           ../../../Resources/DatabaseLibrary.py
 Suite Setup       Suite Setup
 
 *** Keywords ***

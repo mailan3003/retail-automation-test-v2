@@ -662,3 +662,217 @@ Lấy Thông tin Nhóm Hàng
     ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ?
     ${result}=    Fetch One    ${query}    ${group_name}
     RETURN    ${result[0]}
+
+Xác Thực Sản Phẩm ${list_product_code} Có Điểm ${different_points}
+    FOR    ${item_code}    ${item_different_point}    IN ZIP    ${list_product_code}    ${different_points}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${item_code}
+        ${query}=    Set Variable    SELECT RewardPoint FROM Product WHERE Id = ?
+        ${result}=    Fetch One    ${query}    ${product_id}
+        Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
+        Should Be Equal As Numbers    ${result[0]}    ${item_different_point}
+    END
+
+Xác Thực Sản Phẩm ${list_product_code} Trạng Thái ${direct_selling} Bán Trực Tiếp 
+    FOR    ${item_code}    ${item_direct_selling}    IN ZIP    ${list_product_code}    ${direct_selling}
+        ${status}    Run Keyword If    "${item_direct_selling}" == "Không"    Set Variable    False    ELSE    Set Variable    True
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${item_code}
+        ${query}=    Set Variable    SELECT AllowsSale FROM Product WHERE Id = ?
+        ${result}=    Fetch One    ${query}    ${product_id}
+        Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm đã tạo trong database
+        Should Be Equal As Strings    ${result[0]}    ${status}
+    END
+
+Xác Thực Sản Phẩm Có Nhiều Loại Thuộc Tính Đúng Như Cấu Hình
+    # Xác thực sản phẩm có nhiều loại thuộc tính đúng
+    FOR    ${code}    IN    @{LIST_PRODUCTS_CODE}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
+        
+        # Lấy thông tin thuộc tính của sản phẩm
+        ${query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+        ${results}=    Fetch All    ${query}    ${product_id}
+        
+        # Kiểm tra có đủ loại thuộc tính không
+        ${attr_types}=    Create List
+        FOR    ${result}    IN    @{results}
+            ${attr_name}=    Set Variable    ${result[0]}
+            Append To List    ${attr_types}    ${attr_name}
+        END
+        
+        # Kiểm tra số lượng thuộc tính
+        ${unique_attr_types}=    Remove Duplicates    ${attr_types}
+        ${attr_count}=    Get Length    ${unique_attr_types}
+        Should Be True    ${attr_count} >= 3    Sản phẩm không có đủ loại thuộc tính như cấu hình
+        
+        # Kiểm tra các loại thuộc tính cụ thể
+        Should Contain    ${attr_types}    MÀU SẮC    Thiếu thuộc tính MÀU SẮC
+        Should Contain    ${attr_types}    KÍCH THƯỚC    Thiếu thuộc tính KÍCH THƯỚC
+        Should Contain    ${attr_types}    CHẤT LIỆU    Thiếu thuộc tính CHẤT LIỆU
+    END
+
+Xác Thực Sản Phẩm Có Thuộc Tính Nhập Tự Do Đúng Với Giá Trị Đã Nhập
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${CREATED_PRODUCT_CODE}
+    
+    # Lấy thông tin thuộc tính của sản phẩm
+    ${query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+    ${results}=    Fetch All    ${query}    ${product_id}
+    
+    # Tìm và kiểm tra giá trị thuộc tính tự do
+    ${found}=    Set Variable    False
+    FOR    ${result}    IN    @{results}
+        ${attr_name}=    Set Variable    ${result[0]}
+        ${attr_value}=    Set Variable    ${result[1]}
+        ${is_match}=    Run Keyword And Return Status    Should Be Equal    ${attr_value}    ${CUSTOM_ATTRIBUTE_VALUE}
+        ${found}=    Set Variable If    ${is_match}    True    ${found}
+    END
+    
+    Should Be True    ${found}    Không tìm thấy thuộc tính tự do với giá trị đã nhập ${CUSTOM_ATTRIBUTE_VALUE}
+
+Xác Thực Sản Phẩm Có Thuộc Tính Với Ký Tự Đặc Biệt Được Lưu Đúng
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${CREATED_PRODUCT_CODE}
+    
+    # Lấy thông tin thuộc tính của sản phẩm
+    ${query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+    ${results}=    Fetch All    ${query}    ${product_id}
+    
+    # Tìm và kiểm tra giá trị thuộc tính đặc biệt
+    ${found}=    Set Variable    False
+    FOR    ${result}    IN    @{results}
+        ${attr_name}=    Set Variable    ${result[0]}
+        ${attr_value}=    Set Variable    ${result[1]}
+        ${is_match}=    Run Keyword And Return Status    Should Be Equal    ${attr_value}    ${SPECIAL_ATTRIBUTE_VALUE}
+        ${found}=    Set Variable If    ${is_match}    True    ${found}
+    END
+    
+    Should Be True    ${found}    Không tìm thấy thuộc tính với ký tự đặc biệt ${SPECIAL_ATTRIBUTE_VALUE}
+
+Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${CREATED_PRODUCT_CODE}
+    
+    # Lấy thông tin thuộc tính của sản phẩm
+    ${query}=    Set Variable    SELECT COUNT(*) FROM ProductAttribute WHERE ProductId = ?
+    ${result}=    Fetch One    ${query}    ${product_id}
+    
+    # Kiểm tra số lượng thuộc tính
+    Should Be True    ${result[0]} >= ${ATTRIBUTE_COUNT}    Sản phẩm không có đủ số lượng thuộc tính như cấu hình
+
+    # Lấy chi tiết thuộc tính để kiểm tra
+    ${query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+    ${results}=    Fetch All    ${query}    ${product_id}
+    
+    # Tạo danh sách tên thuộc tính
+    ${attr_names}=    Create List
+    FOR    ${result}    IN    @{results}
+        ${attr_name}=    Set Variable    ${result[0]}
+        Append To List    ${attr_names}    ${attr_name}
+    END
+    
+    # Kiểm tra có các thuộc tính cần thiết
+    ${unique_attr_names}=    Remove Duplicates    ${attr_names}
+    ${attr_count}=    Get Length    ${unique_attr_names}
+    Should Be True    ${attr_count} >= 5    Sản phẩm không có đủ số lượng thuộc tính khác nhau như cấu hình
+
+Xác Thực Biến Thể Có Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
+    # Kiểm tra giá và tồn kho của các biến thể theo chi nhánh
+    FOR    ${code}    IN    @{LIST_PRODUCTS_CODE}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
+        
+        # Lấy thông tin chi nhánh đầu tiên
+        ${branch1}=    Set Variable    Chi nhánh trung tâm
+        ${branch1_id}=    Lấy Thông tin Chi Nhánh    ${branch1}
+        
+        # Lấy thông tin chi nhánh thứ hai
+        ${branch2}=    Set Variable    Nhánh A
+        ${branch2_id}=    Lấy Thông tin Chi Nhánh    ${branch2}
+        
+        # Kiểm tra giá và tồn kho ở chi nhánh 1
+        ${query1}=    Set Variable    SELECT BasePrice, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+        ${result1}=    Fetch One    ${query1}    ${product_id}    ${branch1_id}
+        
+        # Kiểm tra giá và tồn kho ở chi nhánh 2
+        ${query2}=    Set Variable    SELECT BasePrice, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
+        ${result2}=    Fetch One    ${query2}    ${product_id}    ${branch2_id}
+        
+        # So sánh giá và tồn kho giữa các chi nhánh
+        Should Not Be Equal    ${result1[0]}    ${result2[0]}    Giá bán ở các chi nhánh giống nhau
+        Should Not Be Equal    ${result1[1]}    ${result2[1]}    Tồn kho ở các chi nhánh giống nhau
+    END
+
+Xác Thực Biến Thể Có Trạng Thái Kinh Doanh Đúng Theo Cấu Hình
+    # Kiểm tra trạng thái kinh doanh của các biến thể
+    ${active_variants}=    Create List
+    ${inactive_variants}=    Create List
+    
+    FOR    ${index}    ${code}    IN ENUMERATE    @{LIST_PRODUCTS_CODE}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
+        
+        # Lấy trạng thái kinh doanh
+        ${query}=    Set Variable    SELECT AllowsSale FROM Product WHERE Id = ?
+        ${result}=    Fetch One    ${query}    ${product_id}
+        
+        # Kiểm tra trạng thái kinh doanh
+        Run Keyword If    ${index} % 2 == 0    
+        ...    Should Be Equal As Strings    ${result[0]}    True    Biến thể ${code} không có trạng thái kinh doanh đúng
+        ...    ELSE    
+        ...    Should Be Equal As Strings    ${result[0]}    False    Biến thể ${code} không có trạng thái kinh doanh đúng
+        
+        # Lưu biến thể vào danh sách tương ứng
+        Run Keyword If    ${index} % 2 == 0
+        ...    Append To List    ${active_variants}    ${code}
+        ...    ELSE
+        ...    Append To List    ${inactive_variants}    ${code}
+    END
+    
+    # Kiểm tra có ít nhất một biến thể đang kinh doanh và một biến thể không kinh doanh
+    ${active_count}=    Get Length    ${active_variants}
+    ${inactive_count}=    Get Length    ${inactive_variants}
+    Should Be True    ${active_count} > 0    Không có biến thể nào đang kinh doanh
+    Should Be True    ${inactive_count} > 0    Không có biến thể nào ngừng kinh doanh
+
+Xác Thực Sản Phẩm Có Thuộc Tính Mới Được Cập Nhật
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${CREATED_PRODUCT_CODE}
+    
+    # Lấy thông tin thuộc tính của sản phẩm
+    ${query}=    Set Variable    SELECT a.Name, pa.Value FROM ProductAttribute pa JOIN Attribute a ON pa.AttributeId = a.Id WHERE pa.ProductId = ?
+    ${results}=    Fetch All    ${query}    ${product_id}
+    
+    # Tìm và kiểm tra giá trị thuộc tính mới
+    ${found}=    Set Variable    False
+    FOR    ${result}    IN    @{results}
+        ${attr_name}=    Set Variable    ${result[0]}
+        ${attr_value}=    Set Variable    ${result[1]}
+        ${is_match}=    Run Keyword And Return Status    Should Be Equal    ${attr_value}    ${NEW_ATTRIBUTE_VALUE}
+        ${found}=    Set Variable If    ${is_match}    True    ${found}
+    END
+    
+    Should Be True    ${found}    Không tìm thấy thuộc tính mới với giá trị ${NEW_ATTRIBUTE_VALUE}
+
+Xác Thực Mã Vạch Của Biến Thể Được Tạo Theo Đúng Quy Tắc
+    # Kiểm tra mã vạch của các biến thể
+    FOR    ${code}    IN    @{LIST_PRODUCTS_CODE}
+        ${product_id}=    Lấy Thông tin Sản Phẩm    ${code}
+        
+        # Lấy mã vạch của biến thể
+        ${query}=    Set Variable    SELECT Barcode FROM Product WHERE Id = ?
+        ${result}=    Fetch One    ${query}    ${product_id}
+        
+        # Kiểm tra mã vạch có đúng quy tắc không
+        Should Match Regexp    ${result[0]}    ^${BARCODE_PREFIX}\\d+$    Mã vạch của biến thể ${code} không đúng quy tắc
+    END
+
+Xác Thực Biến Thể Mới Được Thêm Thành Công
+    ${query}=    Set Variable    SELECT Code FROM Product WHERE MasterProductId = ? AND Code NOT IN (${ORIGINAL_VARIANT_CODES})
+    ${results}=    Fetch All    ${query}    ${MASTER_PRODUCT_ID}
+    
+    # Kiểm tra số lượng biến thể mới
+    ${new_variant_count}=    Get Length    ${results}
+    Should Be True    ${new_variant_count} > 0    Không có biến thể mới nào được thêm
+    
+    # Kiểm tra chi tiết các biến thể mới
+    FOR    ${result}    IN    @{results}
+        ${variant_code}=    Set Variable    ${result[0]}
+        
+        # Kiểm tra biến thể có thuộc tính
+        ${attr_query}=    Set Variable    SELECT COUNT(*) FROM ProductAttribute WHERE ProductId = (SELECT Id FROM Product WHERE Code = ?)
+        ${attr_result}=    Fetch One    ${attr_query}    ${variant_code}
+        Should Be True    ${attr_result[0]} > 0    Biến thể mới ${variant_code} không có thuộc tính
+    END
