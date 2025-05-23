@@ -90,5 +90,6 @@ Library           String
 &{PRODUCT_WITH_SHELVES}    ProductId=0
 ...    ShelvesId=0
 
-
+&{WARRANTIES_SAVE_DATA}    productIdsToSaveForMany=${EMPTY}
+...    warranties=@{GENUINE_GUARANTEES}
 

@@ -31,7 +31,7 @@ RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 0 % Theo Dữ Liệu Đã Gửi
+    And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 0 Theo Dữ Liệu Đã Gửi
 
 RT-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế 8%
     [Documentation]    Test tạo sản phẩm dịch vụ có thuế 8%
