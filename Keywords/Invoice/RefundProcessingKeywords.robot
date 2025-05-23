@@ -111,7 +111,7 @@ Xác Thực Hóa Đơn Được Tạo Thành Công
     ${invoice_exists}=    Check Invoice Exists    ${invoice_id}
     Should Be True    ${invoice_exists}
     
-    [Return]    ${invoice_id}
+    RETURN    ${invoice_id}
 
 Xác Thực Tổng Thanh Toán Trong Hóa Đơn
     [Arguments]    ${invoice_id}    ${expected_total_payment}
