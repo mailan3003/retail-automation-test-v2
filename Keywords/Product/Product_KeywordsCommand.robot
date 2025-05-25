@@ -524,7 +524,7 @@ Delete Sản Phẩm ${product_code}
     Delete Data    ${endpoint}
 
 
-Delete Sản Phẩm ${list_product_code}
+Delete Nhiều Sản Phẩm ${list_product_code}
     FOR    ${product_code}    IN    @{list_product_code}
         Delete Sản Phẩm ${product_code}
     END

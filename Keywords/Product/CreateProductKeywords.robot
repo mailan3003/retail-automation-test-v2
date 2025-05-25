@@ -1017,7 +1017,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Ở Form Khác
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TD${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId   ${EMPTY} 
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
     ${list_products}     Evaluate    (None, '[${form_data}]')
     ${payload}    Create Dictionary    ListProductsString=${list_products}            isAddFromOtherForm=True
@@ -1029,7 +1028,6 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Ở MHBH
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TD${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId   ${EMPTY} 
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
     ${list_products}     Evaluate    (None, '[${form_data}]')
     ${payload}    Create Dictionary    ListProducts=${list_products}         
@@ -1478,7 +1476,8 @@ Xác Thực Sản Phẩm Có Mã Vạch Theo Đơn Vị Tính ${unit_names} Là 
     Should Not Be Equal    ${result_base}    None    Không tìm thấy sản phẩm với ID ${CREATED_PRODUCT_ID}
     Should Be Equal    ${result_base[0]}    ${base_unit}    Đơn vị tính cơ bản không khớp
     Should Be Equal    ${result_base[1]}    ${base_barcode}    Mã vạch của đơn vị ${base_unit} không khớp
-    
+    ${unit_names}=    Get Slice From List    ${unit_names}    1
+    ${barcodes}=    Get Slice From List    ${barcodes}    1
     # Xác thực mã vạch các đơn vị tính phụ
     FOR    ${unit_name}    ${barcode}    IN ZIP    ${unit_names}    ${barcodes}
         ${query}=    Set Variable    SELECT Unit, Barcode FROM Product WHERE MasterUnitId=${CREATED_PRODUCT_ID} AND Unit = '${unit_name}' AND RetailerId = ${RETAILER_ID}
