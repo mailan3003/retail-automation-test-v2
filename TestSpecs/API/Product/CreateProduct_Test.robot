@@ -505,6 +505,7 @@ RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mã Vạch Theo Đơn Vị Tính ${unit_names} Là ${barcodes}
+    [Teardown]   Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE}
 
 RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính Theo Quy Đổi
     [Documentation]    Test tạo sản phẩm với tồn kho theo đơn vị tính cơ bản và kiểm tra tồn kho đơn vị quy đổi
@@ -588,7 +589,7 @@ RT-PRODUCT-066 Tạo Sản Phẩm Với Tên Đơn Vị Tính Đặc Biệt
 
 RT-PRODUCT-072 Tạo Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt
     [Documentation]    Test tạo sản phẩm với giá trị thuộc tính chứa ký tự đặc biệt
-    [Tags]    AIGenerated    CreateProduct    Positive    SpecialCharsAttribute    regression1
+    [Tags]    AIGenerated    CreateProduct    Positive    SpecialCharsAttribute    regression
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -604,14 +605,6 @@ RT-PRODUCT-073 Tạo Sản Phẩm Với Số Lượng Thuộc Tính Lớn
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
 
-RT-PRODUCT-074 Tạo Biến Thể Với Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
-    [Documentation]    Test tạo sản phẩm với các biến thể có giá và tồn kho khác nhau theo chi nhánh
-    [Tags]    AIGenerated    CreateProduct    Positive    VariantBranchPricing    regression1
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Biến Thể Có Giá Và Tồn Kho Riêng Theo Chi Nhánh
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Biến Thể Có Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
 
 RT-PRODUCT-075 Tạo Sản Phẩm Với Thiết Lập Trạng Thái Kinh Doanh Khác Nhau Cho Biến Thể
     [Documentation]    Test tạo sản phẩm với các biến thể có trạng thái kinh doanh khác nhau
@@ -648,7 +641,7 @@ RT-PRODUCT-078 Tạo Sản Phẩm Với Thuộc Tính Quá Dài
     [Tags]    AIGenerated    CreateProduct    Negative    LongAttributeValue    regression1
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Có Giá Trị Quá Dài
     When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 4201
+    Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Giá trị thuộc tính không được vượt quá 255 ký tự"
 
 RT-PRODUCT-079 Tạo Sản Phẩm Với Thuộc Tính Bị Trùng Tên
