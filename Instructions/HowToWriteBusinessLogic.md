@@ -1,4 +1,5 @@
 **Instructions to write efficient business logic:**
+- Store all business logic files in the `retail-automation-test-v2/Logic` directory.
 - Read the code in small chunks, one at a time (around 50 lines).
 - Separate business logic into small files.
 - Add an indexes file based on the following example:
@@ -19,6 +20,11 @@
     - Mục lục: [00-CreateInvoice-Index.md](./00-CreateInvoice-Index.md)
 ```
 - A good explanation should meet these criteria:
+    - It must follow this structure:
+      - Purpose
+      - Main processes
+      - Exception handling
+      - Important notes
     - It should include the name of the method or a specific piece of code (not the entire source code). It helps developers find the actual code. For example:
     ```
     **Trích xuất và chuẩn bị dữ liệu ban đầu**:
@@ -52,45 +58,45 @@
         - If it relies on other logic, let's review that logic to understand how to structure test data.
         - Finally, create a small section describing how to prepare test data for integration tests.
         For example:
-- If the current method invokes any other methods. Perform the following tasks carefully:
-    - Explain it in new files following the same rules in this file.
-    - Add a reference to the current explanation.
-    - For example:
-    ```
-    ### 1. Lấy danh sách sản phẩm từ cơ sở dữ liệu
-    - Trích xuất danh sách ID sản phẩm từ `itemDetails`.
-    - Gọi phương thức `GetListProductById` để lấy thông tin chi tiết của các sản phẩm từ cơ sở dữ liệu (xem thêm chi tiết tại [GetListProductById.md](../GetListProductById.md)).
+          - If the current method invokes any other methods. Perform the following tasks carefully:
+            - Explain it in new files following the same rules in this file.
+            - Add a reference to the current explanation.
+            - For example:
+            ```
+            ### 1. Lấy danh sách sản phẩm từ cơ sở dữ liệu
+            - Trích xuất danh sách ID sản phẩm từ `itemDetails`.
+            - Gọi phương thức `GetListProductById` để lấy thông tin chi tiết của các sản phẩm từ cơ sở dữ liệu (xem thêm chi tiết tại [GetListProductById.md](../GetListProductById.md)).
 
-    ### 2. Xác thực sản phẩm
-    - Gọi `StockTakeValidate.ValidateProductNotExistInDb` để kiểm tra tất cả sản phẩm trong `itemDetails` tồn tại trong cơ sở dữ liệu (xem thêm chi tiết tại [ValidateProductNotExistInDb.md](Logic/StockTake/ValidateProductNotExistInDb.md)).
+            ### 2. Xác thực sản phẩm
+            - Gọi `StockTakeValidate.ValidateProductNotExistInDb` để kiểm tra tất cả sản phẩm trong `itemDetails` tồn tại trong cơ sở dữ liệu (xem thêm chi tiết tại [ValidateProductNotExistInDb.md](Logic/StockTake/ValidateProductNotExistInDb.md)).
 
-    ### 3. Cập nhật thông tin sản phẩm từ cơ sở dữ liệu
-    - Gọi `StockTakeNormalize.UpdateProductInfoFromDb` để cập nhật các thông tin của sản phẩm như (xem thêm chi tiết tại [UpdateProductInfoFromDb.md](Logic/StockTake/UpdateProductInfoFromDb.md)):
-    - Giá trị chuyển đổi đơn vị (`ConversionValue`)
-    - ID đơn vị chính (`MasterUnitId`)
-    - Cờ quản lý lô hàng và hạn sử dụng (`IsBatchExpireControl`)
-    - Cờ quản lý số serial (`IsLotSerialControl`)
-    - Mã sản phẩm (`ProductCode`) nếu chưa có
-    ```
-    - This is an example of the GetListProductById method:
-    ```
-    # Truy vấn thông tin sản phẩm trong GetListProductById
+            ### 3. Cập nhật thông tin sản phẩm từ cơ sở dữ liệu
+            - Gọi `StockTakeNormalize.UpdateProductInfoFromDb` để cập nhật các thông tin của sản phẩm như (xem thêm chi tiết tại [UpdateProductInfoFromDb.md](Logic/StockTake/UpdateProductInfoFromDb.md)):
+            - Giá trị chuyển đổi đơn vị (`ConversionValue`)
+            - ID đơn vị chính (`MasterUnitId`)
+            - Cờ quản lý lô hàng và hạn sử dụng (`IsBatchExpireControl`)
+            - Cờ quản lý số serial (`IsLotSerialControl`)
+            - Mã sản phẩm (`ProductCode`) nếu chưa có
+            ```
+            - This is an example of the GetListProductById method:
+            ```
+            # Truy vấn thông tin sản phẩm trong GetListProductById
 
-    ## Mục đích
-    Phương thức `GetListProductById` trong lớp `StockTakeService` có nhiệm vụ truy vấn và lấy thông tin chi tiết của nhiều sản phẩm từ cơ sở dữ liệu dựa trên danh sách ID sản phẩm được cung cấp. Phương thức này xử lý việc truy vấn một cách hiệu quả, đặc biệt khi đối mặt với danh sách ID sản phẩm lớn.
+            ## Mục đích
+            Phương thức `GetListProductById` trong lớp `StockTakeService` có nhiệm vụ truy vấn và lấy thông tin chi tiết của nhiều sản phẩm từ cơ sở dữ liệu dựa trên danh sách ID sản phẩm được cung cấp. Phương thức này xử lý việc truy vấn một cách hiệu quả, đặc biệt khi đối mặt với danh sách ID sản phẩm lớn.
 
-    ## Quy trình chính
+            ## Quy trình chính
 
-    ### 1. Khởi tạo danh sách kết quả
-    - Tạo một danh sách rỗng để lưu trữ thông tin sản phẩm được truy vấn:
-    var lsProductStockStakeInfo = new List<ProductStockStakeInfo>();
+            ### 1. Khởi tạo danh sách kết quả
+            - Tạo một danh sách rỗng để lưu trữ thông tin sản phẩm được truy vấn:
+            var lsProductStockStakeInfo = new List<ProductStockStakeInfo>();
 
-    ### 2. Xử lý danh sách ID lớn
-    - Kiểm tra số lượng ID sản phẩm và chia thành các nhóm nhỏ hơn nếu cần thiết:
-    if (lstProductId.Count > SqlExceptionHelper.MaxIdParamsIQueryableExtensions)
-    {
-        ...
-    }
+            ### 2. Xử lý danh sách ID lớn
+            - Kiểm tra số lượng ID sản phẩm và chia thành các nhóm nhỏ hơn nếu cần thiết:
+            if (lstProductId.Count > SqlExceptionHelper.MaxIdParamsIQueryableExtensions)
+            {
+                ...
+            }
 
-    ### 3. Truy vấn tuần tự từng nhóm ID sản phẩm
-    ```
+            ### 3. Truy vấn tuần tự từng nhóm ID sản phẩm
+            ```
