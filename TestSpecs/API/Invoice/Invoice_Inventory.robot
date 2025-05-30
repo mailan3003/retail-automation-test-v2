@@ -1,9 +1,10 @@
 *** Settings ***
 Documentation     Test cases API cho phần cập nhật tồn kho khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 Test Teardown     Tear down Delete Hóa Đơn
 *** Keywords ***
 Suite Setup

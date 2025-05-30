@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý hóa đơn vlxd và VAT khâu trừ
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/Invoice_VLXD_Keywords.robot
 Resource          ../../../Keywords/Invoice/InvoiceVATKeywords.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot

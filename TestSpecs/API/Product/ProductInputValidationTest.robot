@@ -1,16 +1,16 @@
 *** Settings ***
 Documentation     Test API kiểm tra và xác thực đầu vào khi thêm sản phẩm
+Suite Setup       Init Test Environment   ${ENV}      MHQL
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../TestData/Product/ProductInputData.robot
-Suite Setup       Suite Setup
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    ProductInputValidationTest
+
 
 *** Test Cases ***
 

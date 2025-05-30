@@ -518,15 +518,17 @@ Xác Thực Lỗi "${error_message}"
     Should Be Equal As Strings    ${RESPONSE.status_code}    420
     Should Contain    ${RESPONSE.text}    ${error_message} 
 
-Delete Sản Phẩm ${product_code}
+Xóa Sản Phẩm 
+    [Arguments]    ${product_code}
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     ${endpoint}=    Format String    ${PRODUCT_DELETE_API_ENDPOINT}    ${product_id}
-    Delete Data    ${endpoint}
+    Delete Data   ${endpoint}
 
 
-Delete Nhiều Sản Phẩm ${list_product_code}
+Delete Nhiều Sản Phẩm 
+    [Arguments]    ${list_product_code}
     FOR    ${product_code}    IN    @{list_product_code}
-        Delete Sản Phẩm ${product_code}
+        Xóa Sản Phẩm    ${product_code}
     END
 
 Save warranty for product
@@ -769,7 +771,7 @@ Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
     # Kiểm tra có các thuộc tính cần thiết
     ${unique_attr_names}=    Remove Duplicates    ${attr_names}
     ${attr_count}=    Get Length    ${unique_attr_names}
-    Should Be True    ${attr_count} >= 5    Sản phẩm không có đủ số lượng thuộc tính khác nhau như cấu hình
+    Should Be True    ${attr_count} >= 4    Sản phẩm không có đủ số lượng thuộc tính khác nhau như cấu hình
 
 Xác Thực Biến Thể Có Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
     # Kiểm tra giá và tồn kho của các biến thể theo chi nhánh

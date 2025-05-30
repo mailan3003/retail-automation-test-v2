@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho hóa đơn hàng hóa có bảo hành bảo trì
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/WarrantyKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py

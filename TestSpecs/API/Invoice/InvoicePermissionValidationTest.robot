@@ -1,4 +1,6 @@
 *** Settings ***
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoicePermissionValidationKeywords.robot
 Resource    ../../../Keywords/Utilities/RequestHelper.robot

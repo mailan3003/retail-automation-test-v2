@@ -381,17 +381,11 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Tích Điểm Với Số Điểm ${poi
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian ${type} Là ${month} ${unit}
-    ${type}    Set Variable If    "${type}" == "Bảo Hành"   1   2
-    ${unit}    Run Keyword If    "${unit}" == "Tháng"    Set Variable    6    ELSE IF    "${unit}" == "Ngày"
-    ...   Set Variable    7    ELSE    Set Variable    1
+
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    BH${random_code}
-    ${warr}=    Deep Copy    ${GENUINE_GUARANTEES}
-    ${warr}    Update Dictionary Property    ${warr}    NumberTime    ${month}
-    ${warr}    Update Dictionary Property    ${warr}    TimeType    ${unit}
-    ${warr}    Update Dictionary Property    ${warr}    WarrantyType    ${type}
-    ${warranties}=    Create List    ${warr}
+    ${warranties}=    Thời gian bảo hành ${type} là ${month} ${unit}
     ${request}    Update Dictionary Property    ${request}    GenuineGuarantees    ${warranties}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
     ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
@@ -399,8 +393,20 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian ${type} Là ${month} ${uni
     ${list_products}     Evaluate    (None, '[${form_data}]')
     ${payload}    Create Dictionary    ListProductsString=${list_products}          BranchForProductCostss=${branch_pr_cost}  
     Set Test Variable    ${REQUEST_DATA}    ${payload}
-    Set Test Variable    ${PAYLOAD_WARRANTY_SAVE_DATA}   ${warr}
+    Set Test Variable    ${PAYLOAD_WARRANTY_SAVE_DATA}    ${warranties}
     RETURN    ${REQUEST_DATA}
+
+
+Thời gian bảo hành ${type} là ${month} ${unit}
+    ${type}    Set Variable If    "${type}" == "Bảo Hành"   1   2
+    ${unit}    Run Keyword If    "${unit}" == "Tháng"    Set Variable    6    ELSE IF    "${unit}" == "Ngày"
+    ...   Set Variable    7    ELSE    Set Variable    1
+    ${warr}=    Deep Copy    ${GENUINE_GUARANTEES}
+    ${warr}    Update Dictionary Property    ${warr}    NumberTime    ${month}
+    ${warr}    Update Dictionary Property    ${warr}    TimeType    ${unit}
+    ${warr}    Update Dictionary Property    ${warr}    WarrantyType    ${type}
+    RETURN    ${warr}
+
 
 Save Warranty For Many Product
     ${warranty_save_data}=    Deep Copy    ${WARRANTIES_SAVE_DATA}
@@ -817,42 +823,41 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Giá Bán ${price}
 
 
 
-Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể Có Giá Khác Nhau
+Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể ${dict_attribute_name} Có Giá Khác Nhau ${list_price}
     # Tạo danh sách giá khác nhau cho các biến thể
-    ${prices}=    Create List    50000    70000    90000
-    Set Test Variable    ${VARIANT_PRICES}    ${prices}
     
     # Chuẩn bị dữ liệu sản phẩm cơ bản với thuộc tính
-    ${request_data}=    Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính    ${dict_kich_thuoc}
+    ${list_products}=    Chuẩn Bị Dữ Liệu Sản Phẩm Có Thuộc Tính ${dict_attribute_name}
     
-    # Cập nhật giá cho các biến thể trong yêu cầu
-    ${product_list}=    Evaluate    json.loads(${REQUEST_DATA}["ListProductsString"][1])    json
-    FOR    ${i}    ${price}    IN ZIP    RANGE    ${prices}
-        ${product_list}[${i}]["BasePrice"] = ${price}
+    # Convert list_products to JSON format
+    FOR    ${index}    ${price}    IN ENUMERATE    @{list_price}
+       Set To Dictionary    ${list_products}[${index}]    BasePrice    ${price}
     END
     
     # Cập nhật lại danh sách sản phẩm trong yêu cầu
-    ${updated_product_list}=    Evaluate    json.dumps(${product_list})    json
-    ${REQUEST_DATA}["ListProductsString"] = (None, '${updated_product_list}')
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request_data}
+    ${updated_product_list}=    Evaluate    json.dumps(${list_products})    json
+
+    ${form_data}=    Evaluate     str(${updated_product_list}).replace("'",'"')
+    ${list_products}     Evaluate    (None, '${form_data}')
+    ${payload}    Create Dictionary    ListProductsString=${list_products}      
+    Set Test Variable    ${REQUEST_DATA}    ${payload}
     RETURN    ${REQUEST_DATA}
 
-Xác Thực Các Biến Thể Có Giá Bán Theo Cấu Hình
+Xác Thực Các Biến Thể Có Giá Bán ${list_price} Theo Cấu Hình
     # Kiểm tra giá của từng biến thể
     ${query}=    Set Variable    SELECT Id, BasePrice FROM Product WHERE MasterProductId = ?
     ${results}=    Fetch All    ${query}    ${CREATED_PRODUCT_ID}
     
     # Kiểm tra số lượng kết quả
     ${result_count}=    Get Length    ${results}
-    ${price_count}=    Get Length    ${VARIANT_PRICES}
+    ${price_count}=    Get Length    ${list_price}
     Should Be Equal As Numbers    ${result_count}    ${price_count}
     
     # Kiểm tra giá của từng biến thể
     FOR    ${i}    ${result}    IN ENUMERATE    @{results}
         ${variant_id}=    Set Variable    ${result[0]}
         ${actual_price}=    Set Variable    ${result[1]}
-        ${expected_price}=    Set Variable    ${VARIANT_PRICES}[${i}]
+        ${expected_price}=    Set Variable    ${list_price}[${i}]
         
         Should Be Equal As Numbers    ${actual_price}    ${expected_price}
     END
@@ -1244,7 +1249,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có G
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     Set Test Variable    ${UNIT_NAMES}    ${unit_names}
     Set Test Variable    ${PRICES}    ${prices}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    ${list_product_code}
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Mã Vạch ${barcodes}
@@ -1276,7 +1281,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có G
     Set Test Variable    ${REQUEST_DATA}    ${payload}
     Set Test Variable    ${UNIT_NAMES}    ${unit_names}
     Set Test Variable    ${BARCODES}    ${barcodes}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    DVT${random_code}
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Điểm Khác Nhau ${different_points}
@@ -1373,7 +1378,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có G
     Set Test Variable    ${UNIT_NAMES}    ${unit_names}
     Set Test Variable    ${CONVERSION_VALUES}    ${conversion_values}
     Set Test Variable    ${BASE_STOCK}    ${stock}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    {random_code}
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có Giá Trị Quy Đổi ${conversion_values} Và Giá Vốn ${cost}
@@ -1405,7 +1410,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Tính ${unit_names} Có G
     Set Test Variable    ${UNIT_NAMES}    ${unit_names}
     Set Test Variable    ${CONVERSION_VALUES}    ${conversion_values}
     Set Test Variable    ${BASE_COST}    ${cost}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    ${random_code}
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Đơn Vị Tính ${number_of_units}
@@ -1435,7 +1440,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Đơn Vị Tính ${num
     ${list_products}     Evaluate    (None, '${form_data}')
     ${payload}    Create Dictionary    ListProductsString=${list_products}   
     Set Test Variable    ${REQUEST_DATA}    ${payload}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    DVT${random_code}
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${list_product_code}
     Set Test Variable    ${MAX_UNITS_COUNT}    ${number_of_units}
     RETURN    ${REQUEST_DATA}
 
@@ -1680,39 +1685,37 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Thuộc Tính
     # Tạo sản phẩm với nhiều thuộc tính (>5 thuộc tính)
     ${list_products}=    Create List
     ${request}=    Deep Copy    ${list_product_data}
-    ${random_code}=    Generate Random String    6    [NUMBERS]
-    ${code}=    Set Variable    HHTT${random_code}
-    ${request}=    Update Nested Dictionary Property    ${request}    Code    ${code}
-    ${request}=    Update Nested Dictionary Property    ${request}    Name    Sản phẩm nhiều thuộc tính
-    
     # Danh sách thuộc tính và giá trị
-    ${attribute_names}=    Create List    MÀU SẮC    KÍCH THƯỚC    CHẤT LIỆU    MẪU    XUẤT XỨ    THƯƠNG HIỆU
-    ${attribute_values}=    Create List    Đỏ    L    Cotton    Classic    Việt Nam    KiotViet
+    ${attribute_names}=    Create List    MÀU SẮC    KÍCH THƯỚC    CHẤT LIỆU   SIZE
+    ${attribute_values}=    Create List    Đỏ    L    Cotton    Classic      40x40
     
     # Tạo danh sách thuộc tính
-    ${product_attributes}=    Create List
-    FOR    ${index}    IN RANGE    6    # Tạo 6 thuộc tính
+    FOR    ${index}    IN RANGE    4  
+        ${request}=    Deep Copy    ${list_product_data}
+        ${random_code}=    Generate Random String    6    [NUMBERS]
+        ${code}=    Set Variable    HHTT${random_code}
+        ${request}=    Update Nested Dictionary Property    ${request}    Code    ${code}
+
+        ${request}=    Update Nested Dictionary Property    ${request}    Name    Sản phẩm nhiều thuộc tính
+        ${request}     Update Nested Dictionary Property    ${request}    FullName    
         ${attribute}=    Deep Copy    ${standard_product_attributes}
         ${attr_name}=    Get From List    ${attribute_names}    ${index}
         ${value}=    Get From List    ${attribute_values}    ${index}
         ${attribute_id}=    Lấy ID thuộc tính    ${attr_name}
         ${attribute}=    Update Nested Dictionary Property    ${attribute}    AttributeId    ${attribute_id}
         ${attribute}=    Update Nested Dictionary Property    ${attribute}    Value    ${value}
-        Append To List    ${product_attributes}    ${attribute}
+        ${request}=    Update Nested Dictionary Property    ${request}    ProductAttributes    ${attribute}
+        Append To List    ${list_products}    ${request}
     END
     
-    ${request}=    Update Nested Dictionary Property    ${request}    ProductAttributes    ${product_attributes}
-    Append To List    ${list_products}    ${request}
     
-    ${branch_pr_cost}=    Evaluate    str(${branch_for_cost}).replace("'",'"')
-    ${branch_pr_cost}=    Evaluate    (None, '[${branch_pr_cost}]')
     ${form_data}=    Evaluate    str(${list_products}).replace("'",'"')
     ${list_products_attribute}=    Evaluate    (None, '${form_data}')
-    ${payload}=    Create Dictionary    ListProductsString=${list_products_attribute}    BranchForProductCostss=${branch_pr_cost}
-    
+    ${payload}=    Create Dictionary    ListProductsString=${list_products_attribute}   
+    Log    ${payload}
     Set Test Variable    ${REQUEST_DATA}    ${payload}
-    Set Test Variable    ${CREATED_PRODUCT_CODE}    ${code}
-    Set Test Variable    ${ATTRIBUTE_COUNT}    6
+    Set Test Variable    ${LIST_PRODUCT_CODE}    ${code}
+    Set Test Variable    ${ATTRIBUTE_COUNT}    4
     RETURN    ${REQUEST_DATA}
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Biến Thể Có Giá Và Tồn Kho Riêng Theo Chi Nhánh
@@ -1757,5 +1760,75 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Biến Thể Có Giá Và Tồn Kho Riêng
         
         # Tạo tên sản phẩm từ tổ hợp thuộc tính
         ${combination_values}=    Split String    ${combination}    |
+
+
+
+Chuẩn Bị Dữ Liệu Sản Phẩm Có Thuộc Tính ${dict_attribute_name} 
+    ${list_products}=    Create List   
+        # Lấy thông tin thuộc tính từ dictionary đầu vào
+        ${attribute_names}=    Get Dictionary Keys    ${dict_attribute_name}
+        ${length}=    Get Length    ${attribute_names}
+        
+        # Tạo danh sách các giá trị thuộc tính cho mỗi thuộc tính
+        ${all_attribute_values}=    Create List
+        FOR    ${attr_name}    IN    @{attribute_names}
+            ${attr_values}=    Get From Dictionary    ${dict_attribute_name}    ${attr_name}
+            Append To List    ${all_attribute_values}    ${attr_values}
+        END
+        
+        # Tạo tất cả các tổ hợp thuộc tính
+        ${combinations}=    Create List    ${EMPTY}
+        FOR    ${attr_values}    IN    @{all_attribute_values}
+            ${new_combinations}=    Create List
+            FOR    ${combination}    IN    @{combinations}
+                FOR    ${value}    IN    @{attr_values}
+                    ${new_combination}=    Set Variable    ${combination}${value}|
+                    Append To List    ${new_combinations}    ${new_combination}
+                END
+            END
+            ${combinations}=    Set Variable    ${new_combinations}
+        END
+        ${list_products_code}     Create List
+        # Tạo sản phẩm cho mỗi tổ hợp thuộc tính
+        FOR    ${combination}    IN    @{combinations}
+            ${request}=    Deep Copy    ${list_product_data}
+            ${random_code}=    Generate Random String    6    [NUMBERS]
+            ${code}=    Set Variable    HHTT${random_code}
+            Append To List    ${list_products_code}    ${code}
+            ${request}=    Update Nested Dictionary Property    ${request}    Code    ${code}
+            
+            # Tạo tên sản phẩm từ tổ hợp thuộc tính
+            ${combination_values}=    Split String    ${combination}    |
+            ${product_name}=    Set Variable    Sản phẩm
+            FOR    ${index}    IN RANGE    ${length}
+                ${value}=    Get From List    ${combination_values}    ${index}
+                ${product_name}=    Set Variable    ${product_name}-${value}
+            END
+            ${product_name}=    Set Variable    ${product_name}
+            ${request}=    Update Nested Dictionary Property     ${request}    Name    Sản phẩm
+            ${request}=    Update Nested Dictionary Property     ${request}    FullName  ${product_name}
+            ${request}=    Update Nested Dictionary Property     ${request}    CompareFullName   ${product_name}
+
+            # Tạo danh sách thuộc tính cho sản phẩm
+            ${product_attributes}=    Create List
+            FOR    ${index}    IN RANGE    ${length}
+                ${attribute}=    Deep Copy    ${standard_product_attributes}
+                ${value}=    Get From List    ${combination_values}    ${index}
+                ${attr_name}=    Get From List   ${attribute_names}    ${index}
+                ${attribute_id}=    Lấy ID thuộc tính    ${attr_name}
+                ${attribute}=     Update Nested Dictionary Property    ${attribute}    AttributeId    ${attribute_id}
+                ${attribute}=    Update Nested Dictionary Property      ${attribute}    Value    ${value}
+                Append To List    ${product_attributes}    ${attribute}
+            END
+            ${request}=    Update Nested Dictionary Property     ${request}    ProductAttributes    ${product_attributes}
+            Append To List    ${list_products}    ${request}
+        END
+     
+    RETURN    ${list_products}
+
+
+
+
+
 
 

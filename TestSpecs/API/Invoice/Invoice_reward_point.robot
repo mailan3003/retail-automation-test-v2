@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần tính điểm thưởng hàng hóa
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/RewardPointKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot

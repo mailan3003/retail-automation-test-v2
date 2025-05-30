@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/Currency_Keywords.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
@@ -223,4 +225,5 @@ RT-QT-10 Tạo hóa đơn quốc tế thanh toán kết hợp 2 loại tiền t�
     And Xác thực tổng thanh toán hóa đơn ${TOTAL_PAYMENT}  
     And Xác Thực Công Nợ Của Hóa Đơn 49970
     And Lấy thông Tin công nợ khách hàng ${CUSTOMER_ID_CURRENCY_3} trước khi thanh toán
+
 

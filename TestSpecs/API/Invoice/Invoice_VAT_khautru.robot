@@ -1,16 +1,16 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý thuế VAT trên hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/InvoiceVATKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../TestData/Invoice/CommonInvoiceData.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    InvoiceVATTest
+
 
 *** Test Cases ***
 RT-VAT-001 Tạo hóa đơn với thuế VAT mặc định

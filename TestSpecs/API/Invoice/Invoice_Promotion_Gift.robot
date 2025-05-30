@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý quà tặng
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/GiftProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Resource          ../../../Keywords/Invoice/PromotionKeywords.robot
@@ -7,11 +9,10 @@ Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
+
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    GiftProcessingTest
+
 
 *** Test Cases ***
 RT-GP-001 Tạo hóa đơn thành công với quà tặng sản phẩm

@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot

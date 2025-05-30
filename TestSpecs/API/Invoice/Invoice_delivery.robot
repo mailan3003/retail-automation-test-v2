@@ -1,16 +1,15 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý thông tin giao hàng
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/DeliveryProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    DeliveryProcessingTest
 
 *** Test Cases ***
 RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy đủ

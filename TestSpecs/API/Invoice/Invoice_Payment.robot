@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test cases API cho phần tạo phiếu thu khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
 Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot

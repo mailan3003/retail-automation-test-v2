@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation    Test cases for pharmacy prescription validation in invoices
+Suite Setup       Init Test Environment   ${ENV}
+Resource          ../../../Keywords/Login/Login.robot
 Resource         ../../../Keywords/Invoice/PrescriptionKeywords.robot
 Resource         ../../../Keywords/Utilities/ResponseHelper.robot
 Resource         ../../../Keywords/Utilities/DataUtilities.robot
