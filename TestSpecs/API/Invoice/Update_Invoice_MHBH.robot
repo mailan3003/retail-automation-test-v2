@@ -1,4 +1,6 @@
 *** Settings ***
+Suite Setup       Init Test Environment   ${ENV}  MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Documentation     Test cases API cho phần cập nhật thanh toán hóa đơn
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
