@@ -2,6 +2,8 @@
 Documentation     Keywords for Gift Processing API Tests
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Product/Product_KeywordsCommand.robot
+Resource          ../Promotion/PromotionKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -450,24 +452,9 @@ Xác Thực Số Lượng Voucher
     ${count}=    Set Variable    ${results[0]}
     Should Be Equal As Numbers    ${count}    ${expected_quantity}    Số lượng voucher không đúng
 
-Get From Response
-    [Documentation]    Extrait une valeur de la réponse JSON
-    [Arguments]    ${property_name}
-    ${response_json}=    Evaluate    json.loads('''${RESPONSE.content.decode('utf-8')}''')
-    ${value}=    Get From Dictionary    ${response_json}    ${property_name}
-    RETURN    ${value} 
 
-Thông Tin Khuyến Mãi Hóa Đơn Tặng 
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, ReceivedQuantity,PrereqQuantity,ReceivedVoucherCampaignIds,GiftPoint FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
 
-Thông tin hàng hóa
-    [Arguments]    ${product_code}
-    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
-    ${result}=   Fetch One    ${query}    ${product_code}
-    RETURN    ${result}
+
 
 # Keywords cho phần xử lý thanh toán bằng Voucher
 Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher ${voucher_campaign_id}

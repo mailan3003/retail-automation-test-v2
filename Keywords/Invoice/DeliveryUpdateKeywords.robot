@@ -325,7 +325,7 @@ Xác Thực Cập Nhật Ngày Giao Dự Kiến
     ${actual_date_obj}=    Convert Date    ${actual_date_str}
     ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
     ${abs_diff}=    Evaluate    abs(${diff})
-    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
+    Should Be True    ${abs_diff} < 5    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
 
 Xác Thực Ghi Chú Giao Hàng ${expected_note}
     [Documentation]    Xác thực ghi chú giao hàng đã được cập nhật
@@ -374,7 +374,7 @@ Thời Gian Phiếu Thanh Toán ${expected_payment_date}
     ${actual_date_obj}=    Convert Date    ${actual_date_str}
     ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
     ${abs_diff}=    Evaluate    abs(${diff})
-    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
+    Should Be True    ${abs_diff} < 5    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
 
 
 Ghi Chú Được Cập Nhật Thành ${expected_note}

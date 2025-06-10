@@ -10,7 +10,7 @@ Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 *** Test Cases ***
 RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành
     [Documentation]    Test tạo sản phẩm có thời gian bảo hành
-    [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression178
+    [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression1789
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian Bảo Hành Là 12 Tháng
     When Gửi Yêu Cầu Tạo Sản Phẩm
     And Save Warranty For Many Product  

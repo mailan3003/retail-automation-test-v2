@@ -7,6 +7,8 @@ Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
+Resource          ../Promotion/PromotionComnandKeywords.robot
+Resource          ../Product/Product_KeywordsCommand.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 Library           Collections
@@ -464,23 +466,9 @@ Tổng Giá Trị Đơn Hàng Sau Khuyến Mãi Là ${expected_total} Đồng
     Xác Thực Tổng Giá Trị Đơn Hàng Sau Khuyến Mãi    ${invoice_id}    ${expected_total} 
 
 
-Thông Tin Khuyến Mãi Hóa Đơn
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, Discount, DiscountRatio FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
 
-Thông tin khuyến mãi hàng hóa
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, ProductDiscount, ProductDiscountRatio, PrereqQuantity,ProductPrice FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
 
-Thông tin hàng hóa
-    [Arguments]    ${product_id}
-    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
-    ${result}=   Fetch One    ${query}    ${product_id}
-    RETURN    ${result}
+
 
 # ==============================================
 # Keywords for AI Generated Test Cases

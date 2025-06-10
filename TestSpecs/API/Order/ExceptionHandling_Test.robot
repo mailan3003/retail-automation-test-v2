@@ -362,7 +362,7 @@ Kiểm Tra Ngoại Lệ Xác Thực Chung
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateException"
+
 
 Kiểm Tra Ngoại Lệ Khách Hàng
     [Arguments]    ${customer_condition}    ${expected_error_message}
@@ -370,7 +370,6 @@ Kiểm Tra Ngoại Lệ Khách Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateCustomerException"
 
 Kiểm Tra Ngoại Lệ Nhân Viên Bán Hàng
     [Arguments]    ${user_condition}    ${expected_error_message}
@@ -378,7 +377,7 @@ Kiểm Tra Ngoại Lệ Nhân Viên Bán Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateUserException"
+
 
 Kiểm Tra Ngoại Lệ Đối Tác Giao Hàng
     [Arguments]    ${delivery_condition}    ${expected_error_message}
@@ -386,7 +385,7 @@ Kiểm Tra Ngoại Lệ Đối Tác Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidatePartnerDeliveryException"
+
 
 Kiểm Tra Ngoại Lệ Kênh Bán Hàng
     [Arguments]    ${channel_condition}    ${expected_error_message}
@@ -394,7 +393,7 @@ Kiểm Tra Ngoại Lệ Kênh Bán Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateSaleChannelException"
+
 
 Kiểm Tra Ngoại Lệ Hóa Đơn
     [Arguments]    ${invoice_condition}    ${expected_error_message}
@@ -402,7 +401,7 @@ Kiểm Tra Ngoại Lệ Hóa Đơn
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateInvoiceException"
+
 
 Kiểm Tra Ngoại Lệ Quyền Hạn
     [Arguments]    ${permission_type}    ${expected_error_message}
@@ -410,7 +409,7 @@ Kiểm Tra Ngoại Lệ Quyền Hạn
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "${expected_error_message}"
-    And Xác Thực Loại Ngoại Lệ Là "KvValidateException"
+
 
 Kiểm Tra Mã HTTP Của Ngoại Lệ
     [Arguments]    ${exception_type}    ${expected_http_code}

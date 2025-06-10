@@ -1,10 +1,13 @@
 *** Settings ***
 Documentation     Test cases cho chức năng xử lý giao hàng trong đơn hàng
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../TestData/CommonData.robot
 Resource          ../../../TestData/Order/DeliveryProcessingData.robot
 Resource          ../../../Keywords/Order/DeliveryProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Order/OrderCommandKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 
 *** Test Cases ***
@@ -19,7 +22,7 @@ RT-DELIVERY-001 Tạo đơn hàng thành công với thông tin giao hàng COD s
     ...    - Cấu hình Settings.UseCodByKvCarrier = true
     [Tags]    AIGenerated    CreateOrder    Positive    COD    DefaultPartner    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Với Đối Tác Mặc Định
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -32,7 +35,7 @@ RT-DELIVERY-002 Tạo đơn hàng thành công với thông tin giao hàng tự 
     ...    - Không sử dụng đối tác giao hàng bên ngoài
     [Tags]    AIGenerated    CreateOrder    Positive    SelfDelivery    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Tự Vận Chuyển
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -45,7 +48,7 @@ RT-DELIVERY-003 Tạo đơn hàng với thông tin địa điểm từ tên Loca
     ...    - Cập nhật thông tin LocationId và WardId sau khi ánh xạ
     [Tags]    AIGenerated    CreateOrder    Positive    LocationMapping    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ánh Xạ Địa Điểm
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -58,7 +61,7 @@ RT-DELIVERY-004 Tạo đơn hàng với ngày giao hàng dự kiến ExpectedDel
     ...    - Lưu trữ ngày giao hàng dự kiến chính xác
     [Tags]    AIGenerated    CreateOrder    Positive    ExpectedDelivery    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ngày Giao Hàng Dự Kiến
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -71,7 +74,7 @@ RT-DELIVERY-005 Tạo đơn hàng với nhiều gói hàng (ListDeliveryPackage)
     ...    - Liên kết các gói hàng với đơn hàng
     [Tags]    AIGenerated    CreateOrder    Positive    MultiplePackages    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Gói Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -84,7 +87,7 @@ RT-DELIVERY-006 Tạo đơn hàng với thanh toán phí giao hàng (DeliveryPay
     ...    - Thông tin thanh toán giao hàng được lưu riêng biệt
     [Tags]    AIGenerated    CreateOrder    Positive    DeliveryPayment    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Thanh Toán Phí Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -97,9 +100,9 @@ RT-DELIVERY-007 Lỗi khi tạo đơn hàng với đối tác giao hàng không 
     ...    - Trả về lỗi 420 với thông báo phù hợp
     [Tags]    AIGenerated    CreateOrder    Negative    InactivePartner    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Đối Tác Không Hoạt Động
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi Đối Tác Giao Hàng Không Hoạt Động
+    And Phản Hồi Phải Chứa Lỗi "Đối tác giao hàng không hoạt động"
 
 RT-DELIVERY-008 Lỗi khi tạo đơn hàng COD với cấu hình không cho phép
     [Documentation]    Kiểm tra lỗi khi tạo đơn hàng COD với cấu hình không cho phép:
@@ -108,9 +111,9 @@ RT-DELIVERY-008 Lỗi khi tạo đơn hàng COD với cấu hình không cho ph�
     ...    - Trả về lỗi 420 với thông báo cấu hình
     [Tags]    AIGenerated    CreateOrder    Negative    CODNotAllowed    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Không Được Phép
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi Cấu Hình COD Không Được Phép
+    And Phản Hồi Phải Chứa Lỗi "Cấu hình COD không được phép"
 
 RT-DELIVERY-009 Lỗi khi tạo đơn hàng với thông tin giao hàng thiếu bắt buộc
     [Documentation]    Kiểm tra lỗi khi tạo đơn hàng với thông tin giao hàng thiếu trường bắt buộc:
@@ -119,9 +122,9 @@ RT-DELIVERY-009 Lỗi khi tạo đơn hàng với thông tin giao hàng thiếu 
     ...    - Trả về lỗi 420 với thông báo trường bắt buộc
     [Tags]    AIGenerated    CreateOrder    Negative    MissingRequiredFields    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Thiếu Thông Tin Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi Thiếu Thông Tin Bắt Buộc
+    And Phản Hồi Phải Chứa Lỗi "Thiếu thông tin bắt buộc"
 
 RT-DELIVERY-010 Lỗi khi tạo đơn hàng với LocationName/WardName không tồn tại
     [Documentation]    Kiểm tra lỗi khi tạo đơn hàng với tên địa điểm không tồn tại:
@@ -130,9 +133,9 @@ RT-DELIVERY-010 Lỗi khi tạo đơn hàng với LocationName/WardName không t
     ...    - Trả về lỗi 420 với thông báo địa điểm không hợp lệ
     [Tags]    AIGenerated    CreateOrder    Negative    InvalidLocationName    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Địa Điểm Không Tồn Tại
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi Địa Điểm Không Hợp Lệ
+    And Phản Hồi Phải Chứa Lỗi "Địa điểm không hợp lệ"
 
 # Test Cases cho Xử lý Ngoại lệ và Trường hợp Đặc biệt
 
@@ -143,7 +146,7 @@ RT-DELIVERY-020 Xử lý đơn hàng không có UsingCod nhưng có DeliveryDeta
     ...    - Đơn hàng được tạo bình thường
     [Tags]    AIGenerated    CreateOrder    Edge    NoCODWithDelivery    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Không COD Có Thông Tin Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Không Có Thông Tin Giao Hàng Được Lưu
 
@@ -154,7 +157,7 @@ RT-DELIVERY-021 Xử lý đơn hàng COD không có DeliveryDetail
     ...    - Đơn hàng được tạo bình thường
     [Tags]    AIGenerated    CreateOrder    Edge    CODNoDelivery    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Không Có Thông Tin Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Không Có Thông Tin Giao Hàng Được Lưu
 
@@ -165,7 +168,7 @@ RT-DELIVERY-022 Xử lý log thông tin giao hàng chi tiết
     ...    - Kiểm tra tất cả thông tin trong log
     [Tags]    AIGenerated    CreateOrder    Positive    DeliveryLogging    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Để Kiểm Tra Log Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -179,7 +182,7 @@ RT-DELIVERY-023 Xử lý đơn hàng với thông tin giao hàng có ký tự đ
     ...    - Lưu trữ thông tin chính xác
     [Tags]    AIGenerated    CreateOrder    Edge    SpecialCharacters    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ký Tự Đặc Biệt
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
@@ -192,7 +195,7 @@ RT-DELIVERY-024 Xử lý đơn hàng với thông tin giao hàng có giá trị 
     ...    - Không gây lỗi hệ thống
     [Tags]    AIGenerated    CreateOrder    Edge    NullValues    DeliveryProcessing
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Giá Trị Null
-    When Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng COD Được Tạo Trong Database
     And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database

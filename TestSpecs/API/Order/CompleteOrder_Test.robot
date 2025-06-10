@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test API hoàn thiện đơn hàng - Comprehensive test cases for order completion functionality
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Order/CompleteOrderKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../TestData/Order/CompleteOrderData.robot
@@ -235,7 +237,7 @@ RT-ORDER-COMPLETE-019 Lỗi Khi Hoàn Thiện Đơn Hàng Có Serial Đã Sử D
     Given Chuẩn Bị Dữ Liệu Hoàn Thiện Đơn Hàng Có Sản Phẩm Serial
     And Set To Dictionary    ${REQUEST_DATA["Order"]["OrderDetails"][0]}    SerialNumbers    USED_SERIAL_001
     When Gửi Yêu Cầu Hoàn Thiện Đơn Hàng
-    Then CompleteOrderKeywords.Mã Trạng Thái Phải Là 420
+    Then Mã Trạng Thái Phải Là 420
     And CompleteOrderKeywords.Phản Hồi Phải Chứa Lỗi "Serial đã được sử dụng"
 
 RT-ORDER-COMPLETE-020 Lỗi Khi Hoàn Thiện Đơn Hàng Có Lô Hết Hạn

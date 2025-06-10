@@ -461,12 +461,6 @@ Xác Thực Sản Phẩm ${list_product_code} Tồn ${list_onhand} Ở Kho ${lis
     END
   END
 
-Lấy Thông tin Sản Phẩm  
-    [Arguments]    ${product_code}
-    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ?
-    ${result}=    Fetch One    ${query}    ${product_code}
-    RETURN    ${result[0]}
-
 
 Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${type_tax} Với ${tax_rate} %
     ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
@@ -878,3 +872,29 @@ Xác Thực Biến Thể Mới Được Thêm Thành Công
         ${attr_result}=    Fetch One    ${attr_query}    ${variant_code}
         Should Be True    ${attr_result[0]} > 0    Biến thể mới ${variant_code} không có thuộc tính
     END
+
+Lấy Thông tin Sản Phẩm  
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${product_code}    ${RETAILER_ID}
+    RETURN    ${result[0]}
+
+Lấy Id Và Type Của Sản Phẩm
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id, ProductType FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${product_code}
+    RETURN    ${result}
+
+
+Lấy Serial của Sản Phẩm
+    [Arguments]    ${product_id}    ${number}  ${status}
+    ${query}=    Set Variable    SELECT TOP(${number}) SerialNumber FROM ProductSerial WHERE ProductId = ? AND Status = ?
+    ${result}=    Fetch All    ${query}    ${product_id}    ${status}
+    RETURN    ${result}
+
+
+Thông tin hàng hóa
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ? AND RetailerId = ?
+    ${result}=   Fetch One    ${query}    ${product_code}    ${RETAILER_ID}
+    RETURN    ${result}

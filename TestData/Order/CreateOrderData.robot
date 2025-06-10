@@ -9,7 +9,6 @@
 ...    Id=0
 ...    Code=${EMPTY}
 ...    PurchaseDate=${EMPTY}
-...    CustomerId=${DEFAULT_CUSTOMER_ID}
 ...    Description=Đơn hàng mới
 ...    Total=0
 ...    Status=1
@@ -45,49 +44,45 @@
 ...    Method=Cash
 ...    Amount=100000
 
-# Thông tin giao hàng cơ bản
-&{BASIC_DELIVERY_INFO}    
-...    ReceiverName=Nguyễn Văn A
-...    ReceiverPhone=0987654321
-...    ReceiverAddress=123 Đường Lê Lợi, Quận 1
-...    LocationId=${DEFAULT_LOCATION_ID}
-...    WardId=${DEFAULT_WARD_ID_1}
-...    Status=1
-...    DeliveryMethod=1
-...    PartnerDeliveryId=${DELIVERY_PARTNER_ID}
-
-# Thông tin thuế VAT
 #Partner Delivery Body
-&{partner_delivery_body}    
-...    IdOld=0    
-...    TotalInvoiced=0    
-...    CompareCode=${PARTNER_DELIVERY_1_CODE}    
-...    CompareName=Phạm Anh Tú    
-...    Id=${PARTNER_DELIVERY_1_ID}    
-...    RetailerId=${RETAILER_ID}    
-...    Type=0    
-...    Code=${PARTNER_DELIVERY_1_CODE}        
-...    Name=Phạm Anh Tú    
-...    ContactNumber=01679089901    
+&{PARTNER_ORDER_DELIVERY_BODY}
+...    Type=0  
+...    TypeName=    
+...    Status=1    
 ...    Address=${None}    
-...    Email=${None}    
-...    Comments=${None}    
-...    CreatedDate=2025-03-28T10:40:23.963+07:00    
-...    CreatedBy=${DEFAULT_USER_ID}    
-...    ModifiedDate=${None}    
-...    Debt=${None}    
-...    ModifiedBy=${None}    
-...    Uuid=${None}    
-...    LocationId=${None}    
-...    LocationName=    
-...    WardName=    
-...    isActive=${True}    
-...    isDeleted=${False}    
-...    SearchNumber=01679089901    
-...    IsOmniChannel=${None}    
+...    ContactNumber=0988673523    
+...    Receiver=Hung 
+...    Address=1B  
+...    DeliveryBy=${PARTNER_DELIVERY_1_ID}    
+...    LocationId=1    
+...    LocationName=An Giang - Huyện Chợ Mới    
+...    WardName=Thị trấn Chợ Mới    
+...    CustomerId=${None}    
+...    CustomerCode=${None}    
+...    BranchTakingAddressId=${None}    
+...    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"    
 ...    AdministrativeAreaId=${None}    
-...    PartnerDeliveryGroupDetails=@{Empty}    
-...    CustomName=Phạm Anh Tú - 01679089901
+...    WardId=10548    
+...    Weight=500    
+...    Height=10    
+...    Width=10    
+...    Length=10    
+...    IsChangeGBH=${False}   
+...    Price=${DEFAULT_DELIVERY_PRICE}    
+...    PackageType=0    
+...    Paymenter=0    
+...    ServiceCode=0    
+...    UseDefaultPartner=${False}   
+...    UsingOfBilling=${False}   
+...    UsingPriceCod=1    
+...    ChangeExpectedDelivery=${False}    
+...    WeightInput=500    
+...    LastLocation=An Giang - Huyện Chợ Mới    
+...    LastWard=Thị trấn Chợ Mới    
+...    PackageTypeObj=&{package_type_order_body}
+
+
+&{package_type_order_body}      Value=0    Name=gram 
 
 @{standard_order_detail_tax_body}
 ...    &{order_detail_tax_body}
@@ -97,11 +92,6 @@
 ...    TaxId=2
 ...    DetailTax=3500   
 
-&{invoice_body_update} 
-...    Id=
-...    PurchaseDate=${None}
-...    Status=1
-...    SoldById=${DEFAULT_USER_ID}
 # Delivery Update Body
 
 &{delivery_update_body_1}
@@ -116,23 +106,49 @@
 ...    DeliveryBy=1000000127
 
 # Khuyến mãi
-@{PROMOTIONS}    &{BASIC_PROMOTION}
+@{PROMOTIONS_ORDER}    &{BASIC_PROMOTION_ORDER}
 
-&{BASIC_PROMOTION}
+&{BASIC_PROMOTION_ORDER}
 ...    PromotionId=${VALID_PROMOTION_ID}
 ...    Type=1
-...    Value=10000
-...    Description=Khuyến mãi cơ bản
+...    TargetType=0
+...    Discount=10000
+...    PrintPromotionInfo=Khuyến mãi cơ bản
 
-# Khuyến mãi đã bị xóa
-&{DELETED_PROMOTION}
-...    PromotionId=${DELETE_PROMOTION_ID}
-...    Type=1
-...    Value=10000
-...    Description=Khuyến mãi đã bị xóa
+@{SURCHARGE_ORDER}
+...    &{SURCHARGE_BODY}
 
-# Đối tác giao hàng không hợp lệ
-&{INVALID_DELIVERY_PARTNER}
+&{SURCHARGE_BODY}
+...    SurchargeId=1
+...    Price=10000
+
+
+&{request_order_body_update}
+...    Order=&{order_body_update} 
+...    FromManager=${True}
+
+&{order_body_update} 
+...    Id=
+...    SoldById=${DEFAULT_USER_ID}
+...    BranchId=${DEFAULT_BRANCH_ID}
+...    StatusValue=1
+...    OrderDetails=@{STANDARD_PRODUCT_ORDER_DETAILS}
+
+&{request_order_body_update_delivery}
+...    Order=&{delivery_update_order_body}
+...    FromManager=${True}
+
+&{delivery_update_order_body}
+...    Id=
+...    SoldById=${DEFAULT_USER_ID}
+...    BranchId=${DEFAULT_BRANCH_ID}
+...    StatusValue=1
+...    UsingCod=1
+...    OrderDetails=@{STANDARD_PRODUCT_ORDER_DETAILS}
+...    DeliveryDetail=&{delivery_detail_update_body_order}
+
+
+&{BASIC_DELIVERY_INFO}    
 ...    ReceiverName=Nguyễn Văn A
 ...    ReceiverPhone=0987654321
 ...    ReceiverAddress=123 Đường Lê Lợi, Quận 1
@@ -140,12 +156,27 @@
 ...    WardId=${DEFAULT_WARD_ID_1}
 ...    Status=1
 ...    DeliveryMethod=1
-...    PartnerDeliveryId=999999
+...    PartnerDeliveryId=${DELIVERY_PARTNER_ID}
+
+
+&{delivery_detail_update_body_order}
+...    OrderId=1000001015
+
+
+&{order_body_complete}
+...    Order=&{order_body_update_complete}
+...    Complete=${True}
+
+&{order_body_update_complete}
+...    Id=141746
+...    Status=2
+
+
 
 # Dữ liệu không hợp lệ
 ${NONEXISTENT_CUSTOMER_ID}    999999
 ${INACTIVE_CUSTOMER_ID}    888888
-${INVALID_CUSTOMER_ID}    abc123
+${INVALID_CUSTOMER_ID}    46465767
 ${NONEXISTENT_SALESPERSON_ID}    999999
 ${INACTIVE_SALESPERSON_ID}    888888
 ${NONEXISTENT_SALE_CHANNEL_ID}    999999

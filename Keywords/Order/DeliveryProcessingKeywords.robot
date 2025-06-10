@@ -2,7 +2,8 @@
 Documentation     Keywords cho test API xử lý giao hàng
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Order/DeliveryProcessingData.robot
-Resource          ../Utilities/RequestHelper.robot
+Resource          ../../TestData/Order/CreateOrderData.robot
+Resource          ../Product/Product_KeywordsCommand.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
@@ -16,6 +17,19 @@ ${CREATE_ORDER_ENDPOINT}    orders
 
 *** Keywords ***
 # Keywords chuẩn bị dữ liệu
+Chuẩn Bị Dữ Liệu Đơn Hàng Có Thông Tin Giao Hàng
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${request}=   Deep Copy   ${BASE_ORDER_REQUEST}
+    ${purchase_date}=    Get Current Date    result_format=%Y-%m-%dT%H:%M:%S
+    ${request}  Update Dictionary Property    ${request}    PurchaseDate    ${purchase_date}
+    ${request}  Update Nested Dictionary Property    ${request}    Order.PurchaseDate    ${purchase_date}
+    ${order_details}=   Deep Copy   ${PRODUCT_ORDER_DETAIL}
+    ${request}  Update Dictionary Property    ${request}    OrderDetails    ${order_details}
+    ${delivery_info}=   Deep Copy   ${BASIC_DELIVERY_INFO}
+    ${request}  Update Dictionary Property    ${request}    DeliveryInfo    ${delivery_info}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
 
 Chuẩn Bị Dữ Liệu Đơn Hàng COD Với Đối Tác Mặc Định
     ${request}=    Deep Copy    ${BASE_COD_ORDER_REQUEST}
@@ -231,18 +245,6 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Giá Trị Null
     RETURN    ${request}
 
 # Keywords gửi yêu cầu API
-
-Gửi Yêu Cầu Tạo Đơn Hàng Với Giao Hàng
-    ${response}=    Call API With BranchId    ${CREATE_ORDER_ENDPOINT}    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    ${response_json}=    Set Variable If    ${response.status_code} < 400    ${response.json()}    ${None}
-    Set Test Variable    ${RESPONSE_JSON}    ${response_json}
-    Run Keyword If    ${response.status_code} == 200    Set Order Id From Response For Delivery
-    RETURN    ${response}
-
-Set Order Id From Response For Delivery
-    ${order_id}=    Get From Dictionary    ${RESPONSE_JSON}    Id
-    Set Test Variable    ${CREATED_ORDER_ID}    ${order_id}
 
 # Keywords xác thực
 

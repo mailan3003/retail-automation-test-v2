@@ -47,7 +47,7 @@ RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
-    [Teardown]     Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-004 Tạo Sản Phẩm Với Tồn Kho Ban Đầu
     [Documentation]    Test tạo sản phẩm với tồn kho ban đầu
     [Tags]    AIGenerated    CreateProduct    Positive    Inventory      regression 
@@ -83,7 +83,7 @@ RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra 
-    [Teardown]     Delete Nhiều Sản Phẩm    ${LIST_PRODUCTS_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     [Documentation]    Test tạo sản phẩm loại combo
@@ -515,7 +515,7 @@ RT-PRODUCT-059 Tạo Sản Phẩm Với Đơn Vị Tính Có Giá Bán Khác Nha
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Bán Theo Đơn Vị Tính ${unit_names} Là ${prices}
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]      Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
@@ -529,7 +529,7 @@ RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mã Vạch Theo Đơn Vị Tính ${unit_names} Là ${barcodes}
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính Theo Quy Đổi
@@ -544,7 +544,7 @@ RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính The
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "kg" Là 1000
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "ta" Là 10
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "tan" Là 1
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-062 Tạo Sản Phẩm Với Đơn Vị Tính Và Giá Vốn Tính Theo Quy Đổi
@@ -559,7 +559,7 @@ RT-PRODUCT-062 Tạo Sản Phẩm Với Đơn Vị Tính Và Giá Vốn Tính Th
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "m" Là 5000
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cuon" Là 50000
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cay" Là 500000
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 Tạo Sản Phẩm Với Đơn Vị Tính Và Có Điểm Khác Nhau    
@@ -573,7 +573,7 @@ Tạo Sản Phẩm Với Đơn Vị Tính Và Có Điểm Khác Nhau
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Có Điểm ${different_points}
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 Tạo Sản Phẩm Với Đơn Vị Tính Và Có Bán Trực Tiếp Khác Nhau 
@@ -587,7 +587,7 @@ Tạo Sản Phẩm Với Đơn Vị Tính Và Có Bán Trực Tiếp Khác Nhau
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Trạng Thái ${direct_selling} Bán Trực Tiếp 
-    [Teardown]     Delete Nhiều Sản Phẩm    ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-065 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Lớn
@@ -598,7 +598,7 @@ RT-PRODUCT-065 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Lớn
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Đúng Số Lượng Đơn Vị Tính Tối Đa
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 
@@ -621,7 +621,7 @@ RT-PRODUCT-066 Tạo Sản Phẩm Với Tên Đơn Vị Tính Đặc Biệt
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${conversion_values}
-    [Teardown]     Delete Nhiều Sản Phẩm     ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-072 Tạo Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt

@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     Test cases kiểm thử API áp dụng khuyến mãi cho hóa đơn
 ...               Section: 5.1. Áp dụng khuyến mãi
-Suite Setup       Init Test Environment   ${ENV}
+Suite Setup       Init Test Environment   ${ENV}   MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/PromotionKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot

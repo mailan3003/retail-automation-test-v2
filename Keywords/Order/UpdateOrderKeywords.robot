@@ -1,8 +1,13 @@
 *** Settings ***
 Documentation     Keywords cho test API cập nhật đơn hàng
-Resource          ../../TestData/CommonData.robot
+Resource          ../../TestData/Order/CreateOrderData.robot
 Resource          ../../TestData/Order/UpdateOrderData.robot
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Product/Product_KeywordsCommand.robot
+Resource          ../Delivery/DeliveryCommandKeyword.robot
+Resource          OrderCommandKeywords.robot
 Resource          CreateOrderKeywords.robot
+Resource          PromotionOrderKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -10,7 +15,6 @@ Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           Collections
 Library           DateTime
-Library           json
 
 *** Variables ***
 ${UPDATE_ORDER_ENDPOINT}    orders
@@ -25,146 +29,281 @@ Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
    Gửi Yêu Cầu Tạo Đơn Hàng
 
 
+Chuẩn Bị Đơn Đặt hàng Với Hàng ${product_code} Với Số Lượng ${quantity} Để Cập Nhật
+    Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Có Số Lượng Đặt Hàng ${quantity}
+    Gửi Yêu Cầu Tạo Đơn Hàng
 
-Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Cơ Bản
-    [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng cơ bản
-    ${request}=    Deep Copy      ${BASE_ORDER_REQUEST}
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${request}    Update Nested Dictionary Property    ${request}    Code    DH_UPDATE_${current_time}
-    ${request}    Update Nested Dictionary Property    ${request}    Id    ${order_id}
+
+Chuẩn Bị Đơn Hàng Có Thông Tin Giao Hàng Để Cập Nhật
+    Chuẩn Bị Dữ Liệu Đơn Hàng Có Thông Tin Giao Hàng
+    Gửi Yêu Cầu Tạo Đơn Hàng
+
+Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Có Khách Hàng ${customer_code} Thanh Toán Với Số Tiền ${payment_amount}
+   Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Có ${customer_code} Thanh Toán ${PAYMENT_CASH} Với Số Tiền ${payment_amount}
+   Gửi Yêu Cầu Tạo Đơn Hàng
+
+
+Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Có Khuyến Mãi ${promotion_code} Để Cập Nhật
+   Chuẩn Bị Dữ Liệu Đơn Hàng Sản Phẩm ${product_code} Với Khuyến Mãi ${promotion_code}
+   Gửi Yêu Cầu Tạo Đơn Hàng
+
+
+
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Mô Tả Cho Đơn Hàng 
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật mô tả cho đơn hàng
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id     ${CREATED_ORDER_ID} 
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Description    Cập nhật mô tả cho đơn hàng
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Số Lượng Sản Phẩm Từ ${old_quantity} Thành ${new_quantity}
-    [Documentation]    Chuẩn bị dữ liệu để cập nhật số lượng sản phẩm trong đơn hàng
-    ${request}=    Deep Copy     ${BASE_ORDER_REQUEST}
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${request}    Update Nested Dictionary Property    ${request}    Code    DH_QTY_${current_time}
-    ${request}    Update Nested Dictionary Property    ${request}    Id    ${order_id}
-    # Cập nhật chi tiết sản phẩm
-    ${order_details}=    Get From Dictionary    ${request}  OrderDetails
-    ${detail}=    Get From List    ${order_details}    0
-    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${new_quantity}
-    ${new_total}=    Evaluate    ${new_quantity} * ${detail['Price']}
-    ${detail}=    Update Nested Dictionary Property    ${detail}    Total    ${new_total}
-    ${request}    Update Nested Dictionary Property    ${request}    Total    ${new_total}
-    
+Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành ${status} ${days} Ngày So Với Ngày Hiện Tại
+    ${current_date}=    Get Current Date    UTC    
+    ${purchase_date}=     Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days    ELSE    Add Time To Date   ${current_date}    ${days} days
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Từ "${old_customer_id}" Thành "${new_customer_id}"
+Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành ${status} ${days} Ngày So Với Ngày Hiện Tại
+    ${current_date}=    Get Current Date    UTC    
+    ${purchase_delivery_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days    ELSE    Add Time To Date   ${current_date}    ${days} days
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.ExpectedDeliveryDate    ${purchase_delivery_date}
+    Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Cập Nhập Người Bán Cho Đơn Hàng Thành ${seller_name}
+    ${seller_id}=    Lấy Id Người Bán Theo Tên ${seller_name}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.SoldById    ${seller_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Cập Nhật Bảng Giá ${pricebook_name} Cho Đơn Hàng Thành
+    ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên ${pricebook_name}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.PriceBookId    ${pricebook_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Cập Nhật Sản Phẩm ${product_code} Với Số Lượng ${quantity} Và Giá ${price}
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${order_details}=    Get From Dictionary    ${request}  Order  
+    ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${total}=    Evaluate    ${quantity} * ${price}
+    ${index}=    Find Index In List    ${order_details}    ProductId    ${product_id}
+    ${detail}=    Get From List    ${order_details}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Price    ${price}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${TOTAL_PRICE}    ${total}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Đặt Hàng Thêm ${product_code} Với Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để đặt hàng thêm sản phẩm với số lượng cụ thể
+    ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${order_details}=    Get From Dictionary    ${request}  Order  
+    ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${product_add_body}=    Create Dictionary    ProductId=${product_id}    Quantity=${quantity}
+    Append To List    ${order_details}    ${product_add_body}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Đặt Hàng Xóa ${product_code} Khỏi Đơn
+    [Documentation]    Chuẩn bị dữ liệu để đặt hàng xóa sản phẩm khỏi đơn hàng
+    ${product_id}=    Lấy Thông tin Sản Phẩm     ${product_code}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${order_details}=    Get From Dictionary    ${request}  Order   
+    ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${product_delete_body}=    Remove Item From List   ${order_details}    ProductId    ${product_id}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_delete_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Đặt Hàng Update ${product_code} Với Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để đặt hàng update sản phẩm với số lượng cụ thể
+    ${product_id}=    Lấy Thông tin Sản Phẩm  ${product_code}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${order_details}=    Get From Dictionary    ${request}  Order   
+    ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${index}=    Find Index In List    ${order_details}    ProductId    ${product_id}
+    ${detail}=    Get From List    ${order_details}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
+
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Thêm ${n} Dòng Cho Sản Phẩm ${product_code} Với Số Lượng Mỗi Dòng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật thêm ${n} dòng cho sản phẩm ${product_code}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${order_details}=    Get From Dictionary    ${request}  Order   
+    ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${index}=    Find Index In List    ${order_details}    ProductId    ${product_id}
+    ${detail}=    Get From List    ${order_details}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    IsMaster    True  
+    FOR    ${i}    IN RANGE    ${n}
+        ${detail1}=    Deep Copy    ${detail}
+        ${detail1}=    Update Nested Dictionary Property    ${detail1}    IsMaster    False
+        ${detail1}=    Update Nested Dictionary Property    ${detail1}    Quantity    ${quantity}
+        Append To List    ${order_details}    ${detail1}
+    END
+    ${Total_quantity}=    Evaluate    ${quantity} * ${n}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${TOTAL_QUANTITY}    ${Total_quantity}
+    RETURN    ${request}
+Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Sang ${status}
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng cơ bả
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${status_id}=    Run Keyword If    '${status}' == 'Đã Xác Nhận'    Set Variable    5    
+    ...  ELSE IF    '${status}' == 'Hoàn Thành'    Set Variable   3
+    ...  ELSE IF    '${status}' == 'Phiếu Tạm'    Set Variable    1
+    ...  ELSE IF    '${status}' == 'Đã Hủy'    Set Variable    4
+    ...  ELSE IF    '${status}' == 'Đang Giao Hàng'    Set Variable    2
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.StatusValue    ${status_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${STATUS_ID}    ${status_id}
+    RETURN    ${request}
+
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Thành ${customer_code} 
+
     [Documentation]    Chuẩn bị dữ liệu để cập nhật khách hàng trong đơn hàng
-    ${request}=    Deep Copy     ${BASE_ORDER_REQUEST}
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${request}    Update Nested Dictionary Property    ${request}    Code    DH_CUST_${current_time}
-    ${request}    Update Nested Dictionary Property    ${request}    Id    ${order_id}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${order}=    Update Nested Dictionary Property    ${order}    CustomerId    ${new_customer_id}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Cập nhật khách hàng từ ${old_customer_id} thành ${new_customer_id}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
+    ${request}=    Deep Copy     ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.CustomerId    ${customer_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Thanh Toán Phương Thức "${payment_method}" Số Tiền ${amount}
+Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng ${customer_id} Trong Hệ Thống
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật khách hàng ${customer_id} trong hệ thống
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.CustomerId    ${customer_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Thanh Toán Phương Thức ${payment_method} Số Tiền ${amount}
     [Documentation]    Chuẩn bị dữ liệu để cập nhật thông tin thanh toán
-    ${request}=    Deep Copy    ${BASE_UPDATE_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_PAY_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Cập nhật thanh toán ${payment_method}
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+
     
     # Cập nhật thông tin thanh toán
     ${payment}=    Create Dictionary    Method=${payment_method}    Amount=${amount}
     Run Keyword If    '${payment_method}' == 'Card'    Set To Dictionary    ${payment}    AccountId=${DEFAULT_BANK_ACCOUNT_ID}
     ${payments}=    Create List    ${payment}
-    ${order}=    Update Nested Dictionary Property    ${order}    Payments    ${payments}
-    ${order}=    Update Nested Dictionary Property    ${order}    Total    ${amount}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Total    ${amount}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Thông Tin Giao Hàng
-    [Documentation]    Chuẩn bị dữ liệu để cập nhật thông tin giao hàng
-    ${request}=    Deep Copy    ${BASE_UPDATE_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_DELIVERY_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Cập nhật thông tin giao hàng
-    ${order}=    Update Nested Dictionary Property    ${order}    DeliveryDetail    ${UPDATED_DELIVERY_INFO}
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Giao Hàng
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng thường thành đơn có giao hàng
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${delivery_info}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${delivery_info}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Từ "${old_channel_id}" Thành "${new_channel_id}"
+
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành ${new_channel}
     [Documentation]    Chuẩn bị dữ liệu để cập nhật kênh bán hàng
-    ${request}=    Deep Copy    ${BASE_UPDATE_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_CHANNEL_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    SaleChannelId    ${new_channel_id}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Cập nhật kênh bán hàng từ ${old_channel_id} thành ${new_channel_id}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-# =============================================================================
-# Keywords cho đơn hàng offline
-# =============================================================================
-
-Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Offline Với UUID "${uuid}"
-    [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng offline với UUID cụ thể
-    ${request}=    Deep Copy    ${OFFLINE_ORDER_UPDATE_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_OFFLINE_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    UUID    ${uuid}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Đơn hàng offline UUID ${uuid}
+    ${new_channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${new_channel} 
+    ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id     ${CREATED_ORDER_ID} 
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.SaleChannelId    ${new_channel_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 # =============================================================================
 # Keywords cho chuyển chi nhánh
-# =============================================================================
-
-Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Đơn Hàng Từ "${old_branch_id}" Thành "${new_branch_id}"
-    [Documentation]    Chuẩn bị dữ liệu để chuyển chi nhánh đơn hàng
-    ${request}=    Deep Copy    ${BRANCH_TRANSFER_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_TRANSFER_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    BranchId    ${new_branch_id}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Chuyển chi nhánh từ ${old_branch_id} thành ${new_branch_id}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-# =============================================================================
-# Keywords cho hoàn thiện và tạo hóa đơn
-# =============================================================================
-
-Chuẩn Bị Dữ Liệu Cập Nhật Và Hoàn Thiện Đơn Hàng
-    [Documentation]    Chuẩn bị dữ liệu để cập nhật và hoàn thiện đơn hàng
-    ${request}=    Deep Copy    ${COMPLETE_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_COMPLETE_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Đơn hàng hoàn thiện
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn
     [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng và tạo hóa đơn
-    ${request}=    Deep Copy    ${MAKE_INVOICE_FROM_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_INVOICE_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Đơn hàng tạo hóa đơn
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
+    ${body_product_list}=    Deep Copy    ${LIST_ORDER_DETAILS}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${body_product_list}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Kết Hợp Đơn Hàng
-    [Documentation]    Chuẩn bị dữ liệu để kết hợp nhiều đơn hàng
-    ${request}=    Deep Copy    ${COMBINE_ORDER_REQUEST}
-    ${order}=    Get From Dictionary    ${request}    Order
-    ${current_time}=    Get Current Date    result_format=%Y%m%d%H%M%S
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    DH_COMBINE_${current_time}
-    ${order}=    Update Nested Dictionary Property    ${order}    Description    Đơn hàng kết hợp từ nhiều đơn
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${product_code} Với Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để lấy 1 phần đặt hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
+    ${body_product_list}=    Deep Copy    ${LIST_ORDER_DETAILS}
+    ${index}=    Find Index In List    ${body_product_list}    ProductId    ${product_id}
+    ${detail}=    Get From List    ${body_product_list}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${body_product_list}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đặt Hàng Lấy ${list_product_code} Với Số Lượng ${list_quantity}
+    [Documentation]    Chuẩn bị dữ liệu để lấy 1 phần đặt hàng
+
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
+    ${body_product_list}=    Deep Copy    ${LIST_ORDER_DETAILS}
+    FOR    ${item_product_code}   ${item_quantity}   IN ZIP    ${list_product_code}    ${list_quantity}
+        ${product_result}=    Lấy Id Và Type Của Sản Phẩm    ${item_product_code}
+        ${index}=    Find Index In List    ${body_product_list}    ProductId   ${product_result}[0]
+        ${detail}=    Get From List    ${body_product_list}    ${index}
+        ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${item_quantity}
+    END
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${body_product_list}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đặt Hàng Với Hàng Lô ${lot_code} Và Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để lấy 1 phần đặt hàng
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
+    ${body_product_list}=    Deep Copy    ${LIST_ORDER_DETAILS}
+    ${index}=    Find Index In List    ${body_product_list}    ProductId   ${product_id}
+    ${detail}=    Get From List    ${body_product_list}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    IsLot    True
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${body_product_list}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+
+
+Chuẩn Bị Dữ Liệu Hoàn Thành Đơn Hàng
+    [Documentation]    Chuẩn bị dữ liệu để hoàn thành đơn hàng
+    ${request}=    Deep Copy    ${order_body_complete}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -180,11 +319,6 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm Trùng Lặp
     Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
     Set To Dictionary    ${request}    Amount    0
     Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -245,18 +379,8 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Khách Hàng Không Tồn Tại "${cu
 Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhân Viên Không Tồn Tại "${user_id}"
     [Documentation]    Chuẩn bị dữ liệu đơn hàng có nhân viên không tồn tại
     ${request}=    Create Dictionary
-    ${order}=    Deep Copy    ${INVALID_USER_ORDER}
+    ${order}=    Deep Copy    ${upda}
     ${order}=    Update Nested Dictionary Property    ${order}    SoldById    ${user_id}
-    Set To Dictionary    ${request}    Order    ${order}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -357,22 +481,90 @@ Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Với Sản Phẩm Combo
     RETURN    ${request}
 
 # =============================================================================
-# Keywords gửi yêu cầu API
-# =============================================================================
+# Keywords gửi yêu cầu API MHQL
+# ============================================================================
 
-Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    [Documentation]    Gửi yêu cầu cập nhật đơn hàng đến API
-    ${response}=    Call API With BranchId    ${UPDATE_ORDER_ENDPOINT}    ${REQUEST_DATA}
-    Set Test Variable    ${RESPONSE}    ${response}
-    ${response_json}=    Set Variable If    ${response.status_code} < 400    ${response.json()}    ${None}
-    Set Test Variable    ${RESPONSE_JSON}    ${response_json}
-    Run Keyword If    ${response.status_code} == 200    Set Updated Order Id From Response
-    RETURN    ${response}
+Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành ${branch_name} Thanh Toán ${status} Cập Nhật Theo
+    [Documentation]    Chuẩn bị dữ liệu để chuyển chi nhánh đơn hàng
+    ${branch_id}=   Lấy Thông tin Chi Nhánh   ${branch_name}
+    ${request_order_body}=    Deep Copy    ${REQUEST_DATA}
+    ${product_details}=    Get From Dictionary    ${request_order_body}    Order
+    ${product_details}=    Get From Dictionary    ${product_details}    OrderDetails
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${status_update}=    Set Variable If    '${status}'=='Có'    ${TRUE}    ${FALSE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.BranchId    ${branch_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.TransferBranchId    ${branch_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_details}
+    ${request}=    Update Nested Dictionary Property    ${request}    UpdateCustomerIdInPayments    ${status_update}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
-Set Updated Order Id From Response
-    [Documentation]    Lưu ID đơn hàng đã cập nhật từ response
-    ${order_id}=    Get From Dictionary    ${RESPONSE_JSON}    Id
-    Set Test Variable    ${UPDATED_ORDER_ID}    ${order_id}
+Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Với Đơn Ở Trạng Thái ${status} Thành ${branch_name} 
+    [Documentation]    Chuẩn bị dữ liệu để chuyển chi nhánh đơn hàng
+    ${branch_id}=   Lấy Thông tin Chi Nhánh   ${branch_name}
+    ${request_order_body}=    Deep Copy    ${REQUEST_DATA}
+    ${product_details}=    Get From Dictionary    ${request_order_body}    Order
+    ${product_details}=    Get From Dictionary    ${product_details}    OrderDetails
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.BranchId    ${branch_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.TransferBranchId    ${branch_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_details}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.StatusValue   ${status}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Thành ${channel_name} Ở MHQL
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật kênh bán đơn hàng
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_name}
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.SaleChannelId    ${channel_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đặt Thành ${user_name} Ở MHQL
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật người nhận đặt đơn hàng
+    ${user_id}=    Lấy Thông tin Người Dùng Theo Tên    ${user_name}
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.SoldById    ${user_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Thời Gian Giao Hàng ${status} ${number_day} Ngày So Với Hiện Tại MHQL
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật thời gian đơn hàng
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${current_date}=    Get Current Date    UTC    
+    ${purchase_delivery_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${number_day} days    ELSE    Add Time To Date   ${current_date}    ${number_day} days
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.ExpectedDeliveryDate    ${purchase_delivery_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Ngày Bán Hàng ${status} ${number_day} Ngày So Với Hiện Tại MHQL
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật ngày bán hàng
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${current_date}=    Get Current Date    UTC    
+    ${purchase_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${number_day} days    ELSE    Add Time To Date   ${current_date}    ${number_day} days
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.PurchaseDate    ${purchase_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú ${n} Kí Tự Ở MHQL 
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật ghi chú đơn hàng
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${random_string}=    Generate Random String    ${n}   [LETTERS]
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Description    ${random_string}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
+Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Thành Hoàn Thành MHQL
+    [Documentation]    Chuẩn bị dữ liệu để cập nhật trạng thái đơn hàng thành hoàn thành
+    ${request}=    Deep Copy    ${request_order_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Complete   ${TRUE}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
 # =============================================================================
 # Keywords xác thực kết quả thành công
@@ -412,14 +604,6 @@ Xác Thực Thanh Toán Đã Được Cập Nhật Phương Thức "${expected_m
     Should Be Equal As Strings    ${actual_method}    ${expected_method}    Phương thức thanh toán không được cập nhật đúng
     Should Be Equal As Numbers    ${actual_amount}    ${expected_amount}    Số tiền thanh toán không được cập nhật đúng
 
-Xác Thực Thông Tin Giao Hàng Đã Được Cập Nhật
-    [Documentation]    Xác thực thông tin giao hàng đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_DELIVERY_INFO}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy thông tin giao hàng
-    ${actual_receiver_name}=    Set Variable    ${result[0]}
-    ${actual_receiver_phone}=    Set Variable    ${result[1]}
-    Should Be Equal As Strings    ${actual_receiver_name}    Nguyễn Văn B    Tên người nhận không được cập nhật đúng
-    Should Be Equal As Strings    ${actual_receiver_phone}    0987654322    Số điện thoại người nhận không được cập nhật đúng
 
 Xác Thực Kênh Bán Hàng Đã Được Cập Nhật Thành "${expected_channel_id}"
     [Documentation]    Xác thực kênh bán hàng đã được cập nhật đúng
@@ -428,12 +612,7 @@ Xác Thực Kênh Bán Hàng Đã Được Cập Nhật Thành "${expected_chann
     ${actual_channel_id}=    Set Variable    ${result[5]}
     Should Be Equal As Strings    ${actual_channel_id}    ${expected_channel_id}    Kênh bán hàng không được cập nhật đúng
 
-Xác Thực Chi Nhánh Đã Được Chuyển Thành "${expected_branch_id}"
-    [Documentation]    Xác thực chi nhánh đã được chuyển đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_UPDATED}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy đơn hàng
-    ${actual_branch_id}=    Set Variable    ${result[4]}
-    Should Be Equal As Strings    ${actual_branch_id}    ${expected_branch_id}    Chi nhánh không được chuyển đúng
+
 
 Xác Thực Đơn Hàng Đã Được Hoàn Thiện
     [Documentation]    Xác thực đơn hàng đã được hoàn thiện (status = 3)
@@ -471,82 +650,91 @@ Xác Thực Thông Tin Batch Đã Được Cập Nhật
 # Keywords xác thực lỗi
 # =============================================================================
 
-Xác Thực Lỗi Sản Phẩm Trùng Lặp Trong Đơn Hàng
-    [Documentation]    Xác thực lỗi khi đơn hàng có sản phẩm trùng lặp
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Sản phẩm bị trùng lặp trong đơn hàng"
+Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đơn Hàng MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận
+    ${request}    Deep Copy   ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Receiver   Nguyễn Thị B
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     ContactNumber    0912345678
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Address    456 Đường Lê Lợi, Q3
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi UUID Trùng Lặp
-    [Documentation]    Xác thực lỗi khi UUID đơn hàng trùng lặp
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "UUID đã tồn tại"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Phí Giao Hàng ${fee} MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật phí giao hàng
+    ${request}    Deep Copy   ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Price    ${fee}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi Mã Đơn Hàng Trùng Lặp
-    [Documentation]    Xác thực lỗi khi mã đơn hàng trùng lặp
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Mã đơn hàng đã tồn tại"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng ${status} Thu Hộ MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật miễn phí giao hàng
+    ${using_price_cod}=    Set Variable If    '${status}'=='Có'    1    0
+    ${request}    Deep Copy   ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     UsingPriceCod    ${using_price_cod}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi Khách Hàng Không Tồn Tại
-    [Documentation]    Xác thực lỗi khi khách hàng không tồn tại
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Khách hàng không tồn tại"
 
-Xác Thực Lỗi Nhân Viên Không Tồn Tại
-    [Documentation]    Xác thực lỗi khi nhân viên không tồn tại
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Nhân viên không tồn tại"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Mã Vận Đơn ${tracking_code} MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật mã vận đơn
+    ${request}    Deep Copy   ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryCode    ${tracking_code}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi Kênh Bán Hàng Không Tồn Tại
-    [Documentation]    Xác thực lỗi khi kênh bán hàng không tồn tại
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Kênh bán hàng không tồn tại"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Đối Tác Giao Hàng ${delivery_code} Ở MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật đối tác giao hàng
+    ${delivery_by}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${delivery_code}
+    ${request}    Deep Copy   ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryBy    ${delivery_by}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi Khuyến Mãi Đã Bị Xóa
-    [Documentation]    Xác thực lỗi khi khuyến mãi đã bị xóa
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Khuyến mãi đã bị xóa"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Gói Hàng ${x}x${y}x${z}x${w} Ở MHQL
+    [Documentation]    Chuẩn bị dữ liệu cập nhật gói hàng
+    ${request}    Deep Copy    ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Weight  ${x}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Length  ${y}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Width  ${z}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Height  ${w}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Xác Thực Lỗi Đối Tác Giao Hàng Không Hợp Lệ
-    [Documentation]    Xác thực lỗi khi đối tác giao hàng không hợp lệ
-    Mã trạng thái phải là 420
-    Phản hồi phải chứa lỗi "Đối tác giao hàng không hợp lệ"
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Ngày Giao Dự Kiến và Ghi Chú
+    [Documentation]    Chuẩn bị dữ liệu cập nhật ngày giao dự kiến
+    ${purchase_date}=   Get Current Date    UTC
+    ${expected_date}=   Add Time To Date    ${purchase_date}    10 days
+    ${note}=    Set Variable    "Dự kiến giao vào ngày"
+    ${request}    Deep Copy    ${request_order_body_update_delivery}
+    ${request_body}=    Deep Copy    ${delivery_detail_update_body_order}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     OrderId     ${CREATED_ORDER_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     ExpectedDelivery    ${expected_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Comments    ${note}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
+
 
 # =============================================================================
 # Template Keywords cho test cases
 # =============================================================================
-
-Cập Nhật Số Lượng Sản Phẩm Và Xác Thực
-    [Arguments]    ${old_quantity}    ${new_quantity}    ${expected_total}
-    [Documentation]    Template keyword để cập nhật số lượng sản phẩm và xác thực kết quả
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Số Lượng Sản Phẩm Từ ${old_quantity} Thành ${new_quantity}
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
-    And Xác Thực Số Lượng Sản Phẩm Đã Được Cập Nhật Thành ${new_quantity}
-
-Cập Nhật Khách Hàng Và Xác Thực
-    [Arguments]    ${old_customer_id}    ${new_customer_id}
-    [Documentation]    Template keyword để cập nhật khách hàng và xác thực kết quả
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Từ "${old_customer_id}" Thành "${new_customer_id}"
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
-    And Xác Thực Khách Hàng Đã Được Cập Nhật Thành "${new_customer_id}"
-
-Cập Nhật Thanh Toán Và Xác Thực
-    [Arguments]    ${payment_method}    ${amount}
-    [Documentation]    Template keyword để cập nhật thanh toán và xác thực kết quả
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Thanh Toán Phương Thức "${payment_method}" Số Tiền ${amount}
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
-    And Xác Thực Thanh Toán Đã Được Cập Nhật Phương Thức "${payment_method}" Số Tiền ${amount}
-
-Cập Nhật Kênh Bán Hàng Và Xác Thực
-    [Arguments]    ${old_channel_id}    ${new_channel_id}
-    [Documentation]    Template keyword để cập nhật kênh bán hàng và xác thực kết quả
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Từ "${old_channel_id}" Thành "${new_channel_id}"
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
-    And Xác Thực Kênh Bán Hàng Đã Được Cập Nhật Thành "${new_channel_id}" 
