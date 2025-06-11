@@ -23,9 +23,9 @@ ${UPDATE_ORDER_ENDPOINT}    orders
 # =============================================================================
 # Keywords chuẩn bị dữ liệu cho các test case thành công
 # =============================================================================
-Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản ${product_code} Để Cập Nhật
     [Documentation]    Chuẩn bị dữ liệu để tạo đơn đặt hàng cơ bản
-   Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản 
+   Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản ${product_code}
    Gửi Yêu Cầu Tạo Đơn Hàng
 
 
@@ -34,8 +34,8 @@ Chuẩn Bị Đơn Đặt hàng Với Hàng ${product_code} Với Số Lượng 
     Gửi Yêu Cầu Tạo Đơn Hàng
 
 
-Chuẩn Bị Đơn Hàng Có Thông Tin Giao Hàng Để Cập Nhật
-    Chuẩn Bị Dữ Liệu Đơn Hàng Có Thông Tin Giao Hàng
+Chuẩn Bị Đơn Hàng ${product_code} Có Thông Tin Giao Hàng Để Cập Nhật
+    Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Có Thông Tin Giao Hàng
     Gửi Yêu Cầu Tạo Đơn Hàng
 
 Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Có Khách Hàng ${customer_code} Thanh Toán Với Số Tiền ${payment_amount}
@@ -63,6 +63,7 @@ Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành ${status} ${days} Ng
     ${current_date}=    Get Current Date    UTC    
     ${purchase_date}=     Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days    ELSE    Add Time To Date   ${current_date}    ${days} days
     ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id     ${CREATED_ORDER_ID} 
     ${request}=    Update Nested Dictionary Property    ${request}    Order.PurchaseDate    ${purchase_date}
     Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -72,8 +73,9 @@ Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành ${status
     ${current_date}=    Get Current Date    UTC    
     ${purchase_delivery_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days    ELSE    Add Time To Date   ${current_date}    ${days} days
     ${request}=    Deep Copy    ${REQUEST_DATA}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.Id     ${CREATED_ORDER_ID} 
     ${request}=    Update Nested Dictionary Property    ${request}    Order.ExpectedDeliveryDate    ${purchase_delivery_date}
-    Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
+    Set Test Variable    ${PURCHASE_DATE}   ${purchase_delivery_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn Bị Cập Nhập Người Bán Cho Đơn Hàng Thành ${seller_name}
@@ -570,47 +572,6 @@ Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Thành Hoàn Thành MHQL
 # Keywords xác thực kết quả thành công
 # =============================================================================
 
-Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
-    [Documentation]    Xác thực đơn hàng đã được cập nhật trong database
-    ${query}=    Set Variable    SELECT * FROM [Order] WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Đơn hàng không tồn tại trong CSDL sau khi cập nhật
-
-Xác Thực Log Thay Đổi Đã Được Ghi Nhận
-    [Documentation]    Xác thực log thay đổi đã được ghi nhận trong audit trail
-    ${result}=    Fetch One    ${QUERY_CHECK_AUDIT_LOG}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy log thay đổi cho đơn hàng
-
-Xác Thực Số Lượng Sản Phẩm Đã Được Cập Nhật Thành ${expected_quantity}
-    [Documentation]    Xác thực số lượng sản phẩm đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_DETAILS}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy chi tiết đơn hàng
-    ${actual_quantity}=    Set Variable    ${result[1]}
-    Should Be Equal As Numbers    ${actual_quantity}    ${expected_quantity}    Số lượng sản phẩm không được cập nhật đúng
-
-Xác Thực Khách Hàng Đã Được Cập Nhật Thành "${expected_customer_id}"
-    [Documentation]    Xác thực khách hàng đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_UPDATED}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy đơn hàng
-    ${actual_customer_id}=    Set Variable    ${result[2]}
-    Should Be Equal As Strings    ${actual_customer_id}    ${expected_customer_id}    Khách hàng không được cập nhật đúng
-
-Xác Thực Thanh Toán Đã Được Cập Nhật Phương Thức "${expected_method}" Số Tiền ${expected_amount}
-    [Documentation]    Xác thực thông tin thanh toán đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_PAYMENTS}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy thông tin thanh toán
-    ${actual_method}=    Set Variable    ${result[0]}
-    ${actual_amount}=    Set Variable    ${result[1]}
-    Should Be Equal As Strings    ${actual_method}    ${expected_method}    Phương thức thanh toán không được cập nhật đúng
-    Should Be Equal As Numbers    ${actual_amount}    ${expected_amount}    Số tiền thanh toán không được cập nhật đúng
-
-
-Xác Thực Kênh Bán Hàng Đã Được Cập Nhật Thành "${expected_channel_id}"
-    [Documentation]    Xác thực kênh bán hàng đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_UPDATED}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy đơn hàng
-    ${actual_channel_id}=    Set Variable    ${result[5]}
-    Should Be Equal As Strings    ${actual_channel_id}    ${expected_channel_id}    Kênh bán hàng không được cập nhật đúng
 
 
 

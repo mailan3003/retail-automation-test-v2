@@ -53,7 +53,7 @@
 ...    ContactNumber=0988673523    
 ...    Receiver=Hung 
 ...    Address=1B  
-...    DeliveryBy=${PARTNER_DELIVERY_1_ID}    
+...    DeliveryBy=${None}   
 ...    LocationId=1    
 ...    LocationName=An Giang - Huyện Chợ Mới    
 ...    WardName=Thị trấn Chợ Mới    
@@ -147,16 +147,6 @@
 ...    OrderDetails=@{STANDARD_PRODUCT_ORDER_DETAILS}
 ...    DeliveryDetail=&{delivery_detail_update_body_order}
 
-
-&{BASIC_DELIVERY_INFO}    
-...    ReceiverName=Nguyễn Văn A
-...    ReceiverPhone=0987654321
-...    ReceiverAddress=123 Đường Lê Lợi, Quận 1
-...    LocationId=${DEFAULT_LOCATION_ID}
-...    WardId=${DEFAULT_WARD_ID_1}
-...    Status=1
-...    DeliveryMethod=1
-...    PartnerDeliveryId=${DELIVERY_PARTNER_ID}
 
 
 &{delivery_detail_update_body_order}

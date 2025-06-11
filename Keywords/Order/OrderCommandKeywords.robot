@@ -4,6 +4,7 @@ Resource          ../../TestData/Order/CreateOrderData.robot
 Resource          ../Product/Product_KeywordsCommand.robot
 Resource          ../Pricebook/PricebookCommandKeywords.robot
 Resource          ../Customer/CustomerCommandKeywords.robot
+Resource          ../CashFlow/CashflowCommandKeywords.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/RequestHelper.robot
@@ -295,7 +296,7 @@ Xác Thực Chi Nhánh Xử Lý Đã Được Chuyển Thành ${branch_name}
     Should Be Equal As Numbers    ${result[0]}    ${branch_id}    Chi nhánh không khớp
         
 Delete Order From Api
-    ${endpoint}=    Set Variable    ${ORDER_ENDPOINT}/${CREATED_ORDER_ID}
+    ${endpoint}=    Set Variable    ${ORDER_ENDPOINT}/${CREATED_ORDER_ID}?IsVoidPayment=true
     ${response}=    Delete Data   ${endpoint}     
     Set Test Variable    ${RESPONSE}    ${response}
     ${response_json}=    Set Variable If    ${response.status_code} < 400    ${response.json()}    ${None}
@@ -459,20 +460,6 @@ Xác Thực Quà Tặng Voucher Trong Đơn Hàng
     ${status}=    Set Variable    ${results[0]}
     Should Be Equal As Numbers    ${status}    1    Trạng thái voucher không phải là Kích hoạt
 
-Xác Thực Quà Tặng Voucher Theo Sản Phẩm Trong Đơn Hàng 
-    [Arguments]    ${invoice_id}    ${expected_value}=50000    ${expected_quantity}=1
-    [Documentation]    Kiểm tra voucher quà tặng theo sản phẩm đã được tạo và liên kết
-    ${query}=    Set Variable    SELECT COUNT(*) FROM Voucher v JOIN InvoiceVoucher iv ON v.Id = iv.VoucherId WHERE iv.InvoiceId = ? AND v.Value = ?
-    ${results}=     Fetch One    ${query}    ${invoice_id}    ${expected_value}
-    ${count}=    Set Variable    ${results[0][0]}
-    Should Be Equal As Numbers    ${count}    ${expected_quantity}    Số lượng voucher không đúng
-    
-    # Kiểm tra type khuyến mãi trong bảng InvoicePromotion
-    ${query}=    Set Variable    SELECT PromotionType FROM InvoicePromotion WHERE InvoiceId = ?
-    ${results}=    Fetch One    ${query}    ${invoice_id}
-    Should Not Be Empty    ${results}    Không tìm thấy thông tin khuyến mãi
-    ${promotion_type}=    Set Variable    ${results[0][0]}
-    Should Be Equal As Numbers    ${promotion_type}    10    Type khuyến mãi không phải ProductVoucherGift
 
 Xác Thực Quà Tặng Điểm Đặt Hàng
     [Arguments]    ${promotion_id}=${PROMOTION_ID}    ${expected_points}=20
@@ -492,9 +479,121 @@ Xác Thực Số Lượng Quà Tặng ${product_id} Với Số Lượng ${expect
     ${quantity}=    Set Variable    ${results[0]}
     Should Be Equal As Numbers    ${quantity}    ${expected_quantity}    Số lượng quà tặng không đúng
 
+
+
+Xác Thực Đặt Hàng Giao Hàng Trong DB
+    [Documentation]    Xác thực hóa đơn giao hàng đã được tạo trong CSDL
+    ${query}=    Set Variable    SELECT Id, UsingCod FROM [Order] WHERE Id = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Đơn hàng không tồn tại trong CSDL
+    Should Be Equal As Integers    ${order_data[1]}    1    Trạng thái UsingCod không được bật
+
+
+Xác Thực Thông Tin Người Nhận Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực thông tin người nhận trong CSDL
+    [Arguments]    ${expected_name}    ${expected_phone}
+    ${query}=    Set Variable    SELECT Receiver, ContactNumber FROM DeliveryPackage WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal    ${order_data[0]}    ${expected_name}    Tên người nhận không khớp
+    Should Be Equal    ${order_data[1]}    ${expected_phone}    Số điện thoại người nhận không khớp
+
+Xác Thực Địa Chỉ Giao Hàng Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực địa chỉ giao hàng trong CSDL
+    [Arguments]    ${expected_address}
+    ${query}=    Set Variable    SELECT Address FROM DeliveryPackage WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal    ${order_data[0]}    ${expected_address}    Địa chỉ giao hàng không khớp
+
+
+Xác Thực Khu Vực Giao Hàng Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực khu vực giao hàng trong CSDL
+    [Arguments]        ${expected_location_id}    ${expected_ward_id}
+    ${query}=    Set Variable    SELECT LocationId,LocationName,WardId,WardName FROM DeliveryPackage WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Integers    ${order_data[0]}    ${expected_location_id}    Mã khu vực không khớp
+    Should Be Equal As Integers    ${order_data[2]}    ${expected_ward_id}    Mã phường/xã không khớp
+
+Xác Thực Đối Tác Giao Hàng Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực đối tác giao hàng trong CSDL
+    [Arguments]    ${expected_partner_id}  
+    ${query}=    Set Variable    SELECT DeliveryBy FROM DeliveryPackage WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Integers    ${order_data[0]}    ${expected_partner_id}    Mã đối tác không khớp
+
+Xác Thực Sử Dụng Thông Tin Trọng Lượng ${expected_weight} Và Kích Thước ${expected_length}x${expected_width}x${expected_height} cm Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực sử dụng thông tin trọng lượng gói hàng trong CSDL
+    ${query}=    Set Variable    SELECT Weight, Length, Width, Height FROM DeliveryPackage WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Integers    ${order_data[0]}    ${expected_weight}    Trọng lượng không khớp
+    Should Be Equal As Integers    ${order_data[1]}    ${expected_length}    Chiều dài không khớp
+    Should Be Equal As Integers    ${order_data[2]}    ${expected_width}    Chiều rộng không khớp
+    Should Be Equal As Integers    ${order_data[3]}    ${expected_height}    Chiều cao không khớp
+
+
+
+Xác Thực Phí Giao Hàng Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực phí giao hàng trong CSDL
+    [Arguments]    ${expected_fee}
+    ${query}=    Set Variable    SELECT Price FROM DeliveryInfo WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Numbers    ${order_data[0]}    ${expected_fee}    Phí giao hàng không khớp
+
+
+Xác Thực Trạng Thái Giao Hàng Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực trạng thái giao hàng trong CSDL
+    [Arguments]    ${expected_status}
+    ${query}=    Set Variable    SELECT Status FROM DeliveryInfo WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Integers    ${order_data[0]}    ${expected_status}    Trạng thái giao hàng không khớp
+
+Xác Thực Số Tiền Thu Hộ Trong Đơn Đặt Hàng
+    [Documentation]    Xác thực số tiền thu hộ trong CSDL
+    [Arguments]    ${expected_cod_fee}
+    ${query}=    Set Variable    SELECT OriginalCOD FROM DeliveryInfo WHERE OrderId = ?
+    ${order_data}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${order_data}    None    Thông tin giao hàng không tồn tại trong CSDL
+    Should Be Equal As Numbers    ${order_data[0]}    ${expected_cod_fee}    Số tiền thu hộ không khớp
+
+
+### Thanh Toán
+Xác Thực Thanh Toán Trong Đơn Đặt Hàng Được Ghi Nhận Phương Thức ${payment_method} Với Số Tiền ${expected_amount}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE OrderId = ? AND Method = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${payment_method}
+    Should Be Equal As Numbers    ${result[0]}    1    Không tìm thấy thanh toán ${payment_method} cho đơn hàng ID ${CREATED_ORDER_ID}
     
+    # Kiểm tra số tiền thanh toán
+    ${query}=    Set Variable    SELECT Amount,Id FROM Payment WHERE OrderId = ? AND Method = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${payment_method}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${expected_amount}, Thực tế: ${result[0]}
+    Set Test Variable    ${PAYMENT_ID}    ${result[1]}
 
+Xác Thực Thanh Toán Được Ghi Nhận Trong Đơn Đặt Hàng ${number_of_payment_method} Phương Thức ${list_payment_method} Thanh Toán ${list_payment_amount}
+    ${query}=    Set Variable    SELECT Method, Amount FROM Payment WHERE OrderId = ? 
+    ${result}=    Fetch All    ${query}    ${CREATED_ORDER_ID}  
+    FOR    ${index}    IN RANGE  0  ${number_of_payment_method}
+        ${payment_method}=    Get From List    ${list_payment_method}    ${index}
+        ${payment_amount}=    Get From List    ${list_payment_amount}    ${index}
+        Should Be Equal    ${result[${index}][0]}    ${payment_method}    Phương thức thanh toán không đúng. Kỳ vọng: ${payment_method}, Thực tế: ${result[${index}][0]}
+        Should Be Equal As Numbers    ${result[${index}][1]}    ${payment_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${payment_amount}, Thực tế: ${result[${index}][1]}
+    END
+   
+Xác Thực Tổng Tiền Thanh Toán Của Đơn Đặt Hàng ${expected_total_payment}
+    ${query}=    Set Variable    SELECT TotalPayment FROM [Order] WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_total_payment}    Tổng tiền thanh toán không đúng. Kỳ vọng: ${expected_total_payment}, Thực tế: ${result[0]}
 
+Xác Thực Tài Khoản ${bank_account} Được Sử Dụng Khi Thanh Toán Đặt Hàng
+    ${bank_account_id}=    Lấy Id Bank Account Theo Mã Bank Account    ${bank_account}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE OrderId = ? AND AccountId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${bank_account_id}
+    Should Be Equal As Numbers    ${result[0]}    1    Tài khoản ngân hàng không được sử dụng trong thanh toán đơn hàng
 
 
 

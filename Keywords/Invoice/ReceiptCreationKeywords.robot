@@ -1,6 +1,7 @@
 *** Settings ***
 Documentation     Keywords cho test cases API phần tạo phiếu thu khi tạo hóa đơn
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Promotion/PromotionComnandKeywords.robot
 Resource          ../../TestData/CommonData.robot
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/Utilities.robot
@@ -190,19 +191,7 @@ Xác Thực Thanh Toán Được Ghi Nhận ${number_of_payment_method} Phương
         Should Be Equal As Numbers    ${result[${index}][1]}    ${payment_amount}    Số tiền thanh toán không đúng. Kỳ vọng: ${payment_amount}, Thực tế: ${result[${index}][1]}
     END
    
-Xác Thực Trạng Thái Voucher Đã Sử Dụng ${list_voucher_id}
-    ${number_of_voucher}=    Get Length    ${list_voucher_id}
-    FOR    ${index}    IN RANGE   ${number_of_voucher}
-        ${query}=    Set Variable    SELECT Status FROM Voucher WHERE Id = ?
-        ${result}=    Fetch One    ${query}    ${list_voucher_id[${index}]}
-        Should Be Equal As Numbers    ${result[0]}    2    Voucher đã được sử dụng
-    END
 
-Update Trạng thái Voucher Đã Phát Hành ${list_voucher_id}
-    FOR    ${voucher_id}    IN    @{list_voucher_id}
-        ${query}=    Set Variable    UPDATE Voucher SET Status = 1 WHERE Id = ?
-        Execute Query    ${query}    ${voucher_id}
-    END
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thanh Toán Thừa
     [Arguments]    ${excess_amount}=${EXCESS_RECEIPT_AMOUNT}

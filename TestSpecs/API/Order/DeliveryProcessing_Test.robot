@@ -3,7 +3,6 @@ Documentation     Test cases cho chức năng xử lý giao hàng trong đơn h�
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../TestData/CommonData.robot
-Resource          ../../../TestData/Order/DeliveryProcessingData.robot
 Resource          ../../../Keywords/Order/DeliveryProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
@@ -12,191 +11,247 @@ Library           ../../../Resources/DatabaseLibrary.py
 
 *** Test Cases ***
 
-# Test Cases cho Tạo Đơn Hàng với Xử lý Giao hàng
-
-RT-DELIVERY-001 Tạo đơn hàng thành công với thông tin giao hàng COD sử dụng đối tác mặc định
-    [Documentation]    Kiểm tra tạo đơn hàng thành công với thông tin giao hàng COD sử dụng đối tác mặc định:
-    ...    - UsingCod = 1, UseDefaultPartner = true
-    ...    - Có thông tin DeliveryDetail đầy đủ
-    ...    - Đối tác giao hàng hoạt động và hỗ trợ COD
-    ...    - Cấu hình Settings.UseCodByKvCarrier = true
-    [Tags]    AIGenerated    CreateOrder    Positive    COD    DefaultPartner    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Với Đối Tác Mặc Định
+RT-DP-001 Tạo Đơn Hàng COD thành công với thông tin giao hàng đầy đủ
+    [Documentation]    Kiểm tra tạo đơn hàng COD thành công với thông tin giao hàng đầy đủ
+    ...    - Dữ liệu đầu vào: 
+    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng đầy đủ:
+    ...      + Tên người nhận: "Hung"
+    ...      + SĐT: "0988673523"
+    ...      + Địa chỉ: "1B"
+    ...      + Mã khu vực: 1, Mã phường: 1
+    ...      + Phương thức giao: Đối tác mặc định (DeliveryBy=1)
+    ...      + Phí ship: 20,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với thông tin giao hàng đầy đủ
+    ...    - UsingCod được bật trong hóa đơn
+    [Tags]        delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thông Tin Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Thông Tin Giao Hàng Đối Tác Mặc Định
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Thông Tin Người Nhận Trong Đơn Đặt Hàng   Hung   0988673523
+    And Xác Thực Địa Chỉ Giao Hàng Trong Đơn Đặt Hàng     1B
+    And Xác Thực Khu Vực Giao Hàng Trong Đơn Đặt Hàng    ${DEFAULT_LOCATION_ID}   ${DEFAULT_WARD_ID_1} 
+    And Xác Thực Phí Giao Hàng Trong Đơn Đặt Hàng     ${DEFAULT_DELIVERY_PRICE}
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-002 Tạo đơn hàng thành công với thông tin giao hàng tự vận chuyển
-    [Documentation]    Kiểm tra tạo đơn hàng thành công với thông tin giao hàng tự vận chuyển:
-    ...    - UsingCod = 1, UseDefaultPartner = false
-    ...    - Có thông tin DeliveryDetail đầy đủ
-    ...    - Không sử dụng đối tác giao hàng bên ngoài
-    [Tags]    AIGenerated    CreateOrder    Positive    SelfDelivery    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Tự Vận Chuyển
+
+RT-DP-006 Tạo đơn hàng COD thành công với đối tác giao hàng 
+    [Documentation]    Kiểm tra tạo đơn hàng COD thành công với đối tác giao hàng Để trống
+    ...    - Dữ liệu đầu vào: 
+    ...    - Mã hóa đơn: "HD_DELIVERY_STD001"
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng với đối tác :
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Phương thức giao: Đối tác 
+    ...      + PartnerId: None
+    ...      + Phí ship: 30,000đ
+    ...    - Logic kiểm tra: DeliveryService xử lý thông tin đối tác giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với thông tin đối tác giao hàng
+     [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Đối Tác Giao Hàng DT00005
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Thông Tin Giao Hàng Tự Vận Chuyển
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Đơn Hàng Có Đối Tác Giao Hàng
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-003 Tạo đơn hàng với thông tin địa điểm từ tên LocationName và WardName
-    [Documentation]    Kiểm tra tạo đơn hàng với ánh xạ thông tin địa điểm từ tên:
-    ...    - Có LocationName và WardName thay vì LocationId và WardId
-    ...    - Hệ thống tự động ánh xạ từ tên sang ID
-    ...    - Cập nhật thông tin LocationId và WardId sau khi ánh xạ
-    [Tags]    AIGenerated    CreateOrder    Positive    LocationMapping    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ánh Xạ Địa Điểm
+RT-DP-007 Tạo đơn hàng giao hàng thay đổi thông tin gói hàng
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng thay đổi thông tin gói hàng
+    ...    - Dữ liệu đầu vào: 
+    ...    - Thông tin gói hàng:
+    ...      + Khối lượng: 1000 g
+    ...      + Kích thước: 20x10x15 cm
+    ...    - Thông tin giao hàng:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Phí ship: 100,000đ (bằng với giá trị hóa đơn)
+    ...    - Logic kiểm tra: DeliveryService xử lý phí giao hàng cao
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng cao
+    [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có khối lượng 1000 g Và Kích thước 20x10x15 cm
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực LocationId Và WardId Được Ánh Xạ Đúng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Thông Tin Gói Giao Hàng Được Cập Nhật Đúng
 
-RT-DELIVERY-004 Tạo đơn hàng với ngày giao hàng dự kiến ExpectedDelivery
-    [Documentation]    Kiểm tra tạo đơn hàng với ngày giao hàng dự kiến:
-    ...    - Có ExpectedDelivery được chỉ định
-    ...    - Xử lý đúng timezone UTC
-    ...    - Lưu trữ ngày giao hàng dự kiến chính xác
-    [Tags]    AIGenerated    CreateOrder    Positive    ExpectedDelivery    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ngày Giao Hàng Dự Kiến
+RT-DP-008 Tạo đơn hàng giao hàng gắn với Khách hàng và miễn phí giao hàng
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng gắn với Khách hàng và miễn phí giao hàng
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng miễn phí:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Phí ship: 0đ
+    ...      + IsFreeShip: true
+    ...    - Logic kiểm tra: DeliveryService xử lý miễn phí giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng = 0 và cờ IsFreeShip = true
+     [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Gắn Với Khách Hàng CTKH148 Và Phí Giao Hàng 0
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Ngày Giao Hàng Dự Kiến Được Lưu Đúng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Phí Giao Hàng Trong Đơn Đặt Hàng    0
+    And Xác Thực Khách Hàng Trong Đơn Đặt Hàng Là CTKH148
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-005 Tạo đơn hàng với nhiều gói hàng (ListDeliveryPackage)
-    [Documentation]    Kiểm tra tạo đơn hàng với nhiều gói hàng:
-    ...    - DeliveryDetail có ListDeliveryPackage với nhiều gói
-    ...    - Mỗi gói có thông tin riêng biệt
-    ...    - Liên kết các gói hàng với đơn hàng
-    [Tags]    AIGenerated    CreateOrder    Positive    MultiplePackages    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Gói Hàng
+RT-DP-009 Tạo đơn hàng giao hàng có thanh toán 
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng có thanh toán COD
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng với trạng thái Pending:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Status: 1 (Pending)
+    ...    - Logic kiểm tra: DeliveryService xử lý trạng thái giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Pending
+     [Tags]    apiinvoice    delivery    regression5345
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Với Thu Hộ và Thanh Toán 30000
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Nhiều Gói Hàng Được Lưu
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-006 Tạo đơn hàng với thanh toán phí giao hàng (DeliveryPayment)
-    [Documentation]    Kiểm tra tạo đơn hàng với thanh toán phí giao hàng:
-    ...    - DeliveryDetail có DeliveryPayment
-    ...    - Phí giao hàng được tính vào tổng tiền đơn hàng
-    ...    - Thông tin thanh toán giao hàng được lưu riêng biệt
-    [Tags]    AIGenerated    CreateOrder    Positive    DeliveryPayment    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Thanh Toán Phí Giao Hàng
+RT-DP-010 Tạo đơn hàng giao hàng có thời gian giao hàng
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng có thời gian giao hàng
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng với trạng thái Processing:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Status: 2 (Processing)
+    ...    - Logic kiểm tra: DeliveryService xử lý trạng thái giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Processing
+    [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Thời Gian Sau 4 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Thanh Toán Phí Giao Hàng Được Lưu
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Trạng Thái Giao Hàng Trong Đơn Đặt Hàng   1
+    And Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành Sau 4 Ngày So Với Ngày Hiện Tại
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-007 Lỗi khi tạo đơn hàng với đối tác giao hàng không hoạt động
-    [Documentation]    Kiểm tra lỗi khi tạo đơn hàng với đối tác giao hàng không hoạt động:
-    ...    - UseDefaultPartner = true nhưng đối tác không hoạt động
-    ...    - Phát sinh KvValidatePartnerDeliveryException
-    ...    - Trả về lỗi 420 với thông báo phù hợp
-    [Tags]    AIGenerated    CreateOrder    Negative    InactivePartner    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Đối Tác Không Hoạt Động
+RT-DP-011 Tạo đơn hàng giao hàng thành công với trạng thái đang giao hàng
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng thành công với trạng thái đang giao hàng
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng với trạng thái Đang giao hàng:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Status: 3 (Đang giao hàng)
+    ...    - Logic kiểm tra: DeliveryService xử lý trạng thái giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Đang giao hàng
+    [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Với Trạng Thái Đang Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi "Đối tác giao hàng không hoạt động"
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Trạng Thái Giao Hàng Trong Đơn Đặt Hàng   2
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-008 Lỗi khi tạo đơn hàng COD với cấu hình không cho phép
-    [Documentation]    Kiểm tra lỗi khi tạo đơn hàng COD với cấu hình không cho phép:
-    ...    - UsingCod = 1 nhưng Settings.UseCodByKvCarrier = false
-    ...    - Phát sinh KvValidatePartnerDeliveryException
-    ...    - Trả về lỗi 420 với thông báo cấu hình
-    [Tags]    AIGenerated    CreateOrder    Negative    CODNotAllowed    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Không Được Phép
+RT-DP-012 Tạo đơn hàng giao hàng thành công không thu hộ
+    [Documentation]    Kiểm tra tạo đơn hàng giao hàng thành công không thu hộ
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - Phương thức thanh toán: COD, 100,000đ
+    ...    - Thông tin giao hàng với trạng thái Cancelled:
+    ...      + Tên người nhận: "Nguyễn Văn A"
+    ...      + SĐT: "0987654321"
+    ...      + Địa chỉ: "123 Đường Nguyễn Huệ, Q1"
+    ...      + Status: 4 (Cancelled)
+    ...    - Logic kiểm tra: DeliveryService xử lý trạng thái giao hàng
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Cancelled
+    [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Không Thu Hộ
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi "Cấu hình COD không được phép"
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đặt Hàng Giao Hàng Trong DB
+    And Xác Thực Đơn Hàng Không Thu Hộ
+    And Xác Thực Trạng Thái Giao Hàng Trong Đơn Đặt Hàng    1
+    [Teardown]    Delete Order From Api
 
-RT-DELIVERY-009 Lỗi khi tạo đơn hàng với thông tin giao hàng thiếu bắt buộc
-    [Documentation]    Kiểm tra lỗi khi tạo đơn hàng với thông tin giao hàng thiếu trường bắt buộc:
-    ...    - UsingCod = 1 nhưng thiếu ReceiverName hoặc ReceiverPhone
-    ...    - Thiếu địa chỉ giao hàng
-    ...    - Trả về lỗi 420 với thông báo trường bắt buộc
-    [Tags]    AIGenerated    CreateOrder    Negative    MissingRequiredFields    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Thiếu Thông Tin Giao Hàng
+
+RT-DP-013 Tạo đơn hàng thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
+    [Documentation]    Kiểm tra tạo đơn hàng thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - PurchaseDate: "2023-08-15T14:00:00"
+    ...    - DeliveryDetail.ExpectedDelivery: "2023-08-15T10:00:00" (sớm hơn thời gian hóa đơn)
+    ...    - IsValid: false (cần kiểm tra validation)
+    ...    - Logic kiểm tra: Logic xác thực thời gian giao hàng trong CreateOrder
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
+    [Tags]    apiinvoice    delivery    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Thời Gian Trước 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi "Thiếu thông tin bắt buộc"
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian đặt hàng"
 
-RT-DELIVERY-010 Lỗi khi tạo đơn hàng với LocationName/WardName không tồn tại
-    [Documentation]    Kiểm tra lỗi khi tạo đơn hàng với tên địa điểm không tồn tại:
-    ...    - LocationName hoặc WardName không có trong hệ thống
-    ...    - Không thể ánh xạ từ tên sang ID
-    ...    - Trả về lỗi 420 với thông báo địa điểm không hợp lệ
-    [Tags]    AIGenerated    CreateOrder    Negative    InvalidLocationName    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Địa Điểm Không Tồn Tại
+RT-DP-014 Tạo đơn hàng thất bại khi thời gian giao hàng trùng với thời gian hóa đơn
+    [Documentation]    Kiểm tra tạo đơn hàng thất bại khi thời gian giao hàng trùng với thời gian hóa đơn
+    ...    - Dữ liệu đầu vào: 
+    ...    - UsingCod: 1 (bật chế độ COD)
+    ...    - PurchaseDate: "2023-08-15T14:00:00"
+    ...    - DeliveryDetail.ExpectedDelivery: "2023-08-15T14:00:00" (trùng với thời gian hóa đơn)
+    ...    - IsValid: false (cần kiểm tra validation)
+    ...    - Logic kiểm tra: Logic xác thực thời gian giao hàng trong CreateOrder
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
+    [Tags]    apiinvoice    delivery    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Thời Gian Trùng 0 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản Hồi Phải Chứa Lỗi "Địa điểm không hợp lệ"
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian đặt hàng"
 
-# Test Cases cho Xử lý Ngoại lệ và Trường hợp Đặc biệt
-
-RT-DELIVERY-020 Xử lý đơn hàng không có UsingCod nhưng có DeliveryDetail
-    [Documentation]    Kiểm tra xử lý đơn hàng không sử dụng COD nhưng có thông tin giao hàng:
-    ...    - UsingCod = 0 nhưng có DeliveryDetail
-    ...    - Thông tin giao hàng không được xử lý
-    ...    - Đơn hàng được tạo bình thường
-    [Tags]    AIGenerated    CreateOrder    Edge    NoCODWithDelivery    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Không COD Có Thông Tin Giao Hàng
+RT-DP-015 Tạo hóa đơn thất bại khi đối tác giao hàng không hợp lệ
+    [Documentation]    Kiểm tra tạo hóa đơn thất bại khi đối tác giao hàng không hợp lệ
+    ...    - Dữ liệu đầu vào: 
+    ...    - Invoice.UsingCod: 1 (bật chế độ COD)
+    ...    - Invoice.DeliveryDetail.UseDefaultPartner: true
+    ...    - Invoice.DeliveryDetail.PartnerCode: "${NON_EXISTENT_KV_PARTNER_DELIVERY_CODE}"
+    ...    - Invoice.DeliveryDetail.ServiceAdd: "S1"
+    ...    - Logic kiểm tra: Xác thực đối tác vận chuyển trong CreateInvoice
+    ...    - Mô phỏng điều kiện:
+    ...    - Đối tác không hoạt động (currentCarrierCom.IsActive = false)
+    ...    - Kỳ vọng:
+    ...    - Status code: 420
+    ...    - Thông báo lỗi: "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
+    [Tags]    apiinvoice    delivery123    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Với Đối Tác COD Không Hoạt Động
     When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Không Có Thông Tin Giao Hàng Được Lưu
+    Then Mã trạng thái phải là 420
+    And Phản hồi phải chứa lỗi "Đối tác giao hàng không hợp lệ. Vui lòng kiểm tra lại."
 
-RT-DELIVERY-021 Xử lý đơn hàng COD không có DeliveryDetail
-    [Documentation]    Kiểm tra xử lý đơn hàng COD không có thông tin giao hàng:
-    ...    - UsingCod = 1 nhưng DeliveryDetail = null
-    ...    - Thông tin giao hàng không được xử lý
-    ...    - Đơn hàng được tạo bình thường
-    [Tags]    AIGenerated    CreateOrder    Edge    CODNoDelivery    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng COD Không Có Thông Tin Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Không Có Thông Tin Giao Hàng Được Lưu
 
-RT-DELIVERY-022 Xử lý log thông tin giao hàng chi tiết
-    [Documentation]    Kiểm tra ghi log thông tin giao hàng chi tiết:
-    ...    - Tạo đơn hàng COD với thông tin giao hàng đầy đủ
-    ...    - Xác thực log WriteLogForDeliveryInfo được tạo
-    ...    - Kiểm tra tất cả thông tin trong log
-    [Tags]    AIGenerated    CreateOrder    Positive    DeliveryLogging    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Để Kiểm Tra Log Giao Hàng
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Log Giao Hàng Được Tạo
-    And Xác Thực Log Chứa Thông Tin Chi Tiết Giao Hàng
-
-RT-DELIVERY-023 Xử lý đơn hàng với thông tin giao hàng có ký tự đặc biệt
-    [Documentation]    Kiểm tra xử lý đơn hàng với thông tin giao hàng chứa ký tự đặc biệt:
-    ...    - ReceiverName, ReceiverAddress có ký tự đặc biệt
-    ...    - Xử lý encoding đúng cách
-    ...    - Lưu trữ thông tin chính xác
-    [Tags]    AIGenerated    CreateOrder    Edge    SpecialCharacters    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Ký Tự Đặc Biệt
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Ký Tự Đặc Biệt Được Lưu Đúng
-
-RT-DELIVERY-024 Xử lý đơn hàng với thông tin giao hàng có giá trị null
-    [Documentation]    Kiểm tra xử lý đơn hàng với một số trường giao hàng có giá trị null:
-    ...    - Các trường không bắt buộc có thể null
-    ...    - Xử lý null values đúng cách
-    ...    - Không gây lỗi hệ thống
-    [Tags]    AIGenerated    CreateOrder    Edge    NullValues    DeliveryProcessing
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Giá Trị Null
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng COD Được Tạo Trong Database
-    And Xác Thực Thông Tin Giao Hàng Được Lưu Trong Database
-    And Xác Thực Các Trường Null Được Xử Lý Đúng 

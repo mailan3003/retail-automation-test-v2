@@ -655,8 +655,8 @@ Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm G�
 
 Lấy Thông tin Nhóm Hàng 
     [Arguments]    ${group_name}
-    ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ?
-    ${result}=    Fetch One    ${query}    ${group_name}
+    ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${group_name}    ${RETAILER_ID}
     RETURN    ${result[0]}
 
 Xác Thực Sản Phẩm ${list_product_code} Có Điểm ${different_points}
