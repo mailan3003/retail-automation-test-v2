@@ -4,6 +4,7 @@ Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Resource          ../../TestData/Product/ProductInputData.robot
+Resource          Product_KeywordsCommand.robot
 
 *** Variables ***
 ${PRODUCT_API_ENDPOINT}     products/addmany
@@ -42,7 +43,8 @@ Chuẩn Bị Dữ Liệu Với 51 Sản Phẩm Combo
     ${list_products}=    Create List
     FOR    ${index}    IN RANGE    51
         ${product}=    Deep Copy    ${COMBO_PRODUCT_TEMPLATE}
-        ${product}=    Set To Dictionary    ${product}    Name=Combo Product ${index}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+        ${product}=    Set To Dictionary    ${product}    Name=Combo Product ${index}    CategoryId=${category_id}
         Append To List    ${list_products}    ${product}
     END
     ${json_string}=    Evaluate    json.dumps(${list_products})    json
@@ -54,7 +56,8 @@ Chuẩn Bị Dữ Liệu Với 201 Sản Phẩm
     ${list_products}=    Create List
     FOR    ${index}    IN RANGE    201
         ${product}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-        ${product}=    Set To Dictionary    ${product}    Name=Product ${index}    Code=P${index}    ProductType=2
+        ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+        ${product}=    Set To Dictionary    ${product}    Name=Product ${index}    Code=P${index}    ProductType=2    CategoryId=${category_id}
         Append To List    ${list_products}    ${product}
     END
     ${json_string}=    Evaluate    json.dumps(${list_products})    json
@@ -75,7 +78,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Gây Lỗi Trong Giao Dịch DB
     # Ví dụ: Tạo sản phẩm với tên quá dài
     ${long_name}=    Evaluate    "A" * 500
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${request}=    Create Dictionary    ListProducts=${list_products}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -83,7 +87,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Gây Lỗi Trong Giao Dịch DB
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
     ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị trùng    Code=SPT001
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị trùng    Code=SPT001    CategoryId=${category_id}
     
     # Tạo danh sách các đơn vị cho sản phẩm, có hai đơn vị trùng tên (khác hoa/thường)
     ${units}=    Create List
@@ -103,6 +108,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
         ...    ConversionValue=${unit["ConversionValue"]}    
         ...    IsDefaultUnit=${unit["IsDefault"]}    
         ...    AttributedName=${unit["AttributedName"]}
+        ...    CategoryId=${category_id}
         Append To List    ${list_products}    ${product_copy}
     END
     
@@ -114,7 +120,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
     ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${random_code}=    Generate Random String    10    [LOWER]
-    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị không trùng    Code=${random_code}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm đơn vị không trùng    Code=${random_code}    CategoryId=${category_id}
     
     # Tạo danh sách các đơn vị cho sản phẩm, không có đơn vị trùng tên
     ${units}=    Create List
@@ -129,7 +136,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
     ${list_products}=    Create List
     FOR    ${unit}    IN    @{units}
         ${product_copy}=    Deep Copy    ${product_base}
-        ${product_copy}=    Set To Dictionary    ${product_copy}    Unit=${unit["Unit"]}    ConversionValue=${unit["ConversionValue"]}    IsDefaultUnit=${unit["IsDefault"]}    AttributedName=${unit["AttributedName"]}
+        ${product_copy}=    Set To Dictionary    ${product_copy}    Unit=${unit["Unit"]}    ConversionValue=${unit["ConversionValue"]}    IsDefaultUnit=${unit["IsDefault"]}    AttributedName=${unit["AttributedName"]}    CategoryId=${category_id}
         Append To List    ${list_products}    ${product_copy}
     END
     
@@ -153,9 +160,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Trùng Lặp
     ${existing_product}=    Fetch One    ${QUERY_GET_PRODUCT_BY_RETAILER}    ${RETAILER_ID}
     Should Not Be Equal    ${existing_product}    None    Không tìm thấy sản phẩm để test trùng lặp mã
     ${product_code}=    Set Variable    ${existing_product[1]}
-    
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Code=${product_code}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Code=${product_code}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -170,7 +177,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Trùng Lặp
     ${barcode}=    Set Variable    ${existing_product[2]}
     
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${barcode}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${barcode}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -181,8 +189,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Trùng Lặp
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Không Hợp Lệ
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${formula}=    Create Dictionary    MaterialId=999999    Quantity=1
-    ${formulas}=    Create List    ${formula}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${formula}=    Create Dictionary    MaterialId=999999    Quantity=1    CategoryId=${category_id}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
     ${list_products}=    Create List    ${request_data}
     ${request}=    Create Dictionary    ListProductsString=${list_products}
@@ -191,7 +199,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Không Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Vị Trí Không Tồn Tại
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${shelf}=    Create Dictionary    ShelvesId=999999    ProductId=0
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${shelf}=    Create Dictionary    ShelvesId=999999    ProductId=0    CategoryId=${category_id}
     ${shelves}=    Create List    ${shelf}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductShelves=${shelves}
     ${list_products}=    Create List    ${request_data}
@@ -202,7 +211,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Vị Trí Không Tồn
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Giá Trị Chuyển Đổi Không Hợp Lệ
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    ConversionValue=0
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    ConversionValue=0    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -219,8 +229,9 @@ Xác Thực Giá Trị Chuyển Đổi Đã Được Chuẩn Hóa Thành 1
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    IsLotSerialControl=${TRUE}
-    ${unit}=    Create Dictionary    Unit=Chiếc    ConversionValue=1
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    IsLotSerialControl=${TRUE}    CategoryId=${category_id}
+    ${unit}=    Create Dictionary    Unit=Chiếc    ConversionValue=1    CategoryId=${category_id}
     ${units}=    Create List    ${unit}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductUnits=${units}
     ${list_products}=    Create List    ${request_data}
@@ -232,7 +243,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
     ${long_code}=    Evaluate    "A" * 41
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Code=${long_code}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Code=${long_code}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -242,7 +254,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
     ${long_barcode}=    Evaluate    "1" * 17
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${long_barcode}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Barcode=${long_barcode}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -252,7 +265,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
     ${long_name}=    Evaluate    "A" * 501
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    Name=${long_name}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -261,7 +275,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${request_data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -270,7 +285,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${formula}=    Create Dictionary    MaterialId=${PRODUCT_ID}    Quantity=1
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${formula}=    Create Dictionary    MaterialId=${PRODUCT_ID}    Quantity=1    CategoryId=${category_id}
     ${formulas}=    Create List    ${formula}
     ${request_data}=    Set To Dictionary    ${request_data}    Id=${PRODUCT_ID}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
@@ -287,7 +303,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
     ${sub_unit_code}=    Set Variable    ${sub_unit_product[1]}
     
     ${request_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${formula}=    Create Dictionary    MaterialId=${sub_unit_id}    Quantity=1
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${formula}=    Create Dictionary    MaterialId=${sub_unit_id}    Quantity=1    CategoryId=${category_id}
     ${formulas}=    Create List    ${formula}
     ${request_data}=    Set To Dictionary    ${request_data}    ProductFormulas=${formulas}
     ${list_products}=    Create List    ${request_data}
@@ -366,7 +383,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con không có đơn vị    MasterUnitId=${PARENT_PRODUCT_ID}    Unit=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con không có đơn vị    MasterUnitId=${PARENT_PRODUCT_ID}    Unit=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -375,7 +393,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con với cha là sản phẩm con    MasterUnitId=${CHILD_PRODUCT_ID}    Unit=Chiếc
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con với cha là sản phẩm con    MasterUnitId=${CHILD_PRODUCT_ID}    Unit=Chiếc    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -384,7 +403,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Con Khác
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con trùng đơn vị với cha    MasterUnitId=${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    Unit=${DUPLICATE_UNIT_NAME}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Name=Sản phẩm con trùng đơn vị với cha    MasterUnitId=${PARENT_PRODUCT_ID_NOT_EXIST_MASTER_UNIT}    Unit=${DUPLICATE_UNIT_NAME}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -393,11 +413,13 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Ph�
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
     ${product}=    Create Dictionary    
     ...    Code=SP_CON_005    
     ...    Name=Sản phẩm con với đơn vị hợp lệ    
     ...    MasterUnitId=${PARENT_PRODUCT_ID}    
     ...    Unit=Hộp
+    ...    CategoryId=${category_id}
     ${data}=    Set To Dictionary    ${data}    ${product}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
@@ -407,8 +429,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Tính Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
     ${product_data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
     ${invalid_attributes}=    Create List
-    ${attribute}=    Create Dictionary    AttributeId=999999    Value=Test Value
+    ${attribute}=    Create Dictionary    AttributeId=999999    Value=Test Value    CategoryId=${category_id}
     Append To List    ${invalid_attributes}    ${attribute}
     ${product_data}=    Set To Dictionary    ${product_data}    ProductAttributes=${invalid_attributes}
     ${list_products}=    Create List    ${product_data}
@@ -419,7 +442,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Description=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Description=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -429,7 +453,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
     ${large_description}=    Evaluate    "a" * 1048576    # Tạo chuỗi khoảng 1MB ký tự
-    ${data}=    Set To Dictionary    ${data}    Description=${large_description}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Description=${large_description}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -438,7 +463,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    Description=Mô tả sản phẩm hợp lệ với đầy đủ thông tin chi tiết
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${data}=    Set To Dictionary    ${data}    Description=Mô tả sản phẩm hợp lệ với đầy đủ thông tin chi tiết    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -447,10 +473,12 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}    
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${random_code}=    Generate Random String    10    [LOWER]
     ${data}=    Set To Dictionary    ${data}    
     ...    Code=${random_code}
     ...    IsActiveGppDrugStore=${FALSE}
+    ...    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -458,9 +486,11 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Đ�
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không Tồn Tại
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${data}=    Set To Dictionary    ${data}    
     ...    Code=DP002    
     ...    GlobalManufacturerCountryName=Quốc gia không tồn tại
+    ...    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -469,6 +499,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không T�
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${data}=    Set To Dictionary    ${data}    
     ...    Code=DP003    
     ...    GlobalManufacturerId=999999
@@ -481,8 +512,10 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Kh�
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
     ${long_short_name}=    Evaluate    "A" * 101
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${data}=    Set To Dictionary    ${data}
     ...    ShortName=${long_short_name}
+    ...    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -491,8 +524,10 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
     ${long_route}=    Evaluate    "A" * 201
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${data}=    Set To Dictionary    ${data}    
     ...    RouteOfAdministration=${long_route}
+    ...    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -500,7 +535,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    Code=DP006
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    Code=DP006    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}
@@ -510,7 +546,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    RouteOfAdministration=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    RouteOfAdministration=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -519,7 +556,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Trố
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -528,7 +566,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Trố
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    ActiveElement=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    ActiveElement=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -537,7 +576,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Trống
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    Content=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    Content=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -546,7 +586,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Trống
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    PackagingSize=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    PackagingSize=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -555,7 +596,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    Unit=${EMPTY}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    Unit=${EMPTY}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -564,7 +606,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản 
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Trống
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${NULL}    GlobalManufacturerId=${NULL}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${NULL}    GlobalManufacturerId=${NULL}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}
@@ -573,8 +616,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Tr�
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Dài 101 Ký Tự Đồng Bộ DQG
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${long_name}=    Evaluate    "M" * 101
-    ${data}=    Set To Dictionary    ${data}    Name=${long_name}
+    ${data}=    Set To Dictionary    ${data}    Name=${long_name}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -584,7 +628,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Dài 101 Ký T�
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Dài 21 Ký Tự Đồng Bộ DQG
     ${long_reg_no}=    Evaluate    "R" * 21
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${long_reg_no}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    RegistrationNo=${long_reg_no}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -594,7 +639,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Dài 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Dài 201 Ký Tự Đồng Bộ DQG
     ${long_active}=    Evaluate    "A" * 201
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    ActiveElement=${long_active}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    ActiveElement=${long_active}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -604,7 +650,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Dài 20
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Dài 201 Ký Tự Đồng Bộ DQG
     ${long_content}=    Evaluate    "C" * 201
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    Content=${long_content}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    Content=${long_content}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -614,7 +661,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Dài 20
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Dài 51 Ký Tự Đồng Bộ DQG
     ${long_packaging}=    Evaluate    "P" * 51
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    PackagingSize=${long_packaging}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    PackagingSize=${long_packaging}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -623,7 +671,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Nhà Sản Xuất Dài 101 Ký Tự Đồng Bộ DQG
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
-    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${EXCEED_NAME_MEDICINE_MANUFACTURER_ID}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${data}=    Set To Dictionary    ${data}    ManufacturerId=${EXCEED_NAME_MEDICINE_MANUFACTURER_ID}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -632,8 +681,9 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Nhà Sản Xuấ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Dài 101 Ký Tự Đồng Bộ DQG
     ${data}=    Deep Copy    ${STANDARD_MEDICINE_PRODUCT}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
     ${long_unit}=    Evaluate    "U" * 101
-    ${data}=    Set To Dictionary    ${data}    Unit=${long_unit}
+    ${data}=    Set To Dictionary    ${data}    Unit=${long_unit}    CategoryId=${category_id}
     ${list_products}=    Create List    ${data}
     ${json_list_products}=    Evaluate    json.dumps(${list_products})    json
     ${request}=    Create Dictionary    ListProductsString=${json_list_products}    IsRetailerMedicine=${TRUE}    IsSyncNationalPharmacy=${TRUE}
@@ -660,7 +710,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Kiểm Kê Kho Hợp Lệ
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Kho Đã Xóa
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+    ${data}=    Set To Dictionary    ${data}    CategoryId=${category_id}
     ${stocktakes}=    Create List
     ${stocktake1}=    Create Dictionary    BranchId=${DELETED_WAREHOUSE_ID}    OnHand=10
     Append To List    ${stocktakes}    ${stocktake1}
@@ -674,7 +725,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Kho Đã Xóa
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Không Hoạt Động
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+    ${data}=    Set To Dictionary    ${data}    CategoryId=${category_id}
     # Tạo thông tin kiểm kê kho với kho không hoạt động
     ${stocktakes}=    Create List
     ${stocktake1}=    Create Dictionary    BranchId=${INACTIVE_WAREHOUSE_ID}    OnHand=10
@@ -689,6 +741,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Không Hoạt Động
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Lô Với Kiểm Kê Kho
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+    ${data}=    Set To Dictionary    ${data}    CategoryId=${category_id}
     ${data}=    Set To Dictionary    ${data}    IsBatchExpireControl=${TRUE}
     
     # Tạo thông tin kiểm kê kho
@@ -705,7 +759,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Lô Với Kiểm Kê Kho
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
     ${data}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${data}=    Set To Dictionary    ${data}    IsLotSerialControl=${TRUE}    Name=Hàng hóa kiểm soát lô
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+    ${data}=    Set To Dictionary    ${data}    IsLotSerialControl=${TRUE}    Name=Hàng hóa kiểm soát lô      CategoryId=${category_id}
     
     # Tạo thông tin kiểm kê kho
     ${stocktakes}=    Create List
@@ -721,12 +776,13 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
     ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính    CategoryId=${category_id}
     
     # Tạo danh sách các đơn vị con, có hai đơn vị con có mã trùng lặp
     
     ${child1}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1
+    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1    CategoryId=${category_id}
     ...    Code=${DUPLICATE_CHILD_CODE}    # Mã trùng lặp
     ...    Unit=Hộp
     ...    ConversionValue=10
@@ -735,7 +791,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
     ...    OnHand=5
     
     ${child2}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2
+    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2    CategoryId=${category_id}
     ...    Code=${DUPLICATE_CHILD_CODE}    # Mã trùng lặp
     ...    Unit=Thùng
     ...    ConversionValue=50
@@ -754,14 +810,15 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Không Trùng
     ${product_base}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME}
+    ${product_base}=    Set To Dictionary    ${product_base}    Name=Sản phẩm chính    CategoryId=${category_id}
     ${UNIQUE_CHILD_CODE}=    Generate Random String    6    [UPPER]
     ${UNIQUE_CHILD_CODE_2}=    Generate Random String    6    [UPPER]
     
     # Tạo danh sách các đơn vị con, có hai đơn vị con có mã trùng lặp
     
     ${child1}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1
+    ${child1}=    Set To Dictionary    ${child1}    Name=Sản phẩm con 1    CategoryId=${category_id}
     ...    Code=${UNIQUE_CHILD_CODE}    # Mã trùng lặp
     ...    Unit=Hộp
     ...    ConversionValue=10
@@ -770,7 +827,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Không Trùng
     ...    OnHand=5
     
     ${child2}=    Deep Copy    ${STANDARD_PRODUCT_REQUEST}
-    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2
+    ${child2}=    Set To Dictionary    ${child2}    Name=Sản phẩm con 2    CategoryId=${category_id}
     ...    Code=${UNIQUE_CHILD_CODE_2}    # Mã trùng lặp
     ...    Unit=Thùng
     ...    ConversionValue=50

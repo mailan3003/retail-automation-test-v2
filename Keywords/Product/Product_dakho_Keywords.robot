@@ -28,7 +28,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Chính Có ${onhand} Và Kho Ph�
         ${total_onhand}=    Evaluate    ${total_onhand} + ${ton_kho}
     END
     ${request}    Update Dictionary Property    ${request}    Code    ${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    Onhand     ${onhand} 
     ${request}    Update Dictionary Property    ${request}    ProductWithWarehouseStockTakes   ${list_body_onhand}  
     ${request}    Update Dictionary Property    ${request}    TotalWarehouseOnHand      ${total_onhand}
@@ -69,7 +70,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Đơn Vị Tính ${name_unit} Có ${value}
         ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
         ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
         ${request}    Update Dictionary Property    ${request}    Code    ${random_code}
-        ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+        ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    Onhand     ${onhand} 
         ${request}    Update Dictionary Property    ${request}    ProductWithWarehouseStockTakes   ${list_body_onhand}  
         ${request}    Update Dictionary Property    ${request}    TotalWarehouseOnHand      ${total_onhand}    
@@ -157,7 +159,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuộc Tính ${dict_attribute_name} Kho C
                 ${attribute}=    Update Nested Dictionary Property      ${attribute}    Value    ${value}
                 Append To List    ${product_attributes}    ${attribute}
             END
-        ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+        ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    Onhand     ${onhand} 
         ${request}    Update Dictionary Property    ${request}    ProductWithWarehouseStockTakes   ${list_body_onhand}  
         ${request}    Update Dictionary Property    ${request}    TotalWarehouseOnHand      ${total_onhand}    
@@ -253,7 +256,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuộc Tính ${dict_attribute_name} Đơn
                 Append To List    ${product_attributes}    ${attribute}
             END
 
-            ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA}
+            ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+            ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
             ${request}    Update Dictionary Property    ${request}    Onhand     ${onhand} 
             ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
             ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
@@ -352,7 +356,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuộc Tính ${dict_attribute_name} Có T
                 ${request}    Update Dictionary Property    ${request}    Onhand     ${ton_kho_values[0]} 
 
             END
-            ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA}
+            ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_DAKHO}
+            ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
             ${request}    Update Dictionary Property    ${request}    ProductWithWarehouseStockTakes   ${list_body_onhand}  
             ${request}    Update Dictionary Property    ${request}    TotalWarehouseOnHand      ${total_onhand} 
             ${request}=    Update Nested Dictionary Property     ${request}    ProductAttributes    ${product_attributes}

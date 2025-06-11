@@ -98,6 +98,12 @@ Lấy thông tin hãng sản xuất nhà thuốc
     ${result}=    Select One Master    ${query}    ${manufacturer_id}
     RETURN    ${result}
 
+Lấy Thông tin Đường Dùng
+    [Arguments]    ${route_of_administration}
+    ${query}=    Set Variable    SELECT Id, Name FROM RetailerRouteOfAdministration WHERE Name = ? AND RetailerId = ?
+    ${result}=    Select One Master    ${query}    ${route_of_administration}    ${RETAILER_ID}
+    RETURN    ${result[0]}  ${result[1]}
+
 Lấy ID thuộc tính  
     [Arguments]    ${attribute_name}
     ${query}=    Set Variable    SELECT Id FROM Attribute WHERE Name=? AND RetailerId= ?
@@ -659,6 +665,18 @@ Lấy Thông tin Nhóm Hàng
     ${result}=    Fetch One    ${query}    ${group_name}    ${RETAILER_ID}
     RETURN    ${result[0]}
 
+Lấy ID Vị Trí Lưu Trữ
+    ${query}=    Set Variable    SELECT TOP 1 Id FROM Shelves WHERE RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${RETAILER_ID}
+    ${shelf_id}=    Set Variable If    "${result}" != "None"    ${result[0]}    1
+    RETURN    ${shelf_id}
+
+Lấy ID Thương Hiệu
+    ${query}=    Set Variable    SELECT TOP 1 Id FROM TradeMark WHERE RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${RETAILER_ID}
+    ${brand_id}=    Set Variable If    "${result}" != "None"    ${result[0]}    1
+    RETURN    ${brand_id}
+
 Xác Thực Sản Phẩm ${list_product_code} Có Điểm ${different_points}
     FOR    ${item_code}    ${item_different_point}    IN ZIP    ${list_product_code}    ${different_points}
         ${product_id}=    Lấy Thông tin Sản Phẩm    ${item_code}
@@ -873,6 +891,11 @@ Xác Thực Biến Thể Mới Được Thêm Thành Công
         Should Be True    ${attr_result[0]} > 0    Biến thể mới ${variant_code} không có thuộc tính
     END
 
+Xác Thực Sản Phẩm Có Mã Barcode Đúng
+    ${query}=    Set Variable    SELECT Barcode FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin mã barcode
+    Should Be Equal As Strings    ${result[0]}    ${BARCODE}
 Lấy Thông tin Sản Phẩm  
     [Arguments]    ${product_code}
     ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ? AND RetailerId = ?

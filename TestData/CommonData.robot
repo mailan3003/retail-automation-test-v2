@@ -5,8 +5,6 @@
 ${DEFAULT_BANK_ACCOUNT_ID}      1000000040
 ${DEFAULT_LOCATION_ID}          1        
 ${DEFAULT_WARD_ID}              1 
-${INVOICE_DUPLICATED_CODE}      HD000001
-${INVOICE_LONG_CODE}            HDSDO_012345678901234567890123456789012345678901234567890
 
 #Invoice data
 ${VOID_INVOICE_ID}              521838
@@ -102,37 +100,6 @@ ${TAX_1_ID}             2
 ...    TaxId=${TAX_1_ID}
 
 
-# Product Details
-&{VALID_PRODUCT_WITH_DISCOUNT}    
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    Discount=10000
-
-&{PRODUCT_1_DETAILS}    
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    Discount=0
-
-&{PRODUCT_2_DETAILS}    
-...    ProductId=${PRODUCT_2}
-...    Quantity=1
-...    Price=200000
-...    Discount=0
-
-# Serial Product Templates
-&{VALID_SERIAL_PRODUCT}    
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    SerialNumbers=SN001,SN002
-
-&{USED_SERIAL_PRODUCT}    
-...    ProductId=${PRODUCT_1}
-...    Quantity=1
-...    Price=100000
-...    SerialNumbers=SN003,SN004
 
 # Sale channel data
 ${valid_channel_id}    6666
@@ -240,15 +207,7 @@ ${DEFAULT_DELIVERY_PRICE}    20000
 ${DELIVERY_PARTNER_1}        9999
 ${DELIVERY_PARTNER_ID}        1000000117
 ${DELIVERY_PARTNER_3}        7777
-&{VALID_DELIVERY_INFO}
-...    ReceiverName=Test Receiver
-...    ReceiverPhone=0987654321
-...    ReceiverAddress=123 Test Street
-...    LocationId=${DEFAULT_LOCATION_ID}
-...    WardId=${DEFAULT_WARD_ID}
-...    DeliveryBy=1
-...    UseDefaultPartner=true
-...    Status=0
+
 
 ${DEFAULT_DELIVERY_PRICE}    20000
 ${DEFAULT_IS_FREE_SHIP}    false
@@ -277,20 +236,10 @@ ${CHILD_PRODUCT_ID}     2
 ${PARENT_PRODUCT_UNIT}  Chiếc
 ${EXISTING_CHILD_UNIT}  Hộp
 
-# Standard request template for product creation
-${STANDARD_REQUEST}    {
-    ...    "ListProducts": [],
-    ...    "ListProductsString": "",
-    ...    "PinnedImageId": null,
-    ...    "CommissionIds": [],
-    ...    "CloneProductId": 0,
-    ...    "DeletedImageId": [],
-    ...    "ProductImageSuggestUrl": "",
-    ...    "ProductImagesSalesChannelUrl": [],
-    ...    "BranchForProductCosts": [],
-    ...    "IsUpdateAllSystem": false,
-    ...    "IsSyncNationalPharmacy": false,
-    ...    "ListBranchsSelected": [],
-    ...    "isAddFromOtherForm": false
-    ...    }
+${CATEGORY_NAME}     Smartphone
+${CATEGORY_NAME_DRUG}    Drug
+${CATEGORY_HANG_HOA_VLXD}    VLXD 
+${CATEGORY_HANG_HOA_DAKHO}   warehouse
+${ROUTE_OF_ADMINISTRATION}    Drink
+
 
