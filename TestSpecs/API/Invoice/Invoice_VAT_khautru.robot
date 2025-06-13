@@ -7,7 +7,9 @@ Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
+Test Teardown     Delete Invoice From API
 
 *** Keywords ***
 

@@ -4,8 +4,8 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Order/CreateOrderData.robot
 Resource          ../Invoice/PromotionKeywords.robot
 Resource          ../Invoice/GiftProcessingKeywords.robot
-Resource          ../Promotion/PromotionComnandKeywords.robot
-Resource          OrderCommandKeywords.robot
+Resource          ../Promotion/PromotionComnonKeywords.robot
+Resource          OrderCommonKeywords.robot
 Resource          CreateOrderKeywords.robot
 Resource          ../../Config/Env_api.robot
 Resource          ../Utilities/RequestHelper.robot

@@ -1,13 +1,15 @@
 *** Settings ***
 Documentation    Test cases for pharmacy prescription validation in invoices
-Suite Setup       Init Test Environment   ${ENV}
+Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource         ../../../Keywords/Invoice/PrescriptionKeywords.robot
 Resource         ../../../Keywords/Utilities/ResponseHelper.robot
 Resource         ../../../Keywords/Utilities/DataUtilities.robot
 Resource         ../../../Keywords/Utilities/RequestHelper.robot
 Resource         ../../../TestData/Invoice/PrescriptionData.robot
-Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource         ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource        ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
+
 *** Test Cases ***
 RT-PR-001 Kiểm tra tạo hóa đơn theo đơn thuốc
     [Documentation]    Kiểm tra hệ thống tạo hóa đơn theo đơn thuốc
@@ -26,7 +28,7 @@ RT-PR-002 Tạo hóa đơn với cửa hàng không phải nhà thuốc GPP
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác định hóa đơn Không sử dụng đơn thuốc
-    [Teardown]    Tear down Delete Hóa Đơn
+    [Teardown]    Delete Invoice From API
 RT-PR-003 Kiểm tra thiếu thông tin đơn thuốc và bệnh nhân
     [Documentation]    Kiểm tra lỗi khi không cung cấp thông tin đơn thuốc và bệnh nhân
     [Tags]    prescription     nhathuoc   
@@ -84,7 +86,7 @@ RT-PR-009 Kiểm tra xác thực mã đơn thuốc đúng 50 ký tự
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Thông Tin Đơn Thuốc Được Lưu Trong DB
     And Xác Thực Hóa Đơn Có Đơn Thuốc Bán Theo Đơn ${PRESCRIPTION_ID}
-    [Teardown]    Tear down Delete Hóa Đơn
+    [Teardown]    Delete Invoice From API
 
 RT-PR-009 Kiểm tra xác thực mã đơn thuốc đã tồn tại
     [Documentation]    Kiểm tra lỗi khi mã đơn thuốc đã tồn tại trong hệ thống
@@ -110,6 +112,7 @@ RT-PR-011 Kiểm tra thành công với thông tin đơn thuốc và bệnh nhâ
     When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
+     [Teardown]    Delete Invoice From API
 
 RT-PR-012 Kiểm tra thành công với đơn thuốc toàn cầu
     [Documentation]    Kiểm tra tạo thành công hóa đơn với đơn thuốc toàn cầu và các sản phẩm có mô tả đầy đủ

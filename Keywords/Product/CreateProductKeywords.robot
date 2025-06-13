@@ -10,7 +10,7 @@ Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 #Resource          ../../TestData/Product/ProductInputData.robot
 Library           String
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 *** Variables ***
 ${IMAGE_URL}    https://cdn2-retail-images.kiotviet.vn/0914616818/1c8f44ae06ca4e5583f3648db0eeeac1.jpeg
 *** Keywords ***

@@ -5,7 +5,7 @@ Documentation    Test cases cho chức năng xử lý ngoại lệ và lỗi tro
 ...              KvValidateSaleChannelException, KvValidateInvoiceException
 Suite Setup       Init Test Environment    ${ENV}    MHBH
 Resource         ../../../Keywords/Order/ExceptionHandling_Keywords.robot
-Resource         ../../../Keywords/Order/OrderCommandKeywords.robot
+Resource         ../../../Keywords/Order/OrderCommonKeywords.robot
 Resource         ../../../TestData/Order/ExceptionHandlingData.robot
 Resource         ../../../TestData/CommonData.robot
 Resource         ../../../Keywords/Utilities/Utilities.robot

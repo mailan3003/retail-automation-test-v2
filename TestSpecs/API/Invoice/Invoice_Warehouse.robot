@@ -6,53 +6,52 @@ Resource     ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Resource     ../../../Keywords/Utilities/ResponseHelper.robot
 Resource     ../../../Keywords/Utilities/RequestHelper.robot
 Resource     ../../../Keywords/Utilities/DataUtilities.robot
-
+Resource     ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Library      ../../../Resources/DatabaseLibrary.py
-Test Teardown     Tear Down Delete Hóa Đơn
+
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    InvoiceWarehouseTest
 
 *** Test Cases ***
 RT-IWH-001 Tạo hóa đơn gian hàng với sản phẩm từ kho bán hàng
     [Tags]    warehouse    smoke      dakho
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với sản phẩm từ kho chính
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ${PRODUCT_CODE_1}, Số lượng=2.51, Giá=100,000đ, Kho=${MAIN_WAREHOUSE_ID}
+    ...    - Sản phẩm WH00001, Số lượng=2.51, Giá=100,000đ, Kho=${MAIN_WAREHOUSE_ID}
     ...    - Logic xử lý: InvoiceWarehouseService.CreateInvoiceWithWarehouse()
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - InvoiceWarehouseDetail được tạo với WarehouseId=${MAIN_WAREHOUSE_ID}
     ...    - Số lượng tồn kho tại kho chính giảm 1 đơn vị
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Mã WH00001 có Số Lượng 2.51 Kho Bán Hàng
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WH00001 
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WH00001 Tại Kho Bán Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 2.51 đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm 2.51 đơn vị Tại Kho Bán Hàng
+    And Tổng tồn kho sản phẩm WH00001 đã giảm 2.51 đơn vị
+    And Tồn kho sản phẩm WH00001 đã giảm 2.51 đơn vị Tại Kho Bán Hàng
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-002 Tạo hóa đơn gian hàng với sản phẩm từ kho phụ
     [Tags]    warehouse    smoke     dakho
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với sản phẩm từ kho phụ
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm ${PRODUCT_CODE_1}, Số lượng=1, Giá=100,000đ, Kho=${SECONDARY_WAREHOUSE_ID}
+    ...    - Sản phẩm WH0002, Số lượng=1, Giá=100,000đ, Kho=${SECONDARY_WAREHOUSE_ID}
     ...    - Logic xử lý: InvoiceWarehouseService.CreateInvoiceWithWarehouse()
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - InvoiceWarehouseDetail được tạo với WarehouseId=${SECONDARY_WAREHOUSE_ID}
     ...    - Số lượng tồn kho tại kho phụ giảm 1 đơn vị
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Mã WH0002 có Số Lượng 3.01 Kho Kho 1
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Kho 1
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WH0002
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WH0002 Tại Kho Kho 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Kho 1
-    And Tồn kho sản phẩm ${product_id} đã giảm 3.01 đơn vị Tại Kho Kho 1
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 3.01 đơn vị
-
+    And Tồn kho sản phẩm WH0002 đã giảm 3.01 đơn vị Tại Kho Kho 1
+    And Tổng tồn kho sản phẩm WH0002 đã giảm 3.01 đơn vị
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-006 Tạo hóa đơn gian hàng với hàng imei  
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với sản phẩm chưa có tồn kho (AllowSellWhenOutOfStock=true)
@@ -65,15 +64,15 @@ RT-IWH-006 Tạo hóa đơn gian hàng với hàng imei
     ...    - Số lượng tồn kho tại kho chính giảm xuống giá trị âm
     [Tags]    warehouse    smoke     dakho
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm WHSI000001 Với Serial MI0001 Tại Kho Bán Hàng    
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng 
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHSI000001
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHSI000001 Tại Kho Bán Hàng 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 1 đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm 1 đơn vị Tại Kho Bán Hàng
+    And Tổng tồn kho sản phẩm WHSI000001 đã giảm 1 đơn vị
+    And Tồn kho sản phẩm WHSI000001 đã giảm 1 đơn vị Tại Kho Bán Hàng
     And Serial MI0001 chuyển sang trạng thái đã bán
-
+    [Teardown]     Delete Invoice From API
 RT-IWH-007 Tạo hóa đơn gian hàng với hàng imei  
     [Tags]    warehouse    smoke     dakho
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với sản phẩm chưa có tồn kho (AllowSellWhenOutOfStock=false)
@@ -84,15 +83,15 @@ RT-IWH-007 Tạo hóa đơn gian hàng với hàng imei
     ...    - Status code: 400
     ...    - Thông báo lỗi: "Sản phẩm không đủ tồn kho"
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm WHSI00002 Với Serial KHO6 Tại Kho Kho 2    
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Kho 2 
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHSI00002
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHSI00002 Tại Kho Kho 2 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 1 đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm 1 đơn vị Tại Kho Kho 2
+    And Tổng tồn kho sản phẩm WHSI00002 đã giảm 1 đơn vị
+    And Tồn kho sản phẩm WHSI00002 đã giảm 1 đơn vị Tại Kho Kho 2
     And Serial KHO6 chuyển sang trạng thái đã bán
-
+    [Teardown]     Delete Invoice From API
 RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate 
     [Tags]    warehouse    smoke      dakho
     [Documentation]    Kiểm tra tạo hóa đơn gian hàng với hàng lodate 
@@ -103,14 +102,15 @@ RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate
     ...    - Status code: 400
     ...    - Thông báo lỗi: "Kho không tồn tại"
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô WHLD0002 Với Lo1 Số Lượng 2.5 Tại Kho Bán Hàng
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id} 
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng 
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHLD0002 
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHLD0002 Tại Kho Bán Hàng 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Số lượng lô ${product_batch_id} đã giảm 2.5 đơn vị
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 2.5 đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm 2.5 đơn vị Tại Kho Bán Hàng
+    And Số lượng lô WHLD0002 đã giảm 2.5 đơn vị
+    And Tổng tồn kho sản phẩm WHLD0002 đã giảm 2.5 đơn vị
+    And Tồn kho sản phẩm WHLD0002 đã giảm 2.5 đơn vị Tại Kho Bán Hàng
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate Kho phụ
     [Tags]    warehouse    smoke   dakho 
@@ -122,14 +122,15 @@ RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate Kho phụ
     ...    - Status code: 400
     ...    - Thông báo lỗi: "Kho không tồn tại"
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Lô WHLD0003 Với Lo1 Số Lượng 1.55 Tại Kho Kho 2
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id} 
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Kho 2 
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHLD0003 
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHLD0003 Tại Kho Kho 2 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
     And Số lượng lô ${product_batch_id} đã giảm 1.55 đơn vị
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm 1.55 đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm 1.55 đơn vị Tại Kho Kho 2
+    And Tổng tồn kho sản phẩm WHLD0003 đã giảm 1.55 đơn vị
+    And Tồn kho sản phẩm WHLD0003 đã giảm 1.55 đơn vị Tại Kho Kho 2
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-009 Tạo hóa đơn gian hàng với sản phẩm combo
     [Tags]    warehouse    smoke   dakho 
@@ -147,7 +148,8 @@ RT-IWH-009 Tạo hóa đơn gian hàng với sản phẩm combo
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Sản phẩm con trong combo ${product_id} đã giảm tồn kho 2 lần số lượng tại kho Bán Hàng
+    And Sản phẩm con trong combo WHCOMBO001 đã giảm tồn kho 2 lần số lượng tại kho Bán Hàng
+     [Teardown]     Delete Invoice From API
 
 
 RT-IWH-0011 Tạo hóa đơn gian hàng với sản phẩm combo kho phụ
@@ -166,7 +168,8 @@ RT-IWH-0011 Tạo hóa đơn gian hàng với sản phẩm combo kho phụ
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Kho 1
-    And Sản phẩm con trong combo ${product_id} đã giảm tồn kho 1 lần số lượng tại kho Kho 1
+    And Sản phẩm con trong combo WHCOM0002 đã giảm tồn kho 1 lần số lượng tại kho Kho 1
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-010 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng
     [Tags]    warehouse    smoke    dakho
@@ -180,13 +183,14 @@ RT-IWH-010 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng
     ...    - InvoiceWarehouseDetail được tạo với WarehouseId tương ứng cho từng lô
     ...    - Số lượng tồn kho của từng lô tại các kho giảm tương ứng
     Given Chuẩn Bị Dữ Liêu Hóa Đơn Với Sản Phẩm WHND0001 Có 10 Dòng Số Lượng Mỗi Dòng 3 Tại Kho Bán Hàng
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Bán Hàng
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHND0001
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHND0001 Tại Kho Bán Hàng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Bán Hàng
+    And Tổng tồn kho sản phẩm WHND0001 đã giảm ${TOTAL_QUANTITY} đơn vị
+    And Tồn kho sản phẩm WHND0001 đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Bán Hàng
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-011 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng kho phụ
     [Tags]    warehouse    smoke   dakho
@@ -200,13 +204,14 @@ RT-IWH-011 Tạo hóa đơn gian hàng với sản phẩm theo nhiều dòng kho
     ...    - InvoiceWarehouseDetail được tạo với WarehouseId tương ứng cho từng lô
     ...    - Số lượng tồn kho của từng lô tại các kho giảm tương ứng
     Given Chuẩn Bị Dữ Liêu Hóa Đơn Với Sản Phẩm WHND0002 Có 10 Dòng Số Lượng Mỗi Dòng 3 Tại Kho Kho 1
-    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
-    And Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho Kho 1
+    And Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm WHND0002
+    And Xem Thông Tin Tồn Kho Của Sản Phẩm WHND0002 Tại Kho Kho 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Kho 1
-    And Tổng tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị
-    And Tồn kho sản phẩm ${product_id} đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Kho 1
+    And Tổng tồn kho sản phẩm WHND0002 đã giảm ${TOTAL_QUANTITY} đơn vị
+    And Tồn kho sản phẩm WHND0002 đã giảm ${TOTAL_QUANTITY} đơn vị Tại Kho Kho 1
+    [Teardown]     Delete Invoice From API
 
 RT-IWH-012 Tạo hóa đơn với kho hàng đã bị xóa
     [Tags]    warehouse    negative    AIGenerated    dakho

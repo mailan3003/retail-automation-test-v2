@@ -12,7 +12,7 @@ Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 #Resource          ../../TestData/Product/ProductInputData.robot
 Library           String
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 *** Variables ***
 ${ROA_ID_NHA_THUOC}    1000000001
 *** Keywords ***

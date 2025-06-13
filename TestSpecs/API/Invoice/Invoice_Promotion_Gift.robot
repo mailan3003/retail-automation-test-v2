@@ -4,11 +4,14 @@ Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/GiftProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Invoice/PromotionKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Library           ../../../Resources/DatabaseLibrary.py
+Test Teardown     Delete Invoice From API
+
 
 
 *** Keywords ***
@@ -32,13 +35,13 @@ RT-GP-001 Tạo hóa đơn thành công với quà tặng sản phẩm
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với giá 0đ
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion
     ...    - Sản phẩm quà tặng được trừ khỏi tồn kho
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_ID} Với Quà Tặng Sản Phẩm HTKM04 
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_promotion_id}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_CODE} Với Quà Tặng Sản Phẩm HTKM04 
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm HTKM04
     When Gửi Yêu Cầu Tạo Hóa Đơn 
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    ${product_promotion_id}    ${quantity_promotion}  
+    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    HTKM04    ${quantity_promotion}  
     And Thông Tin Khuyến Mãi Có Loại 2
-    And Tồn kho sản phẩm ${product_promotion_id} đã giảm ${quantity_promotion} đơn vị
+    And Tồn kho sản phẩm HTKM04 đã giảm ${quantity_promotion} đơn vị
 
 RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sản phẩm
     [Tags]    gift    smoke   apiinvoice    regression
@@ -55,12 +58,12 @@ RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sả
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với giá 0đ
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion với loại 6
-    Given Chuẩn bị dữ liệu khuyến mãi ${PROMOTION_GIFT_ID_2} mua hàng HH0036 tặng sản phẩm NK001 
+    Given Chuẩn bị dữ liệu khuyến mãi ${PROMOTION_GIFT_CODE_2} mua hàng HH0036 tặng sản phẩm NK001 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    ${product_promotion_id}    ${quantity_promotion}  
+    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    $NK001    ${quantity_promotion}  
     And Thông Tin Khuyến Mãi Có Loại 6
-    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_GIFT_ID_2}
+    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_GIFT_CODE_2}
 
 RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     [Tags]    gift    smoke   apiinvoice    regression
@@ -78,7 +81,7 @@ RT-GP-003 Tạo hóa đơn thành công với quà tặng voucher
     ...    - Voucher mới được tạo với giá trị 100,000đ
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
     ...    - Trạng thái voucher là Kích hoạt (1)
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_3} Với Quà Tặng Voucher
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE_3} Với Quà Tặng Voucher
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
@@ -100,7 +103,7 @@ RT-GP-004 Tạo hóa đơn thành công với quà tặng voucher theo sản ph�
     ...    - Status code: 200
     ...    - Voucher mới được tạo với giá trị 50,000đ
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_4} Hàng Hóa HKM008 Quà Tặng Voucher
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE_4} Hàng Hóa HKM008 Quà Tặng Voucher
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
@@ -124,7 +127,7 @@ RT-GP-005 Tạo hóa đơn thành công với quà tặng điểm
     ...    - Status code: 200
     ...    - Điểm thưởng khuyến mãi được lưu trong bảng InvoicePromotion với giá trị 10
     ...    - Tổng điểm hóa đơn là 10 điểm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_5} Tặng Điểm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE_5} Tặng Điểm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
@@ -148,7 +151,7 @@ RT-GP-006 Tạo hóa đơn thành công với quà tặng điểm theo sản ph�
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Điểm thưởng khuyến mãi được lưu trong bảng InvoicePromotion với giá trị 15
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_6} Tặng Điểm Theo Sản Phẩm HKM009 
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE_6} Tặng Điểm Theo Sản Phẩm HKM009 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
@@ -170,11 +173,11 @@ RT-GP-007 Tạo hóa đơn thành công với nhiều quà tặng cùng lúc
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn
     ...    - Điểm thưởng khuyến mãi được thêm vào hóa đơn
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID} Tặng Sản Phẩm HKM007 Và Khuyến Mãi Tặng điểm ${PROMOTION_GIFT_ID_5}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE} Tặng Sản Phẩm HKM007 Và Khuyến Mãi Tặng điểm ${PROMOTION_GIFT_CODE_5}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id} Với Số Lượng 3
+    And Xác Thực Số Lượng Quà Tặng HKM007 Với Số Lượng 3
     And Xác Thực Quà Tặng Điểm Theo ${sale_promotion_id_point} Với Điểm 10
     And Xác Thực Tracking Điểm Theo ${INVOICE_ID} Với Điểm 10
 
@@ -191,12 +194,12 @@ RT-GP-008 Tạo hóa đơn thành công với quà tặng nhiều sản phẩm k
     ...    - Status code: 200
     ...    - Sản phẩm quà tặng được thêm vào hóa đơn với số lượng=3
     ...    - Thông tin khuyến mãi được lưu trong bảng InvoicePromotion
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_ID} Tặng 2 Sản Phẩm HTKM03 Và 1 Sản phẩm HTKM04 
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${PROMOTION_GIFT_CODE} Tặng 2 Sản Phẩm HTKM03 Và 1 Sản phẩm HTKM04 
     When Gửi Yêu Cầu Tạo Hóa Đơn 
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id} Với Số Lượng 2
-    And Xác Thực Số Lượng Quà Tặng ${product_promotion_id_1} Với Số Lượng 1
+    And Xác Thực Số Lượng Quà Tặng HTKM03 Với Số Lượng 2
+    And Xác Thực Số Lượng Quà Tặng HTKM04 Với Số Lượng 1
 
 RT-GP-009 Tạo hóa đơn thành công với nhiều voucher quà tặng
     [Tags]    gift    smoke   apiinvoice    regression
@@ -213,7 +216,7 @@ RT-GP-009 Tạo hóa đơn thành công với nhiều voucher quà tặng
     ...    - Status code: 200
     ...    - 3 voucher mới được tạo với giá trị 20,000đ mỗi voucher
     ...    - Thông tin voucher được liên kết với hóa đơn trong bảng InvoiceVoucher
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_ID_9} Với Nhiều Voucher
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${PROMOTION_GIFT_CODE_9} Với Nhiều Voucher
     When Gửi Yêu Cầu Tạo Hóa Đơn 
     Then Mã Trạng Thái Phải Là 200
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id

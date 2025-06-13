@@ -13,7 +13,6 @@ Library           ../../Resources/Databasepromotion.py
 Library           json
 
 *** Variables ***
-${CUSTOMER_ENDPOINT}    customers
 
 *** Keywords ***
 Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi
@@ -70,13 +69,13 @@ Lấy ID Mã Voucher ở Trạng Thái Đã Phát Hành
     [Arguments]    ${Voucher_campain}   
     ${query_2}=    Set Variable    SELECT top(1) Id FROM Voucher WHERE VoucherCampaignId = ? AND Status = 1 
     ${result}=    Fetch One    ${query_2}    ${Voucher_campain}
-    RETURN    ${result[0]}
+    RETURN    ${result[0]}    
 
 Lấy ID Mã Voucher Mới Nhất ở Trạng Thái Đã Phát Hành
     [Arguments]    ${Voucher_campain}
     ${query_2}=    Set Variable    SELECT top(1) Id FROM Voucher WHERE VoucherCampaignId = ? AND Status = 1 ORDER BY Id DESC
     ${result}=    Fetch One    ${query_2}    ${Voucher_campain}
-    RETURN    ${result[0]}
+    RETURN    ${result[0]}    
 
 Lấy List ID Mã Voucher ở Trạng Thái Đã Phát Hành
     [Arguments]    ${Voucher_campain}    ${number_of_voucher}
@@ -86,12 +85,12 @@ Lấy List ID Mã Voucher ở Trạng Thái Đã Phát Hành
 
 Lấy ID Mã Voucher Theo Trạng Thái 
     [Documentation]    Lấy ID Mã Voucher Theo Trạng Thái(chưa sử dụng, đã sử dụng, đã hết hạn)
-    [Arguments]    ${Voucher_campain}    ${status}
+    [Arguments]    ${Voucher_campain_id}    ${status}
     ${status}=    Run Keyword If    '${status}'=='Chưa Sử Dụng'    Set Variable    0   
     ...     ELSE IF    '${status}'=='Đã Sử Dụng'    Set Variable    3
     ...     ELSE IF    '${status}'=='Đã Phát Hành'    Set Variable    1
     ${query_3}=    Set Variable    SELECT top(1) Id, Code FROM Voucher WHERE VoucherCampaignId = ? AND Status = ?
-    ${result}=    Fetch One    ${query_3}    ${Voucher_campain}    ${status}
+    ${result}=    Fetch One    ${query_3}    ${Voucher_campain_id}    ${status}
     RETURN    ${result[0]}    ${result[1]}
 
 
@@ -127,3 +126,23 @@ Update Trạng thái List Voucher ${list_voucher_id} Sang Trạng Thái ${status
         ${query}=    Set Variable    UPDATE Voucher SET Status = ? WHERE Id = ?
         Execute Query    ${query}    ${status}    ${list_voucher_id[${index}]}
     END
+
+
+#Coupon
+Lấy Thông Tin Coupon Theo Mã Coupon Campaign
+   [Arguments]    ${coupon_campaign_code}
+    ${query}=    Set Variable    SELECT Id,PriceRatio,PriceMax FROM CouponCampaign WHERE Code = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${coupon_campaign_code}
+    ${price_ratio}=    Convert To Number    ${result[1]}
+    ${price_max}=    Convert To Number    ${result[2]}
+    RETURN    ${result[0]}    ${price_ratio}    ${price_max}
+
+Lấy Id Mã Coupon ở Trạng Thái 
+    [Arguments]    ${coupon_campaign_id}    ${status}
+    ${status}=    Run Keyword If    '${status}'=='Chưa Sử Dụng'    Set Variable    0   
+    ...     ELSE IF    '${status}'=='Đã Sử Dụng'    Set Variable    3
+    ...     ELSE IF    '${status}'=='Đã Phát Hành'    Set Variable    1
+    ${query}=    Set Variable    SELECT Id,Code FROM Coupon WHERE CouponCampaignId = ? AND Status = ? AND IsDeleted = 0
+    ${result}=    Fetch One    ${query}    ${coupon_campaign_id}    ${status}
+    RETURN    ${result[0]}    ${result[1]}
+

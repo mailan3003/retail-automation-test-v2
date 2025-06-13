@@ -5,7 +5,9 @@ Resource         ../Utilities/ResponseHelper.robot
 Resource         ../Utilities/Utilities.robot
 Resource         ../../TestData/Invoice/PrescriptionData.robot
 Resource         ../../TestData/Invoice/CommonInvoiceData.robot
-Resource    ../Utilities/DataUtilities.robot
+Resource         ../Product/ProductCommonKeywords.robot
+Resource         ../Customer/CustomerCommonKeywords.robot
+Resource         ../Utilities/DataUtilities.robot
 Library          ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
@@ -17,7 +19,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc ${status} Liên Kết Theo Đơ
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}    Deep Copy   ${STANDARD_PRESCRIPTION_DETAIL}
-    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_MEDICINE_CODE}
+    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_prescription}    Update Nested Dictionary Property    ${data_prescription}    Code    ${prescription_code}
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
@@ -27,33 +30,15 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc ${status} Liên Kết Theo Đơ
     RETURN    ${request}
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Theo Đơn Thuốc
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Dài Hơn 50 Ký Tự
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với mã đơn thuốc dài hơn 50 ký tự
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc với mã dài
-    Set To Dictionary    ${data}    Prescription=${PRESCRIPTION_WITH_LONG_CODE}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
+
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Đã Tồn Tại
     [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với mã đơn thuốc đã tồn tại
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}    Deep Copy   ${STANDARD_PRESCRIPTION_DETAIL}
-    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_MEDICINE_CODE}
+    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_prescription}    Update Nested Dictionary Property    ${data_prescription}    Code     DT000001
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
@@ -62,32 +47,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc Đã T�
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với ID Đơn Thuốc > 0 Và Không Có Mã
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với ID đơn thuốc > 0 và không có mã
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc với ID > 0 và không có mã
-    Set To Dictionary    ${data}    Prescription=${PRESCRIPTION_WITH_ID_BUT_NO_CODE}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
 Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thông Tin Đơn Thuốc Và Bệnh Nhân Đầy Đủ
     [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thông tin đơn thuốc và bệnh nhân đầy đủ
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}    Deep Copy   ${STANDARD_PRESCRIPTION_DETAIL}
-    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_MEDICINE_CODE}
+    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.UsingPrescription    1
@@ -96,45 +62,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thông Tin Đơn Thuốc 
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingGlobalPrescription=1 Và Mô Tả Đầy Đủ
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với đơn thuốc toàn cầu và mô tả đầy đủ
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_WITH_GLOBAL_PRESCRIPTION})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingGlobalPrescription=1 Và Mã Đơn Đã Tồn Tại
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với đơn thuốc toàn cầu và mã đã tồn tại
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_WITH_GLOBAL_PRESCRIPTION})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc với mã đã tồn tại và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${PRESCRIPTION_WITH_EXISTING_CODE}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
 
 # Các keyword xác thực database: cần mô phỏng chúng vì không có thư viện DatabaseLibrary thực tế
@@ -198,7 +125,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Khôn
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}   Create List   
-    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_MEDICINE_CODE}
+    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_patient}    Create List   
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
@@ -207,171 +135,6 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Khôn
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Patient    ${data_patient}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Thiếu Thông Tin Đơn Thuốc
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc không có thông tin đơn thuốc nhưng có thông tin bệnh nhân
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc rỗng với bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${EMPTY_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingPrescription=1 Thiếu Thông Tin Bệnh Nhân
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc có thông tin đơn thuốc nhưng không có thông tin bệnh nhân
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc đầy đủ nhưng bệnh nhân rỗng
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${EMPTY_PATIENT}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với UsingGlobalPrescription=1 Và Thuốc Không Có Mô Tả
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với đơn thuốc toàn cầu và sản phẩm không có mô tả
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_WITH_GLOBAL_PRESCRIPTION})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITHOUT_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    # Thêm master medicine tương ứng với sản phẩm trong invoice details
-    ${master_medicine}=    Deep Copy    ${MASTER_MEDICINE}
-    ${medicines}=    Create List    ${master_medicine}
-    Set To Dictionary    ${invoice}    Medicines=${medicines}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Hết Hạn
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc hết hạn
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    # Thêm medicine bị hết hạn
-    ${medicines}=    Create List    ${EXPIRED_MEDICINE}
-    Set To Dictionary    ${invoice}    Medicines=${medicines}
-    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Nhiều Thuốc Hết Hạn
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với nhiều thuốc hết hạn
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    # Thêm nhiều medicine bị hết hạn
-    Set To Dictionary    ${invoice}    Medicines=${MULTIPLE_EXPIRED_MEDICINES}
-    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Thay Thế
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc thay thế
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    # Thêm thuốc thay thế và thuốc hết hạn
-    ${medicines}=    Create List    ${EXPIRED_MEDICINE}    ${REPLACEMENT_MEDICINE}
-    Set To Dictionary    ${invoice}    Medicines=${medicines}
-    Set To Dictionary    ${invoice}    NewMedicines=@{EMPTY}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Thuốc Mới Và Thuốc Hết Hạn
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn nhà thuốc với thuốc mới và thuốc hết hạn
-    ${data}=    Evaluate    dict()
-    
-    ${invoice}=    Evaluate    dict(${PHARMACY_INVOICE_BASE})
-    Set To Dictionary    ${data}    Invoice=${invoice}
-    
-    ${details}=    Create List    ${PRESCRIPTION_DRUG_DETAIL_WITH_NOTE}
-    Set To Dictionary    ${data}    InvoiceDetails=${details}
-    
-    ${payments}=    Create List    ${STANDARD_PAYMENT}
-    Set To Dictionary    ${data}    Payments=${payments}
-    
-    # Thêm thông tin đơn thuốc và bệnh nhân đầy đủ
-    Set To Dictionary    ${data}    Prescription=${COMPLETE_PRESCRIPTION}
-    Set To Dictionary    ${data}    Patient=${COMPLETE_PATIENT}
-    
-    # Thêm thuốc mới và thuốc hết hạn
-    ${medicines}=    Create List    ${EXPIRED_MEDICINE}
-    ${new_medicines}=    Create List    ${NEW_MEDICINE}
-    Set To Dictionary    ${invoice}    Medicines=${medicines}
-    Set To Dictionary    ${invoice}    NewMedicines=${new_medicines}
-    
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
 
 
 Xác Thực Hóa Đơn Được Tạo Thành Công Trong DB
@@ -395,7 +158,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc ${lengt
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}    Deep Copy   ${STANDARD_INVOICE_DETAIL}
     ${data_prescription}    Deep Copy   ${STANDARD_PRESCRIPTION_DETAIL}
-    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${PRODUCT_MEDICINE_CODE_ID}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_MEDICINE_CODE}
+    ${data_product}    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_prescription}    Update Nested Dictionary Property    ${data_prescription}    Code    ${prescription_code}
     ${data_product}    Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}

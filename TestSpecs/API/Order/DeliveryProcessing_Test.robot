@@ -6,7 +6,7 @@ Resource          ../../../TestData/CommonData.robot
 Resource          ../../../Keywords/Order/DeliveryProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Resource          ../../../Keywords/Order/OrderCommandKeywords.robot
+Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 
 *** Test Cases ***

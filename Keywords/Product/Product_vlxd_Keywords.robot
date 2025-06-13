@@ -9,7 +9,7 @@ Resource          ../../TestData/Product/CreateProductData.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 Library           String
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 
 *** Variables ***
 ${CATEGORY_HANG_HOA_VLXD}    VLXD

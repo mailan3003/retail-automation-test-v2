@@ -4,7 +4,7 @@ Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 Resource          ../../TestData/Product/ProductInputData.robot
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 
 *** Variables ***
 ${PRODUCT_API_ENDPOINT}     products/addmany

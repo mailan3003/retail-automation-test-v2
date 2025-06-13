@@ -9,7 +9,7 @@ Resource          ../../TestData/Product/CreateProductData.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 Resource          ../../TestData/Product/ProductInputData.robot
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 Library           String
 *** Variables ***
 ${CATEGORY_ID_HANG_HOA}    1000000754

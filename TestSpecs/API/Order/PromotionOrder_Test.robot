@@ -5,7 +5,7 @@ Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../TestData/CommonData.robot
 Resource          ../../../Keywords/Order/PromotionOrderKeywords.robot
 Resource          ../../../Keywords/Order/CreateOrderKeywords.robot
-Resource          ../../../Keywords/Order/OrderCommandKeywords.robot
+Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
 Resource          ../../../Keywords/Order/UpdateOrderKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource    ../../../Keywords/Order/CompleteOrderKeywords.robot

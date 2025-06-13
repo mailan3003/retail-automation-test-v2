@@ -4,6 +4,7 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../../TestData/Invoice/Invoice_Validation_Data.robot
+Resource          InvoiceCommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -25,8 +26,7 @@ ${PRODUCT_ID_NT}   1000017642
 
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
-    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+    ${request}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     RETURN     ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thiếu Chi Nhánh

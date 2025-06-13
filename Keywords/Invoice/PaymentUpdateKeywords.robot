@@ -257,13 +257,6 @@ Chuẩn Bị Dữ Liệu Thanh Toán ${invoice_id} với ${count} phương thứ
     Set Test Variable    ${REQUEST_DATA}    ${request_data}
     RETURN    ${request_data}
 
-Gửi Yêu Cầu Cập Nhật Thanh Toán
-    ${headers}=    Create Auth Headers
-    # Sử dụng PUT request cho cập nhật thanh toán
-    ${response}=    PUT    ${API_BASE_URL}/api/invoices/payment    ${REQUEST_DATA}    ${headers}
-    Set Test Variable    ${RESPONSE}    ${response}
-    Log    Response: ${response.text}
-    RETURN    ${response}
 
 # Các Keywords kiểm tra trong database
 Xác Thực Thanh Toán Trong CSDL

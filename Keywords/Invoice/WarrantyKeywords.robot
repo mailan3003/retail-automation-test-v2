@@ -2,7 +2,8 @@
 Documentation     Keywords for handling warranty-related invoice operations
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../Invoice/InventoryUpdateKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
 Resource          ../../TestData/Invoice/WarrantyData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -21,10 +22,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Có Thời Hạn ${warran
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${warranty_data}=    Deep Copy    ${invoice_warranty_body}
     ${uuid}       Generate Random String    15    WA[NUMBERS]
-    ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${WARRANTY_PRODUCT_ID}
+    ${product_id}=   Lấy Thông tin Sản Phẩm    ${WARRANTY_PRODUCT_CODE}
+    ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    UseWarranty    ${TRUE}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    Uuid    ${uuid}
-    ${warranty_data}=    Update Info Warranty    ${warranty_data}  ${warranty_type}   ${number_time}    ${number_time_type}   ${WARRANTY_PRODUCT_ID}   
+    ${warranty_data}=    Update Info Warranty    ${warranty_data}  ${warranty_type}   ${number_time}    ${number_time_type}   ${product_id}   
     ${warranty_data}     Update Nested Dictionary Property    ${warranty_data}    InvoiceDetailUuid    ${uuid} 
     ${warranty_data}   Create List    ${warranty_data}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails     ${data_product}
@@ -67,13 +69,14 @@ Transform Warranty Type
     ...  ELSE    Set Variable    ${warranty_type}
     RETURN    ${warranty_type_value}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${warranty_product_id} Nhiều Thời Hạn BH ${warranty_name} ${number_time} ${number_time_type} Và BT ${number_time_bao_tri} ${number_time_type_bao_tri}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${warranty_product_code} Nhiều Thời Hạn BH ${warranty_name} ${number_time} ${number_time_type} Và BT ${number_time_bao_tri} ${number_time_type_bao_tri}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm chỉnh sửa bảo hành
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${warranty_data}=    Deep Copy    ${invoice_warranty_body}
     ${warranty_bao_tri}=    Deep Copy    ${invoice_warranty_body}
     ${uuid}       Generate Random String    15    WA[NUMBERS]
+    ${warranty_product_id}=   Lấy Thông tin Sản Phẩm   ${warranty_product_code}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${warranty_product_id}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    UseWarranty    ${TRUE}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    Uuid    ${uuid}
@@ -93,13 +96,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${warranty_product_id} Nh
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${product_id} Có Imei ${serial_number} Bảo Hành ${number_time} ${number_time_type}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${product_code} Có Imei ${serial_number} Bảo Hành ${number_time} ${number_time_type}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn có sản phẩm bảo hành với serial và tạo phiếu bảo hành tự động
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${warranty_data}=    Deep Copy    ${invoice_warranty_body}
     ${number_time_type_value}   Transform Time Type    ${number_time_type}
     ${uuid}       Generate Random String    15    WA[NUMBERS]
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    IsLotSerialControl   ${true}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    SerialNumbers   ${serial_number}
@@ -114,7 +118,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${product_id} Có 
     Set Test Variable    ${REQUEST_DATA}      ${request} 
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Thời hạn Bảo Hành ${number_time} ${number_time_type} Và ${product_id_2} Thời hạn Bảo Hành ${number_time_2} ${number_time_type_2}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Thời hạn Bảo Hành ${number_time} ${number_time_type} Và ${product_code_2} Thời hạn Bảo Hành ${number_time_2} ${number_time_type_2}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn có sản phẩm bảo hành với thời hạn khác nhau
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
@@ -125,6 +129,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Thời hạ
     ${uuid_2}       Generate Random String    15    WA[NUMBERS]
     ${number_time_type_value}   Transform Time Type    ${number_time_type}    
     ${number_time_type_value_2}   Transform Time Type    ${number_time_type_2}    
+    ${product_id}=   Lấy Thông tin Sản Phẩm    ${product_code}
+    ${product_id_2}=   Lấy Thông tin Sản Phẩm    ${product_code_2}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    UseWarranty    ${TRUE}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    Uuid    ${uuid}         
@@ -154,11 +160,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Thời hạ
 
 Chuẩn Bị Dữ liệu Hóa Đơn Với Hàng Lodate ${product_code} Có Lô ${batch_name} Thời hạn Bảo Trì ${number_time} ${number_time_type}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với hàng lodate và thời hạn bảo trì
-    ${query_1}=    Set Variable    SELECT ID FROM Product WHERE Code = ?
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${query_2}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE BatchName = ? AND ProductId = ?
-    ${result}=    Fetch One    ${query_1}    ${product_code}
-    ${result_batch}=    Fetch One    ${query_2}    ${batch_name}    ${result[0]}
-    Set Test Variable    ${product_id}    ${result[0]} 
+    ${result_batch}=    Fetch One    ${query_2}    ${batch_name}    ${product_id}
     Set Test Variable    ${product_batch_id}    ${result_batch[0]}
     ${number_time_type_value}   Transform Time Type    ${number_time_type}    
     ${uuid}       Generate Random String    15    WA[NUMBERS]
@@ -179,13 +183,14 @@ Chuẩn Bị Dữ liệu Hóa Đơn Với Hàng Lodate ${product_code} Có Lô $
     Set Test Variable    ${REQUEST_DATA}      ${request} 
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn ${number_line} Dòng Với Sản Phẩm ${product_id} Thời hạn Bảo Hành ${number_time} ${number_time_type} 
+Chuẩn Bị Dữ Liệu Hóa Đơn ${number_line} Dòng Với Sản Phẩm ${product_code} Thời hạn Bảo Hành ${number_time} ${number_time_type} 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với hàng hóa nhiều dòng có bảo hành
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${warranty_data}=    Deep Copy    ${invoice_warranty_body}
     ${uuid}       Generate Random String    15    WA[NUMBERS]
     ${number_time_type_value}   Transform Time Type    ${number_time_type}    
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    UseWarranty    ${TRUE}
     ${data_product}=    Update Nested Dictionary Property    ${data_product}    IsMaster    ${TRUE}
@@ -217,23 +222,26 @@ Chuẩn Bị Dữ Liệu Hóa Đơn ${number_line} Dòng Với Sản Phẩm ${pr
 
 
 #### THEN keywords for verification
-Xác Thực Hóa Đơn Có Sản Phẩm ${product_id} BHBT Trong CSDL
+Xác Thực Hóa Đơn Có Sản Phẩm ${product_code} BHBT Trong CSDL
     [Documentation]    Xác thực hóa đơn có sản phẩm bảo hành được lưu trong CSDL
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${query_details}=    Set Variable    SELECT Id FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND UseWarranty = 1
     ${result_details}=    Fetch One    ${query_details}    ${INVOICE_ID}    ${product_id}
     Should Not Be Equal    ${result_details}    None    Không tìm thấy chi tiết hóa đơn với sản phẩm bảo hành ID: ${product_id}
 
 
-Xác Thực Hóa Đơn Có ${number_line} Sản Phẩm ${product_id} BHBT Trong CSDL
+Xác Thực Hóa Đơn Có ${number_line} Sản Phẩm ${product_code} BHBT Trong CSDL
     [Documentation]    Xác thực hóa đơn có sản phẩm bảo hành được lưu trong CSDL
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${number_line_value}    Evaluate    ${number_line} + 1
     ${query_details}=    Set Variable    SELECT COUNT(Id) FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND UseWarranty = 1
     ${result_details}=    Fetch One    ${query_details}    ${INVOICE_ID}    ${product_id}
     Should Be Equal   ${result_details[0]}    ${number_line_value}    Số lượng sản phẩm bảo hành không khớp: ${result_details[0]} != ${number_line_value}
 
 
-Xác Thực Thông Sản Phẩm ${product_id} Chứa Nhiều Thời Hạn BHBT ${warranty_name} ${number_time} ${number_time_type} Được Lưu Trong CSDL
+Xác Thực Thông Sản Phẩm ${product_code} Chứa Nhiều Thời Hạn BHBT ${warranty_name} ${number_time} ${number_time_type} Được Lưu Trong CSDL
     [Documentation]    Xác thực thông tin sản phẩm chứa nhiều thời hạn bảo hành được lưu trong CSDL
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${number_time_type_list}    Create List
     FOR     ${item_number_time_type}    IN      @{number_time_type}
         ${number_time_type_value}   Transform Time Type    ${item_number_time_type}
@@ -256,8 +264,9 @@ Xác Thực Thông Sản Phẩm ${product_id} Chứa Nhiều Thời Hạn BHBT $
     Should Be Equal    ${result_details_list_number_time}    ${number_time}        
     Should Be Equal   ${result_details_list_number_time_type}    ${number_time_type_list}
 
-Xác Thực Thông Tin ${warranty_type} Sản Phẩm ${product_id} Được Lưu Với Thời Hạn ${warranty_period} ${warranty_period_type}
+Xác Thực Thông Tin ${warranty_type} Sản Phẩm ${product_code} Được Lưu Với Thời Hạn ${warranty_period} ${warranty_period_type}
     [Documentation]    Xác thực thông tin bảo hành được lưu với thời hạn ${warranty_period} ${warranty_period_type}
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${warranty_period_type_value}   Transform Time Type    ${warranty_period_type}
     ${warranty_type_value}      Transform Warranty Type    ${warranty_type}
     ${query}=    Set Variable    SELECT Id, NumberTime,TimeType FROM InvoiceWarranty WHERE InvoiceId = ? AND ProductId = ? AND WarrantyType = ?
@@ -270,8 +279,9 @@ Xác Thực Thông Tin ${warranty_type} Sản Phẩm ${product_id} Được Lưu
     Should Not Be Equal    ${result_inventory}    None    Không tìm thấy thông tin tồn kho của sản phẩm bảo hành
 
 
-Xác Thực Thông Tin ${warranty_type} Có ${number_line} Dòng Sản Phẩm ${product_id} Được Lưu Với Thời Hạn ${warranty_period} ${warranty_period_type}
+Xác Thực Thông Tin ${warranty_type} Có ${number_line} Dòng Sản Phẩm ${product_code} Được Lưu Với Thời Hạn ${warranty_period} ${warranty_period_type}
     [Documentation]    Xác thực thông tin bảo hành được lưu với thời hạn ${warranty_period} ${warranty_period_type}
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${warranty_period_type_value}   Transform Time Type    ${warranty_period_type}
     ${warranty_type_value}      Transform Warranty Type    ${warranty_type}
     ${query}=    Set Variable    SELECT Id, NumberTime,TimeType FROM InvoiceWarranty WHERE InvoiceId = ? AND ProductId = ? AND WarrantyType = ?
@@ -314,8 +324,9 @@ Xác Thực Phiếu Bảo Hành Được Tạo Tự Động
     ${warranty_ticket_id}=    Set Variable    ${result[0]}
     Set Test Variable    ${WARRANTY_TICKET_ID}    ${warranty_ticket_id}
 
-Xác Thực Thông Tin ${product_id} Serial ${serial_number} Trong Phiếu Bảo Hành
+Xác Thực Thông Tin ${product_code} Serial ${serial_number} Trong Phiếu Bảo Hành
     [Documentation]    Xác thực thông tin serial ${serial_number} trong phiếu bảo hành
+    ${product_id}=   Lấy Thông tin Sản Phẩm   ${product_code}
     ${query}=    Set Variable    SELECT SerialNumbers FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ?
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin chi tiết phiếu bảo hành

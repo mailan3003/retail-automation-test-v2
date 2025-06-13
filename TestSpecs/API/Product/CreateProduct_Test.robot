@@ -5,7 +5,7 @@ Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 *** Variables ***
 @{value_attribute_1}   L  M   S
 &{dict_attribute_name_1}    SIZE=@{value_attribute_1}

@@ -4,8 +4,8 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Order/DeliveryProcessingData.robot
 Resource          ../../TestData/Order/CreateOrderData.robot
 Resource          CreateOrderKeywords.robot
-Resource          ../Delivery/DeliveryCommandKeyword.robot
-Resource          ../Product/Product_KeywordsCommand.robot
+Resource          ../Delivery/DeliveryCommonKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot

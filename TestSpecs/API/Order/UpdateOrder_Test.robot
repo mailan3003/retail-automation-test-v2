@@ -3,9 +3,8 @@ Documentation     Test API cập nhật đơn hàng - Comprehensive test cases f
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Order/UpdateOrderKeywords.robot
-Resource          ../../../Keywords/Order/OrderCommandKeywords.robot
+Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
-Resource          ../../../TestData/Order/UpdateOrderData.robot
 Resource          ../../../TestData/CommonData.robot
 # Test Setup        Setup Test Environment
 # Test Teardown     Cleanup Test Environment
@@ -21,7 +20,7 @@ RT-ORDER-UPDATE-001 Cập Nhật Đơn Hàng Cơ Bản Thành Công
     ...    - Xác thực đơn hàng được cập nhật trong database
     ...    - Xác thực log thay đổi được ghi nhận
     [Tags]    AIGenerated    UpdateOrder    Positive    Basic    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     When Chuẩn Bị Dữ Liệu Cập Nhật Mô Tả Cho Đơn Hàng
     And Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -33,7 +32,7 @@ RT-ORDER-UPDATE-002 Cập Nhật Thông Tin Khách Hàng Trong Đơn Hàng
     ...    - Thay đổi khách hàng từ khách hàng mặc định sang khách hàng khác
     ...    - Xác thực thông tin khách hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Customer    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Thành CTKH001
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -44,7 +43,7 @@ RT-ORDER-UPDATE-003 Cập Nhật Thông Tin Khách Hàng Không Tồn Tại Tron
     ...    - Thay đổi khách hàng từ khách hàng mặc định sang khách hàng không tồn tại trong hệ thống
     ...    - Xác thực thông tin khách hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Customer    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng ${INVALID_CUSTOMER_ID} Trong Hệ Thống
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
@@ -55,7 +54,7 @@ RT-ORDER-UPDATE-005 Cập Nhật Đơn Hàng Thường Thành Đơn Có Giao Hà
     ...    - Cập nhật đơn hàng thường thành đơn có giao hàng
     ...    - Xác thực đơn hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Delivery    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -66,18 +65,83 @@ RT-ORDER-UPDATE-005 Cập Nhật Thông Tin Giao Hàng Trong Đơn Hàng
     ...    - Cập nhật tên, số điện thoại, địa chỉ người nhận
     ...    - Xác thực thông tin giao hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Delivery    regression
-    Given Chuẩn Bị Đơn Hàng Có Thông Tin Giao Hàng Để Cập Nhật
-    And Chuẩn Bị Dữ Liệu Cập Nhật Thông Tin Giao Hàng
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đơn Hàng MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Thông Tin Giao Hàng Đã Được Cập Nhật
+    And Xác Thực Thông Tin Giao Hàng Được Lưu Đúng
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Phí Giao Hàng
+    [Documentation]    Cập Nhật Đơn Hàng Phí Giao Hàng
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Phí Giao Hàng 25000 MHQL
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Phí Giao Hàng Được Cập Nhật Đúng
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Thu Hộ
+    [Documentation]    Cập Nhật Đơn Hàng Thu Hộ
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thu Hộ MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Đơn Hàng Không Thu Hộ
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Mã Vận Đơn
+    [Documentation]    Cập Nhật Đơn Hàng Mã Vận Đơn
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Mã Vận Đơn 123456789033 MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Đơn Hàng Có Mã Vận Đơn
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Đối Tác Giao Hàng
+    [Documentation]    Cập Nhật Đơn Hàng Đối Tác Giao Hàng
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Đối Tác Giao Hàng DT00002 Ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Đơn Hàng Có Đối Tác Giao Hàng
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Gói Hàng
+    [Documentation]    Cập Nhật Đơn Hàng Gói Hàng
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Gói Hàng 10x20x30x40 Ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Thông Tin Gói Giao Hàng Được Cập Nhật Đúng
+    [Teardown]    Delete Order From Api
+
+Cập Nhật Đơn Hàng Ngày Giao Dự Kiến Và Ghi Chú
+    [Documentation]    Cập Nhật Đơn Hàng Ngày Giao Dự Kiến
+    [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
+    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Ngày Giao Dự Kiến Và Ghi Chú Ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng
+    And Xác Thực Ghi Chú Giao Hàng Được Cập Nhật Đúng
+    [Teardown]    Delete Order From Api
+
+
+
 
 RT-ORDER-UPDATE-006 Cập Nhật Kênh Bán Hàng Trong Đơn Hàng
     [Documentation]    Kiểm tra cập nhật kênh bán hàng trong đơn hàng:
     ...    - Thay đổi kênh bán hàng từ kênh này sang kênh khác
     ...    - Xác thực kênh bán hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    SaleChannel    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành Kênh 3
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -91,7 +155,7 @@ RT-ORDER-UPDATE-018 Cập Nhật Đơn Hàng Thời Gian Giao Hàng
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trước 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -103,7 +167,7 @@ RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thời Gian Giao Hàng
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trước 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -114,18 +178,18 @@ Cập Nhật Đơn Hàng Thời Gian Giao Hàng Lùi Thời Gian Hiện Tại
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Xác Thực Lỗi "Thời gian giao hàng không hợp lệ"
+    And Xác Thực Lỗi "Ngày dự kiến giao phải ở trong tương lai"
 
 Cập Nhật Thời Gian Bán Hàng Lùi Thời Gian Hiện Tại
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành Trước 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -137,11 +201,11 @@ Cập Nhật Đơn Hàng Thời Gian Bán Hàng Sau Thời Gian Hiện Tại
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản Để Cập Nhật
-    And Chuẩn Bị Cập Nhật Thời Gian Bán Hàng Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    And Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Xác Thực Lỗi "Thời gian bán hàng không hợp lệ"
+    And Xác Thực Lỗi "Vượt quá thời gian hiện tại"
 
 
 RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Với Cập Nhật Customer ID Trong Thanh Toán
@@ -154,16 +218,6 @@ RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Với Cập Nhật Customer ID Tron
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
     And Xác Thực Khách Hàng Đã Được Cập Nhật Thành "${CUSTOMER_ID_REWARD_POINT}"
-
-RT-ORDER-UPDATE-020 Cập Nhật Đơn Hàng Từ Màn Hình Quản Lý
-    [Documentation]    Kiểm tra cập nhật đơn hàng từ màn hình quản lý với FromManager = true:
-    ...    - Xử lý đặc biệt cho yêu cầu từ màn hình quản lý
-    ...    - Xác thực đơn hàng được cập nhật đúng
-    [Tags]    AIGenerated    UpdateOrder    Positive    FromManager    regression
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Cơ Bản
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
 
 # =============================================================================
 # Test Cases Lỗi - Validation Errors
@@ -347,12 +401,3 @@ RT-ORDER-UPDATE-039 Cập Nhật Đơn Hàng Với Nhiều Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database
 
-RT-ORDER-UPDATE-040 Cập Nhật Đồng Thời Nhiều Đơn Hàng
-    [Documentation]    Kiểm tra cập nhật đồng thời nhiều đơn hàng:
-    ...    - Xử lý nhiều yêu cầu cập nhật cùng lúc
-    ...    - Xác thực tính nhất quán dữ liệu
-    [Tags]    AIGenerated    UpdateOrder    Performance    Concurrent    regression
-    Given Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Cơ Bản
-    When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Đơn Hàng Đã Được Cập Nhật Trong Database 

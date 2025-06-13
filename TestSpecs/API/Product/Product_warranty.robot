@@ -5,7 +5,7 @@ Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 *** Variables ***
 *** Test Cases ***
 RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành

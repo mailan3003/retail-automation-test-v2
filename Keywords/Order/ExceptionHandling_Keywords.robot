@@ -3,7 +3,7 @@ Documentation    Keywords cho test cases xử lý ngoại lệ và lỗi trong h
 Resource         ../Utilities/Utilities.robot
 Resource         ../../TestData/CommonData.robot
 Resource         ../../TestData/Order/ExceptionHandlingData.robot
-Resource         OrderCommandKeywords.robot
+Resource         OrderCommonKeywords.robot
 Library          Collections
 Library          String
 Library          json

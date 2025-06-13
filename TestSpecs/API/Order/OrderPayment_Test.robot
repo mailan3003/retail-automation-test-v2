@@ -3,8 +3,8 @@ Documentation     Test API tạo đơn hàng mới
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Order/CreateOrderKeywords.robot
-Resource          ../../../Keywords/Order/OrderCommandKeywords.robot
-Resource          ../../../Keywords/Promotion/PromotionComnandKeywords.robot
+Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
+Resource          ../../../Keywords/Promotion/PromotionComnonKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../TestData/CommonData.robot
 Resource          ../../../TestData/Order/CreateOrderData.robot

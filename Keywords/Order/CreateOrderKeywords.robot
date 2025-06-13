@@ -1,12 +1,12 @@
 *** Settings ***
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Order/CreateOrderData.robot
-Resource          ../Product/Product_KeywordsCommand.robot
-Resource          ../Customer/CustomerCommandKeywords.robot
-Resource          ../Pricebook/PricebookCommandKeywords.robot
-Resource          ../Promotion/PromotionComnandKeywords.robot
-Resource          ../CashFlow/CashflowCommandKeywords.robot
-Resource          OrderCommandKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
+Resource          ../Customer/CustomerCommonKeywords.robot
+Resource          ../Pricebook/PricebookCommonKeywords.robot
+Resource          ../Promotion/PromotionComnonKeywords.robot
+Resource          ../CashFlow/CashflowCommonKeywords.robot
+Resource          OrderCommonKeywords.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/RequestHelper.robot

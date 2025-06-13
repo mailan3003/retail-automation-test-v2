@@ -4,6 +4,7 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/DeliveryUpdateData.robot
 Resource          DeliveryProcessingKeywords.robot
+Resource          ../CommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/DataUtilities.robot
@@ -51,6 +52,17 @@ Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${channel_id}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
+Chuẩn Bị Dữ Liệu Cập Nhật Thành Kênh Bán ${channel_code}
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_code}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${invoice_body_update} 
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    SaleChannelId    ${channel_id}
+     ${request}=    Deep Copy    ${invoice_request_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${status}
     ${invoice_data}=    Thông tin hóa đơn được cập nhật  
     ${purchase_date}=    Convert Date    ${invoice_data[2]}    
@@ -64,6 +76,18 @@ Chuẩn Bị Dữ Liệu Cập Nhật Trạng Thái Giao Hàng ${status}
 
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${seller_id}
+    ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${purchase_date}=    Convert Date    ${invoice_data[2]}    
+    ${request_body}    Deep Copy    ${invoice_body_update} 
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    SoldById    ${seller_id}
+    ${request}=    Deep Copy    ${invoice_request_body_update}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Người Bán Thành ${seller_name}
+    ${seller_id}=   Lấy Thông tin Người Dùng Theo Tên   ${seller_name} 
     ${invoice_data}=    Thông tin hóa đơn được cập nhật  
     ${purchase_date}=    Convert Date    ${invoice_data[2]}    
     ${request_body}    Deep Copy    ${invoice_body_update} 
@@ -341,15 +365,17 @@ Thông tin hóa đơn được cập nhật
     ${invoice_data}=    Fetch One    ${query}    ${INVOICE_ID}
     RETURN    ${invoice_data}
 
-Người Bán Được Cập Nhật Thành ${expected_seller_id}
+Người Bán Được Cập Nhật Thành ${expected_seller_name}
     [Documentation]    Xác thực người bán đã được cập nhật
+    ${expected_seller_id}=   Lấy Thông tin Người Dùng Theo Tên   ${expected_seller_name} 
     ${query}=    Set Variable    SELECT SoldById FROM Invoice WHERE Id = ?
     ${invoice_data}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${invoice_data}    None    Không tìm thấy thông tin hóa đơn ${INVOICE_ID}
     Should Be Equal As Integers    ${invoice_data[0]}    ${expected_seller_id}    Người bán không khớp
 
-Kênh Bán Được Cập Nhật Thành ${expected_channel_id}
+Kênh Bán Được Cập Nhật Thành ${expected_channel_name}
     [Documentation]    Xác thực kênh bán đã được cập nhật
+    ${expected_channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${expected_channel_name}
     ${query}=    Set Variable    SELECT SaleChannelId FROM Invoice WHERE Id = ?
     ${invoice_data}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${invoice_data}    None    Không tìm thấy thông tin hóa đơn ${INVOICE_ID}
@@ -384,8 +410,9 @@ Ghi Chú Được Cập Nhật Thành ${expected_note}
     Should Not Be Equal    ${invoice_data}    None    Không tìm thấy thông tin hóa đơn ${INVOICE_ID}
     Should Be Equal    ${invoice_data[0]}    ${expected_note}    Ghi chú không khớp
 
-Đối tác giao hàng được cập nhật thành ${expected_delivery_by}
+Đối tác giao hàng được cập nhật thành ${expected_delivery_code}
     [Documentation]    Xác thực đối tác giao hàng đã được cập nhật
+    ${expected_delivery_by}=    Lấy Id Đối Tác Giao Hàng Theo Mã     ${expected_delivery_code}
     ${query}=    Set Variable    SELECT DeliveryBy FROM DeliveryInfo WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${INVOICE_ID}
@@ -436,30 +463,35 @@ Hóa Đơn Được Cập Nhật Thu Hộ
 
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount}
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy    ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Payments    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_${INVOICE_CODE}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
 
-Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount} Với Khách Hàng ${customer_id}
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${payment_method} Với Số Tiền ${payment_amount} Với Khách Hàng ${customer_code}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy    ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Payments    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    CustomerId    ${customer_id}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_${INVOICE_CODE}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
@@ -467,23 +499,26 @@ Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${p
 
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Số Lượng ${quantity} Hàng hóa trong đơn
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${data}=    Update Nested Dictionary Property    ${data}    Quantity    ${quantity}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    InvoiceDetails    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_${INVOICE_CODE}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
     ${total_price}=    Evaluate    100000 * ${quantity}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${TOTAL_PRICE}    ${total_price}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id} Với Số Lượng ${quantity}
+Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_code} Với Số Lượng ${quantity}
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${data}=    Update Nested Dictionary Property    ${data}    ProductId    ${product_id}
     ${data}=    Update Nested Dictionary Property    ${data}    Quantity    ${quantity}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
@@ -496,33 +531,39 @@ Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id} Với
 
 Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Đã Hủy
     ${purchase_date}=    Get Current Date    result_format=%Y-%m-%d
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID_VOID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_HD011452
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID_VOID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_HD011452
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhập Hóa Đơn Không Tồn Tại
     ${purchase_date}=    Get Current Date    result_format=%Y-%m-%d
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    5395735
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_HD011452
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    5395735
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_HD011452
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Thành Tiền ${total_price}
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL} 
     ${data}=    Update Nested Dictionary Property    ${data}    Price    ${total_price}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    InvoiceDetails    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_${INVOICE_CODE}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
@@ -530,11 +571,12 @@ Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi Thành Tiền ${tot
 Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Cập Nhập Mô Tả Hóa Đơn
     ${description}=    Set Variable    Mô tả hóa đơn
     ${INVOICE_CODE}   ${purchase_date}    Thông tin mã hóa đơn
-    ${request}=     Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Description    ${description}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.UpdateInvoiceId    ${INVOICE_ID}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Code    Update_${INVOICE_CODE}
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request}=     Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Description    ${description}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UpdateInvoiceId    ${INVOICE_ID}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Code    Update_${INVOICE_CODE}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Set Test Variable    ${DESCRIPTION}    ${description}
     Log    ${REQUEST_DATA}  
@@ -552,11 +594,12 @@ Thông tin mã hóa đơn
    Set Test Variable    ${INVOICE_CODE}    ${result[0]}
    RETURN    ${INVOICE_CODE}      ${purchase_date}
 
-Thông tin khách hàng trong hóa đơn là ${customer_id}
+Thông tin khách hàng trong hóa đơn là ${customer_code}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${query}=    Set Variable    SELECT CustomerId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}
-    Set Test Variable    ${CUSTOMER_ID}    ${result[0]}
-    RETURN    ${CUSTOMER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng trong hóa đơn ${INVOICE_ID}
+    Should Be Equal As Integers    ${result[0]}    ${customer_id}    Mã khách hàng không khớp
 
 Xác Thực Trạng Thái Hóa Đơn ${invoice_code} Là Trạng Thái ${expected_status}
     ${status}=    Set Variable If    '${expected_status}'=='Hủy'    2    1

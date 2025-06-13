@@ -6,7 +6,7 @@ Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Product/Product_VAT_Keywords.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 
 
 *** Variables ***

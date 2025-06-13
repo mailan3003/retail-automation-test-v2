@@ -3,9 +3,10 @@ Documentation     Test cases API cho phần cập nhật tồn kho khi tạo hó
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Test Teardown     Tear down Delete Hóa Đơn
+Test Teardown     Delete Invoice From API
 *** Keywords ***
 Suite Setup
     Set Suite Variable    ${SUITE_NAME}    InventoryUpdateTest

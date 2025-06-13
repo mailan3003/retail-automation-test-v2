@@ -3,9 +3,13 @@ Documentation     Test cases API cho phần tính điểm thưởng hàng hóa
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/RewardPointKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../TestData/CommonData.robot
+
+Test Teardown     Delete Invoice From API
 
 
 *** Keywords ***
@@ -18,7 +22,7 @@ RT-RP-001 Tính điểm thưởng theo sản phẩm có điểm cố định
     ...    - Số lượng: 1
     ...    - Điểm dự kiến: 5 điểm
     [Tags]    apiinvoice    reward-point    positive    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Có Điểm Cố Định
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Có Điểm Cố Định
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -34,7 +38,7 @@ RT-RP-005 Tính điểm thưởng theo sản phẩm có số lượng lớn
     ...    - Điểm dự kiến: 362.5 điểm (5 điểm * 72.5)
     ...    - Số lẻ: 0.5
     [Tags]    apiinvoice    reward-point    positive    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Có Tích Điểm Với Số Lượng 72.5
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Có Tích Điểm Với Số Lượng 72.5
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Xác Thực Điểm Thưởng Hóa Đơn 362
@@ -50,7 +54,7 @@ RT-RP-006 Tính điểm thưởng theo sản phẩm hỗn hợp
     [Tags]    apiinvoice    reward-point    positive    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Và Không Tích Điểm Sản Phẩm ${PRODUCT_1}  
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Và Không Tích Điểm Sản Phẩm ${PRODUCT_CODE_1}  
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -67,7 +71,7 @@ RT-RP-007 Tính điểm thưởng theo nhiều sản phẩm tích điểm
     [Tags]    apiinvoice    reward-point    positive    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT} Và Tích Điểm Sản Phẩm ${PRODUCT_ID_REWARD_POINT_7}    
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Và Tích Điểm Sản Phẩm ${PRODUCT_CODE_REWARD_POINT_7}    
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -224,7 +228,7 @@ RT-RP-014 Không tích điểm cho sản phẩm có tính điểm phần điểm
     [Tags]    apiinvoice    reward-point    negative    zero-price    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm giá 0đ
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_ID_REWARD_POINT_ZERO} Có Điểm Cố Định
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${PRODUCT_CODE_REWARD_POINT_ZERO} Có Điểm Cố Định
     When Gửi Yêu Cầu Tạo Hóa Đơn    
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id

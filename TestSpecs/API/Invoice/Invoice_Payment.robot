@@ -3,8 +3,8 @@ Documentation     Test cases API cho phần tạo phiếu thu khi tạo hóa đ�
 Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
-Resource          ../../../Keywords/Invoice/RefundProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Invoice/PaymentUpdateKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
@@ -41,7 +41,7 @@ RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     And Xác Thực Ngày Tạo Phiếu Thu Là Ngày Hiện Tại
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
-
+    [Teardown]    Delete Invoice From API
 RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán bằng thẻ
     ...    - Dữ liệu đầu vào:
@@ -64,6 +64,7 @@ RT-RC-002 Tạo phiếu thu với thanh toán bằng thẻ
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CARD} Với Số Tiền 100000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
     [Tags]    payment      smoke   apiinvoice    regression
@@ -87,6 +88,7 @@ RT-RC-003 Tạo phiếu thu với thanh toán bằng chuyển khoản
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_TRANSFER} Với Số Tiền 100000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     [Tags]    payment      smoke   apiinvoice    regression
@@ -110,6 +112,7 @@ RT-RC-004 Tạo phiếu thu với nhiều phương thức thanh toán
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CARD} Với Số Tiền 50000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-005 Tạo phiếu thu với thanh toán thừa
     [Tags]    payment      smoke   apiinvoice    regression
@@ -131,6 +134,7 @@ RT-RC-005 Tạo phiếu thu với thanh toán thừa
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 120000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 120000
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-006 Tạo phiếu thu với thanh toán thiếu
     [Tags]    payment      smoke   apiinvoice    regression
@@ -153,6 +157,7 @@ RT-RC-006 Tạo phiếu thu với thanh toán thiếu
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 80000
     And Xác Thực Công Nợ Của Hóa Đơn 20000
     And Xác Thực Trạng Thái Thanh Toán Của Hóa Đơn 1
+    [Teardown]    Delete Invoice From API
 
 RT-RC-007 Tạo phiếu thu với thanh toán bằng tiền mặt kết hợp phương thức khác
     [Tags]    payment      smoke   apiinvoice    regression
@@ -171,55 +176,8 @@ RT-RC-007 Tạo phiếu thu với thanh toán bằng tiền mặt kết hợp ph
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
-RT-RC-007 Tạo phiếu thu với mô tả phiếu này không nằm trong 
-    # [Documentation]    Kiểm tra tạo phiếu thu với mô tả chi tiết
-    # ...    - Dữ liệu đầu vào:
-    # ...    - Hóa đơn có tổng tiền = 100,000đ
-    # ...    - Phương thức thanh toán: tiền mặt
-    # ...    - Số tiền thanh toán: 100,000đ
-    # ...    - Mô tả: "Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}"
-    # ...    - Kỳ vọng:
-    # ...    - Status code: 200
-    # ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-    # ...    - Mô tả của phiếu thu trùng khớp với mô tả đầu vào
-    # Given Chuẩn Bị Dữ Liệu Thanh Toán Với Mô Tả Chi Tiết    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
-    # When Gửi Yêu Cầu Tạo Hóa Đơn
-    # Then Mã trạng thái phải là 200
-    # And Nội dung phản hồi trả về phải tồn tại Id
-    # And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 100000
-    # And Xác Thực Phiếu Thu Có Mô Tả Chính Xác    None    Thu tiền hóa đơn bán hàng chi tiết cho khách ${RECEIPT_CUSTOMER_NAME}
+    [Teardown]    Delete Invoice From API
 
-# RT-RC-008 Tạo phiếu thu trực tiếp không qua hóa đơn
-#     [Documentation]    Kiểm tra tạo phiếu thu trực tiếp không qua hóa đơn
-#     ...    - Dữ liệu đầu vào:
-#     ...    - Phiếu thu trực tiếp cho khách hàng
-#     ...    - Số tiền: 100,000đ
-#     ...    - Loại phiếu thu: 3 (phiếu thu khác)
-#     ...    - Kỳ vọng:
-#     ...    - Status code: 200
-#     ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-#     ...    - Loại phiếu thu: 3 (phiếu thu khác)
-#     Given Chuẩn Bị Dữ Liệu Thanh Toán Trực Tiếp    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
-#     When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
-#     Then Mã trạng thái phải là 200
-#     And Nội dung phản hồi trả về phải tồn tại Id
-#     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_OTHER}
-
-# RT-RC-009 Tạo phiếu thu thanh toán công nợ
-#     [Documentation]    Kiểm tra tạo phiếu thu thanh toán công nợ
-#     ...    - Dữ liệu đầu vào:
-#     ...    - Phiếu thu thanh toán công nợ cho khách hàng
-#     ...    - Số tiền: 100,000đ
-#     ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
-#     ...    - Kỳ vọng:
-#     ...    - Status code: 200
-#     ...    - Phiếu thu được tạo trong DB với số tiền 100,000đ
-#     ...    - Loại phiếu thu: 2 (phiếu thu thanh toán công nợ)
-#     Given Chuẩn Bị Dữ Liệu Thanh Toán Công Nợ    ${RECEIPT_CUSTOMER_ID}    100000    ${RECEIPT_DESCRIPTION}
-#     When Gửi Yêu Cầu Tạo Phiếu Thu Trực Tiếp
-#     Then Mã trạng thái phải là 200
-#     And Nội dung phản hồi trả về phải tồn tại Id
-#     And Xác Thực Phiếu Thu Trực Tiếp Được Tạo    None    100000    ${RECEIPT_TYPE_PAYMENT}
 RT-RC-008 Tạo Hóa đơn với thanh toán bằng wallet với tài khoản
     [Tags]    payment      smoke   apiinvoice     regression
     [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng wallet với tài khoản
@@ -237,14 +195,14 @@ RT-RC-008 Tạo Hóa đơn với thanh toán bằng wallet với tài khoản
     ...    - Tổng tiền thanh toán = 100,000đ
     ...    - Tiền nợ = 0đ
     ...    - Thanh toán wallet được ghi nhận với tài khoản ${BANK_WALLET_ID}
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_WALLET} Tài khoản ${BANK_WALLET_ID} Với Số Tiền 100000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_WALLET} Tài khoản ${BANK_WALLET_ACCOUNT} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_WALLET} Với Số Tiền 100000
-    And Xác Thực Tài Khoản Wallet ${BANK_WALLET_ID} Được Sử Dụng Khi Thanh Toán
+    And Xác Thực Tài Khoản ${BANK_WALLET_ACCOUNT} Được Sử Dụng Khi Thanh Toán Hóa Đơn
 
 RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm 
     [Documentation]    Kiểm tra tính giá trị thanh toán khi thanh toán bằng điểm thưởng
@@ -270,6 +228,7 @@ RT-RC-010 Tạo phiếu thu với thanh toán bằng điểm
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 50000
     And Xác Thực Công Nợ Của Hóa Đơn 50000 
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_POINT} Với Số Tiền 50000
+    [Teardown]    Delete Invoice From API
 
 
 RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
@@ -291,6 +250,7 @@ RT-RC-010 Kiểm tra không tạo phiếu thu khi thanh toán bằng 0 đồng
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 0   
     And Xác Thực Công Nợ Của Hóa Đơn 100000
+    [Teardown]    Delete Invoice From API
 
 RT-RC-011 Tạo phiếu thu với số tiền lớn
     [Tags]    payment      smoke   apiinvoice      regression
@@ -312,6 +272,7 @@ RT-RC-011 Tạo phiếu thu với số tiền lớn
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 9999999
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 9999999
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức khác nhau
     [Tags]    payment      smoke   apiinvoice      regression
@@ -335,6 +296,7 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CARD} Với Số Tiền 30000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 60000
     And Xác Thực Công Nợ Của Hóa Đơn 40000 
+    [Teardown]    Delete Invoice From API
 
 RT-RC-009 Tạo Hóa đơn với thanh toán bằng voucher
     [Tags]    payment      smoke   apiinvoice      regression
@@ -354,7 +316,7 @@ RT-RC-009 Tạo Hóa đơn với thanh toán bằng voucher
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 400000 
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_VOUCHER} Với Số Tiền 100000
-
+    [Teardown]    Delete Invoice From API
 RT-RC-013 Kiểm tra thanh toán với số tiền 0 đồng vẫn tạo phiếu thu
     [Documentation]    Kiểm tra khi thanh toán 0 đồng vẫn tạo phiếu thu với số tiền 0
     ...    - Dữ liệu đầu vào:
@@ -374,7 +336,7 @@ RT-RC-013 Kiểm tra thanh toán với số tiền 0 đồng vẫn tạo phiếu
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 0
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 0
     And Xác Thực Công Nợ Của Hóa Đơn 100000
-
+    [Teardown]    Delete Invoice From API
 RT-RC-014 Thanh toán bằng điểm thưởng kết hợp với tiền mặt
     [Documentation]    Kiểm tra tính toán thanh toán khi kết hợp điểm thưởng và tiền mặt
     ...    - Dữ liệu đầu vào:
@@ -396,7 +358,7 @@ RT-RC-014 Thanh toán bằng điểm thưởng kết hợp với tiền mặt
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CASH} Với Số Tiền 75000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
-
+    [Teardown]    Delete Invoice From API
 RT-RC-015 Thanh toán bằng voucher kết hợp với phương thức khác
     [Documentation]    Kiểm tra tính toán thanh toán khi kết hợp voucher với phương thức khác
     ...    - Dữ liệu đầu vào:
@@ -418,7 +380,7 @@ RT-RC-015 Thanh toán bằng voucher kết hợp với phương thức khác
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CARD} Với Số Tiền 70000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
-
+    [Teardown]    Delete Invoice From API
 RT-RC-016 Tạo phiếu thu với tiền thừa khi thanh toán thẻ
     [Documentation]    Kiểm tra tạo phiếu thu với thanh toán thẻ thừa tính vào công nợ khách hàng
     ...    - Dữ liệu đầu vào:
@@ -432,15 +394,15 @@ RT-RC-016 Tạo phiếu thu với tiền thừa khi thanh toán thẻ
     ...    - Tổng tiền thanh toán của hóa đơn = 120,000đ
     ...    - Công nợ của hóa đơn = 0
     [Tags]    payment    card    overpayment    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${BANK_ACCOUNT_ID} Với Số Tiền 120000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${BANK_ACCOUNT_CODE} Với Số Tiền 120000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phiếu Thu Được Tạo Với Số Tiền 120000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 120000
     And Xác Thực Công Nợ Của Hóa Đơn 0
-    And Xác Thực Tài Khoản Wallet ${BANK_ACCOUNT_ID} Được Sử Dụng Khi Thanh Toán
-
+    And Xác Thực Tài Khoản ${BANK_ACCOUNT_CODE} Được Sử Dụng Khi Thanh Toán Hóa Đơn
+    [Teardown]    Delete Invoice From API
 RT-RC-017 Thanh toán chuyển khoản với nhiều tài khoản
     [Documentation]    Kiểm tra tính toán thanh toán khi sử dụng nhiều tài khoản chuyển khoản
     ...    - Dữ liệu đầu vào:
@@ -461,6 +423,7 @@ RT-RC-017 Thanh toán chuyển khoản với nhiều tài khoản
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Thanh Toán Chuyển Khoản Nhiều Tài Khoản
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-018 Thanh toán kết hợp ba phương thức thanh toán
     [Documentation]    Kiểm tra tính toán thanh toán khi kết hợp ba phương thức thanh toán
@@ -486,6 +449,7 @@ RT-RC-018 Thanh toán kết hợp ba phương thức thanh toán
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_TRANSFER} Với Số Tiền 30000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
+    [Teardown]    Delete Invoice From API
 
 RT-RC-019 Tạo phiếu thu với tất cả số tiền thanh toán bằng điểm thưởng
     [Documentation]    Kiểm tra tạo phiếu thu với toàn bộ số tiền thanh toán bằng điểm thưởng
@@ -510,6 +474,7 @@ RT-RC-019 Tạo phiếu thu với tất cả số tiền thanh toán bằng đi�
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
     And Xác Thực Điểm Khách Hàng Sử Dụng 100
+    [Teardown]    Delete Invoice From API
 
 
 RT-RC-021 Tạo hóa đơn với điểm khách hàng không đủ
@@ -553,54 +518,6 @@ RT-GP-010 Thanh toán hóa đơn thành công với Voucher
     And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    100000
     And Xác Thực Trạng Thái Voucher Đã Sử Dụng    ${voucher_id}
 
-RT-GP-011 Thanh toán hóa đơn với Voucher vượt quá giá trị hóa đơn
-    [Documentation]    Kiểm tra thanh toán hóa đơn với Voucher có giá trị lớn hơn tổng hóa đơn
-    ...    - Dữ liệu đầu vào:
-    ...    - Mã hóa đơn: "HD_TEST_VOUCHER002"
-    ...    - Tổng tiền hóa đơn: 50,000đ
-    ...    - Thanh toán: Voucher 100,000đ
-    ...    - Logic xử lý: 
-    ...      + InvoiceService.CreateInvoice() tạo Payment với Method="Voucher"
-    ...      + Hệ thống giới hạn số tiền voucher bằng tổng tiền hóa đơn
-    ...      + payment.Amount = Math.Min(payment.Amount, total)
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Hóa đơn được tạo thành công
-    ...    - Thanh toán Voucher được ghi nhận với số tiền 50,000đ (= tổng hóa đơn)
-    ...    - Voucher được đánh dấu đã sử dụng (status=1)
-    [Tags]    payment    voucher    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giá Thấp Thanh Toán Bằng Voucher ${VOUCHER_CAMPAIGN_ID_1}
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 200
-    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
-    And Xác Thực Trạng Thái Voucher Đã Sử Dụng    ${voucher_id}
-
-RT-GP-012 Thanh toán hóa đơn kết hợp Voucher và phương thức khác
-    [Documentation]    Kiểm tra thanh toán hóa đơn kết hợp Voucher và tiền mặt
-    ...    - Dữ liệu đầu vào:
-    ...    - Mã hóa đơn: "HD_TEST_VOUCHER003"
-    ...    - Tổng tiền: 150,000đ
-    ...    - Thanh toán 1: Voucher 50,000đ
-    ...    - Thanh toán 2: Tiền mặt 100,000đ
-    ...    - Logic xử lý: 
-    ...      + InvoiceService.CreateInvoice() tạo các Payment với Method khác nhau
-    ...      + Hệ thống tổng hợp tất cả các phương thức thanh toán
-    ...    - Kỳ vọng:
-    ...    - Status code: 200
-    ...    - Hóa đơn được tạo thành công
-    ...    - Thanh toán Voucher được ghi nhận với số tiền 50,000đ
-    ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
-    ...    - Trạng thái thanh toán của hóa đơn là "Đã thanh toán" (1)
-    [Tags]    payment    voucher    combined    AIGenerated
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Kết Hợp Voucher ${VOUCHER_CAMPAIGN_ID_2} Và Tiền Mặt
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    Then Mã Trạng Thái Phải Là 200
-    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Xác Thực Thanh Toán Voucher Hóa Đơn    ${INVOICE_ID}    ${voucher_id}    50000
-    And Xác Thực Thanh Toán Tiền Mặt Hóa Đơn    ${INVOICE_ID}    100000
-    And Xác Thực Tổng Tiền Thanh Toán Hóa Đơn    ${INVOICE_ID}    150000
-    And Xác Thực Trạng Thái Thanh Toán Hóa Đơn    ${INVOICE_ID}    1
 
 RT-GP-013 Thanh toán hóa đơn với Voucher không hợp lệ
     [Documentation]    Kiểm tra xử lý lỗi khi thanh toán bằng Voucher không hợp lệ
@@ -614,10 +531,10 @@ RT-GP-013 Thanh toán hóa đơn với Voucher không hợp lệ
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
     [Tags]    payment    voucher   apiinvoice      regression
-    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher ở Trạng Thái Chưa Sử Dụng
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher Ở Trạng Thái Chưa Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Trạng thái voucher AA96OU5QFZ chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
+    And Response Should Have Error "Trạng thái voucher ${VOUCHER_CODE} chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
 
 RT-GP-013 Thanh toán hóa đơn với Voucher đã sử dụng
     [Documentation]    Kiểm tra xử lý lỗi khi thanh toán bằng Voucher không hợp lệ
@@ -631,10 +548,10 @@ RT-GP-013 Thanh toán hóa đơn với Voucher đã sử dụng
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Voucher không hợp lệ hoặc đã được sử dụng"
     [Tags]    payment    voucher   apiinvoice      
-    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher ở Trạng Thái Đã Sử Dụng
+    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Với Mã Voucher Ở Trạng Thái Đã Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Trạng thái voucher AGXDKFPN9Z chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
+    And Response Should Have Error "Trạng thái voucher ${VOUCHER_CODE} chưa hợp lệ. Voucher phải ở trạng thái Đã phát hành"
 
 Tạo hóa đơn chưa đủ điều kiện vẫn thanh toán bằng voucher
     [Documentation]    Kiểm tra xử lý khi tạo hóa đơn chưa đủ điều kiện vẫn thanh toán bằng voucher
@@ -651,7 +568,7 @@ Tạo hóa đơn chưa đủ điều kiện vẫn thanh toán bằng voucher
     Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER003 Khi Chưa Đủ Điều Kiện
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng voucher A64Z6YUHSZ"
+    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng voucher ${VOUCHER_CODE}"
 
 Tạo hóa đơn với voucher chưa áp dụng 
    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với voucher chưa áp dụng
@@ -668,7 +585,7 @@ Tạo hóa đơn với voucher chưa áp dụng
    Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHERE001
    When Gửi Yêu Cầu Tạo Hóa Đơn
    Then Mã Trạng Thái Phải Là 420
-   And Response Should Have Error "Đợt phát hành của voucher AZTOV31PPT chưa được kích hoạt"
+   And Response Should Have Error "Đợt phát hành của voucher ${VOUCHER_CODE} chưa được kích hoạt"
 
 Tạo hóa đơn với voucher cho nhóm hàng
    [Documentation]    Kiểm tra xử lý khi tạo hóa đơn với voucher chưa áp dụng
@@ -717,7 +634,7 @@ Tạo hóa đơn thanh toán nhiều voucher với voucher hết hạn
     Given Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt VOUCHER
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
-    And Response Should Have Error "Thời gian giao dịch không phù hợp với thời hạn sử dụng của voucher A4UVPWOBFZ"
+    And Response Should Have Error "Thời gian giao dịch không phù hợp với thời hạn sử dụng của voucher ${VOUCHER_CODE}"
 
 
 RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
@@ -744,7 +661,7 @@ RT-GP-014 Thanh toán hóa đơn với nhiều Voucher
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Xác Thực Thanh Toán Được Ghi Nhận 2 Phương Thức ${list_payment_method_voucher} Thanh Toán ${list_payment_amount_voucher}
     And Xác Thực Trạng Thái Voucher Đã Sử Dụng ${list_voucher_id}
-    [Teardown]   Tear down Delete Hóa Đơn
+    [Teardown]   Delete Invoice From API
 
 RT-GP-015 Thanh toán hóa đơn với Voucher và khuyến mãi
     [Documentation]    Kiểm tra thanh toán hóa đơn với Voucher kết hợp khuyến mãi
@@ -784,7 +701,7 @@ RT-BP-001 Tạo hóa đơn thất bại với tài khoản ngân hàng không t�
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
     [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${INVALID_BANK_ACCOUNT_ID} Với Số Tiền 100000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_CARD} Tài khoản ${INVALID_BANK_ACCOUNT_CODE} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Tài khoản ngân hàng được chọn không tồn tại hoặc đã bị xóa khỏi hệ thống."
@@ -803,7 +720,7 @@ RT-BP-002 Tạo hóa đơn thất bại với tài khoản ngân hàng không đ
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"
     [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice      regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_ID} Với Số Tiền 100000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_CODE} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"

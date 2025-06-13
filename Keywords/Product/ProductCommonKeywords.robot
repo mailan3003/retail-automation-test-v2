@@ -915,6 +915,11 @@ Lấy Serial của Sản Phẩm
     ${result}=    Fetch All    ${query}    ${product_id}    ${status}
     RETURN    ${result}
 
+Lấy ID batch của Lô hàng
+    [Arguments]    ${batch_name}    ${product_id}
+    ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE BatchName = ? AND ProductId = ?
+    ${result_batch}=    Fetch One    ${query}    ${batch_name}    ${product_id}
+    RETURN    ${result_batch[0]}
 
 Thông tin hàng hóa
     [Arguments]    ${product_code}
