@@ -4,6 +4,11 @@ Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/DeliveryUpdateData.robot
 Resource          DeliveryProcessingKeywords.robot
+Resource          InvoiceCommonKeywords.robot
+Resource          ../Pricebook/PricebookCommonKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
+Resource          ../Customer/CustomerCommonKeywords.robot
+Resource          ../Delivery/DeliveryCommonKeywords.robot
 Resource          ../CommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -20,21 +25,21 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
     ${invoice_id}    Set Variable    ${RESPONSE.json()["Id"]}
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Cơ Bản 
-    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
+
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
-    Chuẩn Bị Dữ Liệu Hóa Đơn Cơ Bản 
+    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     Gửi Yêu Cầu Tạo Hóa Đơn
     ${invoice_id}    Set Variable    ${RESPONSE.json()["Id"]}
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật Có Thanh Toán
-    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy    ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Amount   5000
-    ${request}    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Payments    ${data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     Gửi Yêu Cầu Tạo Hóa Đơn
     ${invoice_id}    Set Variable    ${RESPONSE.json()["Id"]}
@@ -202,14 +207,17 @@ Chuẩn Bị Dữ Liệu Cập Nhật Mã Vận Đơn ${tracking_code}
 Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${delivery_by} 
     [Documentation]    Chuẩn bị dữ liệu cập nhật đối tác giao hàng
     ${invoice_data}=    Thông tin hóa đơn được cập nhật  
+    ${delivery_id}=  Lấy Id Đối Tác Giao Hàng Theo Mã  ${delivery_by}
     ${purchase_date}=    Convert Date    ${invoice_data[2]}    
     ${request_body}    Deep Copy    ${delivery_update_body_1}
     ${request_body}=    Update Nested Dictionary Property    ${request_body}    Id     ${INVOICE_ID}
     ${request_body}=    Update Nested Dictionary Property    ${request_body}    PurchaseDate    ${purchase_date}
-    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.DeliveryBy  ${delivery_by}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    DeliveryDetail.DeliveryBy  ${delivery_id}
     ${request}=    Deep Copy    ${invoice_request_body_update_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_body}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
 
 Chuẩn Bị Dữ Liệu Cập Nhật Gói Hàng ${x}x${y}x${z}x${w}
     [Documentation]    Chuẩn bị dữ liệu cập nhật gói hàng
@@ -322,10 +330,11 @@ Xác Thực Cập Nhật Thu Hộ
 Xác Thực Cập Nhật Đối Tác Giao Hàng
     [Documentation]    Xác thực đối tác giao hàng đã được cập nhật
     [Arguments]    ${invoice_id}    ${expected_delivery_by}    ${expected_partner_id}
+    ${expected_delivery_id}=   Lấy Id Đối Tác Giao Hàng Theo Mã     ${expected_delivery_by}
     ${query}=    Set Variable    SELECT DeliveryBy, PartnerId FROM DeliveryInfo WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${delivery_data}    None    Không tìm thấy thông tin giao hàng cho hóa đơn ${invoice_id}
-    Should Be Equal As Integers    ${delivery_data[0]}    ${expected_delivery_by}    Phương thức giao hàng không khớp
+    Should Be Equal As Integers    ${delivery_data[0]}    ${expected_delivery_id}    Phương thức giao hàng không khớp
     Should Be Equal As Integers    ${delivery_data[1]}    ${expected_partner_id}    Mã đối tác không khớp
 
 Xác Thực Cập Nhật Giao Một Phần

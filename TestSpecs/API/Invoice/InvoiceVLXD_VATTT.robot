@@ -154,3 +154,4 @@ RT-DP-007 Tạo hóa đơn có tích điểm theo hóa đơn giảm giá
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Điểm Thưởng Hóa Đơn 9
     And Xác Thực Bản Ghi Điểm Thưởng Được Tạo 9
+        

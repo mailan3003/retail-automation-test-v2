@@ -1,11 +1,11 @@
 *** Settings ***
 Documentation     Keywords cho test API cập nhật đơn hàng
 Resource          ../../TestData/Order/CreateOrderData.robot
-Resource          ../../TestData/Order/UpdateOrderData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
-Resource          ../Product/Product_KeywordsCommand.robot
-Resource          ../Delivery/DeliveryCommandKeyword.robot
-Resource          OrderCommandKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
+Resource          ../Delivery/DeliveryCommonKeywords.robot
+Resource          OrderCommonKeywords.robot
+Resource          ../CommonKeywords.robot
 Resource          CreateOrderKeywords.robot
 Resource          PromotionOrderKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
@@ -233,6 +233,82 @@ Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Gia
 
 
 
+Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đơn Hàng MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận
+    ${request}     Deep Copy    ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Receiver   Nguyễn Thị B
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     ContactNumber    0912345678
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Address    456 Đường Lê Lợi, Q3
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Phí Giao Hàng ${fee} MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật phí giao hàng
+    ${request}    Deep Copy   ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Price    ${fee}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng ${status} Thu Hộ MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật miễn phí giao hàng
+    ${using_price_cod}=    Set Variable If    '${status}'=='Có'    1    0
+    ${request}    Deep Copy   ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     UsingPriceCod    ${using_price_cod}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Mã Vận Đơn ${tracking_code} MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật mã vận đơn
+    ${request}    Deep Copy   ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryCode    ${tracking_code}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Đối Tác Giao Hàng ${delivery_code} Ở MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật đối tác giao hàng
+    ${delivery_by}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${delivery_code}
+    ${request}    Deep Copy   ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     DeliveryBy    ${delivery_by}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Gói Hàng ${x}x${y}x${z}x${w} Ở MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật gói hàng
+    ${request}    Deep Copy    ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Weight  ${x}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Length  ${y}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Width  ${z}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}    Height  ${w}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Ngày Giao Dự Kiến và Ghi Chú Ở MHBH
+    [Documentation]    Chuẩn bị dữ liệu cập nhật ngày giao dự kiến
+    ${purchase_date}=   Get Current Date    UTC
+    ${expected_date}=   Add Time To Date    ${purchase_date}    10 days
+    ${note}=    Set Variable    "Dự kiến giao vào ngày"
+    ${request}    Deep Copy    ${REQUEST_DATA}
+    ${request_body}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     ExpectedDelivery    ${expected_date}
+    ${request_body}=    Update Nested Dictionary Property    ${request_body}     Comments    ${note}
+    ${request}=    Update Nested Dictionary Property    ${request}     Order.Id     ${CREATED_ORDER_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${request_body}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+
 
 Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành ${new_channel}
     [Documentation]    Chuẩn bị dữ liệu để cập nhật kênh bán hàng
@@ -310,55 +386,6 @@ Chuẩn Bị Dữ Liệu Hoàn Thành Đơn Hàng
     RETURN    ${request}
 
 # =============================================================================
-# Keywords cho các test case lỗi
-# =============================================================================
-
-Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm Trùng Lặp
-    [Documentation]    Chuẩn bị dữ liệu đơn hàng có sản phẩm trùng lặp
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${DUPLICATE_PRODUCT_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Đơn Hàng Với UUID Trùng Lặp "${uuid}"
-    [Documentation]    Chuẩn bị dữ liệu đơn hàng có UUID trùng lặp
-    ${request}=    Create Dictionary
-    ${order}=    Deep Copy    ${DUPLICATE_UUID_ORDER}
-    ${order}=    Update Nested Dictionary Property    ${order}    UUID    ${uuid}
-    Set To Dictionary    ${request}    Order    ${order}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Đơn Hàng Với Mã Trùng Lặp "${code}"
-    [Documentation]    Chuẩn bị dữ liệu đơn hàng có mã trùng lặp
-    ${request}=    Create Dictionary
-    ${order}=    Deep Copy    ${DUPLICATE_CODE_ORDER}
-    ${order}=    Update Nested Dictionary Property    ${order}    Code    ${code}
-    Set To Dictionary    ${request}    Order    ${order}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Đơn Hàng Với Khách Hàng Không Tồn Tại "${customer_id}"
     [Documentation]    Chuẩn bị dữ liệu đơn hàng có khách hàng không tồn tại
@@ -402,85 +429,8 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Kênh Bán Hàng Không Tồn Tại
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Đơn Hàng Với Khuyến Mãi Đã Xóa
-    [Documentation]    Chuẩn bị dữ liệu đơn hàng có khuyến mãi đã bị xóa
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${DELETED_PROMOTION_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Đơn Hàng Với Đối Tác Giao Hàng Không Hợp Lệ
-    [Documentation]    Chuẩn bị dữ liệu đơn hàng COD có đối tác giao hàng không hợp lệ
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${INVALID_DELIVERY_PARTNER_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    UpdateCustomerIdInPayments    ${FALSE}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 # =============================================================================
-# Keywords cho sản phẩm đặc biệt
-# =============================================================================
-
-Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Với Sản Phẩm Serial
-    [Documentation]    Chuẩn bị dữ liệu cập nhật đơn hàng có sản phẩm quản lý theo serial
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${SERIAL_PRODUCT_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Với Sản Phẩm Batch
-    [Documentation]    Chuẩn bị dữ liệu cập nhật đơn hàng có sản phẩm quản lý theo lô
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${BATCH_PRODUCT_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set To Dictionary    ${request}    FBPosParam    ${None}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Với Sản Phẩm Combo
-    [Documentation]    Chuẩn bị dữ liệu cập nhật đơn hàng có sản phẩm combo
-    ${request}=    Create Dictionary
-    Set To Dictionary    ${request}    Order    ${COMBO_PRODUCT_ORDER}
-    Set To Dictionary    ${request}    Complete    ${FALSE}
-    Set To Dictionary    ${request}    MakeInvoice    ${FALSE}
-    Set To Dictionary    ${request}    Amount    0
-    Set To Dictionary    ${request}    Orders    @{EMPTY}
-    Set To Dictionary    ${request}    FromManager    ${FALSE}
-    Set To Dictionary    ${request}    IsCombine    ${FALSE}
-    Set To Dictionary    ${request}    OrderCodes    @{EMPTY}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 # =============================================================================
 # Keywords gửi yêu cầu API MHQL
@@ -573,43 +523,6 @@ Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Thành Hoàn Thành MHQL
 # =============================================================================
 
 
-
-
-Xác Thực Đơn Hàng Đã Được Hoàn Thiện
-    [Documentation]    Xác thực đơn hàng đã được hoàn thiện (status = 3)
-    ${result}=    Fetch One    ${QUERY_CHECK_ORDER_COMPLETION}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Đơn hàng không được hoàn thiện hoặc trạng thái không đúng
-
-Xác Thực Hóa Đơn Đã Được Tạo Từ Đơn Hàng
-    [Documentation]    Xác thực hóa đơn đã được tạo từ đơn hàng
-    ${result}=    Fetch One    ${QUERY_CHECK_INVOICE_FROM_ORDER}    ${UPDATED_ORDER_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy hóa đơn được tạo từ đơn hàng
-    ${invoice_id}=    Set Variable    ${result[0]}
-    Set Test Variable    ${CREATED_INVOICE_ID}    ${invoice_id}
-
-Xác Thực Tồn Kho Đã Được Cập Nhật Cho Sản Phẩm ${product_id}
-    [Documentation]    Xác thực tồn kho đã được cập nhật đúng cho sản phẩm
-    ${result}=    Fetch One    ${QUERY_CHECK_INVENTORY_AFTER_UPDATE}    ${product_id}    ${DEFAULT_BRANCH_ID}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy thông tin tồn kho cho sản phẩm
-
-Xác Thực Lịch Sử Tồn Kho Đã Được Ghi Nhận Cho Sản Phẩm ${product_id}
-    [Documentation]    Xác thực lịch sử tồn kho đã được ghi nhận
-    ${result}=    Fetch One    ${QUERY_CHECK_INVENTORY_TRACKING}    ${UPDATED_ORDER_ID}    ${product_id}
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy lịch sử tồn kho cho sản phẩm
-
-Xác Thực Thông Tin Serial Đã Được Cập Nhật
-    [Documentation]    Xác thực thông tin serial đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_SERIAL_TRACKING}    ${UPDATED_ORDER_ID}    3
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy thông tin serial tracking
-
-Xác Thực Thông Tin Batch Đã Được Cập Nhật
-    [Documentation]    Xác thực thông tin batch đã được cập nhật đúng
-    ${result}=    Fetch One    ${QUERY_CHECK_BATCH_TRACKING}    ${UPDATED_ORDER_ID}    3
-    Should Not Be Equal    ${result}    ${None}    Không tìm thấy thông tin batch tracking
-
-# =============================================================================
-# Keywords xác thực lỗi
-# =============================================================================
 
 Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đơn Hàng MHQL
     [Documentation]    Chuẩn bị dữ liệu cập nhật thông tin người nhận

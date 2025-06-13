@@ -921,6 +921,12 @@ Lấy ID batch của Lô hàng
     ${result_batch}=    Fetch One    ${query}    ${batch_name}    ${product_id}
     RETURN    ${result_batch[0]}
 
+Lấy ID Batch của Hàng Lô
+    [Arguments]    ${product_id}
+    ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE ProductId = ?
+    ${result_batch}=    Fetch One    ${query}    ${product_id}
+    RETURN    ${result_batch[0]}
+
 Thông tin hàng hóa
     [Arguments]    ${product_code}
     ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ? AND RetailerId = ?
