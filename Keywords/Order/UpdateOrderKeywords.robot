@@ -8,6 +8,7 @@ Resource          OrderCommonKeywords.robot
 Resource          ../CommonKeywords.robot
 Resource          CreateOrderKeywords.robot
 Resource          PromotionOrderKeywords.robot
+Resource          DeliveryProcessingKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -42,12 +43,13 @@ Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Có Khách Hàng ${custome
    Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Có ${customer_code} Thanh Toán ${PAYMENT_CASH} Với Số Tiền ${payment_amount}
    Gửi Yêu Cầu Tạo Đơn Hàng
 
+Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Với Khách Hàng ${customer_code}
+   Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Có Khách Hàng ${customer_code}
+    Gửi Yêu Cầu Tạo Đơn Hàng
 
 Chuẩn Bị Đơn Hàng Sản Phẩm ${product_code} Có Khuyến Mãi ${promotion_code} Để Cập Nhật
    Chuẩn Bị Dữ Liệu Đơn Hàng Sản Phẩm ${product_code} Với Khuyến Mãi ${promotion_code}
    Gửi Yêu Cầu Tạo Đơn Hàng
-
-
 
 
 

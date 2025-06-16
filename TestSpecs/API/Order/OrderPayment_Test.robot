@@ -121,7 +121,7 @@ RT-RC-008 Tạo Đơn Hàng Với Thanh Toán Bằng Wallet Với Tài Khoản
     ...    - Tổng tiền thanh toán = 100,000đ
     ...    - Tiền nợ = 0đ
     ...    - Thanh toán wallet được ghi nhận với tài khoản ${BANK_WALLET_ID}
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Thanh Toán Phương Thức ${PAYMENT_WALLET} Tài khoản ${BANK_WALLET_ACCOUNT} Với Số Tiền 100000
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Thanh Toán Phương Thức ${PAYMENT_WALLET} Tài khoản ${BANK_WALLET_ACCOUNT} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Trong Đơn Đặt Hàng Được Ghi Nhận Phương Thức ${PAYMENT_WALLET} Với Số Tiền 100000
@@ -430,7 +430,7 @@ RT-GP-014 Thanh toán đặt hàng với nhiều Voucher
     ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
     ...    - Các Voucher được đánh dấu đã sử dụng (status=1)
     [Tags]    payment    voucher    multiple   apiinvoice      regression  
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Thanh Toán Với 2 Voucher Đợt VOUsERNH001
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Thanh Toán Với 2 Voucher Đợt VOUCHER001
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Được Ghi Nhận Trong Đơn Đặt Hàng 2 Phương Thức ${list_payment_method_voucher} Thanh Toán ${list_payment_amount_voucher}

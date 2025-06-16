@@ -413,7 +413,7 @@ Cập nhập kênh bán từ MHQL
     ...    - Kênh bán được cập nhật thành ${CHANNEL_ID}
     [Tags]    apiinvoice    smoke      test4243    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
-    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Thành ${CHANNEL_NAME}
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thành Kênh Bán ${CHANNEL_NAME}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã Trạng Thái Phải Là 200
     And Kênh Bán Được Cập Nhật Thành ${CHANNEL_NAME}

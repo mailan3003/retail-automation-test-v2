@@ -50,7 +50,7 @@ Chuẩn bị dữ liệu hóa đơn với kênh bán ${channel_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với kênh bán là ${channel_name}
-    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên    ${channel_name}
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_name}
     ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    SaleChannelId    ${channel_id}

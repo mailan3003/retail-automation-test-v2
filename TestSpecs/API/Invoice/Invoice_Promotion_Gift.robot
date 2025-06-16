@@ -61,7 +61,7 @@ RT-GP-002 Tạo hóa đơn thành công với quà tặng sản phẩm theo sả
     Given Chuẩn bị dữ liệu khuyến mãi ${PROMOTION_GIFT_CODE_2} mua hàng HH0036 tặng sản phẩm NK001 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    $NK001    ${quantity_promotion}  
+    And Xác Thực Quà Tặng Sản Phẩm    ${INVOICE_ID}    NK001    ${quantity_promotion}  
     And Thông Tin Khuyến Mãi Có Loại 6
     And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_GIFT_CODE_2}
 

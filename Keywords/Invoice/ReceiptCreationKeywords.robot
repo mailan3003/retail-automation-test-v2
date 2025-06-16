@@ -42,6 +42,20 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${payment_method
     Log    ${REQUEST_DATA}  
     RETURN    ${request}
 
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${payment_method} Tài khoản ${bank_account_id} Với Số Tiền ${payment_amount}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${data}=    Deep Copy    ${payment_body} 
+    ${data}=    Update Nested Dictionary Property    ${data}    Method    ${payment_method}
+    ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
+    ${data}=    Update Nested Dictionary Property    ${data}    AccountId    ${bank_account_id}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Payments    ${data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    Log    ${REQUEST_DATA}  
+    RETURN    ${request}
+
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Phương Thức ${list_payment_method} Với Số Tiền ${list_payment_amount}
     ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice

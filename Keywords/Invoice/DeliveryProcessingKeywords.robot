@@ -16,8 +16,10 @@ Library           DateTime
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng cơ bản với thông tin giao hàng tiêu chuẩn
     ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${delivery_id}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${DELIVERY_PARTNER_CODE} 
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    DeliveryBy    ${delivery_id}
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UsingCod    1
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
@@ -238,8 +240,8 @@ Get WardID của Phường/Xã ${ward_name}
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng ${status} So Với Thời Gian Hóa Đơn
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với thời gian giao hàng ${status} so với thời gian hóa đơn
     ${purchase_date}=    Get Current Date   result_format=%Y-%m-%d
-    ${expected_delivery}=    Run Keyword If    '${status}' == 'Sớm Hơn'   Subtract Time From Date    ${purchase_date}   5 days   result_format=%Y-%m-%d
-    ...    ELSE IF    '${status}' == 'Sau'    Add Time To Date    ${purchase_date}    5 days    result_format=%Y-%m-%d
+    ${expected_delivery}=    Run Keyword If    '${status}' == 'Sớm'   Subtract Time From Date    ${purchase_date}   5 days   result_format=%Y-%m-%d
+    ...    ELSE IF    '${status}' == 'Trễ'    Add Time To Date    ${purchase_date}    5 days    result_format=%Y-%m-%d
     ...    ELSE    Set Variable    ${purchase_date}
     ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice

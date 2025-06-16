@@ -27,8 +27,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} %
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng      ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng   ${CATEGORY_NAME}
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -47,8 +47,8 @@ Chuẩn Bị Dữ Liệu Hàng Dịch Vụ Thuế ${type_tax} Với ${tax_rate} 
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    DV${random_code}
-   ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+   ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    ProductType    3
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
@@ -67,8 +67,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial Thuế ${type_tax} Với
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-   ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+   ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsLotSerialControl    true
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
@@ -86,8 +86,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng Thu�
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
@@ -107,8 +107,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Loại Hàng Sản Xuất Thuế ${type_ta
     ${formula}     Create List    ${formula}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    HSX${random_code}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    ProductFormulas    ${formula}   
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID} 
@@ -131,8 +131,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Combo Thuế ${type_tax} Với ${tax_rate}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    CB${random_code}
     ${request}    Update Dictionary Property    ${request}    ProductType    1
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    ProductFormulas    ${formula}
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
@@ -201,8 +201,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} % Và
         ${random_code}=    Generate Random String    6    [NUMBERS]
         ${code}=    Set Variable    QD${random_code}
         ${request}    Update Dictionary Property    ${request}    Code    ${code}
-        ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+        ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
         ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
         ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
@@ -254,8 +254,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuế ${type_tax} Với ${tax_rate} % Và
         ${code}=    Set Variable    HHTT${random_code}
         Append To List    ${list_products_code}    ${code}
         ${request}=    Update Nested Dictionary Property    ${request}    Code    ${code}
-        ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+        ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
         ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}=    Update Nested Dictionary Property    ${request}    TaxId    ${tax_ID}
         

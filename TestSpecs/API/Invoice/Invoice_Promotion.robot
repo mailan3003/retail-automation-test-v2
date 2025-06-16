@@ -25,7 +25,7 @@ RT-PR-001: Tạo hóa đơn với khuyến mãi giảm giá trị cố định
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 10000 Đồng
-    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_ID} 
+    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_CODE_FIXED} 
     And Thông Tin Khuyến Mãi Có Loại 1
     [Teardown]   Delete Invoice From API
 
@@ -35,7 +35,7 @@ RT-PR-002: Tạo hóa đơn với khuyến mãi giảm giá trị phần trăm
     ...                Tổng hóa đơn: 1000.000 đồng
     ...                Kỳ vọng: Hóa đơn được tạo với chiết khấu 5.000 đồng (5% của 100.000)
     [Tags]    promotion    percentage    apiinvoice    smoke    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm Với KM ID ${PROMOTION_CODE_PERCENTAGE} 
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm Với KM ${PROMOTION_CODE_PERCENTAGE} 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 50000 Đồng
@@ -52,7 +52,7 @@ RT-PR-004: Tạo hóa đơn với khuyến mãi hàng hóa và hóa đơn giảm
     ...                Giá trị khuyến mãi: 5%
     ...                Kỳ vọng: Hóa đơn được tạo và được áp dụng khuyến mãi
     [Tags]    promotion    condition    min_subtotal    apiinvoice    smoke    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa Đơn Chiết Khẩu Với KM ID ${PROMOTION_CODE_HD_HH_PERCENTAGE} có Sản Phẩm ${PRODUCT_CODE_PROMOTION}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa Đơn Chiết Khẩu Với KM ${PROMOTION_CODE_HD_HH_PERCENTAGE} có Sản Phẩm ${PRODUCT_CODE_PROMOTION}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là 200000 Đồng

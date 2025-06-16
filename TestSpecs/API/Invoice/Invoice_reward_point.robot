@@ -54,7 +54,7 @@ RT-RP-006 Tính điểm thưởng theo sản phẩm hỗn hợp
     [Tags]    apiinvoice    reward-point    positive    regression
     
     # GIVEN: Chuẩn bị dữ liệu hóa đơn với sản phẩm có tích điểm và không tích điểm
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Và Không Tích Điểm Sản Phẩm ${PRODUCT_CODE_1}  
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Và Không Tích Điểm Sản Phẩm ${PRODUCT_1_CODE}  
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id

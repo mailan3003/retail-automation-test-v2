@@ -222,7 +222,7 @@ RT-DP-013 Tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn th
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
     [Tags]    apiinvoice    delivery    AIGenerated    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm So Với Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"
@@ -239,7 +239,7 @@ RT-DP-014 Tạo hóa đơn thất bại khi thời gian giao hàng trùng với 
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
     [Tags]    apiinvoice    delivery    AIGenerated    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng So Với Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"

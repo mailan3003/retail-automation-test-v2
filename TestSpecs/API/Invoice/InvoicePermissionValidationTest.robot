@@ -5,6 +5,7 @@ Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoicePermissionValidationKeywords.robot
 Resource    ../../../Keywords/Utilities/RequestHelper.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
+Resource    ../../../TestData/CommonData.robot
 
 *** Test Cases ***
 RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng

@@ -671,6 +671,12 @@ Lấy ID Vị Trí Lưu Trữ
     ${shelf_id}=    Set Variable If    "${result}" != "None"    ${result[0]}    1
     RETURN    ${shelf_id}
 
+Lấy ID Vị Trí Lưu Trữ Theo Tên
+    [Arguments]    ${shelf_name}
+    ${query}=    Set Variable    SELECT Id FROM Shelves WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${shelf_name}    ${RETAILER_ID}
+    RETURN    ${result[0]}
+
 Lấy ID Thương Hiệu
     ${query}=    Set Variable    SELECT TOP 1 Id FROM TradeMark WHERE RetailerId = ?
     ${result}=    Fetch One    ${query}    ${RETAILER_ID}

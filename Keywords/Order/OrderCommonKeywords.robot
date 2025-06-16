@@ -364,6 +364,9 @@ Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành ${status} $
     Should Be Equal As Strings    ${actual_date_str}    ${expected_date_str}    Thời gian giao hàng không được cập nhật đúng
 
 Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là ${status}
+    Wait Until Keyword Succeeds    10x    1s    Xác Thực Trạng Thái Đơn Hàng ${status}
+
+Xác Thực Trạng Thái Đơn Hàng ${status}
     ${query}=    Set Variable    SELECT Status FROM [Order] WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}  
     Should Not Be Equal    ${result}    ${None}    Không tìm thấy đơn hàng

@@ -137,5 +137,5 @@ RT-IWR-006 Tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có 3 Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Hành Có 3 Dòng Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 2 Năm
+    And Xác Thực Hóa Đơn Có 3 Sản Phẩm ${WARRANTY_PRODUCT_CODE} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Có 3 Dòng Sản Phẩm ${WARRANTY_PRODUCT_CODE} Được Lưu Với Thời Hạn 2 Năm

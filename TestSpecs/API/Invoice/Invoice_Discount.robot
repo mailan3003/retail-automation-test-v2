@@ -87,7 +87,7 @@ RT-DP-010 Tính tổng tiền hàng cơ bản
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 250001đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá 100000.55 Số Lượng 2.5
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} Đơn Giá 100000.55 Số Lượng 2.5
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -116,7 +116,7 @@ RT-DP-012 Tính tổng tiền hàng có giảm giá hóa đơn
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 270000đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm ${PRODUCT_1_CODE} Và ${PRODUCT_2_CODE} Và Giảm Giá Hóa Đơn 30000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} Và ${PRODUCT_2_CODE} Và Giảm Giá Hóa Đơn 30000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id

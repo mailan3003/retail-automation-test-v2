@@ -454,7 +454,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign}
     [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
-
+   $ 
     ${couponcampaign_id}   ${price_ratio}    ${price_max}   Lấy Thông Tin Coupon Theo Mã Coupon Campaign    ${ma_coupon_campaign}
     ${coupon_id}   ${coupon_code}=    Lấy Id Mã Coupon ở Trạng Thái    ${couponcampaign_id}    Đã Phát Hành
     ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 

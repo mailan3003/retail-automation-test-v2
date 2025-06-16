@@ -87,7 +87,7 @@ RT-PR-008: Tạo Đơn Hàng Với Khuyến Mãi Hóa Đơn Áp Dụng Cho Sản
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Khuyến Mãi ${PROMOTION_CODE_DISCOUNT_PRODUCT} Cho Sản Phẩm GHDUQD005
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Tổng Giá Trị Đặt Hàng Sau Khuyến Mãi Là ${total_invoice_value}
+    And Xác Thực Tổng Giá Trị Đặt Hàng Sau Khuyến Mãi Là ${TOTAL_ORDER_VALUE}
     And Xác Thực ID Khuyến Mãi Trong Đơn Đặt Hàng   ${PROMOTION_ID}
     [Teardown]    Delete Order From Api
 
@@ -117,7 +117,7 @@ RT-PR-013: Tạo Đơn Hàng Với Khuyến Mãi Mua Hàng Giảm Giá Hàng Ph�
     ...                Kỳ vọng: Hóa đơn được tạo với sản phẩm NK002 được giảm giá 5%
     [Tags]    promotion    discount_product   PromotionOrder    smoke    regression
     
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Khuyến Mãi ${PROMOTION_CODE_DISCOUNT_PRODUCT} Cho Sản Phẩm GHDUQD005
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Khuyến Mãi ${PROMOTION_CODE_DISCOUNT_PRODUCT_PERCENTAGE} Cho Sản Phẩm GHDUQD005
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Khuyến Mãi Theo Sản Phẩm ${PRODUCT_ID_PROMOTION} Giảm Giá ${PROMOTION_VALUE} Đồng Và ID Khuyến Mãi ${SALE_PROMOTION_ID} 
@@ -227,7 +227,7 @@ RT-GP-002 Tạo đơn hàng thành công với quà tặng sản phẩm theo s�
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Quà Tặng Sản Phẩm Đặt Hàng   ${PRODUCT_ID_PROMOTION}   ${PROMOTION_QUANTITY}  
-    And ID Khuyến Mãi Trong Hóa Đơn Là ${PROMOTION_ID}
+    And Xác Thực ID Khuyến Mãi Trong Đơn Đặt Hàng   ${PROMOTION_ID}
     [Teardown]    Delete Order From Api
 
 RT-GP-003 Tạo đơn hàng Không Thành Công với quà tặng voucher

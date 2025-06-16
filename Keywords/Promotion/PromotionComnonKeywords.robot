@@ -132,7 +132,7 @@ Update Trạng thái List Voucher ${list_voucher_id} Sang Trạng Thái ${status
 Lấy Thông Tin Coupon Theo Mã Coupon Campaign
    [Arguments]    ${coupon_campaign_code}
     ${query}=    Set Variable    SELECT Id,PriceRatio,PriceMax FROM CouponCampaign WHERE Code = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${coupon_campaign_code}
+    ${result}=    Fetch One    ${query}    ${coupon_campaign_code}    ${RETAILER_ID}
     ${price_ratio}=    Convert To Number    ${result[1]}
     ${price_max}=    Convert To Number    ${result[2]}
     RETURN    ${result[0]}    ${price_ratio}    ${price_max}
