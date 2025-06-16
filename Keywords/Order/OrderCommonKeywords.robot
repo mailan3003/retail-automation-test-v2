@@ -587,5 +587,12 @@ Xác Thực Tài Khoản ${bank_account} Được Sử Dụng Khi Thanh Toán Đ
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${bank_account_id}
     Should Be Equal As Numbers    ${result[0]}    1    Tài khoản ngân hàng không được sử dụng trong thanh toán đơn hàng
 
+#VAT 
+Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng ${tax_value}
+    [Documentation]    Verifies VAT information in invoice
+    ${query}=    Set Variable    SELECT TotalTax FROM [Order] WHERE Id= ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${tax_value}
+
 
 

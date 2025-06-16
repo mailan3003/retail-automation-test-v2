@@ -161,7 +161,14 @@
 ...    Id=141746
 ...    Status=2
 
-
+&{PRODUCT_ORDER_DETAIL_MATERIALS}
+...    Attribute1=30
+...    Attribute2=60
+...    Attribute3=${None}
+...    Attribute4=6
+...    Attribute5=${None}
+...    Type1=2
+...    Type2=1
 
 # Dữ liệu không hợp lệ
 ${NONEXISTENT_CUSTOMER_ID}    999999

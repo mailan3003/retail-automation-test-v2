@@ -415,10 +415,150 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Có Thu�
     ${list_order_details}=    Create List    ${order_details}
     ${request}  Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_order_details}
     ${request}  Update Nested Dictionary Property    ${request}    Order.TotalTax    10000
-
+    Set Test Variable    ${TOTAL_TAX}    10000
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Và Kích Thước ${x}x${y}x${z}x${w} 
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${materials_data}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}mx${w} 
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute3   ${z}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute4   ${w}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Type1    1
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Type2    8
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    TransactionDetailMaterials      ${materials_data} 
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_data}   
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request}
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm Gạch ${product_code} Và Kích Thước ${x}x${y}x${z}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${materials_data}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute4   ${z}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    TransactionDetailMaterials      ${materials_data} 
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_data}   
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request}
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code_1} Kích Thước ${x}x${y}x${z}x${w} Và ${product_code_2} Kích Thước ${x2}x${y2}x${z2}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${product_data_2}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${materials_data}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+    ${materials_data_2}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+    ${product_id_1}=    Lấy Thông Tin Sản Phẩm    ${product_code_1}
+    ${product_id_2}=    Lấy Thông Tin Sản Phẩm    ${product_code_2}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id_1}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}x${w}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute3   ${z}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute4   ${w}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Type1   1
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Type2   8
+    ${product_data_2}    Update Nested Dictionary Property    ${product_data_2}    ProductId   ${product_id_2}
+    ${product_data_2}    Update Nested Dictionary Property    ${product_data_2}    Note    ${x2}mx${y2}mx${z2}
+    ${materials_data_2}    Update Nested Dictionary Property    ${materials_data_2}    Attribute1   ${x2}
+    ${materials_data_2}    Update Nested Dictionary Property    ${materials_data_2}    Attribute2   ${y2}
+    ${materials_data_2}    Update Nested Dictionary Property    ${materials_data_2}    Attribute4   ${z2}
 
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    TransactionDetailMaterials      ${materials_data} 
+    ${product_data_2}    Update Nested Dictionary Property    ${product_data_2}    TransactionDetailMaterials      ${materials_data_2} 
+    ${list_product_data}=    Create List    ${product_data}    ${product_data_2}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request}
+
+
+
+
+
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Có ${n} Gợi ý và Kích Thước ${x}x${y}${z}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${dimension_string}=    Set Variable    ${EMPTY}
+    FOR    ${i}    IN RANGE    ${n}+1
+        ${dimension_string}=    Set Variable    ${dimension_string} ${x}mx${y}mx${z}
+    END
+    Log    Chuỗi kích thước: ${dimension_string}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${dimension_string}
+    ${list_materials_data}=    Create List
+    FOR    ${i}    IN RANGE    ${n}+1
+            ${materials_data}     Deep Copy     ${PRODUCT_ORDER_DETAIL_MATERIALS}
+            ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
+            ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
+            ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute4   ${z}    
+            Append To List    ${list_materials_data}    ${materials_data}
+    END
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    TransactionDetailMaterials      ${list_materials_data} 
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_data}   
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${materials_data}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    IsMaster    ${True}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    Note  ${x}mx${y}mx${z}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
+    ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute4   ${z}
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    TransactionDetailMaterials      ${materials_data} 
+    ${list_product_data}=    Create List   ${product_data}
+    FOR    ${i}    IN RANGE    ${n}
+        ${product_data_child}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+        ${materials_data_child}     Deep Copy    ${PRODUCT_ORDER_DETAIL_MATERIALS}
+        ${product_data_child}    Update Nested Dictionary Property    ${product_data_child}    ProductId   ${product_id}
+        ${product_data_child}    Update Nested Dictionary Property    ${product_data_child}    IsMaster    ${False}
+        ${product_data_child}    Update Nested Dictionary Property    ${product_data_child}    Note  ${x}mx${y}mx${z}
+        ${materials_data_child}    Update Nested Dictionary Property    ${materials_data_child}    Attribute1   ${x}
+        ${materials_data_child}    Update Nested Dictionary Property    ${materials_data_child}    Attribute2   ${y}
+        ${materials_data_child}    Update Nested Dictionary Property    ${materials_data_child}    Attribute4   ${z}
+        ${materials_data_child}     Update Nested Dictionary Property    ${product_data_child}    TransactionDetailMaterials      ${materials_data_child} 
+        Append To List    ${list_product_data}    ${product_data_child}
+    END
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
+    
+    Set Test Variable    ${REQUEST_DATA}   ${request} 
+    RETURN    ${request}
+
+
+Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định Với Sản Phẩm ${product_code}
+    [Documentation]    Prepares invoice data with default VAT rate (2%)
+    ${product_info}=    Thông tin hàng hóa    ${product_code}
+    ${price}=    Convert To Number    ${product_info[2]}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${invoice_detail_tax_body}=    Deep Copy    ${order_detail_tax_body}
+    ${invoice_data}=    Deep Copy    ${PRODUCT_ORDER_DETAIL}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_info[0]}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    ${price}
+    ${tax_value}=    Evaluate    ${price} * 0.02*20 / 100
+    ${tax_value}=    Evaluate    round(${tax_value}, 0)
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body}   DetailTax   ${tax_value}
+    ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body}   TaxId    7
+    ${invoice_detail_tax_body}  Create List    ${invoice_detail_tax_body}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    OrderDetailTaxs    ${invoice_detail_tax_body}
+    ${invoice_data}   Create List    ${invoice_data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${invoice_data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Order.TotalTax    -${tax_value}
+    Log    ${request}
+    Set Test Variable    ${TOTAL_TAX}    ${tax_value}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
 
