@@ -7,9 +7,10 @@ Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
+Resource          ../../../TestData/CommonData.robot
 
 *** Variables ***
-
+@{list_surcharge_code}    ${SURCHARGE_1_CODE}    ${SURCHARGE_2_CODE}
 
 *** Keywords ***
 
@@ -132,11 +133,11 @@ RT-DP-013 Tính tổng tiền hàng có phụ phí cố định
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 105000đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá 5000 Phụ Phí Cố Định 10000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá 5000 Phụ Phí ${SURCHARGE_1_CODE}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Tổng tiền hóa đơn phải bằng 105000
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_INVOICE}
     [Teardown]    Delete Invoice From API
     
 RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
@@ -148,12 +149,31 @@ RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 85000đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-        Given Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá 15000 Phụ Phí Phần Trăm 13
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá 0 Phụ Phí ${SURCHARGE_2_CODE}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Tổng tiền hóa đơn phải bằng 85000
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_INVOICE}
     [Teardown]    Delete Invoice From API
+
+
+Tạo Hóa Đơn Với Nhiều Thu Khác
+    [Documentation]    Kiểm tra tạo hóa đơn với nhiều thu khác:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Thu khác: 1 thu khác với giá 10.000đ
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ + 10.000đ = 110.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 110000đ nếu cấu hình là 0 chữ số thập phân
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 110000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount      apiinvoice    regression3243
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá 1000 Có Nhiều Thu Khác ${list_surcharge_code}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Tổng tiền hóa đơn phải bằng ${TOTAL_INVOICE}
+    [Teardown]    Delete Invoice From API
+
     
 RT-DP-015 Tính tổng tiền hàng có giảm giá theo mã coupon
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon:

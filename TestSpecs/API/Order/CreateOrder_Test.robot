@@ -277,13 +277,14 @@ RT-DP-013 Tính tổng tiền hàng có phụ phí cố định
     ...    - Kỳ vọng: Tổng tiền = 100.000đ - 5.000đ + 10.000đ = 105.000đ
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 105000đ nếu cấu hình là 0 chữ số thập phân
-    [Tags]    discount      CreateOrder343    regression
+    [Tags]    discount      CreateOrder   regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 5000 Có Thu Khác ${SURCHARGE_1_CODE}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
-    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 105000
-    And Xác Thực Thu Khác ${SURCHARGE_1_CODE} Có Giá Trị 10000 Trong Đơn Đặt Hàng
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là ${TOTAL_ORDER}
+    And Xác Định Có Giá Trị Thu Khác ${TOTAL_SURCHARGE} Trong Đơn Đặt Hàng
+    And Xác Định Tracking Trong Surcharge Order ${SURCHARGE_1_CODE}
     [Teardown]    Delete Order From Api
     
 RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
@@ -294,12 +295,14 @@ RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     ...    - Kỳ vọng: Tổng tiền = 100.000đ - 15.000đ + (100.000đ - 15.000đ) * 13% = 85000đ
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 85000đ nếu cấu hình là 0 chữ số thập phân
-    [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Giảm Giá 15000 Có Thu Khác ${SURCHARGE_2_CODE}
+    [Tags]    discount      CreateOrder    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 15000 Có Thu Khác ${SURCHARGE_2_CODE}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
-    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 85000
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là ${TOTAL_ORDER}
+    And Xác Định Có Giá Trị Thu Khác ${TOTAL_SURCHARGE} Trong Đơn Đặt Hàng
+    And Xác Định Tracking Trong Surcharge Order ${SURCHARGE_2_CODE}
     [Teardown]    Delete Order From Api
 
 
@@ -311,12 +314,15 @@ Tính tổng tiền hàng có nhiều thu khác
     ...    - Kỳ vọng: Tổng tiền = 100.000đ - 5.000đ + 10.000đ = 105.000đ
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 105000đ nếu cấu hình là 0 chữ số thập phân
-    [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Giảm Giá 0 Có Nhiều Thu Khác ${list_surcharge_code}
+    [Tags]    discount      CreateOrder    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 0 Có Nhiều Thu Khác ${list_surcharge_code}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
-    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 105000
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là ${TOTAL_ORDER}
+    And Xác Định Có Giá Trị Thu Khác ${TOTAL_SURCHARGE} Trong Đơn Đặt Hàng
+    And Xác Định Tracking Trong Surcharge Order ${SURCHARGE_2_CODE}
+    And Xác Định Tracking Trong Surcharge Order ${SURCHARGE_1_CODE}
     [Teardown]    Delete Order From Api
 
 

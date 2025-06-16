@@ -570,15 +570,30 @@ Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Giảm Giá ${discount} Có
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
     ${list_product_data}=    Create List   ${product_data}
     ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
-    ${request}  Update Dictionary Property    ${request}    Order.Discount    ${discount}
+    ${request}   Update Nested Dictionary Property    ${request}    Order.Discount    ${discount}
+    ${quantity}=    Convert To Number    ${product_data}[Quantity]
+    ${price}=    Convert To Number   ${product_data}[Price]
+    ${subtotal}=    Evaluate    ${price} * ${quantity} - ${discount}
+    ${surcharge_amount}=    Run Keyword If    '${surcharge_value_ratio}' != '0'
+    ...    Evaluate    ${subtotal} * ${surcharge_value_ratio} / 100
+    ...    ELSE    Set Variable    ${surcharge_value}
+    ${total}=    Evaluate    ${subtotal} + ${surcharge_amount}
     ${surcharge_item_body}=    Deep Copy   ${SURCHARGE_BODY}
     ${surcharge_item_body}=   Update Nested Dictionary Property   ${surcharge_item_body}    SurchargeId    ${surcharge_id}
-    ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE    Update Nested Dictionary Property   ${surcharge_item_body}    ValueRatio    ${surcharge_value_ratio}
+    ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE   Update Surcharge Percentage     ${surcharge_item_body}      ${surcharge_value_ratio}     ${surcharge_amount}
     ${request_order_surcharges}=    Create List    ${surcharge_item_body}
-    ${request}  Update Dictionary Property    ${request}    Order.OrderSurcharges    ${request_order_surcharges}
-    Set Test Variable    ${TOTAL_SURCHARGE}    ${surcharge_value}
+    ${request}    Update Nested Dictionary Property   ${request}    Order.InvoiceOrderSurcharges    ${request_order_surcharges}
+
+    Set Test Variable    ${TOTAL_ORDER}   ${total}
+    Set Test Variable    ${TOTAL_SURCHARGE}     ${surcharge_amount}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+
+Update Surcharge Percentage    
+    [Arguments]    ${surcharge_item_body}    ${surcharge_value_ratio}    ${price}
+    ${surcharge_item_body}    Update Nested Dictionary Property   ${surcharge_item_body}    ValueRatio    ${surcharge_value_ratio}
+    ${surcharge_item_body}    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${price}
+    RETURN    ${surcharge_item_body}
 
 Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Giảm Giá ${discount} Có Nhiều Thu Khác ${surcharge_code}
     [Documentation]    Chuẩn bị dữ liệu đơn hàng với sản phẩm có giảm giá và phụ phí tính theo phần trăm
@@ -588,16 +603,27 @@ Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Giảm Giá ${discount} Có
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
     ${list_product_data}=    Create List   ${product_data}
     ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
-    ${request}  Update Dictionary Property    ${request}    Order.Discount    ${discount}
+    ${request}   Update Nested Dictionary Property     ${request}    Order.Discount    ${discount}
     ${order_surcharges}=    Create List
+    ${total_surcharge}=    Set Variable    ${0}
+    ${total_order}=    Set Variable    ${0}
     FOR    ${surcharge_code}    IN    @{surcharge_code}
         ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}      Lấy Thông Tin Thu Khác Theo Code    ${surcharge_code}
+        ${price}=    Convert To Number   ${product_data}[Price]
+        ${quantity}=    Convert To Number    ${product_data}[Quantity]
+        ${subtotal}=    Evaluate    ${price} * ${quantity} - ${discount}
+        ${surcharge_amount}=    Run Keyword If    '${surcharge_value_ratio}' != '0'
+        ...    Evaluate    ${subtotal} * ${surcharge_value_ratio} / 100
+        ...    ELSE    Set Variable    ${surcharge_value}
+        ${total_surcharge}=    Evaluate    ${total_surcharge} + ${surcharge_amount}
+        ${total_order}=    Evaluate    ${subtotal} + ${total_surcharge} 
         ${surcharge_item_body}=    Deep Copy    ${SURCHARGE_BODY}
-        ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_item_body}   SurchargeId    ${surcharge_id}
-        ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE    Update Nested Dictionary Property   ${surcharge_item_body}    ValueRatio    ${surcharge_value_ratio}
+        ${surcharge_item_body}=      Update Nested Dictionary Property     ${surcharge_item_body}   SurchargeId    ${surcharge_id}
+        ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE     Update Surcharge Percentage     ${surcharge_item_body}      ${surcharge_value_ratio}     ${surcharge_amount}
         Append To List    ${order_surcharges}    ${surcharge_item_body}
     END
-    ${request}=    Update Nested Dictionary Property    ${request}   Order.OrderSurcharges    ${order_surcharges}
-    
+    ${request}=    Update Nested Dictionary Property    ${request}   Order.InvoiceOrderSurcharges    ${order_surcharges}
+    Set Test Variable    ${TOTAL_SURCHARGE}    ${total_surcharge}
+    Set Test Variable    ${TOTAL_ORDER}    ${total_order}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}

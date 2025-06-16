@@ -648,9 +648,10 @@ Xác Định Có Giá Trị Thu Khác ${expected_value} Trong Đơn Đặt Hàng
     ${surcharge_value}=    Set Variable    ${result[0]}
     Should Be Equal As Numbers    ${surcharge_value}    ${expected_value}    Giá trị thu khác không đúng. Kỳ vọng: ${expected_value}, Thực tế: ${surcharge_value}
 
-Xác định tracking trong surcharge order    
-    ${query}=    Set Variable    SELECT Id FROM InvoiceOrderSurcharge WHERE OrderId = ?
-    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+Xác định tracking trong surcharge order ${surcharge_code}   
+    ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}    Lấy Thông Tin Thu Khác Theo Code    ${surcharge_code}
+    ${query}=    Set Variable    SELECT Id FROM InvoiceOrderSurcharge WHERE OrderId = ? AND SurchargeId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${surcharge_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tracking trong đơn hàng
     ${tracking_id}=    Set Variable    ${result[0]}
 
