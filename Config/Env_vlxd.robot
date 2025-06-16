@@ -14,3 +14,5 @@ ${DEFAULT_CUSTOMER_ID}      1000009377
 ${API_URL}                  https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
 ${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
+${USER_NAME}       admin
+${PASSWORD}        123

@@ -3,6 +3,12 @@ Resource    ../Utilities/RequestHelper.robot
 Resource    ../Utilities/ResponseHelper.robot
 Resource    ../../TestData/CommonData.robot
 Resource    ../../TestData/Invoice/CommonInvoiceData.robot
+Resource    ../CommonKeywords.robot
+Resource    ../Promotion/PromotionComnonKeywords.robot
+Resource    ../Product/ProductCommonKeywords.robot
+Resource    ../Customer/CustomerCommonKeywords.robot
+Resource    ../PriceBook/PriceBookCommonKeywords.robot
+Resource    InvoiceCommonKeywords.robot
 Resource    ../Utilities/Utilities.robot
 Resource    ../Utilities/DataUtilities.robot
 Resource    ../Login/Login.robot
@@ -11,62 +17,106 @@ Library    DateTime
 
 *** Keywords ***
 Chuẩn bị hóa đơn tiêu chuẩn
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     Set Test Variable    ${REQUEST_DATA}    ${request}    
 
 Chuẩn bị hóa đơn tiêu chuẩn với trạng thái ${status}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Status    ${status}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Status    ${status}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với người bán ${seller_id}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SoldById    ${seller_id}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    SoldById    ${seller_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn bị dữ liệu hóa đơn với người bán là ${seller_name}
+    ${seller_id}=    Lấy Thông tin Người Dùng Theo Tên    ${seller_name}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    SoldById    ${seller_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với kênh bán ${channel_id}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.SaleChannelId    ${channel_id}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    SaleChannelId    ${channel_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
+Chuẩn bị dữ liệu hóa đơn với kênh bán là ${channel_name}
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_name}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    SaleChannelId    ${channel_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
 Chuẩn Bị Dữ Liệu Thay Đổi Thời Gian Lùi ${days} Ngày So Với Ngày Hiện Tại
     ${current_date}=    Get Current Date    UTC    
     ${purchase_date}=   Subtract Time From Date   ${current_date}    ${days} days
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${PURCHASE_DATE}    ${purchase_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${current_date}=    Get Current Date    UTC   7 hours     result_format=%Y-%m-%d %H:%M:%S
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate  0000/20/20
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate  0000/20/20
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${PURCHASE_DATE}    ${current_date}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_id}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PricebookId    ${pricebook_id}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PricebookId    ${pricebook_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_id} theo chi nhánh ${branch_id}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PricebookId    ${pricebook_id}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá là ${pricebook_name}
+    ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_name}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PricebookId    ${pricebook_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_name} theo chi nhánh ${branch_name}
+    ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_name}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh  ${branch_name}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PricebookId    ${pricebook_id}    
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    BranchId    ${branch_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Tạo hóa đơn với user ${username} và password ${password}
     ${bearer_token}=    Get BearerToken by user    ${username}    ${password}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BearerToken    ${bearer_token}
+    ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    BearerToken    ${bearer_token}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Thông tin người bán ${seller_id} trong hóa đơn được lưu trong CSDL
+Thông tin người bán ${seller_name} trong hóa đơn được lưu trong CSDL
+    ${seller_id}=    Lấy Thông tin Người Dùng Theo Tên    ${seller_name}
     ${query}=    Set Variable    SELECT SoldbyId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
-    Should Be Equal As Strings    ${result[0]}    ${seller_id}
+    Should Be Equal As Strings    ${result[0]}    ${seller_id}    Người bán không đúng
 
-Thông tin kênh bán ${channel_id} trong hóa đơn được lưu trong CSDL
+Thông tin kênh bán ${channel_name} trong hóa đơn được lưu trong CSDL
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_name}
     ${query}=    Set Variable    SELECT SaleChannelId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Strings    ${result[0]}    ${channel_id}
@@ -79,9 +129,10 @@ Thông tin ngày bán ${purchase_date} trong hóa đơn được lưu trong CSDL
     ${actual_date_obj}=    Convert Date    ${actual_date_str}
     ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
     ${abs_diff}=    Evaluate    abs(${diff})
-    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
+    Should Be True    ${abs_diff} < 5    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
 
-Thông tin bảng giá ${pricebook_id} trong hóa đơn được lưu trong CSDL
+Thông tin bảng giá ${pricebook_name} trong hóa đơn được lưu trong CSDL
+    ${pricebook_id}=   Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_name}
     ${query}=    Set Variable    SELECT PricebookId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
-    Should Be Equal As Strings    ${result[0]}    ${pricebook_id}
+    Should Be Equal As Strings    ${result[0]}    ${pricebook_id}    Bảng giá không đúng

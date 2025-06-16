@@ -14,3 +14,5 @@ ${API_URL}                  https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
 ${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
 ${REQUEST_FILES}    ${None}
+${USER_NAME}       admin
+${PASSWORD}        123

@@ -1,10 +1,13 @@
 *** Settings ***
 Documentation     Test cases API cho hóa đơn hàng hóa có bảo hành bảo trì
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/WarrantyKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Test Teardown     Tear down Delete Hóa Đơn
-*** Keywords ***
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
+Test Teardown     Delete Invoice From API
+
 
 
 *** Test Cases ***
@@ -25,13 +28,13 @@ RT-IWR-001 Tạo hóa đơn thành công với sản phẩm chỉnh sửa bảo 
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 12 Tháng
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_CODE} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_CODE} Được Lưu Với Thời Hạn 12 Tháng
 
 RT-IWR-002 Tạo hóa đơn thành công có sản phẩm BHBT nhập serial tự động sinh phiếu bảo hành
     [Documentation]    Kiểm tra tạo hóa đơn thành công với sản phẩm BHBT có serial tự động sinh phiếu bảo hành
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm BHBT có serial: ID=${WARRANTY_PRODUCT_SERIAL_ID}, Số lượng=1, Giá=10,000,000đ
+    ...    - Sản phẩm BHBT có serial: ID=${WARRANTY_PRODUCT_SERIAL_CODE}, Số lượng=1, Giá=10,000,000đ
     ...    - SerialNumbers=BH001, IsLotSerialControl=${TRUE}
     ...    - Cấu hình bảo hành: HasWarranty=${TRUE}, WarrantyPeriod=24 (tháng), AutoCreateWarrantyTicket=${TRUE}
     ...    - Logic xử lý: 
@@ -45,13 +48,13 @@ RT-IWR-002 Tạo hóa đơn thành công có sản phẩm BHBT nhập serial t�
     ...    - Phiếu bảo hành có thông tin serial BH001
     ...    - Tồn kho sản phẩm BHBT giảm 1 đơn vị, serial BH001 chuyển sang trạng thái đã bán
     [Tags]    warranty    apiinvoice    regression  
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${WARRANTY_PRODUCT_SERIAL_ID} Có Imei ${WARRANTY_SERIAL_NUMBER} Bảo Hành 35 Ngày
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Serial ${WARRANTY_PRODUCT_SERIAL_CODE} Có Imei ${WARRANTY_SERIAL_NUMBER} Bảo Hành 35 Ngày
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_ID} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_ID} Được Lưu Với Thời Hạn 35 Ngày
-    And Xác Thực Thông Tin ${WARRANTY_PRODUCT_SERIAL_ID} Serial ${WARRANTY_SERIAL_NUMBER} Trong Phiếu Bảo Hành
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_CODE} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_SERIAL_CODE} Được Lưu Với Thời Hạn 35 Ngày
+    And Xác Thực Thông Tin ${WARRANTY_PRODUCT_SERIAL_CODE} Serial ${WARRANTY_SERIAL_NUMBER} Trong Phiếu Bảo Hành
 
 RT-IWR-003 Tạo hóa đơn thành công với sản phẩm BHBT có thời hạn bảo hành khác nhau
     [Documentation]    Kiểm tra tạo hóa đơn thành công với nhiều sản phẩm BHBT có thời hạn bảo hành khác nhau
@@ -63,13 +66,13 @@ RT-IWR-003 Tạo hóa đơn thành công với sản phẩm BHBT có thời hạ
     ...    - Thông tin bảo hành được lưu cho cả 2 sản phẩm với thời hạn tương ứng
     ...    - Tồn kho cả 2 sản phẩm BHBT được cập nhật giảm mỗi loại 1 đơn vị
     [Tags]    warranty    apiinvoice    regression  
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Nhiều Thời Hạn BH @{warranty_name} @{number_time} @{number_time_type} Và BT 1 Năm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} Nhiều Thời Hạn BH @{warranty_name} @{number_time} @{number_time_type} Và BT 1 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Response Status Code Should Be 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID_2} BHBT Trong CSDL
-    And Xác Thực Thông Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Chứa Nhiều Thời Hạn BHBT @{warranty_name} @{number_time} @{number_time_type} Được Lưu Trong CSDL
-    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Được Lưu Với Thời Hạn 1 Năm
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} BHBT Trong CSDL
+    And Xác Thực Thông Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} Chứa Nhiều Thời Hạn BHBT @{warranty_name} @{number_time} @{number_time_type} Được Lưu Trong CSDL
+    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} Được Lưu Với Thời Hạn 1 Năm
 
 
 RT-IWR-004 Tạo hóa đơn với nhiều sản phẩm có thông tin bảo hành
@@ -86,14 +89,14 @@ RT-IWR-004 Tạo hóa đơn với nhiều sản phẩm có thông tin bảo hàn
     ...    - Thông tin bảo hành được lưu với thời hạn tùy chỉnh 18 tháng (không phải 12 tháng mặc định)
     ...    - Tồn kho sản phẩm BHBT được cập nhật giảm 1 đơn vị
     [Tags]    warranty    apiinvoice    regression  
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 30 Ngày Và ${WARRANTY_PRODUCT_ID_2} Thời hạn Bảo Hành 18 Tháng
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${WARRANTY_PRODUCT_CODE} Thời hạn Bảo Hành 30 Ngày Và ${WARRANTY_PRODUCT_CODE_2} Thời hạn Bảo Hành 18 Tháng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_ID_2} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 30 Ngày
-    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_ID_2} Được Lưu Với Thời Hạn 18 Tháng
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_CODE} BHBT Trong CSDL
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_CODE} Được Lưu Với Thời Hạn 30 Ngày
+    And Xác Thực Thông Tin Bảo Hành Sản Phẩm ${WARRANTY_PRODUCT_CODE_2} Được Lưu Với Thời Hạn 18 Tháng
 
 
 RT-IWR-005 Tạo hóa đơn với sản phẩm lô date có bảo hành
@@ -114,13 +117,13 @@ RT-IWR-005 Tạo hóa đơn với sản phẩm lô date có bảo hành
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có Sản Phẩm ${product_id} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${product_id} Được Lưu Với Thời Hạn 12 Tháng
+    And Xác Thực Hóa Đơn Có Sản Phẩm ${WARRANTY_PRODUCT_BATCH_CODE} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Trì Sản Phẩm ${WARRANTY_PRODUCT_BATCH_CODE} Được Lưu Với Thời Hạn 12 Tháng
 
 RT-IWR-006 Tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     [Documentation]    Kiểm tra tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm nhiều dòng: ID=${WARRANTY_PRODUCT_ID}, Số lượng=1, Giá=10,000,000đ
+    ...    - Sản phẩm nhiều dòng: ID=${WARRANTY_PRODUCT_CODE}, Số lượng=1, Giá=10,000,000đ
 
     ...    - Logic xử lý: WarrantyService.CreateWarrantyFromInvoice() + ProductLineService.ProcessProductLines()
     ...    - Kỳ vọng:
@@ -130,9 +133,9 @@ RT-IWR-006 Tạo hóa đơn với sản phẩm nhiều dòng có bảo hành
     ...    - Tồn kho sản phẩm nhiều dòng được cập nhật giảm 1 đơn vị
     ...    - Thông tin các dòng được ghi nhận trong chi tiết hóa đơn
     [Tags]    warranty    apiinvoice    regression  
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn 3 Dòng Với Sản Phẩm ${WARRANTY_PRODUCT_ID} Thời hạn Bảo Hành 2 Năm
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn 3 Dòng Với Sản Phẩm ${WARRANTY_PRODUCT_CODE} Thời hạn Bảo Hành 2 Năm
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Xác Thực Hóa Đơn Có 3 Sản Phẩm ${WARRANTY_PRODUCT_ID} BHBT Trong CSDL
-    And Xác Thực Thông Tin Bảo Hành Có 3 Dòng Sản Phẩm ${WARRANTY_PRODUCT_ID} Được Lưu Với Thời Hạn 2 Năm
+    And Xác Thực Hóa Đơn Có 3 Sản Phẩm ${WARRANTY_PRODUCT_CODE} BHBT Trong CSDL
+    And Xác Thực Thông Tin Bảo Hành Có 3 Dòng Sản Phẩm ${WARRANTY_PRODUCT_CODE} Được Lưu Với Thời Hạn 2 Năm

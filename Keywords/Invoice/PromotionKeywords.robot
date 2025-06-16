@@ -7,6 +7,9 @@ Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
 Resource          ../Utilities/DataUtilities.robot
+Resource          ../Promotion/PromotionComnonKeywords.robot
+Resource          ../Product/ProductCommonKeywords.robot
+Resource          ../Customer/CustomerCommonKeywords.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 Library           Collections
@@ -28,26 +31,36 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giá Trị Cố Định ${discount_value}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
-    ${data_promo}=    Deep Copy    ${invoice_promotion_body}    
+    ${data_promo}=    Deep Copy    ${promotion_body}   
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${PROMOTION_CODE_FIXED} 
+    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount     ${discount_value}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    10
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  ${discount_value}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.DiscountByPromotion  ${discount_value}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${PROMOTION_ID}    ${promotion_id}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm Với KM ID ${Id_promotion}
-    Log    ${Id_promotion}
-    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${Id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm Với KM ${promotion_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
     ${value_promotion}=    Convert To Number    ${info_promotion[1]}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${value_promotion}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${discount_amount}=    Evaluate     ${value_promotion} * ${info_promotion[3]} / 100
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${Id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     DiscountRatio  ${info_promotion[3]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
@@ -59,17 +72,19 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm Với KM ID
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa Đơn Chiết Khẩu Với KM ID ${Id_promotion} có Sản Phẩm ${product_id}
-    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${Id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa Đơn Chiết Khẩu Với KM ${promotion_code} có Sản Phẩm ${product_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
     ${value_promotion}=    Convert To Number    ${info_promotion[1]}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${value_promotion}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${discount_amount}=    Evaluate     ${value_promotion} * ${info_promotion[3]} / 100
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${Id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     DiscountRatio  ${info_promotion[3]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
@@ -85,12 +100,18 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi HH HĐ Giảm Giá Hóa 
     RETURN    ${request}
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Có Tổng Hóa Đơn ${value_hoa_don}
-    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_code} Có Tổng Hóa Đơn ${value_hoa_don}
+    ${promotion_id}   Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id}
     ${promotion_value}=    Convert To Number    ${info_promotion[2]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
-    ${data_promo}=    Deep Copy    ${invoice_promotion_body}    
+    ${data_promo}=    Deep Copy   ${promotion_body}   
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
+    ${data_promo}  Create List    ${data_promo}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}     ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}     Price   ${value_hoa_don}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
@@ -98,19 +119,23 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Có Tổ
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Cho Khách Hàng ${customer_id}
-    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn  ${id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_code} Cho Khách Hàng ${customer_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=    Thông Tin Khuyến Mãi Hóa Đơn  ${promotion_id}
     ${promotion_value}=    Convert To Number    ${info_promotion[1]}
     ${discount_value}=    Convert To Number    ${info_promotion[2]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${promotion_value}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    ${discount_value}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     LimitPromotionUsageType    1
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.Discount  ${discount_value}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${customer_code}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId  ${customer_id}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
@@ -120,8 +145,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Cho Khá
     RETURN    ${request}
 
  
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Cho Sản Phẩm ${product_code} 
-    ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_code} Cho Sản Phẩm ${product_code} 
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${promotion_id}
     ${product_info}=    Thông tin hàng hóa    ${product_code} 
     ${price_product}=    Convert To Number    ${product_info[2]}
     ${promotion_value}=    Convert To Number    ${info_promotion[1]}
@@ -130,12 +156,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Cho Sả
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_product_promotion}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
     ${data_promo}=    Deep Copy    ${promotion_body}    
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}     ProductId    ${product_id_standard}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}     Price  ${promotion_value}
-    ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     ProductId   ${product_info[0]}
+    ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     ProductId  ${product_info[0]}
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     Price  ${price_product}
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     Discount   ${discount_value}
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     SalePromotionId    ${info_promotion[0]}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId   ${id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId   ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductId    ${product_info[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
@@ -150,7 +178,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${id_promotion} Cho Sả
     Set Test Variable    ${total_invoice_value}    ${total_invoice_value}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyễn Mãi Hàng Hóa ${promotion_id} Mua Hàng ${product_code} Giảm Giá Hàng ${product_code_1}
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyễn Mãi Hàng Hóa ${promotion_code} Mua Hàng ${product_code} Giảm Giá Hàng ${product_code_1}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${promotion_id}
     ${product_info}=    Thông tin hàng hóa    ${product_code}
     ${product_info_1}=    Thông tin hàng hóa    ${product_code_1}
@@ -200,7 +229,9 @@ Update Khuyến Mãi Hàng Hóa Phần Trăm
     ${data_product_promotion}=    Update Nested Dictionary Property     ${data_product_promotion}     SalePromotionId    ${sale_promotion_id}
     RETURN     ${data_product_promotion}
     
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Khuyến Mãi ${promotion_id_1} Và ${promotion_id_2}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Khuyến Mãi ${promotion_code_1} Và ${promotion_code_2}
+    ${promotion_id_1}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code_1}
+    ${promotion_id_2}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code_2}
     ${info_promotion_1}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id_1}
     ${info_promotion_2}=    Thông Tin Khuyến Mãi Hóa Đơn    ${promotion_id_2}
     ${promotion_discount_1}=    Convert To Number    ${info_promotion_1[2]}
@@ -230,7 +261,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Nhiều Khuyến Mãi ${promotion_id_1
     RETURN    ${request}
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_id} Giảm Giá Theo Số Lượng Mua ${product_code}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_code} Giảm Giá Theo Số Lượng Mua ${product_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${promotion_id}
     ${product_info}=    Thông tin hàng hóa    ${product_code}
     Set Test Variable    ${product_id_promotion}    ${product_info[0]}
@@ -242,7 +274,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_id} Giảm G
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
     ${data_promo}=    Deep Copy    ${promotion_body}    
-   ${data_product}=  Run Keyword If    '${info_promotion[2]}' == 'None'   Update Product Giá Bán Theo Sản Phẩm    ${data_product}    ${product_id_promotion}    ${price_product_1}    ${value_promotion}    ${info_promotion[3]}    ${product_info[0]}    ${sale_promotion_id}    ${info_promotion[4]}
+    ${data_product}=  Run Keyword If    '${info_promotion[2]}' == 'None'   Update Product Giá Bán Theo Sản Phẩm    ${data_product}    ${product_id_promotion}    ${price_product_1}    ${value_promotion}    ${info_promotion[3]}    ${product_info[0]}    ${sale_promotion_id}    ${info_promotion[4]}
     ...    ELSE    Update Product Giá Bán Theo Sản Phẩm    ${data_product}    ${product_id_promotion}    ${price_product_1}    ${value_promotion}    0   ${product_info[0]}    ${sale_promotion_id}    ${info_promotion[4]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId   ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId    ${sale_promotion_id}
@@ -261,7 +293,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_id} Giảm G
     RETURN    ${request}
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_id} Giá Bán Theo Số Lượng Mua ${product_code}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_code} Giá Bán Theo Số Lượng Mua ${product_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${promotion_id}
     ${product_info}=    Thông tin hàng hóa    ${product_code}
     Set Test Variable    ${product_id_promotion}    ${product_info[0]}
@@ -273,7 +306,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi ${promotion_id} Giá Bá
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
     ${data_promo}=    Deep Copy    ${promotion_body}    
-   ${data_product}=    Update Nested Dictionary Property     ${data_product}     ProductId   ${product_id_promotion}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}     ProductId   ${product_id_promotion}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}     Quantity      ${info_promotion[4]}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}     Price  ${price_product_1}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}     Discount   ${discount}  
@@ -310,26 +343,6 @@ Update Product Giá Bán Theo Sản Phẩm
 
 
 
-
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Hết Hạn
-    ${data}=    Set Variable    ${FIXED_PROMOTION_REQUEST}
-    Set To Dictionary    ${data.Promotions}    Id=${EXPIRED_PROMOTION_ID}    StartDate=2022-01-01    EndDate=2022-12-31
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Không Hoạt Động
-    ${data}=    Set Variable    ${FIXED_PROMOTION_REQUEST}
-    Set To Dictionary    ${data.Promotions}    Id=${INACTIVE_PROMOTION_ID}    Status=0    IsActive=False
-    Set Test Variable    ${REQUEST_DATA}    ${data}
-    RETURN    ${data}
-
-# ==============================================
-# API Request Keywords
-# ==============================================
-
-# ==============================================
-# Verification Keywords
 # ==============================================
 
 Xác Thực Chiết Khấu Khuyến Mãi Trong Hóa Đơn
@@ -340,7 +353,8 @@ Xác Thực Chiết Khấu Khuyến Mãi Trong Hóa Đơn
     Should Be Equal As Numbers    ${result[0]}    ${expected_discount}    Chiết khấu khuyến mãi không chính xác. Mong đợi: ${expected_discount}, Thực tế: ${result[0]}
 
 Xác Thực ID Khuyến Mãi Trong Hóa Đơn
-    [Arguments]    ${invoice_id}    ${promotion_id}
+    [Arguments]    ${invoice_id}    ${promotion_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${query}=    Set Variable    SELECT PromotionId FROM InvoicePromotion WHERE InvoiceId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy hóa đơn ID ${invoice_id} trong CSDL
@@ -354,7 +368,8 @@ Xác Thực Thông Tin Khuyến Mãi
     Should Be Equal    ${result[0]}    ${promotion_type}    Loại khuyến mãi không chính xác. Mong đợi: ${promotion_type}, Thực tế: ${result[0]}
 
 Xác Thực Khuyến Mãi Theo Sản Phẩm
-    [Arguments]    ${invoice_id}    ${product_id}    ${expected_discount}     ${sale_promotion_id}
+    [Arguments]    ${invoice_id}    ${product_code}    ${expected_discount}     ${sale_promotion_id}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${query}=    Set Variable    SELECT Discount , SalePromotionId FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khuyến mãi cho sản phẩm trong hóa đơn ID ${invoice_id} trong CSDL
@@ -362,7 +377,8 @@ Xác Thực Khuyến Mãi Theo Sản Phẩm
     Should Be Equal As Numbers    ${result[1]}    ${sale_promotion_id}    ID khuyến mãi không chính xác. Mong đợi: ${sale_promotion_id}, Thực tế: ${result[1]}
 
 Xác Thực Sản Phẩm Quà Tặng
-    [Arguments]    ${invoice_id}    ${gift_product_id}    ${gift_quantity}=1
+    [Arguments]    ${invoice_id}    ${gift_product_code}    ${gift_quantity}=1
+    ${gift_product_id}=    Lấy Thông Tin Sản Phẩm    ${gift_product_code}
     ${query}=    Set Variable    SELECT ProductId, Quantity, Price FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND Note LIKE '%Quà tặng%'
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${gift_product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm quà tặng trong hóa đơn ID ${invoice_id} trong CSDL
@@ -392,44 +408,15 @@ Xác Thực Tổng Giá Trị Đơn Hàng Sau Khuyến Mãi
     Should Be Equal As Numbers    ${result[0]}    ${expected_total}    Tổng giá trị đơn hàng không chính xác. Mong đợi: ${expected_total}, Thực tế: ${result[0]}
 
 # ==============================================
-# Keywords with embedded parameters (for more readable tests)
-# ==============================================
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giảm ${discount_value} Đồng
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giá Trị Cố Định    ${discount_value}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Giảm ${percent_value} Phần Trăm Và Giới Hạn Tối Đa ${max_value} Đồng
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Phần Trăm    ${percent_value}    ${max_value}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Điều Kiện Tổng Tối Thiểu ${min_subtotal} Đồng Và Giảm ${discount_value} Đồng
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Có Điều Kiện Tổng Tối Thiểu    ${min_subtotal}    ${min_subtotal}    ${discount_value}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Cho Nhóm Khách Hàng ${customer_group_id} Giảm ${discount_value} Đồng
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Cho Nhóm Khách Hàng    ${customer_group_id}    ${discount_value}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Mua ${min_quantity} Tặng ${gift_quantity} Cho Sản Phẩm ${product_id}
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Mua X Tặng Y    ${min_quantity}    ${gift_quantity}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Sản Phẩm ${gift_product_id} Với Số Lượng ${gift_quantity}
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Sản Phẩm    ${gift_product_id}    ${gift_quantity}
-    RETURN    ${data}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Voucher Trị Giá ${voucher_value} Đồng
-    ${data}=    Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Tặng Voucher    ${voucher_value}    1
-    RETURN    ${data}
 
 Giá Trị Chiết Khấu Khuyến Mãi Trong Hóa Đơn Là ${expected_discount} Đồng
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     Xác Thực Chiết Khấu Khuyến Mãi Trong Hóa Đơn    ${invoice_id}    ${expected_discount}
 
-ID Khuyến Mãi Trong Hóa Đơn Là ${promotion_id}
+ID Khuyến Mãi Trong Hóa Đơn Là ${promotion_code}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    Xác Thực ID Khuyến Mãi Trong Hóa Đơn    ${invoice_id}    ${promotion_id}
+    Xác Thực ID Khuyến Mãi Trong Hóa Đơn    ${invoice_id}    ${promotion_code}
 
 Thông Tin Khuyến Mãi Có Loại ${promotion_type}
     ${promotion_type}=    Convert To Integer    ${promotion_type}
@@ -440,14 +427,16 @@ Sản Phẩm ${product_id} Có Khuyến Mãi ${expected_discount} Đồng
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     Xác Thực Khuyến Mãi Theo Sản Phẩm    ${invoice_id}    ${product_id}    ${expected_discount}    ${sale_promotion_id}
 
-Sản Phẩm ${product_id} Có Chiết Khấu Khuyến Mãi ${expected_discount}%
+Sản Phẩm ${product_code} Có Chiết Khấu Khuyến Mãi ${expected_discount}%
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     ${query}=    Set Variable    SELECT DiscountRatio FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}    ${product_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khuyến mãi cho sản phẩm trong hóa đơn ID ${invoice_id} trong CSDL
     Should Be Equal As Numbers    ${result[0]}    ${expected_discount}    Giá trị khuyến mãi theo sản phẩm không chính xác. Mong đợi: ${expected_discount}, Thực tế: ${result[0]}
 
-Sản Phẩm Quà Tặng ${gift_product_id} Có Trong Hóa Đơn Với Số Lượng ${gift_quantity}
+Sản Phẩm Quà Tặng ${gift_product_code} Có Trong Hóa Đơn Với Số Lượng ${gift_quantity}
+    ${gift_product_id}=    Lấy Thông Tin Sản Phẩm    ${gift_product_code}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     Xác Thực Sản Phẩm Quà Tặng    ${invoice_id}    ${gift_product_id}    ${gift_quantity}
 
@@ -464,23 +453,9 @@ Tổng Giá Trị Đơn Hàng Sau Khuyến Mãi Là ${expected_total} Đồng
     Xác Thực Tổng Giá Trị Đơn Hàng Sau Khuyến Mãi    ${invoice_id}    ${expected_total} 
 
 
-Thông Tin Khuyến Mãi Hóa Đơn
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, Discount, DiscountRatio FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
 
-Thông tin khuyến mãi hàng hóa
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, ProductDiscount, ProductDiscountRatio, PrereqQuantity,ProductPrice FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
 
-Thông tin hàng hóa
-    [Arguments]    ${product_id}
-    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
-    ${result}=   Fetch One    ${query}    ${product_id}
-    RETURN    ${result}
+
 
 # ==============================================
 # Keywords for AI Generated Test Cases
@@ -728,12 +703,14 @@ Response Phải Có Lỗi
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Đã Bị Xóa
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với khuyến mãi đã bị xóa
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
+
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}    
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    1
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    100000
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${DELETE_PROMOTION_ID}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${DELETE_PROMOTION_CODE}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    1
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Name    Giảm giá 50%: CT001
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount   10000
@@ -762,7 +739,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khuyến Mãi Hợp Lệ Và Khuyến 
     ${data_promo_valid}=    Update Nested Dictionary Property     ${data_promo_valid}     Discount   10000
     
     # Khuyến mãi đã bị xóa
-    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     PromotionId  ${DELETE_PROMOTION_ID}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${DELETE_PROMOTION_CODE}
+    ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     PromotionId  ${promotion_id}
     ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Type    1
     ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Name    Tặng quà: CT002
     ${data_promo_deleted}=    Update Nested Dictionary Property     ${data_promo_deleted}     Discount   5000

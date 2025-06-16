@@ -2,6 +2,9 @@
 Documentation     Keywords for Gift Processing API Tests
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Product/ProductCommonKeywords.robot
+Resource          ../Promotion/PromotionComnonKeywords.robot
+Resource          ../Customer/CustomerCommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -10,9 +13,11 @@ Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Với Quà Tặng Sản Phẩm ${product_code}
-    ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${Id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${promotion_code} Với Quà Tặng Sản Phẩm ${product_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_product}=   Thông tin hàng hóa    ${product_code}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_product_promotion}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
@@ -23,10 +28,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Với Quà T�
     Set Test Variable   ${sale_promotion_id}  ${info_promotion[0]}
     Set Test Variable   ${quantity_promotion}  ${info_promotion[2]}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${value_promotion}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${data_product_promotion}=    Update Quà Tặng Sản Phẩm        ${data_product_promotion}    ${price_product}    ${product_promotion_id}    ${quantity_promotion}    ${sale_promotion_id}
     ${data_product}  Create List    ${data_product}     ${data_product_promotion}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${Id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${sale_promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty   ${quantity_promotion}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
@@ -39,7 +45,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Với Quà T�
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn bị dữ liệu khuyến mãi ${promotion_id} mua hàng ${product_code} tặng sản phẩm ${product_code_1}
+Chuẩn bị dữ liệu khuyến mãi ${promotion_code} mua hàng ${product_code} tặng sản phẩm ${product_code_1}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_product}=   Thông tin hàng hóa    ${product_code}
     ${info_product_1}=   Thông tin hàng hóa    ${product_code_1}
@@ -70,27 +77,29 @@ Chuẩn bị dữ liệu khuyến mãi ${promotion_id} mua hàng ${product_code}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Với Quà Tặng Voucher
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Với Quà Tặng Voucher
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
-    ${query_2}=    Set Variable    SELECT top(1) Id,Code FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${Voucher_Id}=    Fetch One    ${query_2}    ${info_promotion[4]}
-    Set Test Variable    ${Voucher_Code}    ${Voucher_Id[1]}
-    Set Test Variable    ${Voucher_Id}    ${Voucher_Id[0]}
-    Set Test Variable    ${Voucher_Campaign_Id}    ${info_promotion[4]}
+    ${Voucher_Id}    ${Voucher_Code}=    Lấy ID Mã Voucher Theo Trạng Thái    ${info_promotion[4]}   Chưa Sử Dụng
+    Set Test Variable    ${Voucher_CODE}    ${Voucher_Code}
+    Set Test Variable    ${Voucher_ID}    ${Voucher_Id}
+    Set Test Variable    ${Voucher_CAMPAIGN_ID}    ${info_promotion[4]}
     ${price_promotion}=    Convert To Number    ${info_promotion[1]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}   Update Nested Dictionary Property     ${data_product}    Price    ${price_promotion}
+    ${data_product}   Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${data_product}   Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    9
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     TargetType    0
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCodes    ${Voucher_Code}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherIds     ${Voucher_Id}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_Campaign_Id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCodes    ${Voucher_CODE}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherIds     ${Voucher_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_CAMPAIGN_ID}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty    1
     ${data_promo}  Create List    ${data_promo}
     ${invoice_voucher}=    Create List   
@@ -99,14 +108,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Với Quà T�
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Hàng Hóa ${product_code} Quà Tặng Voucher
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Hàng Hóa ${product_code} Quà Tặng Voucher
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_product}=   Thông tin hàng hóa    ${product_code}
-    ${query_2}=    Set Variable    SELECT top(1) Id,Code FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${Voucher_Id}=    Fetch One    ${query_2}    ${info_promotion[4]}
-    Set Test Variable    ${Voucher_Code}    ${Voucher_Id[1]}
-    Set Test Variable    ${Voucher_Id}    ${Voucher_Id[0]}
-    Set Test Variable    ${Voucher_Campaign_Id}    ${info_promotion[4]}
+    ${Voucher_Id}    ${Voucher_Code}=    Lấy ID Mã Voucher Theo Trạng Thái    ${info_promotion[4]}   Chưa Sử Dụng
+    Set Test Variable    ${Voucher_CODE}    ${Voucher_Code}
+    Set Test Variable    ${Voucher_ID}    ${Voucher_Id}
+    Set Test Variable    ${Voucher_CAMPAIGN_ID}    ${info_promotion[4]}
     ${price_promotion}=    Convert To Number    ${info_promotion[1]}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
@@ -120,9 +129,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Hàng Hóa ${p
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     TargetType    1
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCodes    ${Voucher_Code}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherIds     ${Voucher_Id}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_Campaign_Id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCodes    ${Voucher_CODE}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherIds     ${Voucher_ID}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_CAMPAIGN_ID}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     RelatedProductId     ${info_product[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty    1
     ${data_promo}  Create List    ${data_promo}
@@ -132,14 +141,17 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Hàng Hóa ${p
     RETURN    ${request}
 
     
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Điểm
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Tặng Điểm
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
     ${price_promotion}=    Convert To Number    ${info_promotion[1]}
     Set Test Variable   ${sale_promotion_id}  ${info_promotion[0]}
     ${data_product}   Update Nested Dictionary Property     ${data_product}    Price    ${price_promotion}
+    ${data_product}   Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${data_product}   Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    4
@@ -148,13 +160,15 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Điểm
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${sale_promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     GiftPoint    ${info_promotion[5]}
     ${data_promo}  Create List    ${data_promo}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId    ${CUSTOMER_ID}
+    ${customer_id}=    Lấy ID Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId    ${customer_id}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
     
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Điểm Theo Sản Phẩm ${product_code}
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Tặng Điểm Theo Sản Phẩm ${product_code}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_product}=   Thông tin hàng hóa    ${product_code}
     Set Test Variable   ${sale_promotion_id}  ${info_promotion[0]}
@@ -174,15 +188,17 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Điểm
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     RelatedProductIds    ${info_product[0]}
     ${data_promo}  Create List    ${data_promo}
-    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId    ${CUSTOMER_ID}
+    ${customer_id}=    Lấy ID Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
+    ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId    ${customer_id}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo}
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
     
     
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Tặng ${qly1} Sản Phẩm ${product_code_1} Và ${qly2} Sản phẩm ${product_code_2}
-    ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${Id_promotion}
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${promotion_code} Tặng ${qly1} Sản Phẩm ${product_code_1} Và ${qly2} Sản phẩm ${product_code_2}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_product_1}=   Thông tin hàng hóa    ${product_code_1}
     ${info_product_2}=   Thông tin hàng hóa    ${product_code_2}
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
@@ -197,12 +213,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Tặng ${qly1}
     ${price_product_1}=    Convert To Number    ${info_product_2[2]}
     Set Test Variable   ${sale_promotion_id}  ${info_promotion[0]}
     Set Test Variable   ${quantity_promotion}  ${info_promotion[2]}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${value_promotion}
+    ${data_product}   Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${data_product_promotion}=    Update Quà Tặng Sản Phẩm        ${data_product_promotion}    ${price_product}    ${product_promotion_id}    ${qly1}    ${sale_promotion_id}
     ${data_product_promotion_1}=    Update Quà Tặng Sản Phẩm        ${data_product_promotion_1}    ${price_product_1}    ${product_promotion_id_1}    ${qly2}    ${sale_promotion_id}
     ${data_product}  Create List    ${data_product}     ${data_product_promotion}     ${data_product_promotion_1}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${Id_promotion}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     PromotionId  ${promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${sale_promotion_id}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty   ${quantity_promotion}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Discount    0
@@ -214,7 +232,10 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến mãi ${Id_promotion} Tặng ${qly1}
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Sản Phẩm ${product_code} Và Khuyến Mãi Tặng điểm ${promotion_id_point}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Tặng Sản Phẩm ${product_code} Và Khuyến Mãi Tặng Điểm ${promotion_code_point}
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
+    ${promotion_id_point}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code_point}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${info_promotion_point}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id_point}
     ${info_product_1}=   Thông tin hàng hóa    ${product_code}
@@ -229,7 +250,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Sản P
     Set Test Variable   ${sale_promotion_id}  ${info_promotion[0]}
     Set Test Variable   ${sale_promotion_id_point}  ${info_promotion_point[0]}
     Set Test Variable   ${quantity_promotion}  ${info_promotion[2]}
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Price    ${value_promotion}
+    ${data_product}=    Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${data_product_promotion}=    Update Quà Tặng Sản Phẩm        ${data_product_promotion}    ${price_product}    ${product_promotion_id}    ${quantity_promotion}    ${sale_promotion_id}
     ${data_product}  Create List    ${data_product}     ${data_product_promotion}
@@ -258,12 +281,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Tặng Sản P
     
     
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Với Nhiều Voucher    
+Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Với Nhiều Voucher    
+    ${promotion_id}=    Lấy Thông Tin Khuyến Mãi Theo Mã Khuyến Mãi    ${promotion_code}
     ${info_promotion}=   Thông Tin Khuyến Mãi Hóa Đơn Tặng   ${promotion_id}
     ${quantity_promotion}=    Convert To Integer    ${info_promotion[2]}
-    Set Test Variable    ${Voucher_Campaign_Id}     ${info_promotion[4]}
+    Set Test Variable    ${Voucher_CAMPAIGN_ID}     ${info_promotion[4]}
     ${query_2}=    Set Variable    SELECT top(${quantity_promotion}) Id,Code FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher_list}=    Fetch All    ${query_2}   ${Voucher_Campaign_Id}
+    ${voucher_list}=    Fetch All    ${query_2}   ${Voucher_CAMPAIGN_ID}
     
     # Join voucher IDs and codes into comma-separated strings
     ${voucher_ids_str}=    Evaluate    ','.join([str(voucher[0]) for voucher in $voucher_list])
@@ -273,7 +297,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Với Nhiều 
     ${request}     Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_promo}=    Deep Copy    ${promotion_body}   
+    ${product_id_standard}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
     ${data_product}   Update Nested Dictionary Property     ${data_product}    Price    ${price_promotion}
+    ${data_product}   Update Nested Dictionary Property     ${data_product}    ProductId    ${product_id_standard}
     ${data_product}   Create List    ${data_product}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoiceDetails  ${data_product}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     Type    9
@@ -282,7 +308,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_id} Với Nhiều 
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     SalePromotionId  ${info_promotion[0]}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCodes     ${voucher_codes_str}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherIds     ${voucher_ids_str}
-    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_Campaign_Id}
+    ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ReceivedVoucherCampaignIds     ${Voucher_CAMPAIGN_ID}
     ${data_promo}=    Update Nested Dictionary Property     ${data_promo}     ProductQty    ${quantity_promotion}
     ${data_promo}  Create List    ${data_promo}
     ${invoice_voucher}=    Create List   
@@ -302,8 +328,9 @@ Update Quà Tặng Sản Phẩm
     RETURN    ${data_product_promotion}
 
 Xác Thực Quà Tặng Sản Phẩm
-    [Arguments]    ${invoice_id}    ${product_id}    ${expected_quantity}=1
+    [Arguments]    ${invoice_id}    ${product_code}    ${expected_quantity}=1
     [Documentation]    Kiểm tra sản phẩm quà tặng đã được thêm vào hóa đơn với giá 0đ
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${query}=    Set Variable    SELECT * FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND Price = Discount
     ${results}=    Fetch One    ${query}    ${invoice_id}    ${product_id}
     Should Not Be Empty    ${results}    Không tìm thấy sản phẩm quà tặng trong hóa đơn
@@ -319,8 +346,9 @@ Xác Thực Quà Tặng Sản Phẩm
     Should Be Equal As Numbers    ${sale_promotion_id_detail}    ${sale_promotion_id}
 
 Xác Thực Quà Tặng Sản Phẩm Theo Sản Phẩm
-    [Arguments]    ${invoice_id}    ${product_id}    ${expected_quantity}=1
+    [Arguments]    ${invoice_id}    ${product_code}    ${expected_quantity}=1
     [Documentation]    Kiểm tra sản phẩm quà tặng theo sản phẩm đã được thêm vào hóa đơn
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${query}=    Set Variable    SELECT * FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND Price = 0
     ${results}=  Fetch One    ${query}    ${invoice_id}    ${product_id}
     Should Not Be Empty    ${results}    Không tìm thấy sản phẩm quà tặng trong hóa đơn
@@ -333,8 +361,9 @@ Xác Thực Quà Tặng Sản Phẩm Theo Sản Phẩm
     Should Be Equal As Numbers    ${promotion_type}    6    Type khuyến mãi không phải ProductGift
 
 Xác Thực Ghi Chú Quà Tặng
-    [Arguments]    ${invoice_id}    ${product_id}
+    [Arguments]    ${invoice_id}    ${product_code}
     [Documentation]    Kiểm tra ghi chú quà tặng trong chi tiết hóa đơn
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${query}=    Set Variable    SELECT Note FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ?
     ${results}=     Fetch One     ${query}    ${invoice_id}    ${product_id}
     ${note}=    Set Variable    ${results[0][0]}
@@ -344,12 +373,12 @@ Xác Thực Quà Tặng Voucher
     [Arguments]    ${invoice_id}    
     [Documentation]    Kiểm tra voucher quà tặng đã được tạo và liên kết với hóa đơn
     ${query}=    Set Variable    SELECT * FROM InvoicePromotion WHERE InvoiceId = ? AND ReceivedVoucherCodes = ?
-    ${results}=  Fetch One    ${query}    ${invoice_id}    ${Voucher_Code}
+    ${results}=  Fetch One    ${query}    ${invoice_id}    ${Voucher_CODE}
     Should Not Be Equal    ${results}    None    Không tìm thấy thông tin khuyến mãi tặng voucher ${invoice_id} trong CSDL
     
     # Kiểm tra trạng thái voucher
     ${query}=    Set Variable    SELECT Status FROM Voucher WHERE VoucherCampaignId = ? AND Id = ?
-    ${results}=    Fetch One    ${query}    ${Voucher_Campaign_Id}     ${Voucher_Id}  
+    ${results}=    Fetch One    ${query}    ${Voucher_CAMPAIGN_ID}     ${Voucher_ID}  
     ${status}=    Set Variable    ${results[0]}
     Should Be Equal As Numbers    ${status}    1    Trạng thái voucher không phải là Kích hoạt
 
@@ -414,8 +443,9 @@ Xác Thực Quà Tặng Điểm Theo Sản Phẩm
     Should Be Equal As Numbers    ${promotion_type}    7    Type khuyến mãi không phải ProductPointGift
 
 Xác Thực Nhiều Quà Tặng
-    [Arguments]    ${invoice_id}    ${product_id}    ${expected_points}=20
+    [Arguments]    ${invoice_id}    ${product_code}    ${expected_points}=20
     [Documentation]    Kiểm tra nhiều loại quà tặng đã được thêm vào hóa đơn
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     # Kiểm tra sản phẩm quà tặng
     ${query}=    Set Variable    SELECT * FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND Price = 0
     ${results}=     Fetch One     ${query}    ${invoice_id}    ${product_id}
@@ -434,8 +464,9 @@ Xác Thực Nhiều Quà Tặng
     ${count}=    Set Variable    ${results[0][0]}
     Should Be Equal As Numbers    ${count}    2    Không có đủ loại khuyến mãi
 
-Xác Thực Số Lượng Quà Tặng ${product_id} Với Số Lượng ${expected_quantity}
+Xác Thực Số Lượng Quà Tặng ${product_code} Với Số Lượng ${expected_quantity}
     [Documentation]    Kiểm tra số lượng sản phẩm quà tặng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${query}=    Set Variable    SELECT Quantity FROM InvoiceDetail WHERE InvoiceId = ? AND ProductId = ? AND Price = Discount
     ${results}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}
     Should Not Be Empty    ${results}    Không tìm thấy sản phẩm quà tặng trong hóa đơn
@@ -450,221 +481,7 @@ Xác Thực Số Lượng Voucher
     ${count}=    Set Variable    ${results[0]}
     Should Be Equal As Numbers    ${count}    ${expected_quantity}    Số lượng voucher không đúng
 
-Get From Response
-    [Documentation]    Extrait une valeur de la réponse JSON
-    [Arguments]    ${property_name}
-    ${response_json}=    Evaluate    json.loads('''${RESPONSE.content.decode('utf-8')}''')
-    ${value}=    Get From Dictionary    ${response_json}    ${property_name}
-    RETURN    ${value} 
 
-Thông Tin Khuyến Mãi Hóa Đơn Tặng 
-    [Arguments]    ${Id_promotion}
-    ${query}=    Set Variable    SELECT Id, InvoiceValue, ReceivedQuantity,PrereqQuantity,ReceivedVoucherCampaignIds,GiftPoint FROM SalePromotion WHERE CampaignId = ?
-    ${result}=    Select One Promotion    ${query}    ${Id_promotion}
-    RETURN    ${result}
-
-Thông tin hàng hóa
-    [Arguments]    ${product_code}
-    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ?
-    ${result}=   Fetch One    ${query}    ${product_code}
-    RETURN    ${result}
-
-# Keywords cho phần xử lý thanh toán bằng Voucher
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher ${voucher_campaign_id}
-    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
-    Set Test Variable    ${voucher_id}    ${voucher[0]}
-    Set Test Variable    ${voucher_code}    ${voucher[1]}
-    
-    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
-    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
-    ${voucher_value}=    Convert To Number    ${campaign[0]}
-    
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value}
-    ...    VoucherCode=${voucher_code}
-    ...    VoucherId=${voucher_id}
-    ...    VoucherCampaignId=${voucher_campaign_id}
-    
-    ${payments}=    Create List    ${payment}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER001
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Giá Thấp Thanh Toán Bằng Voucher ${voucher_campaign_id}
-    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
-    Set Test Variable    ${voucher_id}    ${voucher[0]}
-    Set Test Variable    ${voucher_code}    ${voucher[1]}
-    
-    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
-    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
-    ${voucher_value}=    Convert To Number    ${campaign[0]}
-    
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    50000
-    ${data_product}=    Create List    ${data_product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value}
-    ...    VoucherCode=${voucher_code}
-    ...    VoucherId=${voucher_id}
-    ...    VoucherCampaignId=${voucher_campaign_id}
-    
-    ${payments}=    Create List    ${payment}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER002
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Kết Hợp Voucher ${voucher_campaign_id} Và Tiền Mặt
-    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
-    Set Test Variable    ${voucher_id}    ${voucher[0]}
-    Set Test Variable    ${voucher_code}    ${voucher[1]}
-    
-    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
-    ${campaign}=    Fetch One    ${query_2}    ${voucher_campaign_id}
-    ${voucher_value}=    Convert To Number    ${campaign[0]}
-    
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    150000
-    ${data_product}=    Create List    ${data_product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    
-    ${payment_voucher}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value}
-    ...    VoucherCode=${voucher_code}
-    ...    VoucherId=${voucher_id}
-    ...    VoucherCampaignId=${voucher_campaign_id}
-    
-    ${payment_cash}=    Create Dictionary
-    ...    Method=${PAYMENT_CASH}
-    ...    Amount=100000
-    
-    ${payments}=    Create List    ${payment_voucher}    ${payment_cash}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER003
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Không Hợp Lệ
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Create List    ${data_product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    
-    ${payment}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=100000
-    ...    VoucherCode=INVALID_VOUCHER_CODE
-    ...    VoucherId=999999
-    ...    VoucherCampaignId=999999
-    
-    ${payments}=    Create List    ${payment}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER004
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Với Nhiều Voucher
-    ${query_1}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher_1}=    Fetch One    ${query_1}    ${VOUCHER_CAMPAIGN_ID_2}
-    Set Test Variable    ${voucher_id_1}    ${voucher_1[0]}
-    Set Test Variable    ${voucher_code_1}    ${voucher_1[1]}
-    
-    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
-    ${campaign_1}=    Fetch One    ${query_2}    ${VOUCHER_CAMPAIGN_ID_2}
-    ${voucher_value_1}=    Convert To Number    ${campaign_1[0]}
-    
-    ${query_3}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0 AND Id <> ?
-    ${voucher_2}=    Fetch One    ${query_3}    ${VOUCHER_CAMPAIGN_ID_2}    ${voucher_id_1}
-    Set Test Variable    ${voucher_id_2}    ${voucher_2[0]}
-    Set Test Variable    ${voucher_code_2}    ${voucher_2[1]}
-    
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    200000
-    ${data_product}=    Create List    ${data_product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    
-    ${payment_voucher_1}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value_1}
-    ...    VoucherCode=${voucher_code_1}
-    ...    VoucherId=${voucher_id_1}
-    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
-    
-    ${payment_voucher_2}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value_1}
-    ...    VoucherCode=${voucher_code_2}
-    ...    VoucherId=${voucher_id_2}
-    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
-    
-    ${payment_cash}=    Create Dictionary
-    ...    Method=${PAYMENT_CASH}
-    ...    Amount=100000
-    
-    ${payments}=    Create List    ${payment_voucher_1}    ${payment_voucher_2}    ${payment_cash}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER005
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Bằng Voucher Kết Hợp Khuyến Mãi
-    ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
-    ${voucher}=    Fetch One    ${query}    ${VOUCHER_CAMPAIGN_ID_2}
-    Set Test Variable    ${voucher_id}    ${voucher[0]}
-    Set Test Variable    ${voucher_code}    ${voucher[1]}
-    
-    ${query_2}=    Set Variable    SELECT Price FROM VoucherCampaign WHERE Id = ?
-    ${campaign}=    Fetch One    ${query_2}    ${VOUCHER_CAMPAIGN_ID_2}
-    ${voucher_value}=    Convert To Number    ${campaign[0]}
-    
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Update Nested Dictionary Property    ${data_product}    Price    150000
-    ${data_product}=    Create List    ${data_product}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    
-    # Thêm thông tin khuyến mãi
-    ${data_promo}=    Deep Copy    ${promotion_body}
-    ${data_promo}=    Update Nested Dictionary Property    ${data_promo}    Discount    30000
-    ${data_promo}=    Create List    ${data_promo}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoicePromotions    ${data_promo}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    30000
-    
-    ${payment_voucher}=    Create Dictionary
-    ...    Method=${PAYMENT_VOUCHER}
-    ...    Amount=${voucher_value}
-    ...    VoucherCode=${voucher_code}
-    ...    VoucherId=${voucher_id}
-    ...    VoucherCampaignId=${VOUCHER_CAMPAIGN_ID_2}
-    
-    ${payment_cash}=    Create Dictionary
-    ...    Method=${PAYMENT_CASH}
-    ...    Amount=70000
-    
-    ${payments}=    Create List    ${payment_voucher}    ${payment_cash}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_VOUCHER006
-    
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 # Các keywords kiểm tra kết quả
 Xác Thực Thanh Toán Voucher Hóa Đơn
@@ -712,7 +529,3 @@ Xác Thực Giảm Giá Khuyến Mãi Hóa Đơn
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${discount}    Giảm giá khuyến mãi không đúng
 
-Thông Báo Lỗi Phải Chứa
-    [Arguments]    ${error_message}
-    ${error}=    Get Response Property    message
-    Should Contain    ${error}    ${error_message}    Thông báo lỗi không chứa thông tin chính xác

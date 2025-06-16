@@ -1,8 +1,11 @@
 *** Settings ***
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoicePermissionValidationKeywords.robot
 Resource    ../../../Keywords/Utilities/RequestHelper.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
+Resource    ../../../TestData/CommonData.robot
 
 *** Test Cases ***
 RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
@@ -16,20 +19,22 @@ RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
 RT-INPV-002 Kiểm tra quyền thay đổi người bán khi người tạo khác người bán
     [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
     [Tags]    apiinvoice    validation    permission    regression
-    Given Chuẩn bị dữ liệu hóa đơn với người bán ${SOLD_BY_ID}
+    Given Chuẩn bị dữ liệu hóa đơn với người bán là ${SOLD_BY_NAME}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Thông tin người bán ${SOLD_BY_ID} trong hóa đơn được lưu trong CSDL
+    And Thông tin người bán ${SOLD_BY_NAME} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
 
 Tạo Hóa Đơn Có Kênh Bán
     [Documentation]      tạo hóa đơn có kênh bán
     [Tags]    apiinvoice    validation    permission    regression
-    And Chuẩn bị dữ liệu hóa đơn với kênh bán ${CHANNEL_ID_1}
+    And Chuẩn bị dữ liệu hóa đơn với kênh bán là ${CHANNEL_NAME_1}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Thông tin kênh bán ${CHANNEL_ID_1} trong hóa đơn được lưu trong CSDL
+    And Thông tin kênh bán ${CHANNEL_NAME_1} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
 
 Tạo Hóa Đơn Có Kênh Bán Không Tồn Tại
     [Documentation]     tạo hóa đơn có kênh bán không tồn tại
@@ -47,6 +52,7 @@ Tạo Hóa Đơn Có Thay Đổi Thời Gian
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
 
 Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng hóa đơn tự lấy thời gian theo ngày hiện tại
@@ -55,15 +61,17 @@ Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
 
 Chuẩn bị dữ liệu hóa đơn gắn với bảng giá 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
     [Tags]    apiinvoice    validation    permission    regression
-    And Chuẩn bị dữ liệu hóa đơn với bảng giá ${PRICEBOOK_ID}   
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá là ${PRICEBOOK_NAME}   
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
-    And Thông tin bảng giá ${PRICEBOOK_ID} trong hóa đơn được lưu trong CSDL
+    And Thông tin bảng giá ${PRICEBOOK_NAME} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
 
 Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại

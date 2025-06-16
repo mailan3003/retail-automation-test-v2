@@ -30,7 +30,7 @@ POST Form Data
     END
     RETURN    ${response}
 
-Delete
+Call Delete Request
     [Arguments]    ${url}    ${headers}=${None}
     ${headers}=    Run Keyword If    ${headers} == ${None}    Create Dictionary    Content-Type=application/json
     ...    ELSE    Set Variable    ${headers}
@@ -56,3 +56,5 @@ Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Set Test Variable    ${RESPONSE}    ${response}
     ${invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["Id"]}    0
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
+
+

@@ -1,9 +1,12 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/Currency_Keywords.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
-
+Test Teardown     Delete Invoice From API
 *** Keywords ***
 
 
@@ -118,7 +121,7 @@ RT-QT-06 Tạo hóa đơn quốc tế với múi giờ khác nhau
     [Documentation]    Kiểm tra tạo hóa đơn quốc tế với múi giờ khác nhau
     ...    - Dữ liệu đầu vào: 
     ...    - Mã hóa đơn: "HD_TEST_TIMEZONE001"
-    ...    - Chi nhánh ID: ${BRANCH_ID_TIMEZONE}
+    ...    - Chi nhánh ID: ${BRANCH_NAME_TIMEZONE}
     ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
     ...    - Múi giờ: (US) Chậm hơn việt nam 12 giờ
     ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý ngày giờ theo múi giờ cấu hình
@@ -127,7 +130,7 @@ RT-QT-06 Tạo hóa đơn quốc tế với múi giờ khác nhau
     ...    - Ngày tạo hóa đơn được lưu đúng theo múi giờ cấu hình
     ...    - Tổng tiền hóa đơn chính xác
     [Tags]    currency    timezone    apicurrency
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Chi Nhánh Có Timezone ${BRANCH_ID_TIMEZONE}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Chi Nhánh Có Timezone ${BRANCH_NAME_TIMEZONE}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
@@ -136,7 +139,7 @@ RT-QT-06 Tạo hóa đơn quốc tế với múi giờ khác nhau
 
 RT-QT-07 Tạo hóa đơn quốc tế với đơn vị tiền tệ khác JPY
     [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác JPY
-    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Khách hàng code: ${CUSTOMER_CODE_CURRENCY_1}
     ...    - Sản phẩm:, SL=1, Giá=100000 PHP
     ...    - Đơn vị tiền tệ: JPY
     ...    - Tỷ giá: 1.5
@@ -148,19 +151,19 @@ RT-QT-07 Tạo hóa đơn quốc tế với đơn vị tiền tệ khác JPY
     ...    - Tổng tiền thanh toán = 1.5 * 5 = 7.5 JPY
     ...    - Công nợ khách hàng = 99992.5
     [Tags]    currency    apicurrency
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 5 JPY Phương thức ${PAYMENT_CASH} Khách hàng ${CUSTOMER_ID_CURRENCY_1}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 5 JPY Phương thức ${PAYMENT_CASH} Khách hàng ${CUSTOMER_CODE_CURRENCY_1}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phiếu Thu Được Tạo ${PAYMENT_EXCHANGE_AMOUNT} Phương thức ${PAYMENT_CASH}
     And Xác thực tổng thanh toán hóa đơn ${PAYMENT_EXCHANGE_AMOUNT}
     And Xác Thực Công Nợ Của Hóa Đơn 99992.5
-    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_ID_CURRENCY_1} Giảm 7.5
+    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_CODE_CURRENCY_1} Giảm 7.5
     And Xác Thực Thanh Toán 5 Tiền Tệ JPY Được Lưu Trong Sổ Quỹ
 
 RT-QT-08 Tạo hóa đơn quốc tế thanh toán chuyển khoản VND
     [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác VND
-    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Khách hàng code: ${CUSTOMER_CODE_CURRENCY_1}
     ...    - Sản phẩm:, SL=1, Giá=100000 PHP
     ...    - Đơn vị tiền tệ: VND
     ...    - Tỷ giá: 1.5
@@ -172,19 +175,19 @@ RT-QT-08 Tạo hóa đơn quốc tế thanh toán chuyển khoản VND
     ...    - Tổng tiền thanh toán = 1.5 * 5 = 7.5 JPY
     ...    - Công nợ khách hàng = 0
     [Tags]    currency    apicurrency
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 10.5 VND Phương thức ${PAYMENT_TRANSFER} Khách hàng ${CUSTOMER_ID_CURRENCY_2}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán 10.5 VND Phương thức ${PAYMENT_TRANSFER} Khách hàng ${CUSTOMER_CODE_CURRENCY_2}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phiếu Thu Được Tạo ${PAYMENT_EXCHANGE_AMOUNT} Phương thức ${PAYMENT_TRANSFER}
     And Xác thực tổng thanh toán hóa đơn ${PAYMENT_EXCHANGE_AMOUNT}
     And Xác Thực Công Nợ Của Hóa Đơn 0
-    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_ID_CURRENCY_2} Giảm ${PAYMENT_EXCHANGE_AMOUNT}
+    And Xác Định Công Nợ Của Khách Hàng ${CUSTOMER_CODE_CURRENCY_2} Giảm ${PAYMENT_EXCHANGE_AMOUNT}
     And Xác Thực Thanh Toán 10.5 Tiền Tệ VND Được Lưu Trong Sổ Quỹ
 
 RT-QT-09 Tạo hóa đơn quốc tế Khách lẻ thanh toán chuyển khoản PHP
     [Documentation]    Kiểm tra tạo hóa đơn quốc tế với đơn vị tiền tệ khác PHP
-    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Khách hàng code: ${CUSTOMER_CODE_CURRENCY_1}
     ...    - Sản phẩm:, SL=1, Giá=100000 PHP
     ...    - Đơn vị tiền tệ: PHP
     ...    - Logic xử lý: InvoiceService.NormalizeData() xử lý chuyển đổi tiền tệ
@@ -205,7 +208,7 @@ RT-QT-09 Tạo hóa đơn quốc tế Khách lẻ thanh toán chuyển khoản P
 
 RT-QT-10 Tạo hóa đơn quốc tế thanh toán kết hợp 2 loại tiền tệ
     [Documentation]    Kiểm tra tạo hóa đơn quốc tế với thanh toán kết hợp 2 loại tiền tệ
-    ...    - Khách hàng ID: ${CUSTOMER_ID_CURRENCY_1}
+    ...    - Khách hàng code: ${CUSTOMER_CODE_CURRENCY_3}
     ...    - Sản phẩm:, SL=1, Giá=100000 PHP
     ...    - Đơn vị tiền tệ thanh toán: PHP và JPY
     ...    - Tỷ giá: Theo cấu hình hệ thống
@@ -215,12 +218,13 @@ RT-QT-10 Tạo hóa đơn quốc tế thanh toán kết hợp 2 loại tiền t�
     ...    - Thanh toán được ghi nhận đúng với 2 loại tiền tệ
     ...    - Công nợ khách hàng được cập nhật chính xác
     [Tags]    currency    apicurrency    multi_currency
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp 50000 PHP Và 20 JPY Khách hàng ${CUSTOMER_ID_CURRENCY_3}
-    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_ID_CURRENCY_3} trước khi thanh toán
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp 50000 PHP Và 20 JPY Khách hàng ${CUSTOMER_CODE_CURRENCY_3}
+    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_CODE_CURRENCY_3} trước khi thanh toán
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác thực tổng thanh toán hóa đơn ${TOTAL_PAYMENT}  
     And Xác Thực Công Nợ Của Hóa Đơn 49970
-    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_ID_CURRENCY_3} trước khi thanh toán
+    And Lấy thông Tin công nợ khách hàng ${CUSTOMER_CODE_CURRENCY_3} trước khi thanh toán
+
 

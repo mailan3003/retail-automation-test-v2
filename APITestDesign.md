@@ -98,8 +98,7 @@ robotframework-tests/
  
 - **Always use deep copy of standard request body templates when preparing test data:**
   ```robotframework
-  ${request}=    Evaluate    json.loads(json.dumps(${STANDARD_REQUEST}))    json
-  ```
+  ${request}=   Deep Copy   ${STANDARD_REQUEST}
 
 - **Modify only necessary fields in the copied request body for your specific test case**
 - **Reference environment variables from `Env.robot` for API endpoints and configuration**

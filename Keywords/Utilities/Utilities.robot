@@ -4,6 +4,7 @@ Library           Collections
 Library           String
 Library           RequestsLibrary
 Library           OperatingSystem
+Resource          RequestHelper.robot
 #Resource          ../../Config/Env.robot
 #Resource          ../../Config/Env_currency.robot
 #Resource          ../../Config/Env_nhathuoc.robot
@@ -74,5 +75,5 @@ Should Contain Nested Property
 Delete Data
     [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
     ${headers}=    Create Auth Headers    ${token}
-    ${response}=    DELETE    ${API_MAN_URL}${endpoint}    headers=${headers}    
+    ${response}=    Call Delete Request    ${API_MAN_URL}${endpoint}    headers=${headers}    
     RETURN    ${response}

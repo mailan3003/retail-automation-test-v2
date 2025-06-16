@@ -1,5 +1,6 @@
 *** Settings ***
-Documentation     Test cases API cho phần cập nhật thông tin giao hàng
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
@@ -7,8 +8,11 @@ Library           ../../../Resources/DatabaseLibrary.py
 
 *** Variables ***
 ${SELLER_ID}    1000000490
+${SELLER_NAME}    le.dv
 ${CHANNEL_ID}   1000000042
+${CHANNEL_NAME}    Kênh 1
 ${DELIVERY_PARTNER_2}    1000000119
+${DELIVERY_PARTNER_CODE}    DT00005
 
 *** Test Cases ***
 RT-DU-001 Cập nhật trạng thái giao hàng thành công
@@ -28,6 +32,7 @@ RT-DU-001 Cập nhật trạng thái giao hàng thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_PROCESSING}
+    [Teardown]    Delete Invoice From API
 
 
 RT-DU-002 Cập nhật thông tin người nhận thành công
@@ -49,6 +54,7 @@ RT-DU-002 Cập nhật thông tin người nhận thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Thông Tin Người Nhận Được Cập Nhật Thành Nguyễn Thị B, 0912345678, 456 Đường Lê Lợi, Q3
+    [Teardown]    Delete Invoice From API
 
 RT-DU-003 Cập nhật phí giao hàng thành công
     [Documentation]    Kiểm tra cập nhật phí giao hàng thành công
@@ -67,6 +73,7 @@ RT-DU-003 Cập nhật phí giao hàng thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Phí Giao Hàng Được Cập Nhật Thành 35000 Đồng
+    [Teardown]    Delete Invoice From API
 
 RT-DU-004 Cập nhật thu hộ
     [Documentation]    Kiểm tra cập nhật miễn phí giao hàng thành công
@@ -87,6 +94,7 @@ RT-DU-004 Cập nhật thu hộ
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Hóa Đơn Được Cập Nhật Thu Hộ
+    [Teardown]    Delete Invoice From API
 
 
 RT-DU-005 Cập nhật trạng thái đã giao hàng thành công
@@ -106,6 +114,7 @@ RT-DU-005 Cập nhật trạng thái đã giao hàng thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_COMPLETED}
+    [Teardown]    Delete Invoice From API
 
 RT-DU-006 Cập nhật trạng thái hủy giao hàng thành công
     [Documentation]    Kiểm tra cập nhật trạng thái hủy giao hàng thành công
@@ -124,6 +133,7 @@ RT-DU-006 Cập nhật trạng thái hủy giao hàng thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Thông Tin Cập Nhật Giao Hàng Được Lưu Với Trạng Thái ${STATUS_CANCELLED}
+    [Teardown]    Delete Invoice From API
 
 RT-DU-007 Cập nhật mã vận đơn thành công
     [Documentation]    Kiểm tra cập nhật mã vận đơn thành công
@@ -142,6 +152,7 @@ RT-DU-007 Cập nhật mã vận đơn thành công
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Mã Vận Đơn Được Cập Nhật Thành TRACK123456789
+    [Teardown]    Delete Invoice From API
 
 
 RT-DU-008 Cập nhật đối tác giao hàng khác
@@ -158,10 +169,11 @@ RT-DU-008 Cập nhật đối tác giao hàng khác
     ...    - Ghi chú giao hàng được cập nhật
     [Tags]    apiinvoice    update_invoice    update_delivery    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Để Cập Nhật Giao Hàng
-    And Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${DELIVERY_PARTNER_2}
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đối Tác Giao Hàng ${DELIVERY_PARTNER_CODE}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
-    And Đối tác giao hàng được cập nhật thành ${DELIVERY_PARTNER_2}
+    And Đối tác giao hàng được cập nhật thành ${DELIVERY_PARTNER_CODE}
+    [Teardown]    Delete Invoice From API
 
 RT-DU-009 Cập nhật thông tin gói hàng
     [Documentation]    Kiểm tra cập nhật thông tin gói hàng thành công
@@ -182,6 +194,7 @@ RT-DU-009 Cập nhật thông tin gói hàng
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã trạng thái phải là 200
     And Xác Thực Sử Dụng Thông Tin Trọng Lượng 100 Và Kích Thước 100x100x100 cm
+    [Teardown]    Delete Invoice From API
 
 RT-DU-010 Cập nhật ngày giao dự kiến thành công
     [Documentation]    Kiểm tra cập nhật ngày giao dự kiến thành công
@@ -201,6 +214,7 @@ RT-DU-010 Cập nhật ngày giao dự kiến thành công
     Then Mã trạng thái phải là 200
     And Xác Thực Cập Nhật Ngày Giao Dự Kiến 
     And Xác Thực Ghi Chú Giao Hàng ${EXPECTED_NOTE}
+    [Teardown]    Delete Invoice From API
 
 RT-DU-011 Cập nhật giao hàng thất bại với mã hóa đơn không tồn tại
     [Documentation]    Kiểm tra cập nhật giao hàng thất bại với mã hóa đơn không tồn tại
@@ -313,10 +327,12 @@ Cập nhật người bán từ MHQL
    ...    - Người bán được cập nhật thành ${SELLER_ID}
    [Tags]    apiinvoice    smoke    regression
    Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
-   And Chuẩn Bị Dữ Liệu Cập Nhật Người Bán ${SELLER_ID}
+   And Chuẩn Bị Dữ Liệu Cập Nhật Người Bán Thành ${SELLER_NAME}
    When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
    Then Mã Trạng Thái Phải Là 200
-   And Người Bán Được Cập Nhật Thành ${SELLER_ID}
+   And Người Bán Được Cập Nhật Thành ${SELLER_NAME}
+   [Teardown]    Delete Invoice From API
+
 Cập nhật thời gian từ MHQL
     [Documentation]    Kiểm tra cập nhật thời gian từ MHQL
     ...    - Dữ liệu đầu vào:
@@ -332,6 +348,7 @@ Cập nhật thời gian từ MHQL
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL    
     Then Mã Trạng Thái Phải Là 200
     And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
+    [Teardown]    Delete Invoice From API
 
 Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu Thanh Toán
     [Documentation]    Kiểm tra cập nhập thời gian có thanh toán không thay đổi thời gian phiếu thanh toán
@@ -349,7 +366,8 @@ Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu 
     Then Mã Trạng Thái Phải Là 200
     And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
     And Thời Gian Phiếu Thanh Toán ${CURRENT_DATE_PAYMENT}  
-    
+    [Teardown]    Delete Invoice From API
+
  Cập Nhập Thời Gian Có Thanh Toán Có Thay Đổi Thời gian Phiếu Thanh Toán
     [Documentation]    Kiểm tra cập nhập thời gian có thanh toán có thay đổi thời gian phiếu thanh toán
     ...    - Dữ liệu đầu vào:
@@ -366,6 +384,7 @@ Cập Nhập Thời Gian Có Thanh Toán Không Thay Đổi Thời gian Phiếu 
     Then Mã Trạng Thái Phải Là 200
     And Thời Gian Được Cập Nhật Thành ${PURCHASE_DATE}
     And Thời Gian Phiếu Thanh Toán ${PURCHASE_DATE}
+    [Teardown]    Delete Invoice From API
 
 Cập nhật thời gian tương lai từ MHQL
     [Documentation]    Kiểm tra cập nhật thời gian tương lai từ MHQL
@@ -394,10 +413,12 @@ Cập nhập kênh bán từ MHQL
     ...    - Kênh bán được cập nhật thành ${CHANNEL_ID}
     [Tags]    apiinvoice    smoke      test4243    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật 
-    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán ${CHANNEL_ID}
+    And Chuẩn Bị Dữ Liệu Cập Nhật Thành Kênh Bán ${CHANNEL_NAME}
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã Trạng Thái Phải Là 200
-    And Kênh Bán Được Cập Nhật Thành ${CHANNEL_ID}
+    And Kênh Bán Được Cập Nhật Thành ${CHANNEL_NAME}
+    [Teardown]    Delete Invoice From API
+
 Cập nhật ghi chú từ MHQL
     [Documentation]    Kiểm tra cập nhập ghi chú từ MHQL
     ...    - Dữ liệu đầu vào:
@@ -412,6 +433,7 @@ Cập nhật ghi chú từ MHQL
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã Trạng Thái Phải Là 200
     And Ghi Chú Được Cập Nhật Thành ${NOTE}
+    [Teardown]    Delete Invoice From API
 
 Cập nhật ghi chú quá nhiều kí tự từ MHQL
     [Documentation]    Kiểm tra cập nhập ghi chú quá nhiều kí tự từ MHQL
@@ -427,6 +449,7 @@ Cập nhật ghi chú quá nhiều kí tự từ MHQL
     When Gửi Yêu Cầu Cập Nhật Hóa Đơn Từ MHQL
     Then Mã Trạng Thái Phải Là 200
     And Ghi Chú Được Cập Nhật Thành ${NOTE}
+    [Teardown]    Delete Invoice From API
 
 
 

@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test API kiểm tra và xác thực đầu vào khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/InputValidationKeywords.robot
 Resource          ../../../Keywords/Invoice/UpdateInvoiceKeywords.robot
 Resource          ../../../Keywords/Invoice/PrescriptionValidationKeywords.robot
@@ -8,11 +10,10 @@ Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../TestData/Invoice/UpdateInvoiceData.robot
-Suite Setup       Suite Setup
+
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    InvoiceValidationTest
+
 
 *** Test Cases ***
 RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ

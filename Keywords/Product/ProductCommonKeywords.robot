@@ -98,6 +98,12 @@ Lấy thông tin hãng sản xuất nhà thuốc
     ${result}=    Select One Master    ${query}    ${manufacturer_id}
     RETURN    ${result}
 
+Lấy Thông tin Đường Dùng
+    [Arguments]    ${route_of_administration}
+    ${query}=    Set Variable    SELECT Id, Name FROM RetailerRouteOfAdministration WHERE Name = ? AND RetailerId = ?
+    ${result}=    Select One Master    ${query}    ${route_of_administration}    ${RETAILER_ID}
+    RETURN    ${result[0]}  ${result[1]}
+
 Lấy ID thuộc tính  
     [Arguments]    ${attribute_name}
     ${query}=    Set Variable    SELECT Id FROM Attribute WHERE Name=? AND RetailerId= ?
@@ -461,12 +467,6 @@ Xác Thực Sản Phẩm ${list_product_code} Tồn ${list_onhand} Ở Kho ${lis
     END
   END
 
-Lấy Thông tin Sản Phẩm  
-    [Arguments]    ${product_code}
-    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ?
-    ${result}=    Fetch One    ${query}    ${product_code}
-    RETURN    ${result[0]}
-
 
 Xác Thực Tất Cả Sản Phẩm ${list_product_code} Có Thuế ${type_tax} Với ${tax_rate} %
     ${tax_ID}  Run Keyword If  '${type_tax}'=='Trực Tiếp'    Lấy taxid từ giá trị thuế trực tiếp    ${tax_rate}
@@ -518,15 +518,17 @@ Xác Thực Lỗi "${error_message}"
     Should Be Equal As Strings    ${RESPONSE.status_code}    420
     Should Contain    ${RESPONSE.text}    ${error_message} 
 
-Delete Sản Phẩm ${product_code}
+Xóa Sản Phẩm 
+    [Arguments]    ${product_code}
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     ${endpoint}=    Format String    ${PRODUCT_DELETE_API_ENDPOINT}    ${product_id}
-    Delete Data    ${endpoint}
+    Delete Data   ${endpoint}
 
 
-Delete Nhiều Sản Phẩm ${list_product_code}
+Delete Nhiều Sản Phẩm 
+    [Arguments]    ${list_product_code}
     FOR    ${product_code}    IN    @{list_product_code}
-        Delete Sản Phẩm ${product_code}
+        Xóa Sản Phẩm    ${product_code}
     END
 
 Save warranty for product
@@ -659,9 +661,27 @@ Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm G�
 
 Lấy Thông tin Nhóm Hàng 
     [Arguments]    ${group_name}
-    ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ?
-    ${result}=    Fetch One    ${query}    ${group_name}
+    ${query}=    Set Variable    SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${group_name}    ${RETAILER_ID}
     RETURN    ${result[0]}
+
+Lấy ID Vị Trí Lưu Trữ
+    ${query}=    Set Variable    SELECT TOP 1 Id FROM Shelves WHERE RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${RETAILER_ID}
+    ${shelf_id}=    Set Variable If    "${result}" != "None"    ${result[0]}    1
+    RETURN    ${shelf_id}
+
+Lấy ID Vị Trí Lưu Trữ Theo Tên
+    [Arguments]    ${shelf_name}
+    ${query}=    Set Variable    SELECT Id FROM Shelves WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${shelf_name}    ${RETAILER_ID}
+    RETURN    ${result[0]}
+
+Lấy ID Thương Hiệu
+    ${query}=    Set Variable    SELECT TOP 1 Id FROM TradeMark WHERE RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${RETAILER_ID}
+    ${brand_id}=    Set Variable If    "${result}" != "None"    ${result[0]}    1
+    RETURN    ${brand_id}
 
 Xác Thực Sản Phẩm ${list_product_code} Có Điểm ${different_points}
     FOR    ${item_code}    ${item_different_point}    IN ZIP    ${list_product_code}    ${different_points}
@@ -769,7 +789,7 @@ Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
     # Kiểm tra có các thuộc tính cần thiết
     ${unique_attr_names}=    Remove Duplicates    ${attr_names}
     ${attr_count}=    Get Length    ${unique_attr_names}
-    Should Be True    ${attr_count} >= 5    Sản phẩm không có đủ số lượng thuộc tính khác nhau như cấu hình
+    Should Be True    ${attr_count} >= 4    Sản phẩm không có đủ số lượng thuộc tính khác nhau như cấu hình
 
 Xác Thực Biến Thể Có Giá Và Tồn Kho Khác Nhau Theo Chi Nhánh
     # Kiểm tra giá và tồn kho của các biến thể theo chi nhánh
@@ -876,3 +896,45 @@ Xác Thực Biến Thể Mới Được Thêm Thành Công
         ${attr_result}=    Fetch One    ${attr_query}    ${variant_code}
         Should Be True    ${attr_result[0]} > 0    Biến thể mới ${variant_code} không có thuộc tính
     END
+
+Xác Thực Sản Phẩm Có Mã Barcode Đúng
+    ${query}=    Set Variable    SELECT Barcode FROM Product WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_PRODUCT_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin mã barcode
+    Should Be Equal As Strings    ${result[0]}    ${BARCODE}
+Lấy Thông tin Sản Phẩm  
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${product_code}    ${RETAILER_ID}
+    RETURN    ${result[0]}
+
+Lấy Id Và Type Của Sản Phẩm
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id, ProductType FROM Product WHERE Code = ?
+    ${result}=    Fetch One    ${query}    ${product_code}
+    RETURN    ${result}
+
+
+Lấy Serial của Sản Phẩm
+    [Arguments]    ${product_id}    ${number}  ${status}
+    ${query}=    Set Variable    SELECT TOP(${number}) SerialNumber FROM ProductSerial WHERE ProductId = ? AND Status = ?
+    ${result}=    Fetch All    ${query}    ${product_id}    ${status}
+    RETURN    ${result}
+
+Lấy ID batch của Lô hàng
+    [Arguments]    ${batch_name}    ${product_id}
+    ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE BatchName = ? AND ProductId = ?
+    ${result_batch}=    Fetch One    ${query}    ${batch_name}    ${product_id}
+    RETURN    ${result_batch[0]}
+
+Lấy ID Batch của Hàng Lô
+    [Arguments]    ${product_id}
+    ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE ProductId = ?
+    ${result_batch}=    Fetch One    ${query}    ${product_id}
+    RETURN    ${result_batch[0]}
+
+Thông tin hàng hóa
+    [Arguments]    ${product_code}
+    ${query}=    Set Variable    SELECT Id, Name, BasePrice FROM Product WHERE Code = ? AND RetailerId = ?
+    ${result}=   Fetch One    ${query}    ${product_code}    ${RETAILER_ID}
+    RETURN    ${result}

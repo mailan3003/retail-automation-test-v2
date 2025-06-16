@@ -2,6 +2,8 @@
 Documentation     Keywords cho test cases API xử lý giảm giá hóa đơn
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
+Resource          ../Promotion/PromotionComnonKeywords.robot
+Resource           InvoiceCommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -25,24 +27,30 @@ ${CURRENCY_DECIMAL_PLACE_FOR_PRODUCT}    4
 # Keywords chuẩn bị dữ liệu
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Giảm Giá ${discount_amount}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với giảm giá cơ bản
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount_amount}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    ${discount_amount}
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá Tỷ Lệ ${discount_ratio} %
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với giá trị và tỷ lệ giảm giá tùy chỉnh
-    ${request}=    Deep Copy   ${invoice_request_body_not_delivery}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
     ${discount}     Evaluate    ${PRODUCT_PRICE_100K} * ${discount_ratio} / 100
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountRatio    ${discount_ratio}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    ${discount}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    DiscountRatio    ${discount_ratio}
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Mã Coupon Giảm Giá 20000
+Chuẩn Bị Dữ Liệu Hóa Đơn Áp Coupon Đợt ${coupon_campaign_code}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với mã coupon giảm giá 20000
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CouponCode    ${PROMOTION_ID_1}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    CouponCode    ${coupon_campaign_code}
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -166,12 +174,14 @@ Xác Thực Phân Bổ Giảm Giá Sản Phẩm Trong CSDL
 
 # Thêm các keywords mới (AIgen) cho việc kiểm tra tính tổng tiền hàng
 # Các keywords chuẩn bị dữ liệu
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Số Lượng ${quantity}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Đơn Giá ${price} Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
     ${product_detail}=    Update Nested Dictionary Property  ${product_detail}    Quantity    ${quantity}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
@@ -179,12 +189,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Số 
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Giảm Giá ${discount} Số Lượng ${quantity}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Đơn Giá ${price} Giảm Giá ${discount} Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá, giảm giá và số lượng tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
 
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Nested Dictionary Property     ${product_detail}    Price    ${price}
     ${product_detail}=    Update Nested Dictionary Property   ${product_detail}    Discount    ${discount}
     ${product_detail}=   Update Nested Dictionary Property   ${product_detail}    Quantity    ${quantity}
@@ -193,7 +205,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá ${price} Giả
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm Và Giảm Giá Hóa Đơn ${discount}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code_1} Và ${product_code_2} Và Giảm Giá Hóa Đơn ${discount}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với hai sản phẩm và giảm giá hóa đơn
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${empty_list} =    Create List
@@ -202,13 +214,16 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm Và Giảm Giá Hóa 
     
     # Thêm chi tiết sản phẩm 1
     ${product_detail1}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id_1}=    Lấy Thông Tin Sản Phẩm    ${product_code_1}
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    ProductId    ${product_id_1}
     ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Price    100000
     ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Quantity    1
     ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail1}
     
     # Thêm chi tiết sản phẩm 2
     ${product_detail2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${PRODUCT_2}
+    ${product_id_2}=    Lấy Thông Tin Sản Phẩm    ${product_code_2}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${product_id_2}
     ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Price    200000
     ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Quantity    1
     ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail2}
@@ -218,20 +233,24 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm Và Giảm Giá Hóa 
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Cố Định ${surcharge}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có giảm giá và phụ phí cố định
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    ${discount}
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     ${surcharge_item_body}=    Deep Copy    ${surcharge_item_body}
     ${surcharge_item_body}=   Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge}
-    ${invoice_surcharges}=    Create List    ${surcharge_item_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceOrderSurcharges    ${invoice_surcharges}
+    ${request_invoice_surcharges}=    Create List    ${surcharge_item_body}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    InvoiceOrderSurcharges    ${request_invoice_surcharges}
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Giá ${discount} Phụ Phí Phần Trăm ${surcharge_ratio}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có giảm giá và phụ phí tính theo phần trăm
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    ${discount}
     ${surcharge_item_body}=    Deep Copy    ${surcharge_percent_item_body}
     ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_percent_item_body}   ValueRatio    ${surcharge_ratio}    
     ${invoice_surcharges}=    Create List    ${surcharge_item_body}
@@ -308,9 +327,10 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Thuế VAT
     ${empty_list} =    Create List
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails       ${empty_list}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.EnableVATToggle    ${TRUE}
-    
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
     
@@ -352,6 +372,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Phụ Phí Âm
     
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
     ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
@@ -373,6 +395,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá Thập Phân
     
     # Thêm chi tiết sản phẩm với giá thập phân
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    100000.678
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Quantity    1
     ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${product_detail}
@@ -391,13 +415,16 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
     
     # Thêm sản phẩm 1 (có giảm giá)
     ${product_detail1}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id_1}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${product_detail1}=    Update Dictionary Property    ${product_detail1}    ProductId    ${product_id_1}
     ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Price    100000
     ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Discount    10000
     ${product_detail1}=    Update Dictionary Property    ${product_detail1}    Quantity    1
     
     # Thêm sản phẩm 2 (không giảm giá)
     ${product_detail2}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${PRODUCT_2}
+    ${product_id_2}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_2_CODE}
+    ${product_detail2}=    Update Dictionary Property    ${product_detail2}    ProductId    ${product_id_2}
     ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Price    200000
     ${product_detail2}=    Update Dictionary Property    ${product_detail2}    Quantity    1
     
@@ -424,91 +451,82 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Phức Hợp
     RETURN    ${request}
 
 
-Lấy Thông Tin Chương Trình Coupon
-    [Documentation]  Lấy thông tin chương trình coupon
-    [Arguments]    ${couponcampaign_code}
-    ${query}=    Set Variable    SELECT Id FROM CouponCampaign WHERE Code = ?
-    ${result}=    Fetch One    ${query}    ${couponcampaign_code}
-    RETURN    ${result[0]}
-
-Lấy Coupon Theo Coupon Campaign Id
-    [Documentation]  Lấy coupon code theo coupon campaign id
-    [Arguments]    ${couponcampaign_id}
-    ${query}=    Set Variable    SELECT Id, Code FROM Coupon WHERE CouponCampaignId = ? AND Status = 1
-    ${result}=    Fetch One    ${query}    ${couponcampaign_id}
-    RETURN    ${result[0]}    ${result[1]}
-
-Lấy Coupon Theo ${couponcampaign_id} Và Trạng Thái ${status}
-    [Documentation]  Lấy coupon code theo coupon campaign id
-    ${status}=    Set Variable if    '${status}'=='Chưa Sử Dụng'    0     2
-    ${query}=    Set Variable    SELECT Id, Code FROM Coupon WHERE CouponCampaignId = ? AND Status = ?
-    ${result}=    Fetch One    ${query}    ${couponcampaign_id}    ${status}
-    RETURN    ${result[0]}    ${result[1]}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign}
     [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+   $ 
+    ${couponcampaign_id}   ${price_ratio}    ${price_max}   Lấy Thông Tin Coupon Theo Mã Coupon Campaign    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Id Mã Coupon ở Trạng Thái    ${couponcampaign_id}    Đã Phát Hành
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
     ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
     ${coupon_data}=  Update Nested Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
     ${coupon_data}=  Update Nested Dictionary Property     ${coupon_data}    Id    ${coupon_id}
     ${coupon_data}=  Update Nested Dictionary Property  ${coupon_data}    Code    ${coupon_code}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    5000
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Coupon    ${coupon_data}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    DiscountByCoupon     5000
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    5000
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
+    Set Test Variable    ${COUPON_CODE}    ${coupon_code}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign} Và Trạng Thái ${status}
     [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo ${couponcampaign_id} Và Trạng Thái ${status}
+    ${couponcampaign_id}   ${price_ratio}    ${price_max}   Lấy Thông Tin Coupon Theo Mã Coupon Campaign    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Id Mã Coupon ở Trạng Thái    ${couponcampaign_id}   ${status}
     ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
     ${coupon_data}=  Update Nested Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
     ${coupon_data}=  Update Nested Dictionary Property     ${coupon_data}    Id    ${coupon_id}
     ${coupon_data}=  Update Nested Dictionary Property  ${coupon_data}    Code    ${coupon_code}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    5000
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Coupon    ${coupon_data}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    DiscountByCoupon     5000
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    5000
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${COUPON_CODE}    ${coupon_code}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon ${ma_coupon_campaign} Và Giảm Giá ${discount}
     [Documentation]  Chuẩn bị dữ liệu hóa đơn áp đợt coupon và giảm giá
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${couponcampaign_id}   ${price_ratio}    ${price_max}   Lấy Thông Tin Coupon Theo Mã Coupon Campaign    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Id Mã Coupon ở Trạng Thái    ${couponcampaign_id}   Đã Phát Hành
     ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Id    ${coupon_id}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Code    ${coupon_code}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     5000
-     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    100000
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} 
+    ${request_invoice}    Get From Dictionary      ${request}    Invoice
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Coupon    ${coupon_data}
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    DiscountByCoupon     5000
+    ${request_invoice}  Update Dictionary Property    ${request_invoice}    Discount    100000
+    ${request}  Update Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${COUPON_CODE}    ${coupon_code}
     RETURN    ${request}
 
 
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Đơn Giá ${price} Áp Đợt Coupon ${ma_coupon_campaign}
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${couponcampaign_id}=    Lấy Thông Tin Chương Trình Coupon    ${ma_coupon_campaign}
-    ${coupon_id}   ${coupon_code}=    Lấy Coupon Theo Coupon Campaign Id    ${couponcampaign_id}
+    ${couponcampaign_id}   ${price_ratio}    ${price_max}   Lấy Thông Tin Coupon Theo Mã Coupon Campaign    ${ma_coupon_campaign}
+    ${coupon_id}   ${coupon_code}=    Lấy Id Mã Coupon ở Trạng Thái    ${couponcampaign_id}   Đã Phát Hành
     ${coupon_data}=    Deep Copy    ${STANDARD_COUPON}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    CouponCampaignId    ${couponcampaign_id}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Id    ${coupon_id}
     ${coupon_data}=    Update Dictionary Property    ${coupon_data}    Code    ${coupon_code}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${PRODUCT_1_CODE}
+    ${product_detail}=    Update Dictionary Property    ${product_detail}    ProductId    ${product_id}
     ${product_detail}=    Update Dictionary Property    ${product_detail}    Price    ${price}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     ${request}=     Update Nested Dictionary Property     ${request}    Invoice.Coupon    ${coupon_data}
      ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DiscountByCoupon     100000
      ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    100000
     Set Test Variable    ${REQUEST_DATA}    ${request}
+    Set Test Variable    ${COUPON_CODE}    ${coupon_code}
     RETURN    ${request}
 
 

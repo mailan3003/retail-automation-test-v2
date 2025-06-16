@@ -9,10 +9,10 @@ Resource          ../../TestData/Product/CreateProductData.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 Library           String
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 
 *** Variables ***
-${CATEGORY_ID_HANG_HOA_VLXD}    1000000753
+${CATEGORY_HANG_HOA_VLXD}    VLXD
 *** Keywords ***
 
 Chuẩn Bị Dữ Liệu Sản Phẩm ${type} Có Kích Thước ${width}x${height} ${unit}
@@ -22,7 +22,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm ${type} Có Kích Thước ${width}x${heig
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    KT${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng  ${CATEGORY_HANG_HOA_VLXD}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
     ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
     ${request}    Update Dictionary Property    ${request}    Type1    ${type}
@@ -43,7 +44,8 @@ Chuẩn Bị Dữ Liệu Hàng Serial ${type} Có Kích Thước ${width}x${heig
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    KT${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng   ${CATEGORY_HANG_HOA_VLXD}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
     ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
     ${request}    Update Dictionary Property    ${request}    Type1    ${type}
@@ -64,7 +66,8 @@ Chuẩn Bị Dữ Liệu Hàng Lô ${type} Có Kích Thước ${width}x${height}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    KT${random_code}
-    ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng   ${CATEGORY_HANG_HOA_VLXD}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
     ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
     ${request}    Update Dictionary Property    ${request}    Type1    ${type}
@@ -95,7 +98,8 @@ Chuẩn Bị Dữ Liệu Hàng DVQD ${list_unit} Và ${list_value} Có Kích Th�
         ${code}=    Set Variable    QD${random_code}
         ${request}    Deep Copy    ${list_product_data}
         ${request}    Update Dictionary Property    ${request}    Code    ${code}
-        ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng   ${CATEGORY_HANG_HOA_VLXD}
+        ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
         ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
         ${request}    Update Dictionary Property    ${request}    Type1   1
@@ -143,7 +147,8 @@ Chuẩn Bị Dữ Liệu Hàng Thuộc Tính ${dict_attribute_name} Có Kích Th
         ${request}=    Update Nested Dictionary Property     ${request}    FullName   ${value}
         ${request}=    Update Nested Dictionary Property     ${request}    MasterCode    ${value}
         ${request}=    Update Nested Dictionary Property     ${request}    CompareFullName   ${value}
-        ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_HANG_HOA_VLXD}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng   ${CATEGORY_HANG_HOA_VLXD}
+        ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    Attribute1    ${width}
         ${request}    Update Dictionary Property    ${request}    Attribute2    ${height}
         ${request}    Update Dictionary Property    ${request}    Type1   1

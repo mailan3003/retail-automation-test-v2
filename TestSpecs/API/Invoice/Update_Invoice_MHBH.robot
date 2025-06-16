@@ -1,9 +1,12 @@
 *** Settings ***
+Suite Setup       Init Test Environment   ${ENV}  MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Documentation     Test cases API cho phần cập nhật thanh toán hóa đơn
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Resource          ../../../Keywords/Invoice/InventoryUpdateExtendedKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Invoice/PaymentUpdateKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
@@ -11,6 +14,7 @@ Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 *** Variables ***
 ${product_id_update}     1000014348
+${product_code_update}   NHP011
 *** Test Cases ***
 RT-PU-001 Cập nhật thanh toán tiền mặt cho hóa đơn
     [Documentation]    Kiểm tra cập nhật thanh toán bằng tiền mặt cho hóa đơn
@@ -33,7 +37,8 @@ RT-PU-001 Cập nhật thanh toán tiền mặt cho hóa đơn
     Then Mã trạng thái phải là 200
     And Thanh toán ${INVOICE_ID} với phương thức ${PAYMENT_CASH} số tiền 10000 được lưu trong CSDL
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
-   And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
+    And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
+   [Teardown]    Delete Invoice From API
 
 RT-PU-002 Cập nhật thanh toán bằng thẻ cho hóa đơn
     [Documentation]    Kiểm tra cập nhật thanh toán bằng thẻ cho hóa đơn
@@ -57,6 +62,7 @@ RT-PU-002 Cập nhật thanh toán bằng thẻ cho hóa đơn
     And Thanh toán ${INVOICE_ID} với phương thức ${PAYMENT_CARD} số tiền 5300 được lưu trong CSDL
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
+    [Teardown]    Delete Invoice From API
 
 RT-PU-003 Cập nhật hóa đơn thêm khách hàng và thanh toán
     [Documentation]    Kiểm tra cập nhật hóa đơn thêm khách hàng và thanh toán
@@ -74,13 +80,14 @@ RT-PU-003 Cập nhật hóa đơn thêm khách hàng và thanh toán
     ...    - Thông tin tài khoản được lưu chính xác
     [Tags]    apiinvoice    update_invoice    update_payment    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
-    And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Với Số Tiền 5300 Với Khách Hàng ${CUSTOMER_ID}
+    And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Với Số Tiền 5300 Với Khách Hàng ${CUSTOMER_CODE}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Thanh toán ${INVOICE_ID} với phương thức ${PAYMENT_TRANSFER} số tiền 5300 được lưu trong CSDL
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
-    And Thông tin khách hàng trong hóa đơn là ${CUSTOMER_ID}
+    And Thông tin khách hàng trong hóa đơn là ${CUSTOMER_CODE}
+    [Teardown]    Delete Invoice From API
 
 RT-PU-004 Cập nhật thêm hàng hóa cho hóa đơn
     [Documentation]    Kiểm tra cập nhật thêm hàng hóa cho hóa đơn
@@ -97,14 +104,15 @@ RT-PU-004 Cập nhật thêm hàng hóa cho hóa đơn
     ...    - Tổng tiền thanh toán bổ sung là 50,000đ
     [Tags]    apiinvoice    update_invoice    update_payment    regression     
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Cập Nhật
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_id_update} 
-    And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_id_update} Với Số Lượng 5.44
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${product_code_update} 
+    And Chuẩn Bị Dữ Liệu Cập Nhật Hóa Đơn Thay Đổi ${product_code_update} Với Số Lượng 5.44
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
-    And Tồn kho sản phẩm ${product_id_update} đã giảm 5.44 đơn vị
-    And Lịch sử tồn kho được tạo với số lượng 5.44 đơn vị cho sản phẩm ${product_id_update}
+    And Tồn kho sản phẩm ${product_code_update} đã giảm 5.44 đơn vị
+    And Lịch sử tồn kho được tạo với số lượng 5.44 đơn vị cho sản phẩm ${product_code_update}
+    [Teardown]    Delete Invoice From API
 
 RT-PU-005 Cập nhật số lượng hàng hóa trong đơn hàng
     [Documentation]    Kiểm tra cập nhật số lượng hàng hóa trong đơn hàng
@@ -124,7 +132,7 @@ RT-PU-005 Cập nhật số lượng hàng hóa trong đơn hàng
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
     And Tổng tiền hóa đơn phải bằng ${TOTAL_PRICE} 
-    [Teardown]    Tear down Delete Hóa Đơn
+    [Teardown]    Delete Invoice From API
 
 RT-PU-006 Cập Nhập Hóa Đơn Không Tồn Tại
     [Documentation]    Kiểm tra cập nhật thanh toán cho hóa đơn không tồn tại
@@ -170,6 +178,7 @@ RT-PU-008 Cập nhật thanh toán tổng tiền hàng trong đơn
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
     And Tổng tiền hóa đơn phải bằng 5550000 
+    [Teardown]    Delete Invoice From API
 
 RT-PU-009 Cập nhật thanh toán không có phương thức thanh toán
     [Documentation]    Kiểm tra cập nhật thanh toán không có phương thức thanh toán
@@ -309,3 +318,4 @@ RT-PU-015 Cập nhật mô tả hóa đơn
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE} Là Trạng Thái Hủy
     And Xác Thực Trạng Thái Hóa Đơn ${INVOICE_CODE}.01 Là Trạng Thái Hoàn Thành
     And Ghi Chú Được Cập Nhật Thành ${DESCRIPTION}
+    [Teardown]    Delete Invoice From API

@@ -6,6 +6,7 @@ Resource    ../Utilities/Utilities.robot
 Resource    ../../TestData/CommonData.robot
 Resource    ../../TestData/Invoice/CommonInvoiceData.robot
 Resource    ../../TestData/Invoice/InvoiceWarehouseData.robot
+Resource    ../Product/ProductCommonKeywords.robot
 Resource    ../../Config/Env_api.robot
 Library     ../../Resources/DatabaseLibrary.py
 Library     RequestsLibrary
@@ -96,12 +97,13 @@ Chi Tiết Hóa Đơn Có Thông Tin Kho ${kho}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin hóa đơn theo kho ${kho}
 
 Thông tin kho ${kho}
-    ${query_1}=    Set Variable    SELECT ID FROM Branch WHERE Name = ?
-    ${result}=    Fetch One    ${query_1}    ${kho}
+    ${query_1}=    Set Variable    SELECT ID FROM Branch WHERE Name = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query_1}    ${kho}    ${RETAILER_ID}
     Set Test Variable    ${branch_id}    ${result[0]}
     RETURN    ${branch_id}
 
-Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
+Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_code}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${product_code}
     ${query}=    Set Variable    SELECT BranchId, ProductId, TotalOnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
     ${result}=    Fetch One    ${query}    ${product_id}    ${DEFAULT_BRANCH_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho ban đầu
@@ -109,7 +111,8 @@ Xem Thông Tin Tổng Tồn Kho Của Sản Phẩm ${product_id}
     Set Test Variable    ${INITIAL_ONHAND_TOTAL}    ${initial_onhand}
     RETURN    ${initial_onhand}
 
-Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho ${kho}
+Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_code} Tại Kho ${kho}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${product_code}
     ${branch_id}   Run Keyword If    '${kho}' == 'Bán Hàng'    Set Variable    ${BRANCH_ID}
     ...    ELSE    Thông tin kho ${kho}
     ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
@@ -119,14 +122,14 @@ Xem Thông Tin Tồn Kho Của Sản Phẩm ${product_id} Tại Kho ${kho}
     Set Test Variable    ${INITIAL_ONHAND}    ${initial_onhand}
     RETURN    ${initial_onhand}
 
-Tồn kho sản phẩm ${product_id} đã giảm ${quantity} đơn vị Tại Kho ${kho}
-    Wait Until Keyword Succeeds    10x    1s    Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị Tại Kho ${kho}    ${product_id}
+Tồn kho sản phẩm ${product_code} đã giảm ${quantity} đơn vị Tại Kho ${kho}
+    Wait Until Keyword Succeeds    10x    1s    Xác Thực Số Lượng ${product_code} Tồn Kho Giảm ${quantity} Đơn Vị Tại Kho ${kho}    
 
-Tổng tồn kho sản phẩm ${product_id} đã giảm ${quantity} đơn vị 
-    Wait Until Keyword Succeeds    10x    1s    Xác Thực Tổng Tồn Kho Của Sản Phẩm ${product_id} Giảm ${quantity} Đơn Vị
+Tổng tồn kho sản phẩm ${product_code} đã giảm ${quantity} đơn vị 
+    Wait Until Keyword Succeeds    10x    1s    Xác Thực Tổng Tồn Kho Của Sản Phẩm ${product_code} Giảm ${quantity} Đơn Vị
 
-Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị Tại Kho ${kho}
-    [Arguments]    ${product_id}
+Xác Thực Số Lượng ${product_code} Tồn Kho Giảm ${quantity} Đơn Vị Tại Kho ${kho}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${product_code}
     ${branch_id}   Run Keyword If    '${kho}' == 'Bán Hàng'    Set Variable    ${BRANCH_ID}
     ...    ELSE    Thông tin kho ${kho}
     ${query}=    Set Variable    SELECT BranchId, ProductId, OnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
@@ -136,7 +139,8 @@ Xác Thực Số Lượng Tồn Kho Giảm ${quantity} Đơn Vị Tại Kho ${kh
     ${expected_onhand}=    Evaluate    ${INITIAL_ONHAND} - ${quantity}
     Should Be Equal As Numbers    ${new_onhand}    ${expected_onhand}    Số lượng tồn kho không giảm đúng
 
-Xác Thực Tổng Tồn Kho Của Sản Phẩm ${product_id} Giảm ${quantity} Đơn Vị
+Xác Thực Tổng Tồn Kho Của Sản Phẩm ${product_code} Giảm ${quantity} Đơn Vị
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${product_code}
     ${query}=    Set Variable    SELECT BranchId, ProductId, TotalOnHand FROM ProductBranch WHERE ProductId = ? AND BranchId = ?
     ${result}=    Fetch One    ${query}    ${product_id}    ${DEFAULT_BRANCH_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tồn kho
@@ -144,11 +148,12 @@ Xác Thực Tổng Tồn Kho Của Sản Phẩm ${product_id} Giảm ${quantity}
     ${expected_onhand}=    Evaluate    ${INITIAL_ONHAND_TOTAL} - ${quantity}
     Should Be Equal As Numbers    ${new_onhand}    ${expected_onhand}    Số lượng tồn kho không giảm đúng
 
-Sản phẩm con trong combo ${product_id} đã giảm tồn kho ${quantity} lần số lượng tại kho ${kho}
-   Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo Tại Kho    ${kho}    ${product_id}    ${quantity} 
+Sản phẩm con trong combo ${product_code} đã giảm tồn kho ${quantity} lần số lượng tại kho ${kho}
+   Wait Until Keyword Succeeds    5x    1s    Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo Tại Kho    ${kho}    ${product_code}    ${quantity} 
 
 Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo Tại Kho
-    [Arguments]    ${kho}    ${combo_id}    ${amount}
+    [Arguments]    ${kho}    ${combo_code}    ${amount}
+    ${combo_id}=    Lấy Thông tin Sản Phẩm   ${combo_code}
     # Lấy danh sách sản phẩm con trong combo
     ${query}=    Set Variable    SELECT MaterialId, Quantity FROM ProductFormula WHERE ProductId = ?
     ${results}=    Fetch All    ${query}    ${combo_id}
@@ -184,7 +189,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Bị Xóa
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Ngừng Hoạt Động
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${warehouse}=    Create Dictionary    Id=${INACTIVE_WAREHOUSE_ID}    Type=2
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_BRANCH_NAME}
+    ${warehouse}=    Create Dictionary    Id=${branch_id}    Type=2
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
@@ -192,15 +198,17 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Ngừng Hoạt Động
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Bán Hàng Mặc Định Chi Nhánh Đã Bị Xóa
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${warehouse}=    Create Dictionary    Id=${DELETED_BRANCH_ID}    Type=1
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${DELETED_BRANCH_NAME}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${DELETED_WAREHOUSE_ID}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Không Chỉ Định Kho Hàng Chi Nhánh Đã Bị Vô Hiệu Hóa
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${None}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${INACTIVE_WAREHOUSE_ID}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_BRANCH_NAME}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 

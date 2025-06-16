@@ -1,9 +1,12 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý giảm giá hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/DiscountProcessingKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 
 *** Variables ***
 
@@ -26,6 +29,7 @@ RT-DP-001 Tạo hóa đơn với giảm giá cơ bản
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Giảm Giá 10000
     And Tổng tiền hóa đơn phải bằng 90000
+    [Teardown]    Delete Invoice From API
 
 
 RT-DP-003 Tạo hóa đơn với tỷ lệ giảm giá phần trăm    
@@ -42,6 +46,7 @@ RT-DP-003 Tạo hóa đơn với tỷ lệ giảm giá phần trăm
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Tỷ Lệ Giảm Giá 15
     And Tổng tiền hóa đơn phải bằng 85000
+    [Teardown]    Delete Invoice From API
 
 
 RT-DP-008 Tạo hóa đơn với giảm giá giá trị lớn
@@ -57,6 +62,7 @@ RT-DP-008 Tạo hóa đơn với giảm giá giá trị lớn
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Giảm Giá 100000
     And Tổng tiền hóa đơn phải bằng 0
+    [Teardown]    Delete Invoice From API
 
 RT-DP-009 Tạo hóa đơn với tỷ lệ giảm giá 100%
     [Documentation]    Kiểm tra tạo hóa đơn với tỷ lệ giảm giá 100%:
@@ -72,6 +78,7 @@ RT-DP-009 Tạo hóa đơn với tỷ lệ giảm giá 100%
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Giảm Giá Hóa Đơn Trong CSDL Với Tỷ Lệ Giảm Giá 100
     And Tổng tiền hóa đơn phải bằng 0
+    [Teardown]    Delete Invoice From API
 # New test cases for discount processing and total calculation
 RT-DP-010 Tính tổng tiền hàng cơ bản
     [Documentation]    Kiểm tra tính tổng tiền hàng cơ bản:
@@ -80,11 +87,12 @@ RT-DP-010 Tính tổng tiền hàng cơ bản
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 250001đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá 100000.55 Số Lượng 2.5
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} Đơn Giá 100000.55 Số Lượng 2.5
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 250001
+    [Teardown]    Delete Invoice From API
 
 RT-DP-011 Tính tổng tiền hàng có giảm giá sản phẩm
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá sản phẩm:
@@ -93,11 +101,12 @@ RT-DP-011 Tính tổng tiền hàng có giảm giá sản phẩm
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 209700đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Đơn Giá 100000 Giảm Giá 10000 Số Lượng 2.33
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} Đơn Giá 100000 Giảm Giá 10000 Số Lượng 2.33
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 209700
+    [Teardown]    Delete Invoice From API
 
 RT-DP-012 Tính tổng tiền hàng có giảm giá hóa đơn
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá hóa đơn:
@@ -107,11 +116,12 @@ RT-DP-012 Tính tổng tiền hàng có giảm giá hóa đơn
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 270000đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Hai Sản Phẩm Và Giảm Giá Hóa Đơn 30000
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE} Và ${PRODUCT_2_CODE} Và Giảm Giá Hóa Đơn 30000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 270000
+    [Teardown]    Delete Invoice From API
     
 RT-DP-013 Tính tổng tiền hàng có phụ phí cố định
     [Documentation]    Kiểm tra tính tổng tiền hàng có phụ phí cố định:
@@ -127,6 +137,7 @@ RT-DP-013 Tính tổng tiền hàng có phụ phí cố định
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 105000
+    [Teardown]    Delete Invoice From API
     
 RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     [Documentation]    Kiểm tra tính tổng tiền hàng có phụ phí tính theo phần trăm:
@@ -142,6 +153,7 @@ RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 85000
+    [Teardown]    Delete Invoice From API
     
 RT-DP-015 Tính tổng tiền hàng có giảm giá theo mã coupon
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon:
@@ -156,6 +168,7 @@ RT-DP-015 Tính tổng tiền hàng có giảm giá theo mã coupon
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 0
+    [Teardown]    Delete Invoice From API
     
 RT-DP-016 Tính tổng tiền hàng có giảm giá theo mã coupon phần trăm
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon phần trăm:
@@ -170,6 +183,7 @@ RT-DP-016 Tính tổng tiền hàng có giảm giá theo mã coupon phần trăm
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 95000
+    [Teardown]    Delete Invoice From API
     
 RT-DP-017 Tính tổng tiền hàng có giảm giá theo tối đa 100000
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá theo mã coupon với điều kiện áp dụng:
@@ -184,6 +198,7 @@ RT-DP-017 Tính tổng tiền hàng có giảm giá theo tối đa 100000
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 4900000
+    [Teardown]    Delete Invoice From API
     
 Tạo hóa đơn áp dụng coupon ở trạng thái chưa phát hành
     [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở trạng thái không hợp lệ:
@@ -196,7 +211,7 @@ Tạo hóa đơn áp dụng coupon ở trạng thái chưa phát hành
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001 Và Trạng Thái Chưa Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
-    And Response Should Have Error "Trạng thái coupon CPM23LRPX0 chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
+    And Response Should Have Error "Trạng thái coupon ${COUPON_CODE} chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
 
 Tạo hóa đơn áp dụng coupon ở trạng thái đã sử dụng
     [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở trạng thái đã sử dụng:
@@ -210,7 +225,7 @@ Tạo hóa đơn áp dụng coupon ở trạng thái đã sử dụng
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001 Và Trạng Thái Đã Sử Dụng
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
-    And Response Should Have Error "Trạng thái coupon CPCMT5OSH5 chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
+    And Response Should Have Error "Trạng thái coupon ${COUPON_CODE} chưa hợp lệ. Coupon phải ở trạng thái Đã phát hành"
 
 Tạo hóa đơn không đủ điều kiện vẫn áp dụng coupon
     [Documentation]    Kiểm tra tạo hóa đơn không đủ điều kiện vẫn áp dụng coupon:
@@ -223,7 +238,7 @@ Tạo hóa đơn không đủ điều kiện vẫn áp dụng coupon
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON001
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
-    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng coupon CPDD8VJS9D"
+    And Response Should Have Error "Tổng tiền hàng phải lớn hơn 800,000 mới có thể sử dụng coupon ${COUPON_CODE}"
 
 Tạo hóa đơn áp dụng coupon ở đợt phát hành chưa áp dụng
     [Documentation]    Kiểm tra tạo hóa đơn áp dụng coupon ở đợt phát hành chưa áp dụng:
@@ -236,4 +251,4 @@ Tạo hóa đơn áp dụng coupon ở đợt phát hành chưa áp dụng
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Áp Đợt Coupon COUPON002
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
-    And Response Should Have Error "Đợt phát hành của coupon CPIGVM6HXV chưa được kích hoạt"
+    And Response Should Have Error "Đợt phát hành của coupon ${COUPON_CODE} chưa được kích hoạt"

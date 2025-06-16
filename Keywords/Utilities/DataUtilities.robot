@@ -166,4 +166,24 @@ Get Nested Property
         ${current}=    Get From Dictionary    ${current}    ${part}
     END
     
-    RETURN    ${current} 
+    RETURN    ${current}
+
+Find Index In List
+    [Documentation]    Finds the index of an item in a list by matching a property value
+    [Arguments]    ${list}    ${property_name}    ${property_value}
+    ${list_length}=    Get Length    ${list}
+    FOR    ${i}    IN RANGE    0    ${list_length}
+        ${item}=    Get From List    ${list}    ${i}
+        ${item_value}=    Get From Dictionary    ${item}    ${property_name}
+        IF    $item_value == $property_value
+            RETURN    ${i}
+        END
+    END
+    RETURN   ${i}
+
+Remove Item From List
+    [Documentation]    Removes an item from a list by matching a property value
+    [Arguments]    ${list}    ${property_name}    ${property_value}
+    ${index}=    Find Index In List    ${list}    ${property_name}    ${property_value}
+    Remove From List    ${list}    ${index}
+    RETURN    ${list}

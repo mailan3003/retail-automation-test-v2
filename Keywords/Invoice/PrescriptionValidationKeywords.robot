@@ -68,3 +68,4 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Nhà Thuốc Với Mã Đơn Thuốc ID Khô
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    HD_TEST_ID_NO_CODE
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
+

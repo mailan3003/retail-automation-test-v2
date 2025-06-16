@@ -1,7 +1,10 @@
 *** Settings ***
 Documentation     Keywords cho test cases API xử lý thông tin giao hàng
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Invoice/CommonInvoiceData.robot        
+Resource          ../../TestData/Invoice/CommonInvoiceData.robot   
+Resource          ../../Keywords/Customer/CustomerCommonKeywords.robot
+Resource          ../../Keywords/Delivery/DeliveryCommonKeywords.robot
+Resource          InvoiceCommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/Utilities.robot
@@ -12,53 +15,65 @@ Library           DateTime
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng cơ bản với thông tin giao hàng tiêu chuẩn
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${delivery_id}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${DELIVERY_PARTNER_CODE} 
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
+    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    DeliveryBy    ${delivery_id}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UsingCod    1
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Đối Tác Để trống
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng thiếu SĐT người nhận
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    DeliveryBy    ${EMPTY}
-    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerDelivery  ${EMPTY}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Có khối lượng ${weight} g Và Kích thước ${length}x${width}x${height} cm
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng có khối lượng ${weight} g và kích thước ${length}x${width}x${height} cm
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Weight    ${weight}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Length    ${length}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Width    ${width}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Height    ${height}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${customer_id} Và Phí Giao Hàng ${fee}
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng gắn với khách hàng ${customer_id} và phí giao hàng ${fee}
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${customer_code} Và Phí Giao Hàng ${fee}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng gắn với khách hàng ${customer_code} và phí giao hàng ${fee}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Price    ${fee}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    CustomerId    ${customer_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thu Hộ và Thanh Toán ${payment_amount}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với thu hộ và thanh toán ${payment_amount}
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${data}=     Deep Copy   ${payment_body} 
     ${data}=    Update Nested Dictionary Property    ${data}    Amount    ${payment_amount}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${data}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Payments    ${data}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     ${COD}    Evaluate   100000 - ${payment_amount} 
     Set Test Variable    ${ORIGINAL_COD}    ${COD}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -72,25 +87,30 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái ${status}
     ${Value}=   Run Keyword If    '${status}' =='Chờ Xử lý'     Set Variable    1
     ...    ELSE IF    '${status}' =='Đang Giao Hàng'       Set Variable    2
     ...    ELSE IF    '${status}' =='Đã Giao Hàng'        Set Variable    3
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Status    ${Value}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Không Thu Hộ
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng không thu hộ
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UsingPriceCod    0
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thời Gian ${days} Ngày Sau Ngày Hiện Tại
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng có thời gian giao hàng ${days} ngày sau ngày hiện tại
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${current_date}=    Get Current Date   result_format=%Y-%m-%d
     ${date_time}=    Add Time To Date    ${current_date}    ${days} days    result_format=%Y-%m-%d 
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery     ${date_time}
@@ -152,11 +172,12 @@ Xác Thực Khu Vực Giao Hàng
 
 Xác Thực Đối Tác Giao Hàng
     [Documentation]    Xác thực đối tác giao hàng trong CSDL
-    [Arguments]    ${expected_partner_id}  
+    [Arguments]    ${expected_partner_code}  
+    ${partner_id}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${expected_partner_code}
     ${query}=    Set Variable    SELECT DeliveryBy FROM DeliveryInfo WHERE InvoiceId = ?
     ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${delivery_data}    None    Thông tin giao hàng không tồn tại trong CSDL
-    Should Be Equal As Integers    ${delivery_data[0]}    ${expected_partner_id}    Mã đối tác không khớp
+    Should Be Equal As Integers    ${delivery_data[0]}    ${partner_id}    Mã đối tác không khớp
 
 Xác Thực Sử Dụng Thông Tin Trọng Lượng ${expected_weight} Và Kích Thước ${expected_length}x${expected_width}x${expected_height} cm
     [Documentation]    Xác thực sử dụng thông tin trọng lượng gói hàng trong CSDL
@@ -197,11 +218,13 @@ Xác Thực Số Tiền Thu Hộ
 
 
 
-Xác Thực Khách Hàng ${expected_customer_id}
+Xác Thực Khách Hàng ${expected_customer_code}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${expected_customer_code}
     ${query}=    Set Variable    SELECT CustomerId FROM Invoice WHERE Id = ?
     ${delivery_data}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Not Be Equal    ${delivery_data}    None    Thông tin có thông tin khách hàng
-    Should Be Equal As Integers    ${delivery_data[0]}    ${expected_customer_id}    Mã khách hàng không khớp
+    Should Be Equal As Integers    ${delivery_data[0]}    ${customer_id}    Mã khách hàng không khớp
+
 Get LocationID của Tỉnh/Thành Phố ${province_name}
     [Documentation]    Lấy thông tin khu vực từ CSDL
     ${query}=    Set Variable    SELECT id FROM Location WHERE Name = ?
@@ -214,71 +237,74 @@ Get WardID của Phường/Xã ${ward_name}
     ${ward_data}=    Fetch One    ${query}    ${ward_name}
     RETURN    ${ward_data}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
-    ${purchase_date}=    Set Variable    2023-08-15T14:00:00
-    ${expected_delivery}=    Set Variable    2023-08-15T10:00:00
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng ${status} So Với Thời Gian Hóa Đơn
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với thời gian giao hàng ${status} so với thời gian hóa đơn
+    ${purchase_date}=    Get Current Date   result_format=%Y-%m-%d
+    ${expected_delivery}=    Run Keyword If    '${status}' == 'Sớm'   Subtract Time From Date    ${purchase_date}   5 days   result_format=%Y-%m-%d
+    ...    ELSE IF    '${status}' == 'Trễ'    Add Time To Date    ${purchase_date}    5 days    result_format=%Y-%m-%d
+    ...    ELSE    Set Variable    ${purchase_date}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PurchaseDate    ${purchase_date}
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery    ${expected_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
-    ${purchase_date}=    Set Variable    2023-08-15T14:00:00
-    ${expected_delivery}=    Set Variable    2023-08-15T14:00:00
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PurchaseDate    ${purchase_date}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
-    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ExpectedDelivery    ${expected_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hoạt Động
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với đối tác không hoạt động
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${NON_EXISTENT_KV_PARTNER_DELIVERY_CODE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     # Giả định đối tác không hoạt động (IsActive = false) sẽ được xử lý bởi mock service
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Đối Tác Không Hỗ Trợ Nhà Bán Hàng
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với đối tác không hỗ trợ nhà bán hàng hiện tại
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${KV_PARTNER_DELIVERY_CODE_WRONG_SCOPE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     # Giả định đối tác không hỗ trợ nhà bán hàng hiện tại sẽ được xử lý bởi mock service
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Thiếu Thông Tin Bên Trả Phí
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng thiếu thông tin bên trả phí
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${GHN_PARTNER_DELIVERY_CODE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    ${EMPTY}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Thiết Lập Không Cho Phép COD Qua KiotViet
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng với thiết lập không cho phép COD qua đối tác KiotViet
-    ${request}=    Deep Copy    ${invoice_request_body}
-    ${delivery_detail_body}=    Deep Copy    ${delivery_detail_body}
+    ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
+    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    UseDefaultPartner    ${TRUE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    PartnerCode    ${GHN_PARTNER_DELIVERY_CODE}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    ServiceAdd    S1
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.DeliveryDetail    ${delivery_detail_body}
+    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     # Giả định thiết lập nhà bán hàng không cho phép COD qua KiotViet sẽ được xử lý bởi mock service
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}

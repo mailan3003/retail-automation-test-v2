@@ -3,8 +3,7 @@
 Các API được thiết kế với tên thể hiện nghiệp vụ theo cấu trúc `<EntityName>Api` trong đó `EntityName` là tên đối tượng cung cấp API thực hiện các hành động nghiệp vụ lên đối tượng đó và được lưu trong file `EntityNameApi.cs`.
 
 ### Ví dụ:
-- `InvoiceAPI` cung cấp các API thực hiện các nghiệp vụ liên quan đến `Invoice`.  
-- `ProductAPI` cung cấp các API thực hiện các nghiệp vụ liên quan đến `Product`.
+- `OrderAPI` cung cấp các API thực hiện các nghiệp vụ liên quan đến `Order`.  
 
 ---
 
@@ -15,41 +14,38 @@ Entity là các thực thể nghiệp vụ như `Product`, `Invoice`, `Customer`
 Tên Entity và các **primitive properties** trong Entity được ánh xạ (map) tương ứng với bảng và các cột (columns) trong CSDL.
 
 ### Ví dụ:
-- `Invoice` là thực thể mô hình hóa cho hóa đơn, là một class trong namespace `KiotViet.Persistence`.
-- Trường `Id` của `Invoice` tương ứng với column `Id` trong bảng `Invoice`.
-- Trường `CustomerId` sẽ được map tương ứng với column `CustomerId` trong bảng `Invoice`.
+- `Order` là thực thể mô hình hóa cho hóa đơn, là một class trong namespace `KiotViet.Persistence`.
+- Trường `Id` của `Order` tương ứng với column `Id` trong bảng `Order`.
+- Trường `CustomerId` sẽ được map tương ứng với column `CustomerId` trong bảng `Order`.
 
 ---
 
 ## API Endpoint
 
-Một API như `InvoiceApi` bao gồm nhiều **endpoint** nằm trong file `InvoiceApi.cs`. Mỗi endpoint được gắn với một class.
+Một API như `OrderApi` bao gồm nhiều **endpoint** nằm trong file `OrderApi.cs`. Mỗi endpoint được gắn với một class.
 
 ### Ví dụ:
 
 ```csharp
-[RequiresAnyPermission(Product._Create)]
-[Route("/products/addmany", "POST")]
-public class ProductAddMany : IRequiresRequestStream, IReturn<object>
-{
-    public List<ProductByBranchWithWarranty> ListProducts { get; set; }
-    public string ListProductsString { get; set; }
-    public Stream RequestStream { get; set; }
-    public int? PinnedImageId { get; set; }
-    public List<long> CommissionIds { get; set; }
-    public int CloneProductId { get; set; }
-    public List<int> DeletedImageId { get; set; }
-    public string ProductImageSuggestUrl { get; set; }
-    public List<string> ProductImagesSalesChannelUrl { get; set; }
-    public List<SelectedActiveBranches> BranchForProductCosts { get; set; }
-    public bool IsUpdateAllSystem { get; set; }
-    public bool IsSyncNationalPharmacy { get; set; }
-    public List<int> ListBranchsSelected { get; set; }
-    public bool isAddFromOtherForm { get; set; }
-}
+[RequiresAnyPermission(Order._Create, Order._Update)]
+[Route("/orders", "POST")]
+    public class OrderCreateOrUpdate : IReturn<object>
+    {
+        public Order Order { get; set; }
+        public bool Complete { get; set; }
+        public bool MakeInvoice { get; set; }
+        public decimal Amount { get; set; }
+        public IList<Order> Orders { get; set; }
+        public bool FromManager { get; set; }
+        public bool IsCombine { get; set; }
+        public string[] OrderCodes { get; set; }
+        public bool UpdateCustomerIdInPayments { get; set; }
+        public FBPosParam FBPosParam { get; set; }
+    }
+
 ```
 
-- Trong đó, `ProductApi` có một endpoint `/products/addmany` được gắn với phương thức `POST`.
-- `ProductAddMany` được map tương ứng với JSON data mà API tiếp nhận từ client.
+- Trong đó, `OrderApi` có một endpoint `/orders` được gắn với phương thức `POST`.
+- `Orders` được map tương ứng với JSON data mà API tiếp nhận từ client.
 
-> Khi client gửi request body với một JSON object, thì JSON object đó sẽ được ánh xạ (map) tương ứng với các properties của class `ProductAddMany`.
+> Khi client gửi request body với một JSON object, thì JSON object đó sẽ được ánh xạ (map) tương ứng với các properties của class `Orders`.
