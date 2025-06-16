@@ -561,4 +561,43 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định V�
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Giảm Giá ${discount} Có Thu Khác ${surcharge_code}
+    [Documentation]    Chuẩn bị dữ liệu đơn hàng với sản phẩm có giảm giá và phụ phí cố định
+    ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}      Lấy Thông Tin Thu Khác Theo Code    ${surcharge_code}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${list_product_data}=    Create List   ${product_data}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
+    ${request}  Update Dictionary Property    ${request}    Order.Discount    ${discount}
+    ${surcharge_item_body}=    Deep Copy   ${SURCHARGE_BODY}
+    ${surcharge_item_body}=   Update Nested Dictionary Property   ${surcharge_item_body}    SurchargeId    ${surcharge_id}
+    ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE    Update Nested Dictionary Property   ${surcharge_item_body}    ValueRatio    ${surcharge_value_ratio}
+    ${request_order_surcharges}=    Create List    ${surcharge_item_body}
+    ${request}  Update Dictionary Property    ${request}    Order.OrderSurcharges    ${request_order_surcharges}
+    Set Test Variable    ${TOTAL_SURCHARGE}    ${surcharge_value}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Giảm Giá ${discount} Có Nhiều Thu Khác ${surcharge_code}
+    [Documentation]    Chuẩn bị dữ liệu đơn hàng với sản phẩm có giảm giá và phụ phí tính theo phần trăm
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${BASE_ORDER_REQUEST}
+    ${product_data}     Deep Copy   ${PRODUCT_ORDER_DETAIL}  
+    ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
+    ${list_product_data}=    Create List   ${product_data}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_data}   
+    ${request}  Update Dictionary Property    ${request}    Order.Discount    ${discount}
+    ${order_surcharges}=    Create List
+    FOR    ${surcharge_code}    IN    @{surcharge_code}
+        ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}      Lấy Thông Tin Thu Khác Theo Code    ${surcharge_code}
+        ${surcharge_item_body}=    Deep Copy    ${SURCHARGE_BODY}
+        ${surcharge_item_body}=    Update Dictionary Property    ${surcharge_item_body}   SurchargeId    ${surcharge_id}
+        ${surcharge_item_body}=  Run Keyword If    '${surcharge_value_ratio}' == '0'    Update Nested Dictionary Property   ${surcharge_item_body}    Price    ${surcharge_value}    ELSE    Update Nested Dictionary Property   ${surcharge_item_body}    ValueRatio    ${surcharge_value_ratio}
+        Append To List    ${order_surcharges}    ${surcharge_item_body}
+    END
+    ${request}=    Update Nested Dictionary Property    ${request}   Order.OrderSurcharges    ${order_surcharges}
+    
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}

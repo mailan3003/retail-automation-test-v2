@@ -4,14 +4,17 @@ Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Order/CreateOrderKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
 Resource          ../../../TestData/CommonData.robot
 Resource          ../../../TestData/Order/CreateOrderData.robot
+Resource          ../../../Keywords/Invoice/Invoice_VLXD_Keywords.robot
+
 
 *** Variables ***
 @{list_product_code}    HH0040     HH0041   
 @{list_payment_method}    Cash    Transfer
 @{list_payment_amount}    100000    200000
-
+@{list_surcharge_code}    ${SURCHARGE_1_CODE}    ${SURCHARGE_2_CODE}
 *** Test Cases ***
 RT-ORDER-001 Tạo Đơn Hàng Mới Thành Công Với Thông Tin Cơ Bản
     [Documentation]    Test tạo đơn hàng mới thành công với thông tin cơ bản: sản phẩm, khách hàng, nhân viên bán hàng
@@ -149,7 +152,7 @@ RT-ORDER-001 Tạo đơn hàng với thuế VAT mặc định
     ...    - Tổng tiền trước thuế = 100,000đ
     ...    - Tiền thuế = 10,000đ
     ...    - Tổng tiền sau thuế = 110,000đ
-    [Tags]    apiinvoice    vat    regression
+    [Tags]    CreateOrder    vat    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm HH0115 Có Thuế VAT 
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
@@ -168,12 +171,153 @@ RT-ORDER-005 Tính thuế trực tiếp VAT của Đặt Hàng
     ...    - Status code: 200
     ...    - Thuế VAT trong DB được lưu đúng: -2,000đ
     ...    - Cờ thuế VAT được bật (IsVAT=1)
-    [Tags]    invoice    vlxd    payment  regression324
+    [Tags]    CreateOrder    vlxd    payment  
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định Với Sản Phẩm HHVATTT001   
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
     And Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng -${TOTAL_TAX}
+    And Xác Thực Tổng tiền Trong Đơn Đặt Hàng Là 99600
+    [Teardown]    Delete Order From Api
+
+RT-VLXD-001 Tạo hóa đơn có hàng hóa vật liệu xây dựng
+    [Documentation]    Kiểm tra tạo hóa đơn có hàng hóa vật liệu xây dựng (hàng có kích thước)
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm VLXD: Sản phẩm có kích thước (chiều dài, rộng, cao)
+    ...    - Số lượng: 1
+    ...    - Giá: 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công với sản phẩm VLXD
+    ...    - Thông tin kích thước sản phẩm được lưu chính xác
+    [Tags]    CreateOrder    vlxd    construction_materials
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${PRODUCT_CODE_VLXD} Và Kích Thước 3x4x4x4
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Kích Thước 3x4x4x4 Sản Phẩm ${PRODUCT_CODE_VLXD} Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+
+RT-VLXD-002 Tạo hóa đơn có nhiều sản phẩm VLXD với kích thước khác nhau
+    [Documentation]    Kiểm tra tạo hóa đơn có nhiều sản phẩm VLXD với kích thước khác nhau
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm VLXD 1: Kích thước 100x50x20
+    ...    - Sản phẩm VLXD 2: Kích thước 200x100x30
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công với các sản phẩm VLXD
+    ...    - Thông tin kích thước từng sản phẩm được lưu chính xác
+    [Tags]    CreateOrder   vlxd    multiple_products
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Kích Thước 100x50x20x5 Và ${PRODUCT_CODE_VLXD_3} Kích Thước 200x100x30
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Kích Thước 100x50x20x5 Sản Phẩm ${PRODUCT_CODE_VLXD_2} Trong Đơn Đặt Hàng
+    And Xác thực Sản Phẩm Gạch ${PRODUCT_CODE_VLXD_3} Có Kích Thước 200x100x30 Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+
+RT-VLXD-003 Tạo hóa đơn VLXD là hàng gạch
+    [Documentation]    Kiểm tra tạo hóa đơn VLXD là hàng gạch
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm VLXD: Sản phẩm có kích thước
+    ...    - Thanh toán: Tiền mặt 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công với sản phẩm VLXD
+    ...    - Thanh toán được ghi nhận chính xác
+    [Tags]    CreateOrder    vlxd    payment
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm Gạch ${PRODUCT_CODE_VLXD_2} Và Kích Thước 30x40x5
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác thực Sản Phẩm Gạch ${PRODUCT_CODE_VLXD_2} Có Kích Thước 30x40x5 Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+
+RT-VLXD-004 Tạo hóa đơn VLXD Có nhiều dòng hàng
+    [Documentation]    Kiểm tra tạo hóa đơn VLXD có nhiều dòng hàng
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm VLXD: Sản phẩm có kích thước
+    ...    - Thêm 1 dòng hàng khác với sản phẩm khác
+    ...    - Thanh toán: Tiền mặt 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công với sản phẩm VLXD
+    ...    - Thanh toán được ghi nhận chính xác
+    [Tags]    CreateOrder    vlxd    payment
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Có 10 Dòng Với Kích Thước 30x40x5
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm ${PRODUCT_CODE_VLXD_2} Có 10 Dòng Với Kích Thước 30x40x5 Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+
+RT-VLXD-005 Tạo hóa đơn VLXD gợi ý nhiều dòng
+    [Documentation]    Kiểm tra tạo hóa đơn VLXD gợi ý nhiều dòng
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm VLXD: Sản phẩm có kích thước
+    ...    - Thêm 1 dòng hàng khác với sản phẩm khác
+    ...    - Thanh toán: Tiền mặt 100,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được tạo thành công với sản phẩm VLXD
+    ...    - Thanh toán được ghi nhận chính xác
+    [Tags]    CreateOrder    vlxd    payment
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Có 5 Gợi ý và Kích Thước 30x40x5
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Sản Phẩm ${PRODUCT_CODE_VLXD_2} Có 5 Dòng Với Kích Thước 30x40x5 Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+
+RT-DP-013 Tính tổng tiền hàng có phụ phí cố định
+    [Documentation]    Kiểm tra tính tổng tiền hàng có phụ phí cố định:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Giảm giá: 5.000đ
+    ...    - Phụ phí cố định: 10.000đ
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 5.000đ + 10.000đ = 105.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 105000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount      CreateOrder343    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 5000 Có Thu Khác ${SURCHARGE_1_CODE}
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 105000
+    And Xác Thực Thu Khác ${SURCHARGE_1_CODE} Có Giá Trị 10000 Trong Đơn Đặt Hàng
+    [Teardown]    Delete Order From Api
+    
+RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
+    [Documentation]    Kiểm tra tính tổng tiền hàng có phụ phí tính theo phần trăm:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Giảm giá: 15.000đ
+    ...    - Phụ phí: 13% của tổng tiền sản phẩm
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 15.000đ + (100.000đ - 15.000đ) * 13% = 85000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 85000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount      apiinvoice    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Giảm Giá 15000 Có Thu Khác ${SURCHARGE_2_CODE}
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 85000
+    [Teardown]    Delete Order From Api
+
+
+Tính tổng tiền hàng có nhiều thu khác
+    [Documentation]    Kiểm tra tính tổng tiền hàng có phụ phí cố định:
+    ...    - Sản phẩm: 1 sản phẩm với giá 100.000đ
+    ...    - Giảm giá: 5.000đ
+    ...    - Phụ phí cố định: 10.000đ
+    ...    - Kỳ vọng: Tổng tiền = 100.000đ - 5.000đ + 10.000đ = 105.000đ
+    ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
+    ...    - Kết quả: 105000đ nếu cấu hình là 0 chữ số thập phân
+    [Tags]    discount      apiinvoice    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Giảm Giá 0 Có Nhiều Thu Khác ${list_surcharge_code}
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Tổng Tiền Trong Đơn Đặt Hàng Là 105000
+    [Teardown]    Delete Order From Api
 
 
 

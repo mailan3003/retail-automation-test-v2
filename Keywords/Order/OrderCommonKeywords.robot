@@ -594,5 +594,65 @@ Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng ${tax_value}
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
     Should Be Equal As Numbers    ${result[0]}    ${tax_value}
 
+Xác Thực Tổng tiền Trong Đơn Đặt Hàng Là ${expected_total}
+    ${query}=    Set Variable    SELECT Total FROM [Order] WHERE Id= ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_total}
+
+
+Xác Thực Kích Thước ${x}x${y}x${z}x${w} Sản Phẩm ${product_code} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${x}=    Convert To Number    ${x}
+    ${y}=    Convert To Number    ${y}
+    ${z}=    Convert To Number    ${z}
+    ${w}=    Convert To Number    ${w}
+    ${type1}=    Convert To Number    1
+    ${type2}=    Convert To Number    8
+    ${query}=    Set Variable    Select * from TransactionDetailMaterial where TransactionId= ? And ProductId= ?
+    ${result}=    Fetch One    ${query}   ${CREATED_ORDER_ID}  ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm VLXD với ID ${product_id} trong DB
+    Should Be Equal    ${result[10]}    ${x}    Kích thước sản phẩm không đúng. Kỳ vọng: ${x}, Thực tế: ${result[10]}
+    Should Be Equal    ${result[11]}    ${y}    Kích thước sản phẩm không đúng. Kỳ vọng: ${y}, Thực tế: ${result[11]}
+    Should Be Equal    ${result[12]}    ${z}    Kích thước sản phẩm không đúng. Kỳ vọng: ${z}, Thực tế: ${result[12]}
+    Should Be Equal    ${result[13]}    ${w}    Kích thước sản phẩm không đúng. Kỳ vọng: ${w}, Thực tế: ${result[13]}
+    Should Be Equal    ${result[15]}    ${type1}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type1}, Thực tế: ${result[14]}
+    Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
+
+Xác thực Sản Phẩm Gạch ${product_code} Có Kích Thước ${x}x${y}x${z} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${x}=    Convert To Number    ${x}
+    ${y}=    Convert To Number    ${y}
+    ${z}=    Convert To Number    ${z}
+    ${type1}=    Convert To Number    2
+    ${type2}=    Convert To Number    1
+    ${query}=    Set Variable    Select * from TransactionDetailMaterial where TransactionId= ? And ProductId= ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm VLXD với ID ${product_id} trong DB
+    Should Be Equal    ${result[10]}    ${x}    Kích thước sản phẩm không đúng. Kỳ vọng: ${x}, Thực tế: ${result[10]}
+    Should Be Equal    ${result[11]}    ${y}    Kích thước sản phẩm không đúng. Kỳ vọng: ${y}, Thực tế: ${result[11]}
+    Should Be Equal    ${result[13]}    ${z}    Kích thước sản phẩm không đúng. Kỳ vọng: ${z}, Thực tế: ${result[13]}
+    Should Be Equal    ${result[15]}    ${type1}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type1}, Thực tế: ${result[14]}
+    Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
+
+Xác Thực Sản Phẩm ${product_code} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${n_expected}=    Evaluate    ${n} + 1
+    ${query}=    Set Variable    Select COUNT(Id) from TransactionDetailMaterial where TransactionId= ? And ProductId= ? 
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${product_id}   
+    Should Be Equal    ${result[0]}    ${n_expected}    Số lượng dòng hàng không đúng. Kỳ vọng: ${n_expected}, Thực tế: ${result}
+
+Xác Định Có Giá Trị Thu Khác ${expected_value} Trong Đơn Đặt Hàng
+    ${query}=    Set Variable    SELECT Surcharge FROM [Order] WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thu khác trong đơn hàng
+    ${surcharge_value}=    Set Variable    ${result[0]}
+    Should Be Equal As Numbers    ${surcharge_value}    ${expected_value}    Giá trị thu khác không đúng. Kỳ vọng: ${expected_value}, Thực tế: ${surcharge_value}
+
+Xác định tracking trong surcharge order    
+    ${query}=    Set Variable    SELECT Id FROM InvoiceOrderSurcharge WHERE OrderId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tracking trong đơn hàng
+    ${tracking_id}=    Set Variable    ${result[0]}
+
 
 
