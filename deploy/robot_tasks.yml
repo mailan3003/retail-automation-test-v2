@@ -1,0 +1,21 @@
+robot_tasks:
+    -   name: "apiinvoice-task"
+        include_tags: "regression"
+        variables:
+        - "ENV:api"
+    -   name: "vlxd-task"
+        include_tags: "vlxd"
+        variables:
+        - "ENV:vlxd"
+    -   name: "dakho-task"
+        include_tags: "warehouse"
+        variables:
+        - "ENV:dakho"
+    -   name: "currency-task"
+        include_tags: "currency"
+        variables:
+        - "ENV:currency"
+    -   name: "nhathuoc_task"
+        include_tags: "nhathuoc"
+        variables:
+        - "ENV:nhathuoc"

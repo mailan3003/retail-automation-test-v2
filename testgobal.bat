@@ -1,0 +1,1 @@
+pabot --processes 8 -T -d reports --argumentfile variable_file.txt -i   vlxd   TestSpecs 

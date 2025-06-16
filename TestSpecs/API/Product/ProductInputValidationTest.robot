@@ -1,0 +1,611 @@
+*** Settings ***
+Documentation     Test API kiểm tra và xác thực đầu vào khi thêm sản phẩm
+Suite Setup       Init Test Environment   ${ENV}      MHQL
+Resource          ../../../Keywords/Login/Login.robot
+Resource          ../../../Keywords/Product/InputValidationKeywords.robot
+Resource          ../../../Keywords/Utilities/ResponseHelper.robot
+Resource          ../../../Keywords/Utilities/Utilities.robot
+Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource          ../../../Keywords/Utilities/RequestHelper.robot
+Resource          ../../../TestData/Product/ProductInputData.robot
+
+*** Keywords ***
+
+
+*** Test Cases ***
+
+RT-PD-002 Kiểm tra định dạng JSON không hợp lệ
+    [Documentation]    Kiểm tra xử lý khi định dạng JSON không hợp lệ
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Bắt lỗi từ JsonConvert.DeserializeObject và ném KvValidateProductException
+    ...    - Dữ liệu đầu vào: JSON không hợp lệ "{không phải JSON hợp lệ}"
+    ...    - Kỳ vọng: Lỗi 500
+    [Tags]    productvalidate    apierror    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với JSON Không Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 500
+
+RT-PD-003 Kiểm tra vượt quá giới hạn sản phẩm combo
+    [Documentation]    Kiểm tra lỗi khi thêm quá 50 sản phẩm combo cùng lúc
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra nếu req.ListProducts.Count > 50 và ProductType = Manufactured
+    ...    - Dữ liệu đầu vào: Danh sách 51 sản phẩm combo (ProductType = 2)
+    ...    - Kỳ vọng: Lỗi "${ERROR_PRODUCT_LIMIT_COMBO}"
+    [Tags]    productvalidate    limit    AIGenerated     productvalidate     regression
+    Given Chuẩn Bị Dữ Liệu Với 51 Sản Phẩm Combo
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_PRODUCT_LIMIT_COMBO}
+
+RT-PD-004 Kiểm tra vượt quá giới hạn tổng số sản phẩm
+    [Documentation]    Kiểm tra lỗi khi thêm quá 200 sản phẩm cùng lúc
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra nếu req.ListProducts.Count > 200
+    ...    - Dữ liệu đầu vào: Danh sách 201 sản phẩm
+    ...    - Kỳ vọng: Lỗi "${ERROR_PRODUCT_LIMIT}"
+    [Tags]    productvalidate    limit    AIGenerated    regression 
+    Given Chuẩn Bị Dữ Liệu Với 201 Sản Phẩm
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_PRODUCT_LIMIT}
+
+RT-PD-005 Kiểm tra định dạng chi nhánh không hợp lệ
+    [Documentation]    Kiểm tra xử lý khi định dạng chi nhánh không hợp lệ
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Bắt lỗi từ JsonConvert.DeserializeObject của BranchForProductCostss
+    ...    - Dữ liệu đầu vào: formData["BranchForProductCostss"] = "{không phải JSON hợp lệ}"
+    ...    - Kỳ vọng: Lỗi "Dữ liệu không hợp lệ"
+    [Tags]    productvalidate    apierror    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Định Dạng Chi Nhánh Không Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 500
+
+RT-PD-006 Kiểm tra lỗi khi đơn vị tính trùng nhau trong cùng sản phẩm
+    [Documentation]    Kiểm tra xử lý khi có đơn vị tính trùng nhau trong cùng sản phẩm
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra tính nhất quán của đơn vị
+    ...    - Dữ liệu đầu vào: Sản phẩm với các đơn vị tính trùng nhau (chiếc, Chiếc)
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
+    [Tags]    productvalidate    unitvalidation1    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Trùng Tên
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
+
+RT-PD-007 Kiểm tra thành công khi đơn vị tính không trùng nhau trong cùng sản phẩm
+    [Documentation]    Kiểm tra xử lý thành công khi đơn vị tính không trùng nhau trong cùng sản phẩm
+    ...    - Source: ProductAPI.cs > ProductAddMany
+    ...    - Logic: Kiểm tra tính nhất quán của đơn vị
+    ...    - Dữ liệu đầu vào: Sản phẩm với các đơn vị tính khác nhau (Chiếc, Hộp, Thùng)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    unitvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Đơn Vị Không Trùng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+
+RT-PD-008 Kiểm tra trùng lặp mã sản phẩm
+    [Documentation]    Kiểm tra xử lý khi có mã sản phẩm trùng lặp trong hệ thống
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu có sản phẩm trong DB trùng mã với danh sách đầu vào
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã đã tồn tại trong hệ thống
+    ...    - Kỳ vọng: Lỗi "Mã hàng đã tồn tại"
+    [Tags]    productvalidate    duplicatevalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Trùng Lặp
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ErrorMessage}
+
+RT-PD-009 Kiểm tra trùng lặp mã vạch
+    [Documentation]    Kiểm tra xử lý khi có mã vạch trùng lặp trong hệ thống
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu có sản phẩm trong DB trùng mã vạch với danh sách đầu vào
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã vạch đã tồn tại trong hệ thống
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_BARCODE}"
+    [Tags]    productvalidate    duplicatevalidation1    AIGenerated   regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Trùng Lặp
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420  
+    And Phản hồi phải chứa lỗi ${ErrorMessage}
+
+# add test cases here
+
+RT-PD-011 Kiểm tra vị trí không tồn tại
+    [Documentation]    Kiểm tra xử lý khi vị trí không tồn tại trong hệ thống
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra vị trí tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm với bảng giá không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_SHELF_NOT_FOUND}"
+    [Tags]    productvalidate    shelfvalidation    AIGenerated     regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Số Lượng Vị Trí Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SHELF_NOT_FOUND}
+
+RT-PD-013 Kiểm tra sản phẩm kiểm soát serial có đơn vị phụ
+    [Documentation]    Kiểm tra xử lý khi sản phẩm kiểm soát serial có đơn vị phụ
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm có kiểm soát serial thì không được có đơn vị phụ
+    ...    - Dữ liệu đầu vào: Sản phẩm kiểm soát serial với đơn vị phụ
+    ...    - Kỳ vọng: Lỗi "${ERROR_SERIAL_UNIT}"
+    [Tags]    productvalidate    serialvalidation    AIGenerated      regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Serial Với Đơn Vị Phụ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SERIAL_UNIT}
+
+RT-PD-014 Kiểm tra độ dài mã sản phẩm vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài mã sản phẩm > 40 ký tự
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra độ dài mã sản phẩm
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã dài 41 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_CODE_LENGTH}"
+    [Tags]    productvalidate    lengthvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Dài 41 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_CODE_LENGTH}
+
+RT-PD-015 Kiểm tra độ dài mã vạch vượt quá giới hạn      
+    [Documentation]    Kiểm tra xử lý khi độ dài mã vạch > 16 ký tự
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra độ dài mã vạch
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã vạch dài 17 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_BARCODE_LENGTH}"
+    [Tags]    productvalidate    lengthvalidation    AIGenerated     regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Vạch Dài 17 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_BARCODE_LENGTH}
+
+RT-PD-018 Kiểm tra độ dài tên sản phẩm vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài tên sản phẩm > 500 ký tự
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra độ dài tên sản phẩm
+    ...    - Dữ liệu đầu vào: Sản phẩm với tên dài 501 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_NAME_LENGTH}"
+    [Tags]    productvalidate    lengthvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Tên Dài 501 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_NAME_LENGTH}
+
+RT-PD-019 Kiểm tra danh sách vật liệu rỗng
+    [Documentation]    Kiểm tra xử lý khi danh sách vật liệu rỗng
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu danh sách vật liệu rỗng thì không cần xác thực
+    ...    - Dữ liệu đầu vào: Sản phẩm với danh sách vật liệu rỗng
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    formulavalidation    AIGenerated   regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Danh Sách Vật Liệu Rỗng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-020 Kiểm tra sản phẩm tự tham chiếu chính nó
+    [Documentation]    Kiểm tra xử lý khi sản phẩm tự tham chiếu chính nó trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu sản phẩm tự tham chiếu chính nó trong công thức
+    ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là chính nó
+    ...    - Kỳ vọng: Lỗi "${PRODUCT_CODE}: ${ERROR_RECURSIVE_FORMULA}"
+    [Tags]    productvalidate    formulavalidation1    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Chính Nó
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${PRODUCT_CODE}: ${ERROR_RECURSIVE_FORMULA}
+
+RT-PD-021 Kiểm tra sử dụng sản phẩm đơn vị con trong công thức
+    [Documentation]    Kiểm tra xử lý khi sử dụng sản phẩm đơn vị con trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu có sản phẩm đơn vị con trong danh sách vật liệu
+    ...    - Dữ liệu đầu vào: Sản phẩm với vật liệu là sản phẩm đơn vị con
+    ...    - Kỳ vọng: Lỗi "${ERROR_SUB_UNIT_IN_FORMULA}"
+    [Tags]    productvalidate    formulavalidation2    AIGenerated     regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vật Liệu Là Đơn Vị Con
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SUB_UNIT_IN_FORMULA}
+
+RT-PD-022 Kiểm tra vòng lặp đệ quy trong công thức
+    [Documentation]    Kiểm tra xử lý khi phát hiện vòng lặp đệ quy trong công thức
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu có vòng lặp đệ quy trong cấu trúc công thức
+    ...    - Dữ liệu đầu vào: Sản phẩm A chứa B, B chứa A trong công thức
+    ...    - Kỳ vọng: Lỗi "${ERROR_RECURSIVE_FORMULA}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated     
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Vòng Lặp Đệ Quy
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_RECURSIVE_FORMULA}
+
+RT-PD-023 Kiểm tra độ sâu công thức vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ sâu công thức vượt quá giới hạn cho phép
+    ...    - Source: ProductAPI.cs > ValidateListFormula
+    ...    - Logic: Kiểm tra nếu tổng độ sâu của công thức vượt quá MaxFormulaLevelSupported
+    ...    - Dữ liệu đầu vào: Sản phẩm với cấu trúc công thức quá sâu
+    ...    - Kỳ vọng: Lỗi "${ERROR_FORMULA_DEPTH}"
+    [Tags]    productvalidate    formulavalidation    AIGenerated     
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Công Thức Quá Sâu
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_FORMULA_DEPTH}
+
+RT-PD-025 Kiểm tra đơn vị tính trống
+    [Documentation]    Kiểm tra xử lý khi đơn vị tính của sản phẩm con bị trống
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm có MasterUnitId nhưng Unit trống
+    ...    - Dữ liệu đầu vào: Sản phẩm con với Unit trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_NOT_INPUT_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated     regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Đơn Vị Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_NOT_INPUT_UNIT}
+
+RT-PD-026 Kiểm tra đơn vị tính nhiều cấp
+    [Documentation]    Kiểm tra xử lý khi sản phẩm con có sản phẩm cha cũng là sản phẩm con
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm cha có MasterUnitId không null
+    ...    - Dữ liệu đầu vào: Sản phẩm con với sản phẩm cha cũng là sản phẩm con
+    ...    - Kỳ vọng: Lỗi "${ERROR_INVALID_MASTER_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Sản Phẩm Cha Là Sản Phẩm Con
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_INVALID_MASTER_UNIT}
+
+RT-PD-028 Kiểm tra trùng tên đơn vị với sản phẩm con khác
+    [Documentation]    Kiểm tra xử lý khi sản phẩm con có tên đơn vị trùng với sản phẩm con khác
+    ...    - Source: ProductAPI.cs > GetProductFromProductByBranch
+    ...    - Logic: Kiểm tra nếu sản phẩm con có tên đơn vị trùng với sản phẩm con khác của cùng sản phẩm cha
+    ...    - Dữ liệu đầu vào: Sản phẩm con với tên đơn vị giống sản phẩm con khác
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_UNIT}"
+    [Tags]    productvalidate    unitvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Con Với Tên Đơn Vị Trùng Sản Phẩm Con Khác
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_UNIT}
+
+
+RT-PD-033 Kiểm tra xác thực thuộc tính sản phẩm không tồn tại
+    [Documentation]    Kiểm tra xử lý khi thuộc tính không tồn tại trong hệ thống
+    ...    - Source: ProductAPI.cs > ValidateProductAttributes
+    ...    - Logic: Ném ngoại lệ khi có thuộc tính không tồn tại
+    ...    - Dữ liệu đầu vào: Sản phẩm với thuộc tính có ID không tồn tại trong DB
+    ...    - Kỳ vọng: Lỗi "${ERROR_ATTRIBUTE_NOT_FOUND}"
+    [Tags]    productvalidate    attributevalidation1    AIGenerated   regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ATTRIBUTE_NOT_FOUND}
+
+RT-PD-035 Kiểm tra mô tả sản phẩm rỗng
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm rỗng
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Bỏ qua xác thực nếu mô tả rỗng
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả rỗng
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated   regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Rỗng
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-036 Kiểm tra mô tả sản phẩm vượt quá giới hạn kích thước
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm vượt quá giới hạn kích thước
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước vượt quá giới hạn
+    ...    - Kỳ vọng: Lỗi "${ERROR_DESCRIPTION_SIZE}"
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated   regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Vượt Quá Giới Hạn
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DESCRIPTION_SIZE}
+
+RT-PD-037 Kiểm tra mô tả sản phẩm hợp lệ
+    [Documentation]    Kiểm tra xử lý khi mô tả sản phẩm hợp lệ
+    ...    - Source: ProductAPI.cs > ValidateMaxSizeDescription
+    ...    - Logic: Tính toán kích thước mô tả bằng Unicode encoding và so sánh với MaxSizeProductDescription
+    ...    - Dữ liệu đầu vào: Sản phẩm với mô tả có kích thước trong giới hạn
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    descriptionvalidation    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mô Tả Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-038 Kiểm tra xác thực thông tin dược phẩm khi không phải nhà thuốc GPP
+    [Documentation]    Kiểm tra xử lý khi không phải nhà thuốc GPP
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra điều kiện IsActiveGppDrugStore
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với IsActiveGppDrugStore = false
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    medicinevalidation    AIGenerated   nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với GPP Không Hoạt Động
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-039 Kiểm tra xác thực quốc gia sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi quốc gia sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra quốc gia sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quốc gia sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER_COUNTRY}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated      nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quốc Gia Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER_COUNTRY}
+
+RT-PD-040 Kiểm tra xác thực nhà sản xuất không tồn tại
+    [Documentation]    Kiểm tra xử lý khi nhà sản xuất không tồn tại
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra nhà sản xuất tồn tại trong hệ thống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất không tồn tại
+    ...    - Kỳ vọng: Lỗi "${ERROR_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Không Tồn Tại
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MANUFACTURER}
+
+RT-PD-041 Kiểm tra độ dài tên ngắn vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài tên ngắn > 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên ngắn, (hiện code chưa truyền ShortName nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên ngắn dài 101 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_SHORT_NAME_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated    
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Ngắn Dài 101 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_SHORT_NAME_LENGTH}
+
+RT-PD-042 Kiểm tra độ dài đường dùng vượt quá giới hạn
+    [Documentation]    Kiểm tra xử lý khi độ dài đường dùng > 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài đường dùng (hiện code chưa truyền RouteOfAdministration nên nghiệp vụ không hoạt động)
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng dài 201 ký tự
+    ...    - Kỳ vọng: Lỗi "${ERROR_ROUTE_LENGTH}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated  
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Dài 201 Ký Tự
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_ROUTE_LENGTH}
+
+
+RT-PD-044 Kiểm tra đường dùng thuốc trống
+    [Documentation]    Kiểm tra xử lý khi đường dùng thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường RouteOfAdministration không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đường dùng trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_ROUTE_OF_ADMINISTRATION}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated   nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đường Dùng Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_ROUTE_OF_ADMINISTRATION}
+
+RT-PD-045 Kiểm tra số đăng ký thuốc trống
+    [Documentation]    Kiểm tra xử lý khi số đăng ký thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường RegistrationNo không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với số đăng ký trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_REGISTRATION_NO}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated    nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_REGISTRATION_NO}
+
+RT-PD-046 Kiểm tra hoạt chất thuốc trống
+    [Documentation]    Kiểm tra xử lý khi hoạt chất thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường ActiveElement không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hoạt chất trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_ACTIVE_ELEMENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_ACTIVE_ELEMENT}
+
+RT-PD-047 Kiểm tra hàm lượng thuốc trống
+    [Documentation]    Kiểm tra xử lý khi hàm lượng thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường Content không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hàm lượng trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_CONTENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_CONTENT}
+
+RT-PD-048 Kiểm tra quy cách đóng gói thuốc trống
+    [Documentation]    Kiểm tra xử lý khi quy cách đóng gói thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường PackagingSize không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quy cách đóng gói trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_PACKAGING_SIZE}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_PACKAGING_SIZE}
+
+RT-PD-049 Kiểm tra đơn vị cơ bản thuốc trống
+    [Documentation]    Kiểm tra xử lý khi đơn vị cơ bản thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường Unit không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đơn vị cơ bản trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_UNIT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated      nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_UNIT}
+
+RT-PD-050 Kiểm tra nhà sản xuất thuốc trống
+    [Documentation]    Kiểm tra xử lý khi nhà sản xuất thuốc trống
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra trường ManufacturerId hoặc GlobalManufacturerId không được để trống
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với nhà sản xuất trống
+    ...    - Kỳ vọng: Lỗi "${ERROR_EMPTY_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Nhà Sản Xuất Trống
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_EMPTY_MANUFACTURER}
+
+RT-PD-052 Kiểm tra vượt quá độ dài tên thuốc khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài tên thuốc vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên thuốc khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_NAME}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated      nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_NAME}
+
+RT-PD-053 Kiểm tra vượt quá độ dài số đăng ký khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài số đăng ký vượt quá 20 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài số đăng ký khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với số đăng ký dài 21 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_REGISTRATION_NO}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated       nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Số Đăng Ký Dài 21 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_REGISTRATION_NO}
+
+RT-PD-054 Kiểm tra vượt quá độ dài hoạt chất khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài hoạt chất vượt quá 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài hoạt chất khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hoạt chất dài 201 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_ACTIVE_ELEMENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated      nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hoạt Chất Dài 201 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_ACTIVE_ELEMENT}
+
+RT-PD-055 Kiểm tra vượt quá độ dài hàm lượng khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài hàm lượng vượt quá 200 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài hàm lượng khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với hàm lượng dài 201 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_CONTENT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated    nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Hàm Lượng Dài 201 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_CONTENT}
+
+RT-PD-056 Kiểm tra vượt quá độ dài quy cách đóng gói khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài quy cách đóng gói vượt quá 50 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài quy cách đóng gói khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với quy cách đóng gói dài 51 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_PACKAGING_SIZE}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Quy Cách Đóng Gói Dài 51 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_PACKAGING_SIZE}
+
+RT-PD-057 Kiểm tra vượt quá độ dài tên nhà sản xuất khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài tên nhà sản xuất vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài tên nhà sản xuất khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với tên nhà sản xuất dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_MANUFACTURER}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Tên Nhà Sản Xuất Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_MANUFACTURER}
+
+RT-PD-058 Kiểm tra vượt quá độ dài đơn vị cơ bản khi đồng bộ với hệ thống dược quốc gia
+    [Documentation]    Kiểm tra xử lý khi độ dài đơn vị cơ bản vượt quá 100 ký tự
+    ...    - Source: ProductAPI.cs > ValidateMedicine
+    ...    - Logic: Kiểm tra độ dài đơn vị cơ bản khi đồng bộ với hệ thống dược quốc gia
+    ...    - Dữ liệu đầu vào: Sản phẩm dược phẩm với đơn vị cơ bản dài 101 ký tự và IsSyncNationalPharmacy=true
+    ...    - Kỳ vọng: Lỗi "${ERROR_MAX_LENGTH_UNIT}"
+    [Tags]    productvalidate    medicinevalidation    AIGenerated     nhathuoc
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Dược Phẩm Với Đơn Vị Cơ Bản Dài 101 Ký Tự Đồng Bộ DQG
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_MAX_LENGTH_UNIT}
+
+RT-PD-059 Kiểm tra thêm sản phẩm với kiểm kê kho hợp lệ
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với kiểm kê kho hợp lệ
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Xử lý kiểm kê kho với sản phẩm thông thường qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với thông tin kiểm kê kho hợp lệ (các kho tồn tại và đang hoạt động)
+    ...    - Kỳ vọng: Tạo thành công, status code 200
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated    dakho
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Kiểm Kê Kho Hợp Lệ
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+
+RT-PD-060 Kiểm tra thêm sản phẩm với kho đã xóa
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với mã kho đã xóa
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra xác thực trạng thái hoạt động của kho hàng thông qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với mã kho đã xóa
+    ...    - Kỳ vọng: Lỗi "${ERROR_WAREHOUSE_NOT_FOUND}"
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated     dakho
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Kho Đã Xóa
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi ${ERROR_WAREHOUSE_NOT_FOUND}
+
+RT-PD-061 Kiểm tra thêm sản phẩm với kho không hoạt động
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm với kho không hoạt động
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra xác thực trạng thái hoạt động của kho hàng thông qua WarehouseService.ValidateStatusOfWarehouse
+    ...    - Dữ liệu đầu vào: Sản phẩm với kho không hoạt động
+    ...    - Kỳ vọng: Lỗi "${ERROR_WAREHOUSE_INACTIVE}"
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated     dakho
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Kho Không Hoạt Động
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải bao gồm lỗi ${ERROR_WAREHOUSE_INACTIVE}
+
+RT-PD-062 Kiểm tra thêm sản phẩm với sản phẩm kiểm soát lô có kiểm kê kho
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm kiểm soát lô có kiểm kê kho
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra điều kiện xử lý kiểm kê kho (IsBatchExpireControl != true)
+    ...    - Dữ liệu đầu vào: Sản phẩm kiểm soát lô (IsBatchExpireControl = true) với thông tin kiểm kê kho
+    ...    - Kỳ vọng: Tạo thành công, status code 200 (kiểm kê kho bị bỏ qua)
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated    dakho
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Lô Với Kiểm Kê Kho
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-063 Kiểm tra thêm sản phẩm với sản phẩm kiểm soát serial có kiểm kê kho
+    [Documentation]    Kiểm tra xử lý khi thêm sản phẩm kiểm soát serial có kiểm kê kho
+    ...    - Source: ProductAPI.cs > ProductAddMany > Section 5: Xử lý thông tin kiểm kê
+    ...    - Logic: Kiểm tra điều kiện xử lý kiểm kê kho (IsLotSerialControl != true)
+    ...    - Dữ liệu đầu vào: Sản phẩm kiểm soát serial (IsLotSerialControl = true) với thông tin kiểm kê kho
+    ...    - Kỳ vọng: Tạo thành công, status code 200 (kiểm kê kho bị bỏ qua)
+    [Tags]    productvalidate    stocktakevalidation    AIGenerated    dakho
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Kiểm Soát Serial Với Kiểm Kê Kho
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 200
+
+RT-PD-064 Kiểm tra lỗi khi mã sản phẩm con trùng lặp
+    [Documentation]    Kiểm tra xử lý khi có mã sản phẩm con trùng lặp trong cùng một sản phẩm
+    ...    - Source: ValidateDuplicateCodeChildProducts
+    ...    - Logic: Phương thức kiểm tra mã sản phẩm con trùng lặp bằng cách so sánh số lượng mã trong danh sách với số lượng mã duy nhất
+    ...    - Dữ liệu đầu vào: Sản phẩm chính với các sản phẩm con có mã trùng nhau (CHILD001 xuất hiện 2 lần)
+    ...    - Kỳ vọng: Lỗi "${ERROR_DUPLICATE_CHILD_CODE}", status code 420
+    [Tags]    productvalidate    duplicatechildcode    AIGenerated    regression
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Mã Đơn Vị Con Trùng Lặp
+    When Gửi Yêu Cầu Thêm Sản Phẩm
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi ${ERROR_DUPLICATE_CHILD_CODE}

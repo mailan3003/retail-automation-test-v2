@@ -1,8 +1,11 @@
 *** Settings ***
+Suite Setup       Init Test Environment   ${ENV}   MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../Keywords/Invoice/InvoicePermissionValidationKeywords.robot
+Resource    ../../../Keywords/Utilities/RequestHelper.robot
+Resource    ../../../Keywords/Utilities/ResponseHelper.robot
 Resource    ../../../TestData/CommonData.robot
-Resource    ../../../TestData/Invoice/InvoicePermissionValidationData.robot
 
 *** Test Cases ***
 RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
@@ -15,11 +18,103 @@ RT-INPV-001 Kiểm tra quyền tạo hóa đơn của người dùng
 
 RT-INPV-002 Kiểm tra quyền thay đổi người bán khi người tạo khác người bán
     [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
-    [Tags]    invoice    validation    permission    seller
-    Given Chuẩn bị dữ liệu hóa đơn với người bán ${invoice_permission_validation_other_seller}
-    When Gửi yêu cầu tạo hóa đơn với token admin
-    Then Response Status Code Should Be 200
-    And Response Should Have SoldById With value ${invoice_permission_validation_other_seller}
+    [Tags]    apiinvoice    validation    permission    regression
+    Given Chuẩn bị dữ liệu hóa đơn với người bán là ${SOLD_BY_NAME}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin người bán ${SOLD_BY_NAME} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
+
+Tạo Hóa Đơn Có Kênh Bán
+    [Documentation]      tạo hóa đơn có kênh bán
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu hóa đơn với kênh bán là ${CHANNEL_NAME_1}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin kênh bán ${CHANNEL_NAME_1} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
+
+Tạo Hóa Đơn Có Kênh Bán Không Tồn Tại
+    [Documentation]     tạo hóa đơn có kênh bán không tồn tại
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu hóa đơn với kênh bán ${valid_channel_id}
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Kênh bán không tồn tại"
+
+Tạo Hóa Đơn Có Thay Đổi Thời Gian  
+    [Documentation]     tạo hóa đơn có thay đổi thời gian
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu thay đổi thời gian lùi 2 ngày so với ngày hiện tại
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
+
+Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng hóa đơn tự lấy thời gian theo ngày hiện tại
+    [Tags]    apiinvoice    validation    permission    regression
+    Given Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạng
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Thông tin ngày bán ${PURCHASE_DATE} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
+
+Chuẩn bị dữ liệu hóa đơn gắn với bảng giá 
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá là ${PRICEBOOK_NAME}   
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 200
+    And Nội dung phản hồi trả về phải tồn tại Id
+    And Thông tin bảng giá ${PRICEBOOK_NAME} trong hóa đơn được lưu trong CSDL
+    [Teardown]    Delete Invoice From API
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không tồn tại
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá 53253
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Bảng giá đang chọn đã không tồn tại"
+
+Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với bảng giá không trong thời gian hiệu lực
+    [Tags]    apiinvoice    validation    permission    regression
+    And Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000153
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá Bảng giá kết hợp"
+
+Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh 
+    [Documentation]    Tạo hóa đơn với bảng giá không áp dụng cho chi nhánh
+    [Tags]  test3663
+    Given Chuẩn bị dữ liệu hóa đơn với bảng giá 1000000145 theo chi nhánh 1000000048
+    When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
+    Then Mã trạng thái phải là 420
+    And Response Should Have Error "Hóa đơn không phù hợp với khoảng thời gian áp dụng của bảng giá Bảng giá kết hợp"
+
+
+Tạo hóa đơn với user không có quyền tạo hóa đơn
+    [Documentation]    Tạo hóa đơn với user không có quyền tạo hóa đơn
+    [Tags]    apiinvoice    validation    permission    regression
+    Given Chuẩn bị hóa đơn tiêu chuẩn
+    When Get BearerToken by user    anh.nk     Kiotviet123456
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 403
+
+Tạo hóa đơn với trạng thái đơn hàng là 
+    [Documentation]    Tạo hóa đơn với trạng thái đơn hàng là Finalized
+    [Tags]   
+    Given Chuẩn bị hóa đơn tiêu chuẩn với trạng thái 0
+    When Gửi Yêu Cầu Tạo Hóa Đơn
+    Then Mã trạng thái phải là 403
+
+Thay đổi người bán không có quyền bán
+    [Documentation]    Kiểm tra quyền Invoice.ModifySeller khi người tạo khác người bán
 
 RT-INPV-003 Kiểm tra quyền truy cập chi nhánh của người dùng
     [Documentation]    Kiểm tra quyền truy cập chi nhánh khi tạo hóa đơn
@@ -130,3 +225,70 @@ RT-INPV-015 Kiểm tra validate ngày tạo hóa đơn phải nhỏ hơn hoặc 
     When Gửi yêu cầu tạo hóa đơn với token admin
     Then Response Status Code Should Be 400
     And Response Should Have Error "Ngày tạo hóa đơn phải nhỏ hơn hoặc bằng ngày hiện tại" 
+    
+
+RT-INPV-016 Kiểm tra quyền phát hành hóa đơn điện tử
+    [Documentation]    Kiểm tra quyền phát hành hóa đơn điện tử với tài khoản không có quyền
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, tài khoản không có quyền phát hành hóa đơn điện tử
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoicePermission kiểm tra quyền phát hành
+    ...    - Kỳ vọng: Trả về lỗi 403 và thông báo không có quyền phát hành
+    [Tags]    invoice    validation    permission    einvoice
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    When Gửi yêu cầu tạo hóa đơn với token user không có quyền phát hành
+    Then Response Status Code Should Be 403
+    And Response Should Have Error "Bạn không có quyền phát hành hóa đơn điện tử"
+
+RT-INPV-017 Kiểm tra xác thực thông tin tài khoản VNPT eInvoice
+    [Documentation]    Kiểm tra xác thực thông tin tài khoản VNPT eInvoice khi phát hành hóa đơn điện tử
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, cấu hình VNPT thiếu username
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceProvider kiểm tra thông tin cấu hình
+    ...    - Kỳ vọng: Trả về lỗi 400 và thông báo thiếu thông tin đăng nhập
+    [Tags]    invoice    validation    einvoice    vnpt
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceProvider=1
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Thiếu thông tin đăng nhập VNPT eInvoice"
+
+RT-INPV-018 Kiểm tra xác thực template hóa đơn điện tử
+    [Documentation]    Kiểm tra xác thực template hóa đơn điện tử khi phát hành
+    ...    - Dữ liệu đầu vào: Hóa đơn hợp lệ, template không tồn tại
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceTemplate kiểm tra template
+    ...    - Kỳ vọng: Trả về lỗi 404 và thông báo không tìm thấy template
+    [Tags]    invoice    validation    einvoice    template
+    Given Chuẩn bị dữ liệu hóa đơn mặc định cho kiểm tra quyền
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceTemplateNo=INVALID_TEMPLATE
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 404
+    And Response Should Have Error "Không tìm thấy mẫu hóa đơn điện tử"
+
+RT-INPV-019 Kiểm tra xác thực trạng thái hóa đơn khi phát hành lại
+    [Documentation]    Kiểm tra xác thực trạng thái hóa đơn khi phát hành lại hóa đơn điện tử
+    ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành thành công
+    ...    - Logic kiểm tra: InvoiceService.ValidateEInvoiceStatus kiểm tra trạng thái
+    ...    - Kỳ vọng: Trả về lỗi 400 và thông báo hóa đơn đã phát hành
+    [Tags]    invoice    validation    einvoice    status
+    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_SAME_UUID}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceStatus=1
+    When Gửi yêu cầu tạo hóa đơn với token admin
+    Then Response Status Code Should Be 400
+    And Response Should Have Error "Hóa đơn đã được phát hành thành công"
+
+RT-INPV-020 Kiểm tra quyền hủy hóa đơn điện tử
+    [Documentation]    Kiểm tra quyền hủy hóa đơn điện tử với tài khoản không có quyền
+    ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành, tài khoản không có quyền hủy
+    ...    - Logic kiểm tra: InvoiceService.ValidateCancelEInvoicePermission kiểm tra quyền
+    ...    - Kỳ vọng: Trả về lỗi 403 và thông báo không có quyền hủy
+    [Tags]    invoice    validation    permission    einvoice    cancel
+    Given Chuẩn bị dữ liệu hóa đơn với mã ${INVOICE_VOID_CODE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    IsEInvoice=${TRUE}
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    EInvoiceStatus=1
+    And Set To Dictionary    ${REQUEST_DATA["Invoice"]}    Status=3
+    When Gửi yêu cầu cập nhật hóa đơn với token user không có quyền hủy
+    Then Response Status Code Should Be 403
+    And Response Should Have Error "Bạn không có quyền hủy hóa đơn điện tử"
+

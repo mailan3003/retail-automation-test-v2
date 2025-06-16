@@ -1,6 +1,7 @@
 *** Settings ***
 Library    Collections
 Library    String
+Resource    Utilities.robot
 
 *** Keywords ***
 Status Should Be
@@ -22,19 +23,18 @@ Response Should Have Error ${expected_error}
     ${cleaned_error}=    Replace String    ${expected_error}    "    ${EMPTY}
     Should Have Nested Property     ${RESPONSE.json()}  ResponseStatus.Message  ${cleaned_error}
 
+Phản hồi phải chứa lỗi ${expected_error}
+    Response Should Have Error ${expected_error}
 
-Response Should Have ${path} With value ${expected_value}    
-    ${keys}=    Split String    ${path}    .
-    ${actual_value}=    Set Variable    ${RESPONSE.json()}
+Phản hồi phải bao gồm lỗi ${expected_error}
+    Log     ${RESPONSE.json()}
+    ${cleaned_error}=    Replace String    ${expected_error}    "    ${EMPTY}
+    Should Contain Nested Property     ${RESPONSE.json()}  ResponseStatus.Message  ${cleaned_error}
 
-    FOR    ${key}    IN    @{keys}
-        ${actual_value}=    Get From Dictionary    ${actual_value}    ${key}
-    END
+Mã trạng thái phải là ${expected_status_code}
+    Status Should Be    ${expected_status_code}    ${RESPONSE}
 
-    Should Be Equal    ${actual_value}    ${expected_value}
-
-
-Response Should Have ${path} exist
+Nội dung phản hồi trả về phải tồn tại ${path} 
     ${keys}=    Split String    ${path}    .
     ${current}=    Set Variable    ${RESPONSE.json()}
     FOR    ${key}    IN    @{keys}
