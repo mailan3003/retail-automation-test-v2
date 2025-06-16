@@ -134,3 +134,46 @@ RT-ORDER-029 Tạo Đơn Hàng Thay Đổi Ngày Bán Tương Lai
     Then Mã Trạng Thái Phải Là 420
     And Phản Hồi Phải Chứa Lỗi "Vượt quá thời gian hiện tại"
 
+RT-ORDER-001 Tạo đơn hàng với thuế VAT mặc định
+    [Documentation]    Kiểm tra tạo hóa đơn với thuế VAT mặc định
+    ...    - Dữ liệu đầu vào:
+    ...    - Sản phẩm: SP040943, SL=1, Giá=100,000đ
+    ...    - Không chỉ định thuế VAT (sử dụng mặc định 10%)
+    ...    - Logic xử lý:
+    ...    - Tổng tiền trước thuế = 100,000đ
+    ...    - Tiền thuế = 100,000đ * 10% = 10,000đ
+    ...    - Tổng tiền sau thuế = 110,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Hóa đơn được lưu vào CSDL với thông tin thuế chính xác
+    ...    - Tổng tiền trước thuế = 100,000đ
+    ...    - Tiền thuế = 10,000đ
+    ...    - Tổng tiền sau thuế = 110,000đ
+    [Tags]    apiinvoice    vat    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm HH0115 Có Thuế VAT 
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng ${TOTAL_TAX}
+    [Teardown]    Delete Order From Api
+
+RT-ORDER-005 Tính thuế trực tiếp VAT của Đặt Hàng
+    [Documentation]    Kiểm tra tính thuế VAT của hóa đơn
+    ...    - Dữ liệu đầu vào: 
+    ...    - Sản phẩm 1: ID=${product_with_vat}, Số lượng=1, Giá=100,000đ, Thuế suất=2%
+    ...    - Logic xử lý: InvoiceService.CalculateVAT() 
+    ...    - Code: VAT = invoice.InvoiceDetails.Sum(x => x.Quantity * x.Price * x.VATRate / 100);
+    ...    - Thuế VAT = 1 * 100,000đ * 2% = 2,000đ
+    ...    - Kỳ vọng:
+    ...    - Status code: 200
+    ...    - Thuế VAT trong DB được lưu đúng: -2,000đ
+    ...    - Cờ thuế VAT được bật (IsVAT=1)
+    [Tags]    invoice    vlxd    payment  regression324
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định Với Sản Phẩm HHVATTT001   
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã trạng thái phải là 200
+    And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
+    And Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng -${TOTAL_TAX}
+
+
+
