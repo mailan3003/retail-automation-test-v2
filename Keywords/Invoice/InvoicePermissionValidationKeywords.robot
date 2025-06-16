@@ -116,7 +116,7 @@ Thông tin người bán ${seller_name} trong hóa đơn được lưu trong CSD
     Should Be Equal As Strings    ${result[0]}    ${seller_id}    Người bán không đúng
 
 Thông tin kênh bán ${channel_name} trong hóa đơn được lưu trong CSDL
-    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên    ${channel_name}
+    ${channel_id}=    Lấy Id Kênh Bán Hàng Theo Tên ${channel_name}
     ${query}=    Set Variable    SELECT SaleChannelId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Strings    ${result[0]}    ${channel_id}

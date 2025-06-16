@@ -1,7 +1,6 @@
 *** Settings ***
 Documentation     Keywords cho test API xử lý giao hàng
 Resource          ../../TestData/CommonData.robot
-Resource          ../../TestData/Order/DeliveryProcessingData.robot
 Resource          ../../TestData/Order/CreateOrderData.robot
 Resource          CreateOrderKeywords.robot
 Resource          ../Delivery/DeliveryCommonKeywords.robot

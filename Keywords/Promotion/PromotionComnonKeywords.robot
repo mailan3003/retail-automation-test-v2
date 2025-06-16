@@ -142,7 +142,7 @@ Lấy Id Mã Coupon ở Trạng Thái
     ${status}=    Run Keyword If    '${status}'=='Chưa Sử Dụng'    Set Variable    0   
     ...     ELSE IF    '${status}'=='Đã Sử Dụng'    Set Variable    3
     ...     ELSE IF    '${status}'=='Đã Phát Hành'    Set Variable    1
-    ${query}=    Set Variable    SELECT Id,Code FROM Coupon WHERE CouponCampaignId = ? AND Status = ? AND IsDeleted = 0
+    ${query}=    Set Variable    SELECT Id,Code FROM Coupon WHERE CouponCampaignId = ? AND Status = ?
     ${result}=    Fetch One    ${query}    ${coupon_campaign_id}    ${status}
     RETURN    ${result[0]}    ${result[1]}
 

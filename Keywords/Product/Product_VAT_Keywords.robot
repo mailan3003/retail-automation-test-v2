@@ -306,8 +306,8 @@ Chuẩn Bị Dữ Liệu Cập Nhật Thuế ${type_tax} Với ${tax_rate} % Cho
     ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy taxid từ giá trị thuế    ${tax_rate}
     ${request}      Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    TaxId    ${tax_ID}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    Id    ${CREATED_PRODUCT_ID}
     ${request}    Update Dictionary Property    ${request}    Code    ${CREATED_PRODUCT_CODE}
@@ -348,8 +348,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form Khác Với Thuế ${type_
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+        ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -366,8 +366,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Tạo Từ Form MHBH Với Thuế ${type_t
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    SP${random_code}
-    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
-    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ${category_id}=    Run Keyword If  '${type_tax}'=='Trực Tiếp'     Lấy Thông tin Nhóm Hàng    ${CATEGORY_HANG_HOA_VLXD}
+    ...     ELSE IF  '${type_tax}'=='Khấu Trừ'    Lấy Thông tin Nhóm Hàng  ${CATEGORY_NAME}  
     ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    TaxId     ${tax_ID}
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')

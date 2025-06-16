@@ -17,7 +17,7 @@ RT-INVOICE-ORDER-001 Tạo Hóa Đơn Từ Đơn Hàng Mới Thành Công
     ...    - Tạo đơn hàng mới (ID = 0) với MakeInvoice = true
     ...    - Hệ thống tạo đơn hàng và hóa đơn tương ứng
     ...    - Hoàn thiện đơn hàng và lưu thông tin thanh toán
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    NewOrder    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    NewOrder    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Từ Đơn Hàng Mới
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -31,7 +31,7 @@ RT-INVOICE-ORDER-002 Tạo Hóa Đơn Từ Đơn Hàng Có Sẵn Thành Công
     ...    - Cập nhật đơn hàng có sẵn (ID > 0) với MakeInvoice = true
     ...    - Hệ thống gọi UpdateOrderMakeInvoice để tạo hóa đơn
     ...    - Truyền tham số Amount để xử lý thanh toán
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    ExistingOrder    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    ExistingOrder    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Từ Đơn Hàng Có Sẵn
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -44,7 +44,7 @@ RT-INVOICE-ORDER-003 Tạo Hóa Đơn Với Nhiều Sản Phẩm
     ...    - Đơn hàng chứa nhiều sản phẩm khác nhau
     ...    - Hóa đơn được tạo với đầy đủ chi tiết sản phẩm
     ...    - Tổng tiền được tính đúng từ tất cả sản phẩm
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    MultipleProducts    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    MultipleProducts    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Nhiều Sản Phẩm
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -57,7 +57,7 @@ RT-INVOICE-ORDER-004 Tạo Hóa Đơn Với Sản Phẩm Có VAT
     ...    - Sản phẩm có thuế VAT được cấu hình
     ...    - Hóa đơn được tạo với thông tin thuế chi tiết
     ...    - Cập nhật thông tin thuế khi tính năng VAT sản phẩm được kích hoạt
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    VAT    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    VAT    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Sản Phẩm Có VAT
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -69,7 +69,7 @@ RT-INVOICE-ORDER-005 Tạo Hóa Đơn Với Chiết Khấu
     ...    - Đơn hàng có chiết khấu trên sản phẩm hoặc đơn hàng
     ...    - Hóa đơn được tạo với thông tin chiết khấu chính xác
     ...    - Tổng tiền sau chiết khấu được tính đúng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Discount    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Discount    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Chiết Khấu
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -81,7 +81,7 @@ RT-INVOICE-ORDER-006 Tạo Hóa Đơn Với Nhiều Phương Thức Thanh Toán
     ...    - Đơn hàng có nhiều phương thức thanh toán (Cash, Card, Transfer)
     ...    - Hóa đơn được tạo với đầy đủ thông tin thanh toán
     ...    - Tổng số tiền thanh toán khớp với tổng đơn hàng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    MultiplePayments    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    MultiplePayments    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Nhiều Phương Thức Thanh Toán
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -93,7 +93,7 @@ RT-INVOICE-ORDER-007 Tạo Hóa Đơn Với COD
     ...    - Đơn hàng sử dụng phương thức thanh toán COD
     ...    - Có thông tin giao hàng đầy đủ
     ...    - Hóa đơn được tạo với thông tin giao hàng trong response
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    COD    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    COD    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với COD
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -105,7 +105,7 @@ RT-INVOICE-ORDER-008 Tạo Hóa Đơn Với Sản Phẩm Combo
     ...    - Đơn hàng chứa sản phẩm combo với các nguyên liệu
     ...    - Hóa đơn được tạo với thông tin combo đầy đủ
     ...    - Chi tiết combo được xử lý đúng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Combo    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Combo    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Sản Phẩm Combo
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -117,7 +117,7 @@ RT-INVOICE-ORDER-009 Tạo Hóa Đơn Với Khuyến Mãi
     ...    - Đơn hàng có áp dụng khuyến mãi
     ...    - Hóa đơn được tạo với thông tin khuyến mãi
     ...    - Chiết khấu từ khuyến mãi được áp dụng đúng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Promotion    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Promotion    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Khuyến Mãi
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -129,7 +129,7 @@ RT-INVOICE-ORDER-010 Tạo Hóa Đơn Với Phụ Thu
     ...    - Đơn hàng có các khoản phụ thu (VAT, phí dịch vụ)
     ...    - Hóa đơn được tạo với thông tin phụ thu
     ...    - Tổng tiền bao gồm phụ thu được tính đúng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Surcharge    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Surcharge    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Phụ Thu
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -141,7 +141,7 @@ RT-INVOICE-ORDER-011 Tạo Hóa Đơn Với Complete True
     ...    - Đơn hàng được tạo và hoàn thiện ngay lập tức
     ...    - Hóa đơn được tạo từ đơn hàng đã hoàn thiện
     ...    - Trạng thái đơn hàng được cập nhật đúng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Complete    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    Complete    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Complete True
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -157,7 +157,7 @@ RT-INVOICE-ORDER-012 Lỗi Khi Tạo Hóa Đơn Từ Đơn Hàng Không Tồn T�
     ...    - Đơn hàng có ID không tồn tại trong hệ thống
     ...    - Hệ thống trả về lỗi thích hợp
     ...    - Không tạo hóa đơn mới
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    NonExistentOrder    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    NonExistentOrder    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Từ Đơn Hàng Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Xác Thực Lỗi Đơn Hàng Không Tồn Tại
@@ -167,7 +167,7 @@ RT-INVOICE-ORDER-013 Không Tạo Hóa Đơn Mới Từ Đơn Hàng Đã Hoàn T
     ...    - Đơn hàng đã ở trạng thái Finalized hoặc Void
     ...    - Hệ thống chỉ trả về thông tin đơn hàng hiện tại
     ...    - Không thực hiện thay đổi gì
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    FinalizedOrder    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    FinalizedOrder    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Từ Đơn Hàng Đã Hoàn Thành
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -178,7 +178,7 @@ RT-INVOICE-ORDER-014 Lỗi Khi Tạo Hóa Đơn Với Khách Hàng Không Tồn 
     ...    - Đơn hàng có CustomerId không tồn tại
     ...    - Hệ thống trả về lỗi xác thực khách hàng
     ...    - Không tạo đơn hàng và hóa đơn
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    InvalidCustomer    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    InvalidCustomer  
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Khách Hàng Không Tồn Tại
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Xác Thực Lỗi Khách Hàng Không Tồn Tại
@@ -188,7 +188,7 @@ RT-INVOICE-ORDER-015 Lỗi Khi Tạo Hóa Đơn Với Sản Phẩm Không Hoạt
     ...    - Đơn hàng chứa sản phẩm đã bị vô hiệu hóa
     ...    - Hệ thống trả về lỗi xác thực sản phẩm
     ...    - Không tạo đơn hàng và hóa đơn
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    InactiveProduct    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    InactiveProduct   
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Sản Phẩm Không Hoạt Động
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Xác Thực Lỗi Sản Phẩm Không Hoạt Động
@@ -198,7 +198,7 @@ RT-INVOICE-ORDER-016 Lỗi Khi Amount Không Khớp Với Tổng Tiền
     ...    - Tham số Amount khác với tổng tiền đơn hàng
     ...    - Hệ thống trả về lỗi xác thực số tiền
     ...    - Không tạo hóa đơn
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    MismatchedAmount    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    MismatchedAmount    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với Amount Không Khớp
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Xác Thực Lỗi Amount Không Khớp
@@ -208,7 +208,7 @@ RT-INVOICE-ORDER-017 Tạo Đơn Hàng Nhưng Không Tạo Hóa Đơn Khi MakeIn
     ...    - Đơn hàng được tạo thành công
     ...    - Không tạo hóa đơn vì MakeInvoice = false
     ...    - Chỉ trả về thông tin đơn hàng
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    NoInvoice    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Negative    NoInvoice    
     Given Chuẩn Bị Dữ Liệu Tạo Hóa Đơn Với MakeInvoice False
     When Gửi Yêu Cầu Tạo Hóa Đơn Từ Đơn Hàng
     Then Response Status Code Should Be 200
@@ -223,7 +223,7 @@ RT-INVOICE-ORDER-018 Tạo Hóa Đơn Với Các Trường Hợp Thanh Toán Kh�
     ...    - Test với từng phương thức thanh toán: Cash, Card, Transfer, Point, Wallet
     ...    - Xác thực thông tin thanh toán được lưu đúng cho từng phương thức
     [Template]    Test Tạo Hóa Đơn Với Phương Thức Thanh Toán
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    PaymentMethods    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    PaymentMethods    
     # payment_method    amount    expected_result
     Cash              100000    Thành công
     Card              100000    Thành công
@@ -236,7 +236,7 @@ RT-INVOICE-ORDER-019 Tạo Hóa Đơn Với Các Loại Sản Phẩm Khác Nhau
     ...    - Test với sản phẩm thường, combo, serial, batch
     ...    - Xác thực thông tin sản phẩm được xử lý đúng theo từng loại
     [Template]    Test Tạo Hóa Đơn Với Loại Sản Phẩm
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    ProductTypes    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    ProductTypes   
     # product_type    product_id              expected_result
     Normal          ${PRODUCT_1}            Thành công
     Combo           ${COMBO_PRODUCT_1_ID}   Thành công
@@ -248,7 +248,7 @@ RT-INVOICE-ORDER-020 Tạo Hóa Đơn Với Các Mức Chiết Khấu Khác Nhau
     ...    - Test với chiết khấu theo VNĐ và theo %
     ...    - Xác thực tổng tiền được tính đúng sau chiết khấu
     [Template]    Test Tạo Hóa Đơn Với Chiết Khấu
-    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    DiscountLevels    regression
+    [Tags]    AIGenerated    CreateInvoiceFromOrder    Positive    DiscountLevels  
     # discount_type    discount_value    expected_total
     VND              10000            90000
     Percentage       10               90000

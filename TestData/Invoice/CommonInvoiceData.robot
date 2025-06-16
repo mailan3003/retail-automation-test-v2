@@ -133,11 +133,11 @@ Resource          ../../Config/Env_${ENV}.robot
 ...    Type=0    
 ...    TypeName=    
 ...    Status=1    
-...    Address=${None}    
-...    ContactNumber=${None}    
-...    Receiver=${None}    
+...    Address=1B 
+...    ContactNumber=0988673523
+...    Receiver=Hung   
 ...    DeliveryBy=${None}    
-...    LocationId=${None}    
+...    LocationId=1   
 ...    LocationName=${None}    
 ...    WardName=${None}    
 ...    CustomerId=${None}    
@@ -145,7 +145,7 @@ Resource          ../../Config/Env_${ENV}.robot
 ...    BranchTakingAddressId=${None}    
 ...    BranchTakingAddressStr="1,Phường Ba Ngòi,Thành phố Cam Ranh, Khánh Hòa 03322553899"
 ...    AdministrativeAreaId=${None}    
-...    WardId=${None}    
+...    WardId=10548   
 ...    Weight=500    
 ...    Height=10    
 ...    Width=10    

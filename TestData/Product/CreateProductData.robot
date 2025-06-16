@@ -34,7 +34,7 @@ Library           String
 ...    ProductImages=@{EMPTY}   
 
 
-@{LIST_PRODUCT_DATA_BODY}    &{List_product_data}
+
 
 &{branch_for_cost}   Id=${DEFAULT_BRANCH_ID}
 ...    Name=Chi trung

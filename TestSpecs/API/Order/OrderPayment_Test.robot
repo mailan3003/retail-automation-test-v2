@@ -31,7 +31,7 @@ RT-RC-001 Tạo Đơn Hàng Với Thanh Toán Tiền Mặt Hết Số Tiền C�
     ...    - Ngày tạo đơn hàng là ngày hiện tại
     ...    - Tổng tiền thanh toán của đơn hàng = 100,000đ
     [Tags]    payment    smoke    apiinvoice    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thanh Toán 100000 Phương Thức ${PAYMENT_CASH}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0116 Có Thanh Toán 100000 Phương Thức ${PAYMENT_CASH}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Trong Đơn Đặt Hàng Được Ghi Nhận Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
@@ -430,7 +430,7 @@ RT-GP-014 Thanh toán đặt hàng với nhiều Voucher
     ...    - Thanh toán tiền mặt được ghi nhận với số tiền 100,000đ
     ...    - Các Voucher được đánh dấu đã sử dụng (status=1)
     [Tags]    payment    voucher    multiple   apiinvoice      regression  
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Thanh Toán Với 2 Voucher Đợt VOUCHER001
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Thanh Toán Với 2 Voucher Đợt VOUCHER110
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Được Ghi Nhận Trong Đơn Đặt Hàng 2 Phương Thức ${list_payment_method_voucher} Thanh Toán ${list_payment_amount_voucher}

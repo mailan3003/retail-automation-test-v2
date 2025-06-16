@@ -80,7 +80,7 @@ Chuẩn Bị Dữ Liệu Đơn Hàng ${product_code} Có Chiết Khấu ${discou
     ${request}=    Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản ${product_code}
     ${request_order}    Get From Dictionary      ${request}    Order
     ${order_details}=    Get From Dictionary    ${request_order}    OrderDetails
-    ${discount_amount}=    Evaluate    ${order_details[0][Price]} * ${discount_value} / 100
+    ${discount_amount}=    Evaluate    100000 * ${discount_value} / 100
     ${request_order}  Update Dictionary Property    ${request_order}    DiscountRatio    ${discount_value}
     ${request_order}  Update Dictionary Property    ${request_order}    Discount    ${discount_amount}
     ${request}  Update Dictionary Property    ${request}    Order    ${request_order}

@@ -14,7 +14,6 @@ Library           BuiltIn
 Library           Collections
 Library           DateTime
 Library           ../../Resources/DatabaseLibrary.py
-Library           jsonlibrary
 
 *** Variables ***
 ${ORDER_ENDPOINT}    orders

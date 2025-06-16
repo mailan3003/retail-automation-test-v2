@@ -1,5 +1,5 @@
 *** Settings ***
-Resource          ../../Config/Env_${ENV}.robot
+Resource          ../Config/Env_${ENV}.robot
 Resource          ../TestData/CommonData.robot
 Resource          Utilities/Utilities.robot
 Resource          Utilities/DataUtilities.robot
