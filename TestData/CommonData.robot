@@ -92,7 +92,9 @@ ${PRICEBOOK_NAME}       BG2
 
 #Surcharge Data
 ${SURCHARGE_1_ID}       1000000049
+${SURCHARGE_1_CODE}     TK007
 ${SURCHARGE_2_ID}       1000000045
+${SURCHARGE_2_CODE}     TK003
 
 # Additional product data
 ${product_batch}    1000016309
