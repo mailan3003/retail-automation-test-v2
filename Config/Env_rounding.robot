@@ -17,7 +17,3 @@ ${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
 ${REQUEST_FILES}    ${None}
 ${VOUCHER_CAMPAIGN_ID_2}    1000000031    
 
-${PRODUCT_1}                1000017660
-${PRODUCT_1_CODE}           	HH0098 
-${PRODUCT_1_NAME}           Kẹo Sô cô la Andes Bạc Hà
-${MASTER_PRODUCT_1_ID}      1000017660
