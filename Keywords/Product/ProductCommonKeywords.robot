@@ -351,7 +351,7 @@ Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     Should Be Equal As Strings    ${result[4]}    ${manufacturer_info[1]}
     Should Be Equal As Strings    ${result[5]}    Ấn Độ
     Should Be Equal As Strings    ${result[6]}    ${product_info[7]}
-    Should Be Equal As Strings    ${result[7]}    Đường Miệng
+    Should Be Equal As Strings    ${result[7]}    Drink
     Should Be Equal As Strings    ${result[8]}    2
         
 

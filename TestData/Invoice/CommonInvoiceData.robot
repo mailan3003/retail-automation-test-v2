@@ -162,7 +162,7 @@ Resource          ../../Config/Env_${ENV}.robot
 ...    PackageTypeObj=&{package_type_body}    
 ...    TotalProductPrice=0    
 ...    IsChangeGBH=${False}    
-...    Price=${None}    
+...    Price=${DEFAULT_DELIVERY_PRICE}    
 ...    Comments=${None}    
 ...    ServiceCodeText=${None}    
 ...    ServiceAdd=${None}    

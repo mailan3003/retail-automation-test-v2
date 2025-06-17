@@ -74,7 +74,9 @@ Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành ${status} ${days} Ng
 
 Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành ${status} ${days} Ngày So Với Ngày Hiện Tại
     ${current_date}=    Get Current Date    UTC    
-    ${purchase_delivery_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days    ELSE    Add Time To Date   ${current_date}    ${days} days
+    ${purchase_delivery_date}=   Run Keyword If    '${status}'=='Trước'    Subtract Time From Date   ${current_date}    ${days} days  
+    ...    ELSE IF    '${status}'=='Trùng'    Set Variable    ${current_date}
+    ...    ELSE    Add Time To Date   ${current_date}    ${days} days
     ${request}=    Deep Copy    ${REQUEST_DATA}
     ${request}    Update Nested Dictionary Property    ${request}    Order.Id     ${CREATED_ORDER_ID} 
     ${request}=    Update Nested Dictionary Property    ${request}    Order.ExpectedDeliveryDate    ${purchase_delivery_date}
@@ -232,6 +234,8 @@ Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Gia
     [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng thường thành đơn có giao hàng
     ${request}=    Deep Copy    ${REQUEST_DATA}
     ${delivery_info}=    Deep Copy    ${PARTNER_ORDER_DELIVERY_BODY}
+    ${delivery_id}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${DELIVERY_PARTNER_CODE}
+    ${delivery_info}=    Update Nested Dictionary Property    ${delivery_info}    DeliveryBy    ${delivery_id}
     ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
     ${request}    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${delivery_info}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -462,15 +466,13 @@ Chuẩn Bị Cập Nhật Đơn Hàng Với ID Nhân Viên Đặt Hàng ${user_i
 
 Chuẩn Bị Câp Nhật Đơn Hàng Với Sản Phẩm Trùng Ở MHBH
     [Documentation]    Chuẩn bị dữ liệu để cập nhật đơn hàng với sản phẩm trùng
-    ${list_product_code}=    Create List   
     ${request_product}=    Deep Copy    ${REQUEST_DATA}
     ${product_details}=    Get From Dictionary    ${request_product}    Order
     ${product_details}=    Get From Dictionary    ${product_details}    OrderDetails
     ${request}=    Deep Copy    ${REQUEST_DATA}
     ${order_details}=    Get From Dictionary    ${request}    Order
     ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
-    Append To List   ${list_product_code}   ${order_details}   
-    Append To List   ${list_product_code}   ${product_details}
+    ${list_product_code}=    Create List    @{product_details}    @{order_details}
     ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${list_product_code}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
@@ -480,6 +482,7 @@ Chuẩn Bị Cập Nhật Đơn Hàng Với Sản Phẩm Có Số Lượng ${qua
     ${request}=    Deep Copy    ${REQUEST_DATA}
     ${product_details}=    Get From Dictionary    ${request}    Order
     ${product_details}=    Get From Dictionary    ${product_details}    OrderDetails
+    ${product_details}=    Set Variable    ${product_details}[0]
     ${product_details}=    Update Nested Dictionary Property    ${product_details}    Quantity    ${quantity}
     ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_details}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -490,6 +493,7 @@ Chuẩn Bị Cập Nhật Đơn Hàng Với Sản Phẩm ${product_code} Ở MHB
     ${request}=    Deep Copy    ${REQUEST_DATA}
     ${product_details}=    Get From Dictionary    ${request}    Order
     ${product_details}=    Get From Dictionary    ${product_details}    OrderDetails
+    ${product_details}=    Set Variable    ${product_details}[0]
     ${product_details}=    Update Nested Dictionary Property    ${product_details}    ProductId    ${product_id}
     ${request}=    Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${product_details}
     Set Test Variable    ${REQUEST_DATA}    ${request}

@@ -70,7 +70,7 @@ RT-PRODUCT-041 Tạo Sản Phẩm Đơn Vị Với Kích Thước cm
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Kích Thước 5.355x20 cm
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCT_CODE} Được Tạo Ra Có Đơn Vị ${list_unit} Và ${list_value}
-    [Teardown]     Delete Nhiều Sản Phẩm  ${DB_PRODUCT_CODE} 
+    [Teardown]       Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-042 Tạo Sản Phẩm Thuộc Tính Với Kích Thước m
     [Documentation]    Test tạo sản phẩm có thông tin kích thước
     [Tags]    AIGenerated    CreateProduct    Positive        vlxd  

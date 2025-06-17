@@ -201,7 +201,7 @@ RT-PRODUCT-025 Tạo Sản Phẩm Với Thuế và Thuộc Tính Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra
     And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCTS_CODE} Có Thuế Trực Tiếp Với 2 %
-    [Teardown]     Delete Nhiều Sản Phẩm  ${DB_PRODUCT_CODE} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-026 Tạo Sản Phẩm Với Mã Thuế Không Hợp Lệ
     [Documentation]    Test tạo sản phẩm với mã thuế không tồn tại

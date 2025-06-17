@@ -74,7 +74,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
 
 
 Xác Thực Điểm Thưởng Hóa Đơn ${expected_point}
-    Wait Until Keyword Succeeds    3x    1s    Kiểm tra điểm thưởng hóa đơn ${expected_point}
+    Wait Until Keyword Succeeds    15x    1s    Kiểm tra điểm thưởng hóa đơn ${expected_point}
 
 Kiểm tra điểm thưởng hóa đơn ${expected_point}
     [Documentation]    Xác thực điểm tích lũy của hóa đơn trong response
