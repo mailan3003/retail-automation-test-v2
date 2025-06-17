@@ -238,6 +238,7 @@ Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Gia
     ${delivery_info}=    Update Nested Dictionary Property    ${delivery_info}    DeliveryBy    ${delivery_id}
     ${request}    Update Nested Dictionary Property    ${request}    Order.Id    ${CREATED_ORDER_ID}
     ${request}    Update Nested Dictionary Property    ${request}    Order.DeliveryDetail    ${delivery_info}
+    ${request}    Update Nested Dictionary Property    ${request}    Order.UsingCod    1
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -349,6 +350,22 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${product_code} 
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
     ${order_details}=    Get From Dictionary    ${REQUEST_DATA}    Order
     ${order_details}=    Get From Dictionary    ${order_details}    OrderDetails
+    ${body_product_list}=    Deep Copy    ${order_details}
+    ${index}=    Find Index In List    ${body_product_list}    ProductId    ${product_id}
+    ${detail}=    Get From List    ${body_product_list}    ${index}
+    ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
+    ${new_product_list}=    Create List    ${detail}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${new_product_list}
+    ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Lấy Tiếp Phần Đặt Hàng ${product_code} Với Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu để lấy 1 phần đặt hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery} 
+    ${order_details}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
+    ${order_details}=    Get From Dictionary    ${order_details}    InvoiceDetails
     ${body_product_list}=    Deep Copy    ${order_details}
     ${index}=    Find Index In List    ${body_product_list}    ProductId    ${product_id}
     ${detail}=    Get From List    ${body_product_list}    ${index}

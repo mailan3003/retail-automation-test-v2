@@ -153,6 +153,17 @@ Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng
     ${expected_delivery}=    Convert Date    ${expected_delivery}    result_format=%Y-%m-%d %H:%M:%S
     Should Be Equal    ${expected_delivery_in_db}    ${expected_delivery}    Ngày giao dự kiến không khớp
 
+
+Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng Đơn Không Có Giao Hàng
+    ${query}=   Set Variable   SELECT ExpectedDeliveryDate FROM [Order] WHERE Id = ? 
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${result}    ${None}    Thông tin đơn hàng không tồn tại trong CSDL
+    ${expected_delivery_in_db}=    Set Variable    ${result[0]}
+    ${expected_delivery}=    Set Variable    ${REQUEST_DATA["Order"]["ExpectedDeliveryDate"]}
+    ${expected_delivery_in_db}=    Convert Date    ${expected_delivery_in_db}    result_format=%Y-%m-%d %H:%M:%S
+    ${expected_delivery}=    Convert Date    ${expected_delivery}    result_format=%Y-%m-%d %H:%M:%S
+    Should Be Equal    ${expected_delivery_in_db}    ${expected_delivery}    Ngày giao dự kiến không khớp đơn không có giao hàng
+
 Xác Thực Ghi Chú Giao Hàng Được Cập Nhật Đúng
     ${query}=   Set Variable   SELECT Comments FROM DeliveryPackage WHERE OrderId = ? 
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}

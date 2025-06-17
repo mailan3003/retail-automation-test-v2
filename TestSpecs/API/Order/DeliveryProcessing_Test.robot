@@ -125,7 +125,7 @@ RT-DP-009 Tạo đơn hàng giao hàng có thanh toán
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Pending
-     [Tags]    apiinvoice    delivery    regression5345
+     [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Với Thu Hộ và Thanh Toán 30000
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200

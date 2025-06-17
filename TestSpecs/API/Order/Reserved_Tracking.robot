@@ -267,7 +267,7 @@ RT-RESERVED-010 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Và L
     And Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 2
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Lấy Tiếp Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 2
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code}[0] Được Cập Nhập Thêm 2
