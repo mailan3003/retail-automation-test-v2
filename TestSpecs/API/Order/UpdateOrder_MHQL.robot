@@ -217,17 +217,17 @@ Cập Nhật Đơn Hàng Về Trạng Thái Hoàn Thành
     And Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Thành Hoàn Thành MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 2
+    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 3
     [Teardown]    Delete Order From Api
 
-Kết Thúc Đơn Đặt Hàng 
+Chuyển trạng thái sang trạng thái Phiếu Tạm
     [Documentation]    Kết Thúc Đơn Đặt Hàng
     [Tags]    AIGenerated    UpdateOrder    Positive    OrderStatus    regression
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0061 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Sang Phiếu Tạm
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 3
+    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 1
     [Teardown]    Delete Order From Api
 
 Cập Nhập Thông Tin Giao Hàng

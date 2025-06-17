@@ -149,7 +149,7 @@ Xác Thực Cập Nhật Trạng Thái Serial
 
 Xác Thực Cập Nhật Số Lượng Lô
     [Arguments]    ${batch_id}    ${quantity}
-    ${query}=    Set Variable    SELECT ProductBatchExpireId, Quantity FROM BatchExpireTracking WHERE DocumentId = ? AND ProductBatchExpireId = ? AND DocumentType = 1
+    ${query}=    Set Variable    SELECT ProductBatchExpireId, Quantity FROM BatchExpireTracking WHERE DocumentId = ? AND ProductBatchExpireId = ?
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${batch_id}
     Should Not Be Equal    ${result}    None    Không tìm thấy lịch sử lô
     Should Be Equal As Numbers    ${result[0]}    ${batch_id}    ID lô không khớp

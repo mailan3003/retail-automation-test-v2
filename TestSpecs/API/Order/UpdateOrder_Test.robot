@@ -6,8 +6,8 @@ Resource          ../../../Keywords/Order/UpdateOrderKeywords.robot
 Resource          ../../../Keywords/Order/OrderCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../TestData/CommonData.robot
-# Test Setup        Setup Test Environment
-# Test Teardown     Cleanup Test Environment
+Resource          ../../../TestData/Invoice/Invoice_Validation_Data.robot
+
 
 *** Test Cases ***
 # =============================================================================
@@ -146,6 +146,7 @@ RT-ORDER-UPDATE-006 Cập Nhật Kênh Bán Hàng Trong Đơn Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Kênh Bán Trong Đơn Đặt Hàng Là Kênh 3
+    [Teardown]    Delete Order From Api
 
 # =============================================================================
 
@@ -233,18 +234,6 @@ RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thay Đổi Khách Hàng Với Đơ
     And Xác Thực Lỗi "Có thay đổi mới hơn từ server. Bạn cần cập nhật trước khi tạo thay đổi mới"
     [Teardown]    Delete Order From Api
 
-RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thay Đổi Kênh Bán Hàng
-    [Documentation]    Kiểm tra cập nhật đơn hàng với UpdateSaleChannel = true:
-    ...    - Cập nhật ID kênh bán hàng trong thông tin đơn hàng
-    ...    - Xác thực thông tin kênh bán hàng được cập nhật đúng
-    [Tags]    AIGenerated    UpdateOrder    Positive    UpdateSaleChannel    regression
-    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0054 Với Khách Hàng DHDPT001
-    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành Kênh 3
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Kênh Bán Hàng Trong Đơn Đặt Hàng Là Kênh 3
-    [Teardown]    Delete Order From Api
-
 
 Cập Nhật Đơn Hàng Thay Đổi Người Nhận Đặt Hàng
     [Documentation]    Kiểm tra cập nhật đơn hàng với UpdateCustomerIdInPayments = true:
@@ -252,28 +241,140 @@ Cập Nhật Đơn Hàng Thay Đổi Người Nhận Đặt Hàng
     ...    - Xác thực thông tin thanh toán được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UpdateCustomerIdInPayments    regression
     Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0054 Với Khách Hàng DHDPT001
-    And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Thành DHDPT002
+    And Chuẩn Bị Cập Nhập Người Bán Cho Đơn Hàng Thành son.dx
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Khách Hàng Trong Đơn Đặt Hàng Là DHDPT002
+    And Xác Thực Người Nhận Đặt Trong Đơn Hàng là son.dx
     [Teardown]    Delete Order From Api
-
-Cập Nhật Đơn Hàng Thay Đổi Bảng Giá Sản Phẩm
-    [Documentation]    Kiểm tra cập nhật đơn hàng với UpdateProductIdInPayments = true:
-    ...    - Cập nhật ID sản phẩm trong thông tin thanh toán
-    ...    - Xác thực thông tin thanh toán được cập nhật đúng
-    [Tags]    AIGenerated    UpdateOrder    Positive    UpdateProductIdInPayments    regression
-    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0054 Với Khách Hàng DHDPT001
-    And Chuẩn Bị Dữ Liệu Cập Nhật Sản Phẩm Thành HH0055
-    When Gửi Yêu Cầu Tạo Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Trong Đơn Đặt Hàng Là HH0055
-    [Teardown]    Delete Order From Api
-
 
 
 # =============================================================================
 # Test Cases Lỗi - Validation Errors
 # =============================================================================
+
+RT-EXC-001 Cập Nhật Đơn Hàng có Trùng Hàng Hóa
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateException với nhiều điều kiện:
+    ...    - Sản phẩm trùng lặp trong đơn hàng (loại trừ sản phẩm khuyến mãi)
+    ...    - Không có quyền tạo đơn hàng (Order._Create)
+    ...    - Không có quyền cập nhật đơn hàng (Order._Update)
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể từ KVMessage
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0057 Với Khách Hàng DHDPT001
+    And Chuẩn Bị Câp Nhật Đơn Hàng Với Sản Phẩm Trùng Ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Sản phẩm bị trùng"
+
+Cập nhật Đơn Hàng Có Số Lượng Bằng 0
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateException với nhiều điều kiện:
+    ...    - Sản phẩm có số lượng = 0
+    ...    - Không có quyền tạo đơn hàng (Order._Create)
+    ...    - Không có quyền cập nhật đơn hàng (Order._Update)
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể từ KVMessage
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0057 Với Khách Hàng DHDPT002
+    And Chuẩn Bị Cập Nhật Đơn Hàng Với Sản Phẩm Có Số Lượng 0
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Vui lòng nhập số lượng lớn hơn 0 cho sản phẩm "
+
+Cập nhật Đơn Hàng Có Số Lượng Âm
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateException với nhiều điều kiện:
+    ...    - Sản phẩm có số lượng = 0
+    ...    - Không có quyền tạo đơn hàng (Order._Create)
+    ...    - Không có quyền cập nhật đơn hàng (Order._Update)
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể từ KVMessage
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0058 Với Khách Hàng DHDPT002
+    And Chuẩn Bị Cập Nhật Đơn Hàng Với Sản Phẩm Có Số Lượng -5
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Vui lòng nhập số lượng lớn hơn 0 cho sản phẩm "
+Cập nhật Đơn Hàng Với Sản Phẩm Ngừng Kinh Doanh
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateException với nhiều điều kiện:
+    ...    - Sản phẩm không tồn tại trong hệ thống
+    ...    - Không có quyền tạo đơn hàng (Order._Create)
+    ...    - Không có quyền cập nhật đơn hàng (Order._Update)
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể từ KVMessage
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0059 Với Khách Hàng DHDPT002
+    And Chuẩn Bị Cập Nhật Đơn Hàng Với Sản Phẩm ${INACTIVE_PRODUCT_CODE} Ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Một số hàng hóa có trong đơn hàng đã ngừng kinh doanh ở chi nhánh hiện tại: ${INACTIVE_PRODUCT_CODE}"
+
+RT-EXC-002 Cập nhật Đơn Hàng Với Khách Hàng Ngừng Hoạt Động
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateCustomerException với nhiều điều kiện:
+    ...    - Khách hàng không tồn tại trong hệ thống
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về khách hàng
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateCustomerException43    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0059 Với Khách Hàng DHDPT001
+    And Chuẩn Bị Cập Nhật Khách Hàng ${INACTIVE_CUSTOMER_CODE} Cho Đơn Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
+
+
+Cập nhật Đơn Hàng Với Khách Hàng Ở Chi Nhánh Khác
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateCustomerException với nhiều điều kiện:
+    ...    - Gian hàng Bật quản lý khách hàng theo chi nhánh
+    ...    - Khách hàng không tồn tại trong chi nhánh hiện tại
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về khách hàng
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateCustomerException    vlxd
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản ${PRODUCT_CODE_VLXD} Để Cập Nhật
+    And Chuẩn Bị Cập Nhật Khách Hàng KH000004 Cho Đơn Hàng
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Khách hàng không thuộc chi nhánh hiện tại."
+
+RT-EXC-003 Cập nhật Đơn Hàng Với Nhân Viên Nhận Đặt Không Tồn Tại
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateUserException với nhiều điều kiện:
+    ...    - Nhân viên bán hàng không tồn tại trong hệ thống
+    ...    - Hiển thị tên nhân viên cụ thể trong thông báo lỗi
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về nhân viên
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateUserException   regression
+    # user_condition                               expected_error_message
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0060 Với Khách Hàng DHDPT001
+    And Chuẩn Bị Cập Nhật Người Nhận Đặt Với ID Người Nhận Đặt 9999999 ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Người bán không tồn tại hoặc đã bị xóa khỏi hệ thống"
+
+Cập nhật Đơn Hàng Nhân Viên Đặt Hàng Ngừng Hoạt Động
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateUserException với nhiều điều kiện:
+    ...    - Nhân viên bán hàng không tồn tại trong hệ thống
+    ...    - Hiển thị tên nhân viên cụ thể trong thông báo lỗi
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về nhân viên
+    [Tags]   MHBH VAN TAO DUOC
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0060 Với Khách Hàng DHDPT002
+    And Chuẩn Bị Cập Nhập Người Bán Cho Đơn Hàng Thành inactiveuser
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Người bán inactiveuser đã bị ngừng hoạt động"
+
+
+RT-EXC-005 Tạo Đơn Hàng Với Kênh Bán Hàng Không Tồn Tại
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateSaleChannelException với nhiều điều kiện:
+    ...    - Kênh bán hàng không tồn tại trong hệ thống
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về kênh bán hàng
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateSaleChannelException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0061 Với Khách Hàng DHDPT002
+    And Chuẩn Bị Cập Nhật Đơn Hàng Với ID Kênh Bán Hàng 999999 ở MHBH
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Kênh bán không tồn tại"
+
+
+Tạo Đơn Hàng Với Kênh Bán Hàng Ngừng Hoạt Động
+    [Documentation]    Kiểm tra xử lý ngoại lệ KvValidateSaleChannelException với nhiều điều kiện:
+    ...    - Kênh bán hàng không tồn tại trong hệ thống
+    ...    - Trả về mã lỗi 420 với thông báo cụ thể về kênh bán hàng
+    [Tags]    AIGenerated    ExceptionHandling    KvValidateSaleChannelException    regression
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0061 Với Khách Hàng DHDPT001
+    And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành Kênh 4
+    When Gửi Yêu Cầu Tạo Đơn Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản Hồi Phải Chứa Lỗi "Kênh bán không tồn tại"
+
 
 

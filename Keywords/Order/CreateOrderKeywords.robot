@@ -26,6 +26,7 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản ${product_code}
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     ${order_details}=   Deep Copy   ${PRODUCT_ORDER_DETAIL}
     ${order_details}    Update Dictionary Property    ${order_details}    ProductId    ${product_id}
+    ${order_details}    Create List   ${order_details}
     ${request}  Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
@@ -71,6 +72,7 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${product_code} Có Số
     ${order_details}=   Deep Copy   ${PRODUCT_ORDER_DETAIL}
     ${order_details}    Update Dictionary Property    ${order_details}    ProductId    ${product_id}
     ${order_details}    Update Dictionary Property    ${order_details}    Quantity    ${quantity}
+    ${order_details}   Create List   ${order_details} 
     ${request}  Update Nested Dictionary Property    ${request}    Order.OrderDetails    ${order_details}
 
     Set Test Variable    ${REQUEST_DATA}    ${request}

@@ -98,7 +98,7 @@ RT-ORDER-005 Tạo Đơn Hàng Với Kênh Bán Hợp Lệ
 RT-ORDER-005 Tạo Đơn Hàng Bảng Giá
     
     [Tags]    AIGenerated    CreateOrder    Positive    ValidPriceBook    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Bảng Giá Bảng giá chi nhánh
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Bảng Giá BG1
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
@@ -207,7 +207,7 @@ RT-VLXD-002 Tạo hóa đơn có nhiều sản phẩm VLXD với kích thước 
     ...    - Status code: 200
     ...    - Hóa đơn được tạo thành công với các sản phẩm VLXD
     ...    - Thông tin kích thước từng sản phẩm được lưu chính xác
-    [Tags]    CreateOrder   vlxd    multiple_products4324
+    [Tags]    CreateOrder   vlxd    multiple_products
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Kích Thước 100x50x20x5 Và ${PRODUCT_CODE_VLXD_3} Kích Thước 200x100x30
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200

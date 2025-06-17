@@ -231,6 +231,15 @@ Xác Thực Số Lượng Đặt Hàng Của ${list_product_code} Được Cập
     END
     Set Test Variable    ${LIST_ON_ORDER}    ${list_on_order}
 
+Xác Thực Số Lượng Đặt Hàng Của ${list_product_code} Là ${list_quantity}
+    FOR    ${product_code}    ${quantity}   IN ZIP    ${list_product_code}    ${list_quantity}
+       Wait Until Keyword Succeeds    15x    1s    Xác Thực Số Lượng Đặt Hàng ${quantity} Của Sản Phẩm ${product_code}
+    END
+
+
+Xác Thực Số Lượng Đặt Hàng của Sản Phẩm ${product_code} Là ${quantity}
+   Wait Until Keyword Succeeds    15x    1s    Xác Thực Số Lượng Đặt Hàng ${quantity} Của Sản Phẩm ${product_code}
+
 Xác Định Order Tracking ${product_code} Có ${quantity} 
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     ${query}=   Set Variable   SELECT Quantity,EndReserved FROM OrderTracking WHERE DocumentId = ? AND ProductId = ? 
@@ -282,11 +291,12 @@ Xác Thực Người Nhận Đặt Trong Đơn Hàng là ${user_name}
 
 Xác Thực Bảng Giá Trong Đơn Đặt Hàng Là ${pricebook_name}
     ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá  ${pricebook_name}
-    ${query}=   Set Variable   SELECT Extra FROM [Order] WHERE Id = ${CREATED_ORDER_ID}
-    ${result}=    Fetch One    ${query}
+    ${query}=   Set Variable   SELECT Extra FROM [Order] WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
     ${extra_json}=    Evaluate    json.loads('''${result[0]}''')    json 
     ${actual_pricebook_id}=    Evaluate    $extra_json.get('PriceBookId', {}).get('Id')
     Should Be Equal As Numbers    ${actual_pricebook_id}    ${pricebook_id}    Bảng giá không khớp
+
 
 Xác Thực Chi Nhánh Xử Lý Đã Được Chuyển Thành ${branch_name}    
     ${branch_id}=    Lấy Thông tin Chi nhánh    ${branch_name}
