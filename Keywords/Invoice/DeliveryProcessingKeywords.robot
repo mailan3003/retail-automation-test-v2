@@ -89,7 +89,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Với Trạng Thái ${status}
     ...    ELSE IF    '${status}' =='Đã Giao Hàng'        Set Variable    3
     ${request}=    Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
-    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
+    ${delivery_detail_body}=    Get From Dictionary    ${request_invoice}    DeliveryDetail
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Status    ${Value}
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}

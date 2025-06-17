@@ -15,7 +15,7 @@ Resource          ../../../TestData/CommonData.robot
 RT-ORDER-UPDATE-010 Chuyển Chi Nhánh Xử Lý Đặt Hàng 
     [Documentation]    Chuyển Chi Nhánh Xử Lý Đặt Hàng 
     [Tags]    AIGenerated    UpdateOrder    Positive    BranchTransfer        regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0118 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành Nhánh A Thanh Toán Có Cập Nhật Theo
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200

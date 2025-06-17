@@ -20,7 +20,7 @@ RT-ORDER-UPDATE-001 Cập Nhật Đơn Hàng Cơ Bản Thành Công
     ...    - Xác thực đơn hàng được cập nhật trong database
     ...    - Xác thực log thay đổi được ghi nhận
     [Tags]    AIGenerated    UpdateOrder    Positive    Basic    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0117 Để Cập Nhật
     When Chuẩn Bị Dữ Liệu Cập Nhật Mô Tả Cho Đơn Hàng
     And Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -44,7 +44,7 @@ RT-ORDER-UPDATE-003 Cập Nhật Thông Tin Khách Hàng Không Tồn Tại Tron
     ...    - Xác thực thông tin khách hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Customer    regression
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0055 Để Cập Nhật
-    And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng ${INVALID_CUSTOMER_ID} Trong Hệ Thống
+    And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng 99999993444 Trong Hệ Thống
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Xác Thực Lỗi "Khách hàng không hoạt động hoặc đã bị xóa khỏi hệ thống."
@@ -82,11 +82,11 @@ Cập Nhật Đơn Hàng Phí Giao Hàng
     And Xác Thực Phí Giao Hàng Được Cập Nhật Đúng
     [Teardown]    Delete Order From Api
 
-Cập Nhật Đơn Hàng Thu Hộ
+Cập Nhật Đơn Hàng Thu Hộ MHBH
     [Documentation]    Cập Nhật Đơn Hàng Thu Hộ
     [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
     Given Chuẩn Bị Đơn Hàng HH0055 Có Thông Tin Giao Hàng Để Cập Nhật
-    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thu Hộ MHBH
+    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Không Thu Hộ MHBH
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Không Thu Hộ
@@ -151,19 +151,19 @@ RT-ORDER-UPDATE-006 Cập Nhật Kênh Bán Hàng Trong Đơn Hàng
 # =============================================================================
 
 
-RT-ORDER-UPDATE-018 Cập Nhật Đơn Hàng Thời Gian Giao Hàng
+RT-ORDER-UPDATE-018 Cập Nhật Đơn Hàng Thời Gian Giao Hàng Sau Thời Gian Hiện Tại
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0057 Để Cập Nhật
-    And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trước 1 Ngày So Với Ngày Hiện Tại
+    And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành Trước 1 Ngày So Với Ngày Hiện Tại
+    And Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành Sau 1 Ngày So Với Ngày Hiện Tại
 
 
-RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thời Gian Giao Hàng
+RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trước Thời Gian Hiện Tại
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
@@ -171,16 +171,16 @@ RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thời Gian Giao Hàng
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0058 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trước 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành Trước 1 Ngày So Với Ngày Hiện Tại
+    Then Mã Trạng Thái Phải Là 420
+    And Xác Thực Lỗi "Ngày dự kiến giao phải ở trong tương lai"
 
-Cập Nhật Đơn Hàng Thời Gian Giao Hàng Lùi Thời Gian Hiện Tại
+Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trùng Thời Gian Hiện Tại
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0059 Để Cập Nhật
-    And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
+    And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trùng 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
     And Xác Thực Lỗi "Ngày dự kiến giao phải ở trong tương lai"

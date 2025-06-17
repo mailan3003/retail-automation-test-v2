@@ -324,6 +324,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Mã Barcode ${n} Ký Tự
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mã Trùng Lặp ${product_code}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name} =   Lấy Thông tin Đường Dùng   ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
