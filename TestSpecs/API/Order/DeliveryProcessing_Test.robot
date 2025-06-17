@@ -29,7 +29,7 @@ RT-DP-001 Tạo Đơn Hàng COD thành công với thông tin giao hàng đầy 
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin giao hàng đầy đủ
     ...    - UsingCod được bật trong hóa đơn
     [Tags]        delivery    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thông Tin Giao Hàng
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0116 Có Thông Tin Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đặt Hàng Giao Hàng Trong DB

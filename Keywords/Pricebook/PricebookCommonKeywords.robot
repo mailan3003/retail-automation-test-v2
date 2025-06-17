@@ -17,6 +17,7 @@ ${PRICEBOOK_ENDPOINT}    pricebooks
 *** Keywords ***
 Lấy Id Bảng Giá Theo Tên Bảng Giá
     [Arguments]    ${pricebook_name}
-    ${query}=   Set Variable   SELECT Id FROM PriceBook WHERE Name = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${pricebook_name}    ${RETAILER_ID}
+    ${query}=   Set Variable   SELECT Id FROM PriceBook WHERE Name = '${pricebook_name}' AND RetailerId = ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}
+    Should Not Be Equal    ${result}    ${None}    Bảng giá không tồn tại trong CSDL
     RETURN    ${result[0]}

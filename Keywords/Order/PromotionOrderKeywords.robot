@@ -163,8 +163,10 @@ Chuẩn Bị Dữ Liệu Đơn Hàng Với Khuyến Mãi ${promotion_code} Cho S
     ${info_promotion}=    Thông tin khuyến mãi hàng hóa    ${promotion_id}
     ${product_info}=    Thông tin hàng hóa    ${product_code} 
     ${price_product}=    Convert To Number    ${product_info[2]}
-    ${promotion_value}=    Convert To Number    ${info_promotion[1]}
-    ${discount_value}=    Convert To Number    ${info_promotion[2]}
+    ${promotion_value}=   Run Keyword If    '${info_promotion[1]}' == 'None'  Set Variable   0
+    ...    ELSE    Convert To Number    ${info_promotion[1]}
+    ${discount_value}=    Run Keyword If    '${info_promotion[2]}' == 'None'  Set Variable   0
+    ...    ELSE    Convert To Number    ${info_promotion[2]}
     ${request}     Deep Copy    ${BASE_ORDER_REQUEST}
     ${purchase_date}=    Get Current Date    result_format=%Y-%m-%dT%H:%M:%S
     ${request}  Update Nested Dictionary Property    ${request}    Order.PurchaseDate    ${purchase_date}

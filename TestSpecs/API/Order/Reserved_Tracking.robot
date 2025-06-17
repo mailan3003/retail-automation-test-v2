@@ -8,7 +8,12 @@ Resource          ../../../Keywords/Order/UpdateOrderKeywords.robot
 Resource          ../../../Keywords/Order/CreateOrderKeywords.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 *** Variables ***
-@{list_product_code}    HH0078     HH0079      
+@{list_product_code}    HH0080     HH0079      
+@{list_product_code_2}    HH0081     HH0082
+@{list_product_code_3}    HH0083     HH0084
+@{list_product_code_4}    HH0085     HH0086
+@{list_product_code_5}    HH0087     HH0088
+@{list_product_code_6}    HH0089     HH0090
 @{list_quantity}    10.5          5
 ${product_code_add}     LD01
 ${quantity_add}    2.333
@@ -43,6 +48,7 @@ RT-RESERVED-002 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Serial
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm SI001 Được Cập Nhập Thêm 2
     And Xác Định Order Tracking SI001 Đặt Hàng Thêm 2 Được Lưu Trong Database
+     [Teardown]    Delete Order From Api
 
 RT-RESERVED-003 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Theo Lô
     [Documentation]    Kiểm tra số lượng đặt hàng được tính đúng cho sản phẩm theo lô:
@@ -56,6 +62,7 @@ RT-RESERVED-003 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Theo Lô
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm LD01 Được Cập Nhập Thêm 2.333
     And Xác Định Order Tracking LD01 Đặt Hàng Thêm 2.333 Được Lưu Trong Database
+    [Teardown]    Delete Order From Api
 
 
 RT-RESERVED-003 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Đơn Vị Tính
@@ -69,6 +76,7 @@ RT-RESERVED-003 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Đơn V�
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm LD01 Được Cập Nhập Thêm 2.333
     And Xác Định Order Tracking LD01 Đặt Hàng Thêm 2.333 Được Lưu Trong Database
+    [Teardown]    Delete Order From Api
 
 RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Dịch Vụ
     [Documentation]    Kiểm tra số lượng đặt hàng được tính đúng cho sản phẩm dịch vụ:
@@ -81,6 +89,7 @@ RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Dịch V�
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm DV001 Được Cập Nhập Thêm 2.333
     And Xác Định Order Tracking DV001 Đặt Hàng Thêm 2.333 Được Lưu Trong Database
+    [Teardown]    Delete Order From Api
 
 
 RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Combo
@@ -94,6 +103,7 @@ RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Cho Sản Phẩm Combo
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm Combo025 Được Cập Nhập Thêm 10.5
     And Xác Định Order Tracking Combo025 Đặt Hàng Thêm 10.5 Được Lưu Trong Database
+    [Teardown]    Delete Order From Api
 
 RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Khi Hủy Đơn
     [Documentation]    Kiểm tra số lượng đặt hàng được hoàn lại khi hủy đơn:
@@ -108,6 +118,7 @@ RT-RESERVED-004 Kiểm Tra Số Lượng Đặt Hàng Khi Hủy Đơn
     When Delete Order From Api
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng ${list_quantity} Của ${list_product_code} Được Hoàn Lại
+    [Teardown]    Delete Order From Api
 
 RT-RESERVED-005 Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Thêm Hàng Hóa
     [Documentation]    Kiểm tra số lượng đặt hàng được cập nhật đúng khi cập nhật đơn:
@@ -115,16 +126,17 @@ RT-RESERVED-005 Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Th�
     ...    - Cập nhật đơn hàng
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
     [Tags]    AIGenerated    Reserved    Tracking    Update    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
-    And Lấy Số Lượng Đặt Hàng ${list_product_code}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code_2} Với Số Lượng Đặt Hàng ${list_quantity}
+    And Lấy Số Lượng Đặt Hàng ${list_product_code_2}
     And Gửi Yêu Cầu Tạo Đơn Hàng
-    And Xác Thực Số Lượng Đặt Hàng Của ${list_product_code} Được Cập Nhập Thêm ${list_quantity}
+    And Xác Thực Số Lượng Đặt Hàng Của ${list_product_code_2} Được Cập Nhập Thêm ${list_quantity}
     And Lấy Số Lượng Đặt Hàng Của Sản Phẩm ${product_code_add}
     And Chuẩn Bị Dữ Liệu Đặt Hàng Thêm ${product_code_add} Với Số Lượng ${quantity_add}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm ${product_code_add} Được Cập Nhập Thêm ${quantity_add}
     And Xác Định Order Tracking ${product_code_add} Đặt Hàng Thêm ${quantity_add} Được Lưu Trong Database
+    [Teardown]    Delete Order From Api
 
 Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Xóa Hàng Hóa
     [Documentation]    Kiểm tra số lượng đặt hàng được cập nhật đúng khi xóa hàng hóa:
@@ -132,14 +144,15 @@ Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Xóa Hàng Hóa
     ...    - Xóa hàng hóa
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
     [Tags]    AIGenerated    Reserved    Tracking    Delete    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
-    And Lấy Số Lượng Đặt Hàng ${list_product_code}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code_3} Với Số Lượng Đặt Hàng ${list_quantity}
+    And Lấy Số Lượng Đặt Hàng ${list_product_code_3}
     And Gửi Yêu Cầu Tạo Đơn Hàng
-    And Chuẩn Bị Dữ Liệu Đặt Hàng Xóa ${list_product_code}[0] Khỏi Đơn
-    And Lấy Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code}[0]
+    And Chuẩn Bị Dữ Liệu Đặt Hàng Xóa ${list_product_code_3}[0] Khỏi Đơn
+    And Lấy Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code_3}[0]
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Số Lượng Hàng ${list_product_code}[0] Đặt Hàng Giảm ${list_quantity}[0]
+    And Xác Thực Số Lượng Hàng ${list_product_code_3}[0] Đặt Hàng Giảm ${list_quantity}[0]
+    [Teardown]    Delete Order From Api
 
 
 Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Update Số Lượng Hàng Hóa
@@ -155,6 +168,7 @@ Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Update Số Lượn
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code}[0] Được Cập Nhập Thêm 103.44
+    [Teardown]    Delete Order From Api
 
 Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Update Thêm Dòng Hàng Hóa
     [Documentation]    Kiểm tra số lượng đặt hàng được cập nhật đúng khi cập nhật thêm dòng hàng hóa:
@@ -169,6 +183,7 @@ Kiểm Tra Số Lượng Đặt Hàng Khi Cập Nhật Đơn Update Thêm Dòng 
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code}[1] Được Cập Nhập Thêm ${TOTAL_QUANTITY}
+    [Teardown]    Delete Order From Api
     
     
     
@@ -178,27 +193,30 @@ RT-RESERVED-006 Kiểm Tra Số Lượng Đặt Hàng Khi Hoàn Thiện Đơn
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Hoàn thiện đơn hàng
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Complete    regression5555
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm HH0078 Có Số Lượng Đặt Hàng 10.5
-    And Lấy Số Lượng Đặt Hàng Của Sản Phẩm HH0078
+    [Tags]    AIGenerated    Reserved    Tracking    Complete    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm HH0088 Có Số Lượng Đặt Hàng 10.5
+    And Lấy Số Lượng Đặt Hàng Của Sản Phẩm HH0088
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Sang Đã Xác Nhận
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm HH0078 Được Cập Nhập Thêm 10.5
-
+    And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm HH0088 Được Cập Nhập Thêm 10.5
+    [Teardown]    Delete Order From Api
 
 RT-RESERVED-007 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn
     [Documentation]    Kiểm tra số lượng đặt hàng được cập nhật đúng khi tạo hóa đơn:
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression54543
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
+    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code_4} Với Số Lượng Đặt Hàng ${list_quantity}
+    And Lấy Số Lượng Đặt Hàng ${list_product_code_4}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn
     And Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Số Lượng Đặt Hàng Của ${list_product_code_4} Là ${LIST_RESERVED_IN_DB} 
+    [Teardown]    Delete Order From Api
 
 
     
@@ -208,25 +226,33 @@ RT-RESERVED-008 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Lấy
     ...    - Tạo hóa đơn từ đơn hàng
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
     [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code_5} Với Số Lượng Đặt Hàng ${list_quantity}
+    And Lấy Số Lượng Đặt Hàng ${list_product_code_5}
     And Gửi Yêu Cầu Tạo Đơn Hàng
-    And Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 1
+    And Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code_5}[0] Với Số Lượng ${list_quantity}[0]
     And Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Số Lượng Đặt Hàng của Sản Phẩm ${list_product_code_5}[0] Là ${LIST_RESERVED_IN_DB}[0] 
+    ${quantity_2}=    Evaluate    ${LIST_RESERVED_IN_DB}[1] + ${list_quantity}[1]
+    And Xác Thực Số Lượng Đặt Hàng của Sản Phẩm ${list_product_code_5}[1] Là ${quantity_2} 
+    [Teardown]    Delete Order From Api
+
 RT-RESERVED-009 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Lấy 1 Phần Kết Thúc Đơn
     [Documentation]    Kiểm tra số lượng đặt hàng được cập nhật đúng khi tạo hóa đơn lấy 1 phần kết thúc đơn:
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn từ đơn hàng
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
     [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code_6} Với Số Lượng Đặt Hàng ${list_quantity}
+    And Lấy Số Lượng Đặt Hàng ${list_product_code_6}
     And Gửi Yêu Cầu Tạo Đơn Hàng
-    And Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 1
+    And Chuẩn Bị Dữ Liệu Hóa Đơn Lấy 1 Phần Đặt Hàng ${list_product_code_6}[0] Với Số Lượng 1
     And Gửi Yêu Cầu Tạo Hóa Đơn
     And Chuẩn Bị Dữ Liệu Hoàn Thành Đơn Hàng
     And Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-
+    And Xác Thực Số Lượng Đặt Hàng Của ${list_product_code_6} Là ${LIST_RESERVED_IN_DB} 
+    [Teardown]    Delete Order From Api
 
 
 
@@ -252,7 +278,7 @@ RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression54543
+    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn
@@ -264,7 +290,7 @@ RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression54543
+    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn

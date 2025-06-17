@@ -107,7 +107,7 @@ RT-IWH-008 Tạo hóa đơn gian hàng với hàng lodate
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Chi Tiết Hóa Đơn Có Thông Tin Kho Bán Hàng
-    And Số lượng lô WHLD0002 đã giảm 2.5 đơn vị
+    And Số lượng lô ${product_batch_id} đã giảm 2.5 đơn vị
     And Tổng tồn kho sản phẩm WHLD0002 đã giảm 2.5 đơn vị
     And Tồn kho sản phẩm WHLD0002 đã giảm 2.5 đơn vị Tại Kho Bán Hàng
     [Teardown]     Delete Invoice From API
