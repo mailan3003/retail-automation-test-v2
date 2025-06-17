@@ -109,12 +109,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Và ${pro
     ${invoice_detail_tax_body_2}=    Update Nested Dictionary Property    ${invoice_detail_tax_body_2}    DetailTax    ${tax_value_2}
     ${invoice_detail_tax_body_list}  Create List    ${invoice_detail_tax_body}
     ${invoice_detail_tax_body_list_2}  Create List    ${invoice_detail_tax_body_2}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    InvoiceDetailTaxs    ${invoice_detail_tax_body_list}
+    ${invoice_data_2}=    Update Nested Dictionary Property    ${invoice_data_2}    InvoiceDetailTaxs    ${invoice_detail_tax_body_list_2}
     ${data_product_list}=    Create List    ${invoice_data}    ${invoice_data_2}
     ${invoice_detail_tax_body_list}=    Create List    ${invoice_detail_tax_body}    ${invoice_detail_tax_body_2}
     ${total_tax_value}=    Evaluate    ${tax_value} + ${tax_value_2}
     ${total_tax_value}=    Evaluate    round(${total_tax_value}, 0)
     ${request}=        Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product_list}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetailTaxs    ${invoice_detail_tax_body_list}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${total_tax_value}
     Set Test Variable    ${TOTAL_TAX}    ${total_tax_value}
     Log    ${request}
