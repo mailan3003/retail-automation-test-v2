@@ -174,7 +174,7 @@ RT-ORDER-UPDATE-019 Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trước Th�
     Then Mã Trạng Thái Phải Là 420
     And Xác Thực Lỗi "Ngày dự kiến giao phải ở trong tương lai"
 
-Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trùng Thời Gian Hiện Tại
+Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trùng Ngày Khác giờ
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
@@ -182,8 +182,9 @@ Cập Nhật Đơn Hàng Thời Gian Giao Hàng Trùng Thời Gian Hiện Tại
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0059 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Thời Gian Giao Hàng Cho Đơn Hàng Thành Trùng 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Xác Thực Lỗi "Ngày dự kiến giao phải ở trong tương lai"
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng Đơn Không Có Giao Hàng
+
 
 Cập Nhật Thời Gian Bán Hàng Lùi Thời Gian Hiện Tại
     [Documentation]    Kiểm tra cập nhật đơn hàng với các trường ngày tháng UTC:

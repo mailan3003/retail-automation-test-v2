@@ -487,7 +487,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với ${list_shelves} Vị Trí
     ${shelves_body}=    Create List  
     ${shelves_id}=    Create List
     FOR    ${item}    IN    @{list_shelves}
-        ${shelf_id}=    Lấy ID Vị Trí Lưu Trữ    ${item}
+        ${shelf_id}=    Lấy ID Vị Trí Lưu Trữ Theo Tên    ${item}
         ${shelf_body}     Deep Copy    ${PRODUCT_WITH_SHELVES}
         ${shelf_body}    Update Dictionary Property    ${shelf_body}    ShelvesId    ${shelf_id}
         Append To List    ${shelves_body}    ${shelf_body}
