@@ -70,8 +70,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Tồn Tại
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN     ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Chi Nhánh Khác
-    ${request}   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+Chuẩn Bị Dữ Liệu Hóa Đơn ${product_code} Với Khách Hàng Chi Nhánh Khác
+    ${request}   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${product_code}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${CUSTOMER_CODE_OTHER_BRANCH}
     ${request_invoice}=    Update Nested Dictionary Property  ${request_invoice}    CustomerId    ${customer_id}

@@ -207,13 +207,13 @@ RT-VLXD-002 Tạo hóa đơn có nhiều sản phẩm VLXD với kích thước 
     ...    - Status code: 200
     ...    - Hóa đơn được tạo thành công với các sản phẩm VLXD
     ...    - Thông tin kích thước từng sản phẩm được lưu chính xác
-    [Tags]    CreateOrder   vlxd    multiple_products
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Kích Thước 100x50x20x5 Và ${PRODUCT_CODE_VLXD_3} Kích Thước 200x100x30
-    When Gửi Yêu Cầu Tạo Hóa Đơn
+    [Tags]    CreateOrder   vlxd    multiple_products4324
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Kích Thước 100x50x20x5 Và ${PRODUCT_CODE_VLXD_3} Kích Thước 200x100x30
+    When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
     And Xác Thực Kích Thước 100x50x20x5 Sản Phẩm ${PRODUCT_CODE_VLXD_2} Trong Đơn Đặt Hàng
-    And Xác thực Sản Phẩm Gạch ${PRODUCT_CODE_VLXD_3} Có Kích Thước 200x100x30 Trong Đơn Đặt Hàng
+    And Xác Thực Sản Phẩm Gạch ${PRODUCT_CODE_VLXD_3} Có Kích Thước 200x100x30 Trong Đơn Đặt Hàng
     [Teardown]    Delete Order From Api
 
 RT-VLXD-003 Tạo hóa đơn VLXD là hàng gạch

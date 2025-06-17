@@ -101,7 +101,7 @@ Lấy thông tin hãng sản xuất nhà thuốc
 Lấy Thông tin Đường Dùng
     [Arguments]    ${route_of_administration}
     ${query}=    Set Variable    SELECT Id, Name FROM RetailerRouteOfAdministration WHERE Name = ? AND RetailerId = ?
-    ${result}=    Select One Master    ${query}    ${route_of_administration}    ${RETAILER_ID}
+    ${result}=   Fetch One   ${query}    ${route_of_administration}    ${RETAILER_ID}
     RETURN    ${result[0]}  ${result[1]}
 
 Lấy ID thuộc tính  

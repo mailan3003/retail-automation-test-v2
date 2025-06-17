@@ -130,7 +130,7 @@ RT-DP-006 Tạo hóa đơn có tích điểm theo hóa đơn
     ...    - Hóa đơn được tạo thành công
     ...    - Điểm tích lũy được ghi nhận chính xác trong DB
     [Tags]    invoice    loyalty    points    vlxd
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Với Khách Hàng ${CUSTOMER_ID_WITH_LOYALTY}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_VLXD_2} Với Khách Hàng ${CUSTOMER_CODE_WITH_LOYALTY}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
