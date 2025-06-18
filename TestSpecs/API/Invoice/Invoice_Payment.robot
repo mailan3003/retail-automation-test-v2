@@ -358,7 +358,7 @@ RT-RC-014 Thanh toán bằng điểm thưởng kết hợp với tiền mặt
     And Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${PAYMENT_CASH} Với Số Tiền 75000
     And Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn 100000
     And Xác Thực Công Nợ Của Hóa Đơn 0
-    [Teardown]    Delete Invoice From API
+   [Teardown]    Delete Invoice From API
 RT-RC-015 Thanh toán bằng voucher kết hợp với phương thức khác
     [Documentation]    Kiểm tra tính toán thanh toán khi kết hợp voucher với phương thức khác
     ...    - Dữ liệu đầu vào:
@@ -720,7 +720,7 @@ RT-BP-002 Tạo hóa đơn thất bại với tài khoản ngân hàng không đ
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"
     [Tags]    payment    bank_account    validation    AIGenerated    apiinvoice      regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Với Id Tài Khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Phương Thức ${PAYMENT_TRANSFER} Tài Khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn Với BranchId
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Số tài khoản ${INVALID_BRANCH_BANK_ACCOUNT_NUMBER} không được áp dụng cho thanh toán tại chi nhánh Chi nhánh trung tâm"

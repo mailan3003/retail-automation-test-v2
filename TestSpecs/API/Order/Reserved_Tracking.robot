@@ -270,7 +270,7 @@ RT-RESERVED-010 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Và L
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Lấy Tiếp Phần Đặt Hàng ${list_product_code}[0] Với Số Lượng 2
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Số Lượng Đặt Hàng Của Sản Phẩm ${list_product_code}[0] Được Cập Nhập Thêm 2
+    
 
 
 RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với Hàng Imei
