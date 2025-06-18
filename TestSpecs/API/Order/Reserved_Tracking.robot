@@ -278,7 +278,7 @@ RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
+    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression43
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial ${list_product_code}[0] Với Serial ${list_serial_number}[0]
@@ -290,7 +290,7 @@ RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với
     ...    - Tạo đơn hàng với các loại sản phẩm khác nhau
     ...    - Tạo hóa đơn
     ...    - Xác thực số lượng đặt hàng được cập nhật trong bảng Reserved
-    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
+    [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression43
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
     And Gửi Yêu Cầu Tạo Đơn Hàng
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn
