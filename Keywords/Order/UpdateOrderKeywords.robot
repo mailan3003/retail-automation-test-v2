@@ -404,7 +404,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đặt Hàng Với Hàng Lô ${product_
     ${index}=    Find Index In List    ${body_product_list}    ProductId   ${product_id}
     ${detail}=    Get From List    ${body_product_list}    ${index}
     ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
-    ${detail}=    Update Nested Dictionary Property    ${detail}    IsLot    True
+    ${detail}=    Update Nested Dictionary Property    ${detail}    IsBatchExpireControl    True
+    ${product_batch_expire_id}=    Lấy ID Batch của Hàng Lô Theo Trạng Thái    ${product_id}   1
+    ${detail}=    Update Nested Dictionary Property    ${detail}    ProductBatchExpireId    ${product_batch_expire_id}
     ${new_product_list}=    Create List    ${detail}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${new_product_list}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
@@ -421,7 +423,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Từ Đặt Hàng Với Hàng Imei ${product
     ${index}=    Find Index In List    ${body_product_list}    ProductId   ${product_id}
     ${detail}=    Get From List    ${body_product_list}    ${index}
     ${detail}=    Update Nested Dictionary Property    ${detail}    Quantity    ${quantity}
-    ${detail}=    Update Nested Dictionary Property    ${detail}    IsImei    True
+    ${detail}=    Update Nested Dictionary Property    ${detail}    IsLotSerialControl    True
+    ${product_serial_number}=    Lấy Serial của Sản Phẩm    ${product_id}    ${quantity}   1
+    ${detail}=    Update Nested Dictionary Property    ${detail}    SerialNumbers    ${product_serial_number}
     ${new_product_list}=    Create List    ${detail}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${new_product_list}
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.OrderId    ${CREATED_ORDER_ID}
