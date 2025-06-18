@@ -281,7 +281,7 @@ RT-RESERVED-011 Kiểm Tra Số Lượng Đặt Hàng Khi Tạo Hóa Đơn Với
     [Tags]    AIGenerated    Reserved    Tracking    Invoice    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Nhiều Sản Phẩm ${list_product_code} Với Số Lượng Đặt Hàng ${list_quantity}
     And Gửi Yêu Cầu Tạo Đơn Hàng
-    And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Và Tạo Hóa Đơn
+    And Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Theo Serial ${list_product_code}[0] Với Serial ${list_serial_number}[0]
     And Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 200
 
