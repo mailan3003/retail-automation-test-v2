@@ -1,4 +1,4 @@
-*** Settings ***
+x*** Settings ***
 Documentation     Test cases API cho phần cập nhật thanh toán hóa đơn
 Resource          ../../../Keywords/Invoice/DeliveryUpdateKeywords.robot
 Resource          ../../../Keywords/Invoice/ReceiptCreationKeywords.robot

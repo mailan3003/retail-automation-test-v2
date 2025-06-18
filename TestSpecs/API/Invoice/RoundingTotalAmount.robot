@@ -37,7 +37,7 @@ RT-QT-02 Làm tròn lên (Round up) với Rounding Amount NULL
     ...    - INVOICE_ID phải tồn tại trong CSDL
     ...    - Tổng tiền hóa đơn trước khi làm tròn phải là 53000.52 PHP
     ...    - Tổng tiền hóa đơn sau khi làm tròn phải là 53000.55 PHP
-    ...    - Chênh lệch làm tròn phải là 0.03
+    ...    - Chênh lệch làm tròn phải là NULL
 
     [Tags]    apiroundingtotalamount2
 
@@ -68,7 +68,7 @@ RT-QT-03 Làm tròn lên (Round up) với Rounding Amount 0
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Tổng Tiền Hóa Đơn Trước Làm Tròn 53000.52
     And Xác Thực Tổng Tiền Hóa Đơn Sau Khi Làm Tròn Phải 53000.52
-    And Xác Thực Chênh lệch làm tròn 0
+    And Xác Thực Chênh lệch làm tròn None
 
 RT-QT-04 Làm tròn lên (Round up) với Rounding Amount Invaild
     [Documentation]    Kiểm tra tính năng làm tròn xuống
