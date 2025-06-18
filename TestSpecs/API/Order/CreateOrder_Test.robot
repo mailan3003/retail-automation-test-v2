@@ -19,7 +19,7 @@ Resource          ../../../Keywords/Invoice/Invoice_VLXD_Keywords.robot
 RT-ORDER-001 Tạo Đơn Hàng Mới Thành Công Với Thông Tin Cơ Bản
     [Documentation]    Test tạo đơn hàng mới thành công với thông tin cơ bản: sản phẩm, khách hàng, nhân viên bán hàng
     [Tags]    AIGenerated    CreateOrder    Positive    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản HH0115
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng Cơ Bản HH0116
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
