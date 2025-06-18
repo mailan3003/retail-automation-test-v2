@@ -334,7 +334,7 @@ Xác Thực Tiền Thừa
 
 Xác Thực Thông Tin Sổ Giá
     [Arguments]    ${invoice_id}    ${pricebook_code}
-    ${pricebook_id}=   Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_code}
+    ${pricebook_id}=   Lấy Id Bảng Giá Theo Tên Bảng Giá    ${pricebook_code}
     ${query}=    Set Variable    SELECT PriceBookId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại

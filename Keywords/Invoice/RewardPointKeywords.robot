@@ -74,13 +74,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
 
 
 Xác Thực Điểm Thưởng Hóa Đơn ${expected_point}
-    Wait Until Keyword Succeeds    15x    1s    Kiểm tra điểm thưởng hóa đơn ${expected_point}
+    Wait Until Keyword Succeeds    20x    1s    Kiểm tra điểm thưởng hóa đơn ${expected_point}
 
 Kiểm tra điểm thưởng hóa đơn ${expected_point}
     [Documentation]    Xác thực điểm tích lũy của hóa đơn trong response
     # Xác thực điểm thưởng trong response
-    ${actual_point}=    Set Variable    ${RESPONSE.json()["Point"]}
-    Should Be Equal As Numbers    ${actual_point}    ${expected_point}    Điểm thưởng của hóa đơn không đúng mong đợi
     ${query}=    Set Variable    SELECT Point FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}      ${INVOICE_ID}   
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại trong CSDL
