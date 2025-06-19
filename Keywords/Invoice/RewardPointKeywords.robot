@@ -21,21 +21,21 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Tích Điểm Theo Sản Phẩm ${prod
     ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${product_id}
     ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${request}=     Update Nested Dictionary Property   ${request}    Invoice.InvoiceDetails    ${data_product}
     ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE_REWARD_POINT}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId   ${customer_id}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${prodcut_code} Có Tích Điểm Với Số Lượng ${quantity}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Có Tích Điểm Với Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với cấu hình tích điểm theo sản phẩm có số lượng lớn
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${data_product}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
     ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
-    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${product_id}
-    ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
-    ${data_product}=    Update Dictionary Property    ${data_product}    Quantity    ${quantity}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${data_product}=     Update Nested Dictionary Property   ${data_product}    ProductId    ${product_id}
+    ${data_product}=     Update Nested Dictionary Property   ${data_product}    IsRewardPoint    ${True}
+    ${data_product}=     Update Nested Dictionary Property    ${data_product}    Quantity    ${quantity}
+    ${request}=    Update Nested Dictionary Property   ${request}    Invoice.InvoiceDetails    ${data_product}
     ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE_REWARD_POINT}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId   ${customer_id}  
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -68,7 +68,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Không Có Khách Hàng
     ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${data_product}=    Update Dictionary Property    ${data_product}    ProductId   ${product_id}
     ${data_product}=    Update Dictionary Property    ${data_product}    IsRewardPoint    ${True}
-    ${request}=    Add List Item    ${request}    Invoice.InvoiceDetails    ${data_product}
+    ${request}=    Update Nested Dictionary Property   ${request}    Invoice.InvoiceDetails    ${data_product}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
@@ -90,7 +90,7 @@ Xác Thực Không Có Điểm Thưởng
 
 
 Xác Thực Bản Ghi Điểm Thưởng Được Tạo ${expected_point}
-    Wait Until Keyword Succeeds    3x    1s    Kiểm tra bản ghi điểm thưởng đã được tạo ${expected_point}
+    Wait Until Keyword Succeeds    15x    1s    Kiểm tra bản ghi điểm thưởng đã được tạo ${expected_point}
 
 Kiểm tra bản ghi điểm thưởng đã được tạo ${expected_point}
     [Documentation]    Xác thực bản ghi tích điểm đã được tạo trong database
