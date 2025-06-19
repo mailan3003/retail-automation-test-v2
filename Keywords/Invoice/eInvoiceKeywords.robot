@@ -85,3 +85,19 @@ Thông tin bảng giá ${pricebook_id} trong hóa đơn được lưu trong CSDL
     ${query}=    Set Variable    SELECT PricebookId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Strings    ${result[0]}    ${pricebook_id}
+
+Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Với Sản Phẩm Đơn Giá ${price} Số Lượng ${quantity}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    # Thêm chi tiết sản phẩm
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Price    ${price}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Quantity    ${quantity}
+    ${request}=   Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${total_price}=    Evaluate    ${price} * ${quantity}
+    ${total_price}=    Evaluate    round(${total_price}, ${CURRENCY_DECIMAL_PLACE})
+    Set Test Variable    ${TOTAL_PRICE}    ${total_price}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
