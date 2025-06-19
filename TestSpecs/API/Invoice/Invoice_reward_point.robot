@@ -11,8 +11,8 @@ Resource          ../../../TestData/CommonData.robot
 
 Test Teardown     Delete Invoice From API
 
+*** Variables ***
 
-*** Keywords ***
 *** Test Cases ***
 RT-RP-001 Tính điểm thưởng theo sản phẩm có điểm cố định
     [Documentation]    Kiểm tra tính điểm thưởng theo sản phẩm có điểm cố định:
@@ -37,7 +37,7 @@ RT-RP-005 Tính điểm thưởng theo sản phẩm có số lượng lớn
     ...    - Số lượng: 5
     ...    - Điểm dự kiến: 362.5 điểm (5 điểm * 72.5)
     ...    - Số lẻ: 0.5
-    [Tags]    apiinvoice    reward-point    positive    regression5543
+    [Tags]    apiinvoice    reward-point    positive    regression
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE_REWARD_POINT} Có Tích Điểm Với Số Lượng 72.5
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
