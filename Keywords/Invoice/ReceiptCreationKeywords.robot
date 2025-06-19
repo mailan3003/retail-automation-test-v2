@@ -189,9 +189,8 @@ Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn ${expected_total_payment}
 
 
 Xác Thực Công Nợ Của Hóa Đơn ${expected_debt}
-     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
     ${query}=    Set Variable    SELECT Debt FROM Invoice WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Be Equal As Numbers    ${result[0]}    ${expected_debt}    Công nợ không đúng. Kỳ vọng: ${expected_debt}, Thực tế: ${result[0]}
 
 

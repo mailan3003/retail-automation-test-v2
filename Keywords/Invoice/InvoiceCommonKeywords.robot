@@ -21,4 +21,4 @@ Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${product_code}
     RETURN    ${request}
 
 Delete Invoice From API
-    Delete Data    /invoices/${INVOICE_ID}?IsVoidPayment=true
+    Delete Data    invoices/${INVOICE_ID}?IsVoidPayment=true

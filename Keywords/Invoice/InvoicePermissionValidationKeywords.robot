@@ -7,7 +7,7 @@ Resource    ../CommonKeywords.robot
 Resource    ../Promotion/PromotionComnonKeywords.robot
 Resource    ../Product/ProductCommonKeywords.robot
 Resource    ../Customer/CustomerCommonKeywords.robot
-Resource    ../PriceBook/PriceBookCommonKeywords.robot
+Resource    ../Pricebook/PricebookCommonKeywords.robot
 Resource    InvoiceCommonKeywords.robot
 Resource    ../Utilities/Utilities.robot
 Resource    ../Utilities/DataUtilities.robot

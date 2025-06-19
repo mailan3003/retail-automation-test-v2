@@ -32,7 +32,7 @@ RT-ORDER-UPDATE-002 Cập Nhật Thông Tin Khách Hàng Trong Đơn Hàng
     ...    - Thay đổi khách hàng từ khách hàng mặc định sang khách hàng khác
     ...    - Xác thực thông tin khách hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Customer    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0054 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0172 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Khách Hàng Thành CTKH001
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -54,7 +54,7 @@ RT-ORDER-UPDATE-005 Cập Nhật Đơn Hàng Thường Thành Đơn Có Giao Hà
     ...    - Cập nhật đơn hàng thường thành đơn có giao hàng
     ...    - Xác thực đơn hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Delivery    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0056 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0177 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Thường Thành Đơn Có Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -141,7 +141,7 @@ RT-ORDER-UPDATE-006 Cập Nhật Kênh Bán Hàng Trong Đơn Hàng
     ...    - Thay đổi kênh bán hàng từ kênh này sang kênh khác
     ...    - Xác thực kênh bán hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    SaleChannel    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0056 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0178 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Hàng Thành Kênh 3
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
