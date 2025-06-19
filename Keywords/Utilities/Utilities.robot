@@ -51,6 +51,11 @@ Call API With BranchId
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
 
+Call API MAN With BranchId
+    [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With BranchId    ${token}
+    ${response}=    POST    ${API_MAN_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
 Should Have Nested Property
     [Arguments]    ${data}    ${property_path}    ${expected_value}=${None}
     @{parts}=    Split String    ${property_path}    .
