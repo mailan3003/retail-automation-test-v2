@@ -15,9 +15,3 @@ ${API_URL}                  https://api-sale.kvpos.com/api/
 ${API_MAN_URL}               https://api-man.kvpos.com/api/
 ${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
 ${REQUEST_FILES}    ${None}
-${VOUCHER_CAMPAIGN_ID_2}    1000000031    
-
-${PRODUCT_1}                1000017664
-${PRODUCT_1_CODE}           	HGB0002 
-${PRODUCT_1_NAME}           Hàng Hóa currency
-${MASTER_PRODUCT_1_ID}      1000017664
