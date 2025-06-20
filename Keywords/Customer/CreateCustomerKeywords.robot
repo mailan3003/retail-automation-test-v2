@@ -56,6 +56,19 @@ Chuẩn Bị Dữ Liệu Khách Hàng Với Email ${email}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+Chuẩn Bị Dữ Liệu Khách Hàng Với Email ${email} Và Không Cho Phép Trùng Email
+    ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
+    ${request}     Update Dictionary Property    ${request}          SkipValidateEmail    false
+    Set To Dictionary    ${request["Customer"]}      Email=${email}   
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
+Chuẩn Bị Dữ Liệu Khách Hàng Với Ngày Sinh ${birth_date}
+    ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
+    Set To Dictionary    ${request["Customer"]}      BirthDate=${birth_date}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
 
 
 Chuẩn Bị Dữ Liệu Khách Hàng Với ID Nhóm Khách Hàng ${group_id}

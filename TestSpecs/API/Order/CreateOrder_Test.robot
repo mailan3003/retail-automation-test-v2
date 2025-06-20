@@ -48,7 +48,7 @@ RT-ORDER-003 Tạo Đơn Hàng Với Chiết Khấu
 Tạo Đơn Giảm Giá VND
     
     [Tags]    AIGenerated    CreateOrder    Positive    Discount   regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 10000
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0290 Giảm Giá 10000
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database

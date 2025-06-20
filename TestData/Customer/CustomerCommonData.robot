@@ -32,20 +32,11 @@ Resource          ../../Config/Env_${ENV}.robot
       ...   GroupId=0
     
 
-# Supplier customer data
-${EXISTING_TAX_CODE}    0123456789
-${SUPPLIER_CUSTOMER_TYPE}    1
-${NON_SUPPLIER_CUSTOMER_TYPE}    0
 
-# Test data for multiple customer groups
-@{MULTIPLE_CUSTOMER_GROUPS}    Nhóm Khách Hàng VIP    Nhóm Khách Hàng Thường
-
-# Test data for multiple employees
-@{MULTIPLE_EMPLOYEES}    ${SOLD_BY_NAME}    ${SOLD_BY_NAME_2}
 
 # Test data for existing customers
-${EXISTING_PHONE}    0123456789
-${EXISTING_EMAIL}    existing@example.com
+${EXISTING_PHONE}    0985456321
+${EXISTING_EMAIL}    testerkv@gmail.com
 
 # Test data for customer types
 ${CUSTOMER_NAME}    Khách Hàng Test
@@ -56,6 +47,7 @@ ${CUSTOMER_TAX_CODE}    123456789
 ${CUSTOMER_GENDER}    1
 ${CUSTOMER_BIRTH_DATE}    01-01-1990
 ${CUSTOMER_COMMENTS}    Ghi chú test cho khách hàng
+${CUSTOMER_CMT}    1234567890087
 
 # Location data
 ${PROVINCE_ID}    213

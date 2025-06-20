@@ -93,7 +93,7 @@ RT-DP-010 Tính tổng tiền hàng cơ bản
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Tổng tiền hóa đơn phải bằng 250001
-    [Teardown]    Delete Invoice From API
+   # [Teardown]    Delete Invoice From API
 
 RT-DP-011 Tính tổng tiền hàng có giảm giá sản phẩm
     [Documentation]    Kiểm tra tính tổng tiền hàng có giảm giá sản phẩm:

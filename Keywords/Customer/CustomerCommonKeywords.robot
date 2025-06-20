@@ -83,18 +83,16 @@ Công Nợ Của Khách Hàng ${customer_code} Sau Thanh Toán ${payment_amount}
 
 
 Xác Thực Thông Tin Khách Hàng Đã Được Tạo Với Tên ${name} Số Điện Thoại ${phone} Email ${email}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
     ${query}=    Set Variable    SELECT Name, ContactNumber, Email FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${name}    Tên khách hàng không khớp
     Should Be Equal    ${result[1]}    ${phone}    Số điện thoại không khớp
     Should Be Equal    ${result[2]}    ${email}    Email không khớp
 
 Xác Thực Thông Tin Khách Hàng Đầy Đủ Đã Được Tạo Với Tên ${name} Số Điện Thoại ${phone} Email ${email} Địa Chỉ ${address} Mã Số Thuế ${tax_code} Giới Tính ${gender} Ngày Sinh ${birth_date}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
     ${query}=    Set Variable    SELECT Name, ContactNumber, Email, Address, TaxCode, Gender, BirthDate FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${name}    Tên khách hàng không khớp
     Should Be Equal    ${result[1]}    ${phone}    Số điện thoại không khớp
@@ -111,9 +109,8 @@ Xác Thực Khách Hàng Thuộc Nhóm ${group_name}
     Should Not Be Equal    ${result}    None    Khách hàng không thuộc nhóm ${group_name}
 
 Xác Thực Địa Chỉ Khách Hàng Đầy Đủ ${address} Tỉnh/Thành ${province_id} Quận/Huyện ${district_id} Phường/Xã ${ward_id}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
     ${query}=    Set Variable    SELECT Address, LocationId, DistrictId, WardId FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${address}    Địa chỉ không khớp
     Should Be Equal As Numbers    ${result[1]}    ${province_id}    Tỉnh/Thành không khớp
@@ -121,16 +118,14 @@ Xác Thực Địa Chỉ Khách Hàng Đầy Đủ ${address} Tỉnh/Thành ${pr
     Should Be Equal As Numbers    ${result[3]}    ${ward_id}    Phường/Xã không khớp
 
 Xác Thực Ghi Chú Khách Hàng ${comments}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
     ${query}=    Set Variable    SELECT Comments FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${comments}    Ghi chú không khớp
 
 Xác Thực Trạng Thái Khách Hàng Không Hoạt Động
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
     ${query}=    Set Variable    SELECT IsActive FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${false}    Trạng thái không khớp
 
@@ -141,10 +136,9 @@ Xác Thực Người Phụ Trách Khách Hàng ${sold_by_name}
     Should Not Be Equal    ${result}    None    Khách hàng không có người phụ trách ${sold_by_name}
 
 Xác Thực Khách Hàng Là Nhà Cung Cấp
-    ${query}=    Set Variable    SELECT CustomerType FROM Customer WHERE Id = ?
+    ${query}=    Set Variable    SELECT Id FROM CustomerSupplierCombine WHERE CustomerId = ?
     ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}
     Should Not Be Equal    ${result}    None    Khách hàng không tồn tại
-    Should Be Equal As Numbers    ${result[0]}    ${SUPPLIER_CUSTOMER_TYPE}    Loại khách hàng không đúng
 
 Xác Thực Thông Tin Nhà Cung Cấp Đầy Đủ
     [Arguments]    ${name}    ${phone}    ${email}    ${address}    ${tax_code}    ${sold_by_id}
@@ -168,11 +162,9 @@ Xác Thực Khách Hàng Có 2 Số Điện Thoại
     Should Be Equal    ${result[0]}    ${phone1}    Số điện thoại chính không khớp
     Should Be Equal    ${result[1]}    ${phone2}    Số điện thoại phụ không khớp
 
-Xác Thực Mã Khách Hàng
-    [Arguments]    ${customer_code}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
+Xác Thực Mã Khách Hàng ${customer_code}
     ${query}=    Set Variable    SELECT Code FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${customer_code}    Mã khách hàng không khớp
 
@@ -214,26 +206,18 @@ Xác Thực Avatar Khách Hàng
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Contain    ${result[0]}    ${url_avatar}    Avatar không chứa đường dẫn cdn2
 
-Xác Thực Khách Hàng Cá Nhân Với MST
-    [Arguments]    ${tax_code}    ${identification_number}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
-    ${query}=    Set Variable    SELECT TaxCode, IdentificationNumber, Type FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+Xác Thực Mã Số Thuế Khách Hàng ${tax_code}
+    ${query}=    Set Variable    SELECT TaxCode FROM Customer WHERE Id = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${tax_code}    Mã số thuế không khớp
-    Should Be Equal    ${result[1]}    ${identification_number}    Số CMT không khớp
-    Should Be Equal As Numbers    ${result[2]}    ${NON_SUPPLIER_CUSTOMER_TYPE}    Loại khách hàng không đúng
 
-Xác Thực Khách Hàng Công Ty Với MST
-    [Arguments]    ${tax_code}    ${identification_number}    ${company_name}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
-    ${query}=    Set Variable    SELECT TaxCode, IdentificationNumber, Organization, Type FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+
+Xác Thực Chứng Minh Thư Nhân Dân Khách Hàng ${cmt}
+    ${query}=    Set Variable    SELECT IdentificationNumber FROM Customer WHERE Id = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
-    Should Be Equal    ${result[0]}    ${tax_code}    Mã số thuế không khớp
-    Should Be Equal    ${result[1]}    ${identification_number}    Số CMT không khớp
-    Should Be Equal    ${result[2]}    ${company_name}    Tên công ty không khớp
-    Should Be Equal As Numbers    ${result[3]}    ${SUPPLIER_CUSTOMER_TYPE}    Loại khách hàng không đúng
+    Should Be Equal    ${result[0]}    ${cmt}    Chứng minh thư nhân dân không khớp
 
 Xác Thực Khách Hàng Là Nhà Cung Cấp Mới
     ${query}=    Set Variable    SELECT Id FROM CustomerSupplierCombine WHERE CustomerId = ?
@@ -241,16 +225,28 @@ Xác Thực Khách Hàng Là Nhà Cung Cấp Mới
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
 
 Xác Thực Khách Hàng Liên Kết Với Nhà Cung Cấp
-    [Arguments]    ${supplier_code}
     ${query}=    Set Variable    SELECT Id FROM CustomerSupplierCombine WHERE CustomerId = ? AND SupplierId = ?
     ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${SUPPLIER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${supplier_code}    Mã nhà cung cấp không khớp
 
-Xác Thực Tên Khách Hàng
-    [Arguments]    ${name}
-    ${customer_id}=    Get From Dictionary    ${RESPONSE.json()}    Id
+Xác Thực Tên Khách Hàng ${name}
     ${query}=    Set Variable    SELECT Name FROM Customer WHERE Id = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${customer_id}    ${RETAILER_ID}
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${name}    Tên khách hàng không khớp
+
+Xác Thực Khách Hàng Là Khách Hàng ${type_customer}
+    ${type_customer}=    Set Variable If    "${type_customer}" == "Cá Nhân"   0   1
+    ${query}=    Set Variable    SELECT Type FROM Customer WHERE Id = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
+    Should Be Equal As Numbers    ${result[0]}    ${type_customer}    Loại khách hàng không khớp
+
+Xác Thực Khách Hàng Có Công Ty Là ${company_name}
+    ${query}=    Set Variable    SELECT Organization FROM Customer WHERE Id = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
+    Should Be Equal    ${result[0]}    ${company_name}    Tên công ty không khớp
+
+    

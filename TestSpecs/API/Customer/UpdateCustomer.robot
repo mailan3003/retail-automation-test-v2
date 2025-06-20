@@ -98,7 +98,7 @@ RT-CU-010 Tạo khách hàng thành công với trạng thái không hoạt đ�
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với trạng thái không hoạt động
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Regression432
+    [Tags]    AIGenerated    Customer    Create    
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Trạng Thái Không Hoạt Động
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
