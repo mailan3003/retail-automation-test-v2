@@ -15,10 +15,11 @@ Library           json
 ${SUPPLIER_ENDPOINT}    suppliers
 
 *** Keywords ***
-
 Gửi Yêu Cầu Tạo Nhà Cung Cấp
-    ${response}=    Call API Man    ${SUPPLIER_ENDPOINT}    ${REQUEST_DATA}    
+    ${response}=    Call API Man With BranchId   ${SUPPLIER_ENDPOINT}    ${REQUEST_DATA} 
+    Run Keyword If    ${response.status_code} == 200    Set Test Variable    ${SUPPLIER_ID}    ${response.json()["Id"]}
     Set Test Variable    ${RESPONSE}    ${response}
+    RETURN    ${response}
 
 Lấy Id Nhà Cung Cấp Theo Mã Nhà Cung Cấp
     [Arguments]    ${supplier_code}

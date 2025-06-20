@@ -178,6 +178,7 @@ ${PROMOTION_GIFT_CODE_9}    KM30008
 # Branch data  
 ${CUSTOMER_ID}            1000009350
 ${CUSTOMER_CODE}           CTKH265
+${CUSTOMER_CODE_2}           CTKH264
 # Tax data
 ${VAT_RATE}       10
 ${NO_TAX}         0

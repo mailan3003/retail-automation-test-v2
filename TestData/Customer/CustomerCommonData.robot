@@ -28,10 +28,31 @@ Resource          ../../Config/Env_${ENV}.robot
     ...  EmployeeInChargeIds=@{EMPTY}
     ...  RetailerId=${RETAILER_ID}
 
-# Supplier customer data
-${EXISTING_TAX_CODE}    0123456789
-${SUPPLIER_CUSTOMER_TYPE}    1
-${NON_SUPPLIER_CUSTOMER_TYPE}    0
+&{STANDARD_CUSTOMER_DETAILS_GROUP}   
+      ...   GroupId=0
+    
+
+
+
+# Test data for existing customers
+${EXISTING_PHONE}    0985456321
+${EXISTING_EMAIL}    testerkv@gmail.com
+
+# Test data for customer types
+${CUSTOMER_NAME}    Khách Hàng Test
+${CUSTOMER_PHONE}    0987654321
+${CUSTOMER_EMAIL}    test@example.com
+${CUSTOMER_ADDRESS}    123 Đường ABC, Quận 1, TP.HCM
+${CUSTOMER_TAX_CODE}    123456789
+${CUSTOMER_GENDER}    1
+${CUSTOMER_BIRTH_DATE}    01-01-1990
+${CUSTOMER_COMMENTS}    Ghi chú test cho khách hàng
+${CUSTOMER_CMT}    1234567890087
+
+# Location data
+${PROVINCE_ID}    213
+${DISTRICT_ID}    8056
+${WARD_ID}    8056
 
 
 

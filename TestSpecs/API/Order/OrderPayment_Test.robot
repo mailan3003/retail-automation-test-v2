@@ -208,7 +208,7 @@ RT-RC-012 Tạo phiếu thu thanh toán một phần bằng các phương thức
     ...    - Thanh toán thẻ được ghi nhận số tiền 30,000đ
     ...    - Tổng tiền thanh toán của hóa đơn = 60,000đ
     ...    - Công nợ của hóa đơn = 40,000đ
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Nhiều Phương Thức Thanh Toán ${list_payment_method} Với Số Tiền ${list_payment_amount_1}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0292 Nhiều Phương Thức Thanh Toán ${list_payment_method} Với Số Tiền ${list_payment_amount_1}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Trong Đơn Đặt Hàng Được Ghi Nhận Phương Thức ${PAYMENT_CASH} Với Số Tiền 30000
