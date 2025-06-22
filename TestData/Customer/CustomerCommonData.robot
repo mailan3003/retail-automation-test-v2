@@ -40,7 +40,7 @@ ${EXISTING_EMAIL}    testerkv@gmail.com
 
 # Test data for customer types
 ${CUSTOMER_NAME}    Khách Hàng Test
-${CUSTOMER_PHONE}    0987654321
+${CUSTOMER_PHONE}    093553566
 ${CUSTOMER_EMAIL}    test@example.com
 ${CUSTOMER_ADDRESS}    123 Đường ABC, Quận 1, TP.HCM
 ${CUSTOMER_TAX_CODE}    123456789

@@ -21,6 +21,7 @@ ${CUSTOMER_ENDPOINT}    customers
 Gửi Yêu Cầu Tạo Khách Hàng
     ${response}=    Call API Man With BranchId   ${CUSTOMER_ENDPOINT}    ${REQUEST_DATA} 
     Run Keyword If    ${response.status_code} == 200    Set Test Variable    ${CUSTOMER_ID}    ${response.json()["Id"]}
+    Run Keyword If    ${response.status_code} == 200    Set Test Variable    ${CUSTOMER_CODE}    ${response.json()["Code"]}
     Set Test Variable    ${RESPONSE}    ${response}
     RETURN    ${response}
 

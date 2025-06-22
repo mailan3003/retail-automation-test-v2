@@ -44,7 +44,7 @@ Chuẩn Bị Dữ Liệu Khách Hàng Với Mã Khách Hàng ${customer_code}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại ${phone}
+Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại "${phone}"
     ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
     Set To Dictionary    ${request["Customer"]}       ContactNumber=${phone}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -56,12 +56,6 @@ Chuẩn Bị Dữ Liệu Khách Hàng Với Email ${email}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Khách Hàng Với Email ${email} Và Không Cho Phép Trùng Email
-    ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
-    ${request}     Update Dictionary Property    ${request}          SkipValidateEmail    false
-    Set To Dictionary    ${request["Customer"]}      Email=${email}   
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Khách Hàng Với Ngày Sinh ${birth_date}
     ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
@@ -73,8 +67,10 @@ Chuẩn Bị Dữ Liệu Khách Hàng Với Ngày Sinh ${birth_date}
 
 Chuẩn Bị Dữ Liệu Khách Hàng Với ID Nhóm Khách Hàng ${group_id}
     ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
-    ${group_ids}=    Create List    ${group_id}
-    Set To Dictionary    ${request["Customer"]}    CustomerGroupDetails=${group_ids}
+     ${group_details}=    Deep Copy    ${STANDARD_CUSTOMER_DETAILS_GROUP}
+    Set To Dictionary    ${group_details}    GroupId=${group_id}
+    ${group_details_list}=    Create List    ${group_details}
+    Set To Dictionary    ${request["Customer"]}    CustomerGroupDetails=${group_details_list}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 

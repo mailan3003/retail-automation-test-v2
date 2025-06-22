@@ -59,6 +59,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${custom
     ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
     ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    Price    ${fee}
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
+    ${customer_id}=    Lấy ID Khách Hàng Theo Mã Khách Hàng    ${customer_code}
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    CustomerId    ${customer_id}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
     Set Test Variable    ${REQUEST_DATA}    ${request}

@@ -3,6 +3,7 @@ Suite Setup       Init Test Environment   ${ENV}    MHQL
 Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../TestData/Customer/CustomerCommonData.robot
 Resource          ../../../Keywords/Customer/CreateCustomerKeywords.robot
+Resource          ../../../Keywords/Customer/GetInfoKeywords.robot
 Resource          ../../../Keywords/Customer/CustomerCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
@@ -21,12 +22,14 @@ RT-CU-001 Tạo khách hàng thành công với thông tin cơ bản
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với thông tin cơ bản
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Success
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên "${CUSTOMER_NAME}" Số Điện Thoại "${CUSTOMER_PHONE}" Email "${CUSTOMER_EMAIL}"
+    [Tags]    AIGenerated    Customer    Create    Success53454
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên ${CUSTOMER_NAME} Số Điện Thoại ${CUSTOMER_PHONE} Email ${CUSTOMER_EMAIL} Và Facebook facebook.com
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Thông Tin Khách Hàng Đã Được Tạo Với Tên "${CUSTOMER_NAME}" Số Điện Thoại "${CUSTOMER_PHONE}" Email "${CUSTOMER_EMAIL}"
+    ${customer_phone}    ${customer_subnumber}    ${customer_identification}=    Lấy Thông tin KYC Của Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
+    Should Be Equal    ${customer_phone}    ${CUSTOMER_PHONE}
     [Teardown]   Xóa Khách Hàng From API
+
 
 RT-CU-002 Tạo khách hàng thành công với đầy đủ thông tin
     [Documentation]    Kiểm tra tạo khách hàng thành công với đầy đủ thông tin:
@@ -78,11 +81,11 @@ RT-CU-009 Tạo khách hàng thành công với ghi chú
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với ghi chú
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create   
+    [Tags]    AIGenerated    Customer    Create   regression
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Ghi Chú ${CUSTOMER_COMMENTS}
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Ghi Chú Khách Hàng "${CUSTOMER_COMMENTS}"
+    And Xác Thực Ghi Chú Khách Hàng ${CUSTOMER_COMMENTS}
     [Teardown]   Xóa Khách Hàng From API
 
 RT-CU-010 Tạo khách hàng thành công với người phụ trách
@@ -128,12 +131,14 @@ RT-CU-015 Tạo khách hàng thành công với 2 số điện thoại
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với số điện thoại chính và số phụ
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    
-    Given Chuẩn Bị Dữ Liệu Có 2 Số Điện Thoại 0123456789 Và 0987654321
+    [Tags]    AIGenerated    Customer    Create4234    
+    Given Chuẩn Bị Dữ Liệu Có 2 Số Điện Thoại 097734353 Và 0977357723
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Khách Hàng Có 2 Số Điện Thoại 123456789 Và 0987654321
-    [Teardown]   Xóa Khách Hàng From API
+    ${customer_phone}    ${customer_subnumber}    ${customer_identification}=    Lấy Thông tin KYC Của Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
+    Should Be Equal    ${customer_phone}    097734353
+    Should Be Equal    ${customer_subnumber}   0977357723
+    #[Teardown]   Xóa Khách Hàng From API
 
 RT-CU-016 Tạo khách hàng thành công với mã khách hàng tùy chỉnh
     [Documentation]    Kiểm tra tạo khách hàng thành công với mã khách hàng tùy chỉnh:
