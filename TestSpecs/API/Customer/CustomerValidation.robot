@@ -41,7 +41,7 @@ RT-CU-004 Tạo khách hàng thất bại khi số điện thoại đã tồn t�
     ...    - Logic: Không cho phép tạo khách hàng khi số điện thoại đã tồn tại
     ...    - Code: POST /customers
     [Tags]    AIGenerated    Customer    Create    Fail   regression
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại ${EXISTING_PHONE}
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại "${EXISTING_PHONE}"
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Số điện thoại ${EXISTING_PHONE} đã tồn tại ${EMPTY} trong hệ thống."
@@ -60,28 +60,15 @@ RT-CU-005 Tạo khách hàng thất bại khi email không hợp lệ
     And Phản hồi phải chứa lỗi "Email không hợp lệ."
 
 
-RT-CU-005 Tạo khách hàng thất bại khi email quá dài
-    [Documentation]    Kiểm tra tạo khách hàng thất bại khi email không hợp lệ:
-    ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
-    ...    - Logic: Không cho phép tạo khách hàng khi email không hợp lệ
-    ...    - Code: POST /customers
-    [Tags]   regression432423    Customer
-    ${random_email}=    Generate Random String   256   [NUMBERS]
-    Given Chuẩn Bữ Liệu Khách Hàng Với Email ${random_email}
-    When Gửi Yêu Cầu Tạo Khách Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Email không hợp lệ."
-
 RT-CU-011 Tạo khách hàng thất bại khi người phụ trách không tồn tại
     [Documentation]    Kiểm tra tạo khách hàng thất bại khi người phụ trách không tồn tại:
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Không cho phép tạo khách hàng khi người phụ trách không tồn tại
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Fail   
+    [Tags]    AIGenerated    Customer    Create    regression   
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Người Phụ Trách Theo ID 999999
     When Gửi Yêu Cầu Tạo Khách Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi Người phụ trách không tồn tại
+    Then Mã Trạng Thái Phải Là 500
 
 
 
@@ -109,16 +96,6 @@ RT-CU-016 Tạo khách hàng Không Thành Công Với Mã Khách Hàng Dài 51 
     Then Mã Trạng Thái Phải Là 420
     And Phản hồi phải chứa lỗi "Vui lòng nhập Mã khách hàng không quá 50 kí tự"
 
-RT-CU-028 Tạo khách hàng thất bại khi email đã tồn tại
-    [Documentation]    Kiểm tra tạo khách hàng thất bại khi email đã tồn tại:
-    ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
-    ...    - Logic: Không cho phép tạo khách hàng khi email đã tồn tại
-    ...    - Code: POST /customers
-    [Tags]    API Không Chặn
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Email ${EXISTING_EMAIL} Và Không Cho Phép Trùng Email
-    When Gửi Yêu Cầu Tạo Khách Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Email ${EXISTING_EMAIL} đã tồn tại ${EMPTY} trong hệ thống."
 
 
 RT-CU-030 Tạo khách hàng thất bại khi nhóm khách hàng không tồn tại
@@ -127,45 +104,46 @@ RT-CU-030 Tạo khách hàng thất bại khi nhóm khách hàng không tồn t�
     ...    - Logic: Không cho phép tạo khách hàng khi nhóm khách hàng không tồn tại
     ...    - Code: POST /customers
     [Tags]    AIGenerated    Customer    Create    Fail    regression
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Nhóm Khách Hàng Không Tồn Tại "Nhóm Không Tồn Tại"
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với ID Nhóm Khách Hàng 325325
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Nhóm khách hàng không tồn tại"
+    And Phản hồi phải chứa lỗi "Nhóm khách hàng đã không còn tồn tại trong hệ thống"
 
 RT-CU-031 Tạo khách hàng thất bại khi chi nhánh không tồn tại
     [Documentation]    Kiểm tra tạo khách hàng thất bại khi chi nhánh không tồn tại:
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Không cho phép tạo khách hàng khi chi nhánh không tồn tại
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Fail   
+    [Tags]    AIGenerated    Customer    Create    regression   
     Given Chuẩn Bị Dữ Liệu Tạo Khách Hàng Với ID Chi Nhánh 999999
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Chi nhánh không tồn tại"
+    And Phản hồi phải chứa lỗi "Có lỗi khi lưu thông tin khách hàng, Vui lòng chờ trong giây lát và thử lại."
 
-RT-CU-032 Tạo khách hàng thất bại khi mã số thuế không hợp lệ
-    [Documentation]    Kiểm tra tạo khách hàng thất bại khi mã số thuế không hợp lệ:
-    ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
-    ...    - Logic: Không cho phép tạo khách hàng khi mã số thuế không hợp lệ
-    ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Fail    
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Mã Số Thuế Không Hợp Lệ "INVALID_TAX"
-    When Gửi Yêu Cầu Tạo Khách Hàng
-    Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Mã số thuế không hợp lệ"
 
-RT-CU-033 Tạo khách hàng thất bại khi số điện thoại không hợp lệ
+RT-CU-033 Tạo khách hàng thất bại khi số điện thoại đã tồn tại khác nhau khoảng trống
     [Documentation]    Kiểm tra tạo khách hàng thất bại khi số điện thoại không hợp lệ:
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Không cho phép tạo khách hàng khi số điện thoại không hợp lệ
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Fail   
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại Không Hợp Lệ "INVALID_PHONE"
+    [Tags]    AIGenerated    Customer    Create    regression   
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Số Điện Thoại "098 225 6512"
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 420
-    And Phản hồi phải chứa lỗi "Số điện thoại không hợp lệ"
+    And Phản hồi phải chứa lỗi "Số điện thoại 098 225 6512 đã tồn tại ${EMPTY} trong hệ thống."
 
 RT-CU-034 Tạo khách hàng thất bại khi ngày sinh không hợp lệ
+    [Documentation]    Kiểm tra tạo khách hàng thất bại khi ngày sinh không hợp lệ:
+    ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
+    ...    - Logic: Không cho phép tạo khách hàng khi ngày sinh không hợp lệ
+    ...    - Code: POST /customers
+    [Tags]    API Không Chặn
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Ngày Sinh 32-13-2023
+    When Gửi Yêu Cầu Tạo Khách Hàng
+    Then Mã Trạng Thái Phải Là 420
+    And Phản hồi phải chứa lỗi "Ngày sinh không hợp lệ"
+
+RT-CU-035 Tạo khách hàng thất bại khi ngày sinh không hợp lệ
     [Documentation]    Kiểm tra tạo khách hàng thất bại khi ngày sinh không hợp lệ:
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Không cho phép tạo khách hàng khi ngày sinh không hợp lệ

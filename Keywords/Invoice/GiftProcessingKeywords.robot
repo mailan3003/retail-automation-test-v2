@@ -270,6 +270,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Khuyến Mãi ${promotion_code} Tặng Sản
     ${data_promo_point}=    Update Nested Dictionary Property     ${data_promo_point}     GiftPoint    ${info_promotion_point[5]}
     ${data_promo_mix}  Create List    ${data_promo}     ${data_promo_point}    
     ${discount_amount}=    Evaluate    ${price_product}*${quantity_promotion}
+    ${customer_id}=    Lấy ID Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.InvoicePromotions  ${data_promo_mix}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.ProductDiscount    ${discount_amount}
     ${request}=    Update Nested Dictionary Property     ${request}     Invoice.CustomerId    ${CUSTOMER_ID}
