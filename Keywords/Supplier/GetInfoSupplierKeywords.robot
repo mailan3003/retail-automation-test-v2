@@ -27,3 +27,5 @@ Lấy Số Điện Thoại Nhà Cung Cấp Theo Mã Nhà Cung Cấp
     ${response}=    Gửi Yêu Cầu Get Thông Tin Nhà Cung Cấp    ${supplier_code}
     ${supplier_phone}=    Get Value From Json    ${response.json()}    $.Data[?(@.Code=='${supplier_code}')].Phone
     RETURN    ${supplier_phone}
+
+
