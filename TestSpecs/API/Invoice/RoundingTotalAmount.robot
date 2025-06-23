@@ -18,7 +18,7 @@ RT-QT-01 Làm tròn lên (Round up) với Rounding Amount 0.03
     ...    - Tổng tiền hóa đơn sau khi làm tròn phải là 53000.55 PHP
     ...    - Chênh lệch làm tròn phải là 0.03
 
-    [Tags]    apiroundingtotalamount1
+    [Tags]    apiroundingtotalamount
 
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 53000.52 PHP Số Lượng 1 Phương Thức Thanh Toán ${PAYMENT_CASH} Với Rounding Amount 0.03
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -39,7 +39,7 @@ RT-QT-02 Làm tròn lên (Round up) với Rounding Amount NULL
     ...    - Tổng tiền hóa đơn sau khi làm tròn phải là 53000.55 PHP
     ...    - Chênh lệch làm tròn phải là NULL
 
-    [Tags]    apiroundingtotalamount2
+    [Tags]    apiroundingtotalamount
 
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 53000.52 PHP Số Lượng 1 Phương Thức Thanh Toán ${PAYMENT_CASH} Với Rounding Amount NULL
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -60,7 +60,7 @@ RT-QT-03 Làm tròn lên (Round up) với Rounding Amount 0
     ...    - Tổng tiền hóa đơn sau khi làm tròn phải là 53000.55 PHP
     ...    - Chênh lệch làm tròn phải là 0
 
-    [Tags]    apiroundingtotalamount3
+    [Tags]    apiroundingtotalamount
 
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 53000.52 PHP Số Lượng 1 Phương Thức Thanh Toán ${PAYMENT_CASH} Với Rounding Amount 0
     When Gửi Yêu Cầu Tạo Hóa Đơn
@@ -81,7 +81,7 @@ RT-QT-04 Làm tròn lên (Round up) với Rounding Amount Invaild
     ...    - Tổng tiền hóa đơn sau khi làm tròn phải là 53000.52 PHP
     ...    - Chênh lệch làm tròn phải là None
 
-    [Tags]    apiroundingtotalamount4
+    [Tags]    apiroundingtotalamount
 
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 53000.52 PHP Số Lượng 1 Phương Thức Thanh Toán ${PAYMENT_CASH} Với Rounding Amount abc
     When Gửi Yêu Cầu Tạo Hóa Đơn

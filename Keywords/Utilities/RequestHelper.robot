@@ -56,3 +56,9 @@ Gửi Yêu Cầu Cập Nhật Hóa Đơn
     Set Test Variable    ${RESPONSE}    ${response}
     ${invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["Id"]}    0
     Set Test Variable    ${INVOICE_ID}    ${invoice_id}
+
+Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
+    ${response}=    Call API With BranchId    e-invoice/publishEInvoice    ${E_INVOICE_REQUEST_DATA}
+    Set Test Variable    ${RESPONSE}    ${response}
+    ${e_invoice_id}=    Set Variable If    ${RESPONSE.status_code} == 200    ${RESPONSE.json()["invoice_ref_id"]}    0
+    Set Test Variable    ${E_INVOICE_ID}    ${e_invoice_id}

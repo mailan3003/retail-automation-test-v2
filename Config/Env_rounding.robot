@@ -8,7 +8,7 @@ ${USER_ID}          1000000467
 ${SOLD_BY_ID}       ${USER_ID}
 
 ${DEFAULT_BRANCH_ID}        ${BRANCH_ID} 
-${BRANCH_ID}        1000000029  
+${BRANCH_ID}        1000000031  
 ${DEFAULT_USER_ID}          1000000471
 ${DEFAULT_CUSTOMER_ID}      1000009032
 ${API_URL}                  https://api-sale.kvpos.com/api/
