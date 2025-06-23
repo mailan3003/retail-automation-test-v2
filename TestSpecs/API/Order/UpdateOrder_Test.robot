@@ -65,7 +65,7 @@ RT-ORDER-UPDATE-005 Cập Nhật Thông Tin Giao Hàng Trong Đơn Hàng
     ...    - Cập nhật tên, số điện thoại, địa chỉ người nhận
     ...    - Xác thực thông tin giao hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    Delivery    regression
-    Given Chuẩn Bị Đơn Hàng HH0053 Có Thông Tin Giao Hàng Để Cập Nhật
+    Given Chuẩn Bị Đơn Hàng HH0264 Có Thông Tin Giao Hàng Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đơn Hàng MHBH
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200

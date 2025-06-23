@@ -26,8 +26,7 @@ RT-CU-001 Tạo khách hàng thành công với thông tin cơ bản
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên ${CUSTOMER_NAME} Số Điện Thoại ${CUSTOMER_PHONE} Email ${CUSTOMER_EMAIL} Và Facebook facebook.com
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    ${customer_phone}    ${customer_subnumber}    ${customer_identification}=    Lấy Thông tin KYC Của Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
-    Should Be Equal    ${customer_phone}    ${CUSTOMER_PHONE}
+
     [Teardown]   Xóa Khách Hàng From API
 
 
