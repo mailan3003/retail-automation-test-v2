@@ -82,3 +82,15 @@ Delete Data
     ${headers}=    Create Auth Headers    ${token}
     ${response}=    Call Delete Request    ${API_MAN_URL}${endpoint}    headers=${headers}    
     RETURN    ${response}
+
+
+Call API With Custom BranchId
+    [Arguments]    ${endpoint}    ${data}    ${branch_id}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With Custom BranchId    ${branch_id}    ${token}
+    ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
+
+Create Auth Headers With Custom BranchId
+    [Arguments]    ${branch_id}    ${token}=${AUTH_TOKEN}   
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${branch_id}
+    RETURN    ${headers}
