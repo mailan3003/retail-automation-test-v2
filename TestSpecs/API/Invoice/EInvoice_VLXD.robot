@@ -309,7 +309,7 @@ RT-INPV-10 Tạo hóa đơn điện tử thành công với hóa đơn giao hàn
     And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
 
 RT-INPV-11 Tạo hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử ở chi nhánh trung tâm
-# Khong chan API
+#  API không chặn lỗi user không có quyền xuất hóa đơn điện tử
     [Documentation]    Test case tạo hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử ở chi nhánh trung tâm
     ...    - Mục đích: Kiểm tra khả năng tạo hóa đơn điện tử khi user autotest không có quyền xuất hóa đơn điện tử ở chi nhánh trung tâm
     ...    - Tham số đầu vào:
@@ -343,6 +343,7 @@ RT-INPV-11 Tạo hóa đơn điện tử với user không có quyền xuất h�
     Then Response Status Code Should Be 200
 
 RT-INPV-12 Tạo hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử ở chi nhánh A
+#  API không chặn lỗi user không có quyền xuất hóa đơn điện tử
     [Documentation]    Test case tạo hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử ở chi nhánh A
     ...    - Mục đích: Kiểm tra khả năng tạo hóa đơn điện tử khi user autotest không có quyền xuất hóa đơn điện tử ở chi nhánh A
     ...    - Tham số đầu vào:
