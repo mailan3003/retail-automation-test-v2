@@ -1,5 +1,6 @@
 *** Settings ***
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
+Suite Setup       Init Test Environment   ${ENV}    MHBH
 Resource    ../../../Keywords/Invoice/EInvoice_VLXD_Keywords.robot
 Resource    ../../../Keywords/Utilities/RequestHelper.robot
 Resource    ../../../Keywords/Utilities/ResponseHelper.robot
@@ -94,7 +95,7 @@ RT-INPV-03 Tạo hóa đơn điện tử sử dụng template HDDT bị lỗi �
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử Với Custom BranchId    ${BRANCH_TRUNG_TAM}
     Then Response Status Code Should Be 420
 
-RT-INPV-04 Tạo hóa đơn điện tử với hóa đơn đã phát hành ở chi nhánh A
+RT-INPV-05 Tạo hóa đơn điện tử với hóa đơn đã phát hành ở chi nhánh A
     [Documentation]    Test case tạo hóa đơn điện tử với hóa đơn đã phát hành ở chi nhánh A
     ...    - Mục đích: Kiểm tra lỗi khi tạo hóa đơn điện tử trùng lặp với hóa đơn đã được phát hành trước đó ở chi nhánh A
     ...    - Tham số đầu vào:
@@ -123,30 +124,32 @@ RT-INPV-04 Tạo hóa đơn điện tử với hóa đơn đã phát hành ở c
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử Với Custom BranchId    ${BRANCH_CHI_NHANH_A}
     Then Response Status Code Should Be 420
 
-RT-INPV-05 Tạo Hóa đơn điện tử sử dụng template HDDT bị lỗi ở chi nhánh trung tâm
-    [Documentation]    Test case tạo hóa đơn điện tử sử dụng template HDDT bị lỗi ở chi nhánh trung tâm
-    ...    - Mục đích: Kiểm tra lỗi khi tạo hóa đơn điện tử với template HDDT không hợp lệ hoặc bị lỗi ở chi nhánh trung tâm
+RT-INPV-04 Tạo hóa đơn điện tử với hóa đơn đã phát hành ở chi nhánh trung tâm
+    [Documentation]    Test case tạo hóa đơn điện tử với hóa đơn đã phát hành ở chi nhánh trung tâm
+    ...    - Mục đích: Kiểm tra lỗi khi tạo hóa đơn điện tử trùng lặp với hóa đơn đã được phát hành trước đó ở chi nhánh A
     ...    - Tham số đầu vào:
     ...    - Sản phẩm: Đơn giá 68000 VND, số lượng 1
     ...    - Chi nhánh: ${BRANCH_TRUNG_TAM} (1000000028 - chi nhánh trung tâm)
     ...    - NCC HDDT: ${PARTNER_TYPE_VT} (2 - Viettel)
-    ...    - Template: 99b93352-b1e9-4af2-92fd-eb5c3410642d (template bị lỗi hoặc không hợp lệ)
+    ...    - Template: ${E_INVOICE_TEMPLATE_VT} 
     ...    - Các bước thực hiện:
-    ...    - 1. Chuẩn bị dữ liệu hóa đơn với UUID duy nhất cho chi nhánh trung tâm
+    ...    - 1. Chuẩn bị dữ liệu hóa đơn với UUID duy nhất cho chi nhánh A
     ...    - 2. Gửi request tạo hóa đơn thường với branch_id = 1000000028
     ...    - 3. Xác thực response có chứa Invoice ID > 0
-    ...    - 4. Chuẩn bị dữ liệu hóa đơn điện tử với Viettel và template bị lỗi
-    ...    - 5. Gửi request tạo hóa đơn điện tử với branch_id tùy chỉnh = 1000000028
-    ...    - 6. Xác thực hệ thống trả về lỗi do template không hợp lệ
+    ...    - 4. Chuẩn bị dữ liệu hóa đơn điện tử với KiotViet (PartnerType=4, Template=2_C25MKV)
+    ...    - 5. Gửi request tạo hóa đơn điện tử lần thứ nhất với branch_id = 1000000028 (thành công)
+    ...    - 6. Gửi request tạo hóa đơn điện tử lần thứ hai với cùng branch_id = 1000000028 (trùng lặp)
     ...    - Kết quả mong đợi:
-    ...    - Status code: 420 (lỗi - template HDDT không hợp lệ)
-    ...    - Hệ thống từ chối tạo hóa đơn điện tử với template bị lỗi
-    ...    - Đảm bảo tính toàn vẹn dữ liệu khi template không hợp lệ
+    ...    - Status code: 420 (lỗi - hóa đơn đã được phát hành)
+    ...    - Hệ thống từ chối tạo hóa đơn điện tử trùng lặp
+    ...    - Đảm bảo tính duy nhất của hóa đơn điện tử trong cùng chi nhánh
+    ...    - Ngăn chặn việc tạo nhiều hóa đơn điện tử cho cùng một hóa đơn gốc
     [Tags]    apieinvoicemultibranch
     Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1 Chi Nhánh ${BRANCH_TRUNG_TAM}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử Với NCC HDDT ${PARTNER_TYPE_VT} Và Template HDDT 99b93352-b1e9-4af2-92fd-eb5c3410642d
+    And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử Với NCC HDDT ${PARTNER_TYPE_VT} Và Template HDDT ${E_INVOICE_TEMPLATE_VT}
+    And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử Với Custom BranchId    ${BRANCH_TRUNG_TAM}
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử Với Custom BranchId    ${BRANCH_TRUNG_TAM}
     Then Response Status Code Should Be 420
 
@@ -366,7 +369,7 @@ RT-INPV-12 Tạo hóa đơn điện tử với user không có quyền xuất h�
     ...    - Hóa đơn điện tử được tạo thành công bởi user không có quyền
     ...    - Chứng minh API không chặn lỗi user không có quyền xuất hóa đơn điện tử
     ...    - Hệ thống cho phép tạo hóa đơn điện tử bất kể quyền của user ở chi nhánh A
-    [Tags]    apieinvoicemultibranch1
+    [Tags]    apieinvoicemultibranch
 
     Thiết Lập Session Cho User Autotest with branch_id   autotest    Autotest1    ${BRANCH_CHI_NHANH_A}
     And Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1 Chi Nhánh ${BRANCH_CHI_NHANH_A}
