@@ -62,7 +62,7 @@ Chuyển Chi Nhánh Đơn Có Thanh Toán Thanh Toán Không Cập Nhật Theo
     ...    - Xác thực chi nhánh xử lý đã được chuyển thành nhánh A
     ...    - Xác thực phiếu thanh toán ở chi nhánh trung tâm
     [Tags]    AIGenerated    UpdateOrder    Positive    BranchTransfer        regression
-    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0053 Có Khách Hàng ${EMPTY} Thanh Toán Với Số Tiền 10000
+    Given Chuẩn Bị Đơn Hàng Sản Phẩm HH0271 Có Khách Hàng ${EMPTY} Thanh Toán Với Số Tiền 10000
     And Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành Nhánh A Thanh Toán Không Cập Nhật Theo
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -193,7 +193,7 @@ Cập Nhật Đơn Hàng Thời Gian Bán Hàng Tương Lai
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0057 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0263 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Ngày Bán Hàng Sau 1 Ngày So Với Hiện Tại MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420

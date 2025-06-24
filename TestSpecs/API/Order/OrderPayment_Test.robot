@@ -246,7 +246,7 @@ RT-RC-013 Kiểm tra thanh toán với số tiền 0 đồng
     ...    - Tổng tiền thanh toán của hóa đơn = 0đ
     ...    - Công nợ của hóa đơn = 100,000đ
     [Tags]    payment    AIGenerated         regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thanh Toán 0 Phương Thức ${PAYMENT_CASH}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0268 Có Thanh Toán 0 Phương Thức ${PAYMENT_CASH}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Thanh Toán Trong Đơn Đặt Hàng Được Ghi Nhận Phương Thức ${PAYMENT_CASH} Với Số Tiền 0

@@ -104,6 +104,13 @@ Chuẩn Bị Dữ Liệu Khách Hàng Với Địa Chỉ Đầy Đủ ${address}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
+
+Chuẩn Bị Dữ Liệu Khách Hàng Với Địa Chỉ 2 Cấp ${address} Tỉnh/Thành ${province_id} Phường/Xã ${ward_id}
+    ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
+    Set To Dictionary    ${request["Customer"]}      Address=${address}    LocationId=${province_id}    WardId=${ward_id}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+
 Chuẩn Bị Dữ Liệu Khách Hàng Với Ghi Chú ${comments}
     ${request}=    Deep Copy    ${STANDARD_CUSTOMER_REQUEST}
     Set To Dictionary    ${request["Customer"]}       Comments=${comments}

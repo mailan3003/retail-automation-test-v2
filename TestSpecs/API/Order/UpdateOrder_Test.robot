@@ -115,7 +115,7 @@ Cập Nhật Đơn Hàng Đối Tác Giao Hàng
 Cập Nhật Đơn Hàng Gói Hàng
     [Documentation]    Cập Nhật Đơn Hàng Gói Hàng
     [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
-    Given Chuẩn Bị Đơn Hàng HH0058 Có Thông Tin Giao Hàng Để Cập Nhật
+    Given Chuẩn Bị Đơn Hàng HH0262 Có Thông Tin Giao Hàng Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Gói Hàng 10x20x30x40 Ở MHBH
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -203,7 +203,7 @@ Cập Nhật Đơn Hàng Thời Gian Bán Hàng Sau Thời Gian Hiện Tại
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0061 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0272 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
