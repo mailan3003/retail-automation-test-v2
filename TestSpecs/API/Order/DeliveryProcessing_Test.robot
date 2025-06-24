@@ -147,7 +147,7 @@ RT-DP-010 Tạo đơn hàng giao hàng có thời gian giao hàng
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Processing
     [Tags]    apiinvoice    delivery    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Thời Gian Sau 4 Ngày So Với Ngày Hiện Tại
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0267 Giao Hàng Thời Gian Sau 4 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đặt Hàng Giao Hàng Trong DB

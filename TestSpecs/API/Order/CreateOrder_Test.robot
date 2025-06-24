@@ -69,7 +69,7 @@ Tạo Đơn Với Khách Hàng
 RT-ORDER-008 Tạo Đơn Hàng Với Mô Tả Đơn Hàng
     [Documentation]    Test tạo đơn hàng mới có mô tả đơn hàng
     [Tags]    AIGenerated    CreateOrder    Positive    Description    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Mô Tả Đơn Hàng 200 Ký Tự
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0269 Có Mô Tả Đơn Hàng 200 Ký Tự
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Mô Tả Đơn Hàng Được Cập Nhật Đúng
@@ -88,7 +88,7 @@ RT-ORDER-005 Tạo Đơn Hàng Với Người Nhận Đặt Hợp Lệ
 RT-ORDER-005 Tạo Đơn Hàng Với Kênh Bán Hợp Lệ
     [Documentation]    Test tạo đơn hàng mới có kênh bán hợp lệ
     [Tags]    AIGenerated    CreateOrder    Positive    ValidSaleChannel    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Kênh Bán Kênh 3
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0265 Có Kênh Bán Kênh 3
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
@@ -98,7 +98,7 @@ RT-ORDER-005 Tạo Đơn Hàng Với Kênh Bán Hợp Lệ
 RT-ORDER-005 Tạo Đơn Hàng Bảng Giá
     
     [Tags]    AIGenerated    CreateOrder    Positive    ValidPriceBook    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Bảng Giá BG1
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0270 Có Bảng Giá BG1
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database
@@ -296,7 +296,7 @@ RT-DP-014 Tính tổng tiền hàng có phụ phí phần trăm
     ...    - Chuẩn hóa: Tổng tiền được làm tròn lên theo cấu hình CurrencyDecimalPlace (0 chữ số)
     ...    - Kết quả: 85000đ nếu cấu hình là 0 chữ số thập phân
     [Tags]    discount      CreateOrder    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giảm Giá 15000 Có Thu Khác ${SURCHARGE_2_CODE}
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0266 Giảm Giá 15000 Có Thu Khác ${SURCHARGE_2_CODE}
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đơn Hàng Đã Được Tạo Trong Database

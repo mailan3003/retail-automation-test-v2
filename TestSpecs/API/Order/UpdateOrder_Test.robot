@@ -203,7 +203,7 @@ Cập Nhật Đơn Hàng Thời Gian Bán Hàng Sau Thời Gian Hiện Tại
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0061 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0272 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Ngày Bán Cho Đơn Hàng Thành Sau 1 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420

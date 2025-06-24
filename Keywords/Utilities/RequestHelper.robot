@@ -38,6 +38,13 @@ Call Delete Request
     ${response}=    RequestsLibrary.DELETE On Session    kvpos    ${url}    headers=${headers}    expected_status=anything
     RETURN    ${response}
 
+Get Data From API
+    [Arguments]    ${url}   
+    ${headers}=    Create Dictionary     Authorization=Bearer ${AUTH_TOKEN}    Content-Type=application/json   Retailer=${RETAILER_CODE}      BranchId=${BRANCH_ID}
+    Create Session     lolo     ${API_MAN_URL}   verify=True
+    ${response}=    GET On Session   lolo    ${API_MAN_URL}${url}        headers=${headers}     expected_status=anything
+    RETURN    ${response}
+
 Gửi Yêu Cầu Tạo Hóa Đơn
     ${response}=    Call API    invoices    ${REQUEST_DATA}
     Set Test Variable    ${RESPONSE}    ${response}
