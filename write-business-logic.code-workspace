@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../CoreWeb"
+		},
+		{
+			"path": "../Resource"
+		},
+		{
+			"path": "../API"
+		}
+	],
+	"settings": {}
+}
