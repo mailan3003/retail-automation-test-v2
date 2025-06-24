@@ -42,6 +42,7 @@ ${EXISTING_EMAIL}    testerkv@gmail.com
 ${CUSTOMER_NAME}    Khách Hàng Test
 ${CUSTOMER_PHONE}    093553566
 ${CUSTOMER_EMAIL}    test@example.com
+${CUSTOMER_FACEBOOK_URL}    facebook.com
 ${CUSTOMER_ADDRESS}    123 Đường ABC, Quận 1, TP.HCM
 ${CUSTOMER_TAX_CODE}    123456789
 ${CUSTOMER_GENDER}    1

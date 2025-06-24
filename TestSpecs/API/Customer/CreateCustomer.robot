@@ -9,6 +9,7 @@ Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
+Resource    ../../../Keywords/Invoice/InventoryUpdateKeywords.robot
 Library           ../../../Resources/DatabaseLibrary.py
 
 *** Variables ***
@@ -22,11 +23,13 @@ RT-CU-001 Tạo khách hàng thành công với thông tin cơ bản
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với thông tin cơ bản
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Success53454
-    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên ${CUSTOMER_NAME} Số Điện Thoại ${CUSTOMER_PHONE} Email ${CUSTOMER_EMAIL} Và Facebook facebook.com
+    [Tags]    AIGenerated    Customer    Create    Success    regression
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên ${CUSTOMER_NAME} Số Điện Thoại ${CUSTOMER_PHONE} Email ${CUSTOMER_EMAIL} Và Facebook ${CUSTOMER_FACEBOOK_URL}
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-
+    And Xác Thực Khách Hàng Có SDT1 ${CUSTOMER_PHONE} SDT2 0 Cùng CMTND 0 Và Email ${CUSTOMER_EMAIL}
+    And Xác Thực Tên Khách Hàng ${CUSTOMER_NAME}
+    And Xác Thực Facebook Khách Hàng ${CUSTOMER_FACEBOOK_URL}
     [Teardown]   Xóa Khách Hàng From API
 
 
@@ -58,11 +61,24 @@ RT-CU-008 Tạo khách hàng thành công với nhiều nhóm khách hàng
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với nhóm khách hàng
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create   
+    [Tags]    AIGenerated    Customer    Create     regression
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Nhiều Nhóm Khách Hàng ${list_group_names}
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Khách Hàng Thuộc Nhiều Nhóm ${list_group_names}
+    [Teardown]   Xóa Khách Hàng From API
+
+
+RT-CU-008 Tạo khách hàng thành công Với Địa Chỉ 2 Cấp
+    [Documentation]    Kiểm tra tạo khách hàng thành công với địa chỉ 2 cấp:
+    ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
+    ...    - Logic: Tạo khách hàng mới với địa chỉ 2 cấp
+    ...    - Code: POST /customers
+    [Tags]    AIGenerated    Customer    Create    Success      regression421
+    Given Chuẩn Bị Dữ Liệu Khách Hàng Với Địa Chỉ 2 Cấp ${CUSTOMER_ADDRESS} Tỉnh/Thành ${PROVINCE_ID} Phường/Xã ${WARD_ID}
+    When Gửi Yêu Cầu Tạo Khách Hàng
+    Then Mã Trạng Thái Phải Là 200
+    And Xác Thực Khách Hàng Có Địa Chỉ ${CUSTOMER_ADDRESS} Tỉnh Thành Phố ${PROVINCE_ID} Phường/Xã ${WARD_ID}
     [Teardown]   Xóa Khách Hàng From API
 
 RT-CU-008 Tạo khách hàng thành công với địa chỉ đầy đủ
@@ -130,14 +146,12 @@ RT-CU-015 Tạo khách hàng thành công với 2 số điện thoại
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với số điện thoại chính và số phụ
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create4234    
+    [Tags]    AIGenerated    Customer    regression    
     Given Chuẩn Bị Dữ Liệu Có 2 Số Điện Thoại 097734353 Và 0977357723
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    ${customer_phone}    ${customer_subnumber}    ${customer_identification}=    Lấy Thông tin KYC Của Khách Hàng Theo Mã Khách Hàng    ${CUSTOMER_CODE}
-    Should Be Equal    ${customer_phone}    097734353
-    Should Be Equal    ${customer_subnumber}   0977357723
-    #[Teardown]   Xóa Khách Hàng From API
+    And Xác Thực Khách Hàng Có SDT1 097734353 SDT2 0977357723 Cùng CMTND 0 Và Email 0
+    [Teardown]   Xóa Khách Hàng From API
 
 RT-CU-016 Tạo khách hàng thành công với mã khách hàng tùy chỉnh
     [Documentation]    Kiểm tra tạo khách hàng thành công với mã khách hàng tùy chỉnh:
@@ -207,11 +221,14 @@ RT-CU-023 Tạo khách hàng Cá Nhân Có MST
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng cá nhân có mã số thuế
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Success   
+    [Tags]    AIGenerated    Customer    Create    Success    regression
     Given Chuẩn Bị Khách Hàng Với Loại Khách Hàng Cá Nhân Có MST ${CUSTOMER_TAX_CODE} CMT ${CUSTOMER_CMT} Và Tên Công Ty ${EMPTY}
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Khách Hàng Cá Nhân Có Mã Số Thuế ${CUSTOMER_TAX_CODE}
+    And Xác Thực Khách Hàng Là Khách Hàng Cá Nhân
+    And Xác Thực Khách Hàng Có Công Ty Là ${EMPTY}
+    And Xác Thực Mã Số Thuế Khách Hàng ${CUSTOMER_TAX_CODE}
+    And Xác Thực Khách Hàng Có SDT1 0 SDT2 0 Cùng CMTND ${CUSTOMER_CMT} Và Email 0
     [Teardown]   Xóa Khách Hàng From API
 
 RT-CU-024 Tạo khách hàng Công Ty Có MST
@@ -219,12 +236,16 @@ RT-CU-024 Tạo khách hàng Công Ty Có MST
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng công ty có mã số thuế
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Success   
-    Given Chuẩn Bị Khách Hàng Với Loại Khách Hàng Công Ty Có MST ${CUSTOMER_TAX_CODE} CMT ${CUSTOMER_CMT} Và Tên Công Ty ${EMPTY}
+    [Tags]    AIGenerated    Customer    Create    Success    regression
+    Given Chuẩn Bị Khách Hàng Với Loại Khách Hàng Công Ty Có MST ${CUSTOMER_TAX_CODE} CMT ${CUSTOMER_CMT} Và Tên Công Ty KIOTVIET
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Khách Hàng Công Ty Có Mã Số Thuế ${CUSTOMER_TAX_CODE}
+    And Xác Thực Khách Hàng Là Khách Hàng Công Ty
+    And Xác Thực Khách Hàng Có Công Ty Là KIOTVIET
+    And Xác Thực Mã Số Thuế Khách Hàng ${CUSTOMER_TAX_CODE}
+    And Xác Thực Khách Hàng Có SDT1 0 SDT2 0 Cùng CMTND ${CUSTOMER_CMT} Và Email 0
     [Teardown]   Xóa Khách Hàng From API
+
 
 RT-CU-025 Tạo khách hàng là nhà cung cấp mới
     [Documentation]    Kiểm tra tạo khách hàng là nhà cung cấp mới:

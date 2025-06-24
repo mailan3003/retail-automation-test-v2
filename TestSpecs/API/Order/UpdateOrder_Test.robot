@@ -115,7 +115,7 @@ Cập Nhật Đơn Hàng Đối Tác Giao Hàng
 Cập Nhật Đơn Hàng Gói Hàng
     [Documentation]    Cập Nhật Đơn Hàng Gói Hàng
     [Tags]    AIGenerated    UpdateOrder    Positive    DeliveryFee    regression
-    Given Chuẩn Bị Đơn Hàng HH0058 Có Thông Tin Giao Hàng Để Cập Nhật
+    Given Chuẩn Bị Đơn Hàng HH0262 Có Thông Tin Giao Hàng Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Đơn Hàng Gói Hàng 10x20x30x40 Ở MHBH
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200

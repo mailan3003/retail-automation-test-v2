@@ -237,6 +237,13 @@ Xác Thực Tên Khách Hàng ${name}
     Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
     Should Be Equal    ${result[0]}    ${name}    Tên khách hàng không khớp
 
+
+Xác Thực Facebook Khách Hàng ${facebook_url}
+    ${query}=    Set Variable    SELECT Facebook FROM Customer WHERE Id = ? AND RetailerId = ?
+    ${result}=    Fetch One    ${query}    ${CUSTOMER_ID}    ${RETAILER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin khách hàng
+    Should Be Equal    ${result[0]}    ${facebook_url}    Facebook không khớp
+
 Xác Thực Khách Hàng Là Khách Hàng ${type_customer}
     ${type_customer}=    Set Variable If    "${type_customer}" == "Cá Nhân"   0   1
     ${query}=    Set Variable    SELECT Type FROM Customer WHERE Id = ? AND RetailerId = ?
