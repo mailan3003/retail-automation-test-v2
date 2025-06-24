@@ -1,0 +1,1177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.7.2 on win32)" generated="20250616 10:24:37.378" rpa="false" schemaversion="4">
+<suite id="s1" name="TestSpecs" source="E:\automation_api\retail-automation-test-v2\TestSpecs">
+<suite id="s1-s1" name="API" source="E:\automation_api\retail-automation-test-v2\TestSpecs\API">
+<suite id="s1-s1-s1" name="Order" source="E:\automation_api\retail-automation-test-v2\TestSpecs\API\Order">
+<suite id="s1-s1-s1-s1" name="CreateOrder Test" source="E:\automation_api\retail-automation-test-v2\TestSpecs\API\Order\CreateOrder_Test.robot">
+<kw name="Init Test Environment" library="Login" type="SETUP">
+<arg>${ENV}</arg>
+<arg>MHBH</arg>
+<kw name="Run Keyword If" library="BuiltIn">
+<var>${bearer_token}</var>
+<arg>"${role}" == "MHQL"</arg>
+<arg>Get BearerToken MHQL</arg>
+<arg>ELSE</arg>
+<arg>Get BearerToken from API</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<kw name="Get BearerToken from API" library="Login">
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${credential}</var>
+<arg>UserName=${USER_NAME}</arg>
+<arg>Password=${PASSWORD}</arg>
+<arg>FingerPrintKey=9260aa1de596f0d80658143cbe38c670_Chrome_Desktop_MÃ¡ytÃ­nh Windows</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250616 10:24:38.079" level="INFO">${credential} = {'UserName': 'admin', 'Password': '123', 'FingerPrintKey': '9260aa1de596f0d80658143cbe38c670_Chrome_Desktop_MÃ¡ytÃ\xadnh Windows'}</msg>
+<status status="PASS" starttime="20250616 10:24:38.079" endtime="20250616 10:24:38.079"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${headers1}</var>
+<arg>Content-Type=application/json</arg>
+<arg>Retailer=${RETAILER_CODE}</arg>
+<arg>Branchid=${DEFAULT_BRANCH_ID}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250616 10:24:38.080" level="INFO">${headers1} = {'Content-Type': 'application/json', 'Retailer': 'autoapivlxd', 'Branchid': '1000000028'}</msg>
+<status status="PASS" starttime="20250616 10:24:38.080" endtime="20250616 10:24:38.080"/>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>ali</arg>
+<arg>${API_URL}</arg>
+<arg>headers=${headers1}</arg>
+<arg>verify=True</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20250616 10:24:38.082" level="INFO">Creating Session using : alias=ali, url=https://api-sale.kvpos.com/api/, headers={'Content-Type': 'application/json', 'Retailer': 'autoapivlxd', 'Branchid': '1000000028'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=True,                     debug=0 </msg>
+<status status="PASS" starttime="20250616 10:24:38.081" endtime="20250616 10:24:38.083"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<var>${resp}</var>
+<arg>3x</arg>
+<arg>0s</arg>
+<arg>Post Request</arg>
+<arg>ali</arg>
+<arg>auth/salelogin</arg>
+<arg>data=${credential}</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<kw name="Post Request" library="RequestsLibrary">
+<arg>ali</arg>
+<arg>auth/salelogin</arg>
+<arg>data=${credential}</arg>
+<doc>*DEPRECATED* Please use `POST On Session` instead.</doc>
+<msg timestamp="20250616 10:24:38.083" level="WARN">Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.</msg>
+<msg timestamp="20250616 10:24:38.611" level="INFO">POST Request : url=https://api-sale.kvpos.com/api/auth/salelogin 
+ path_url=/api/auth/salelogin 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Retailer': 'autoapivlxd', 'Branchid': '1000000028', 'Content-Length': '147'} 
+ body={"UserName": "admin", "Password": "123", "FingerPrintKey": "9260aa1de596f0d80658143cbe38c670_Chrome_Desktop_M\u00c3\u00a1yt\u00c3\u00adnh Windows"} 
+ </msg>
+<msg timestamp="20250616 10:24:38.611" level="INFO">POST Response : url=https://api-sale.kvpos.com/api/auth/salelogin 
+ status=200, reason=OK 
+ headers={'cache-control': 'private', 'content-type': 'application/json; charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'false', 'gatewaynodes': 'https://api-sd.kvpos.com', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0612.00', '__revision': '20250613164102', 'kv.gitcommit': 'f58f7414', 'kv.gittag': '', 'retailer': 'autoapivlxd', 'zone': '3', 'retailerindustryid': '5', 'kv.requestid': '63ce8f1d075b4ecdbb82a15b17d8bb8b', 'set-cookie': 'ss-id=lI7hswSXHpgEPeicOgUp; path=/; HttpOnly, ss-pid=nvxq3nzb1OTnFd8QLxun; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, ss-opt=temp; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, l_19812_1000000470=vi-VN; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, newfnb=0; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, Retailer=autoapivlxd; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, LatestBranch_19812_1000000470=1000000028; expires=Fri, 16-Jun-2045 03:24:38 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiI1OWRiYWY1MGRhYTc0MzNmODRlMzE4NjZlYzFhYzA1NSIsImt2dWlkIjoxMDAwMDAwNDcwLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyOCwia3ZyaW5kaWQiOjUsImt2cmNvZGUiOiJhdXRvYXBpdmx4ZCIsImt2cmlkIjoxOTgxMiwia3Z1cmlkIjoxOTgxMiwia3ZyZ2lkIjozLCJwZXJtcyI6IiJ9.AIwzHQhbiqIzGicqMesaqv4TUJ8l407K_lP2725THHh5Ptj0gUavFqjgheQEvO-G2Ngb7iKgV1UqjYW-TKczMNTnBlusbXEl4Se9M_b6P0GzyVJTBRRx-YqTDGzP-OKpFvCH8TBYf-WZQ2JqPLhPGXSJG9ceO8HOAtM9hw-g16anjfAs3u5t1i99jy7gfo6Su0mSKtYxKsK9CPnUDtBLvr7g-zGj1DLP6P68E6APyMsUj5moOTdQEHRUnp8OD6fthkZ7_K_zio9Ml0aymRfYPDO7fpru2Zkx46EyXxaeORqkmEOxXlEchnz5tpFio-WEhiDO0SmoZeh83Xx1Pkf8Eg; expires=Mon, 14-Jul-2025 03:24:38 GMT; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH', 'access-control-expose-headers': 'Retailer-POS-Version', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Mon, 16 Jun 2025 03:24:38 GMT', 'content-length': '1374'} 
+ body={"UserId":1000000470,"UserName":"admin","SessionId":"lI7hswSXHpgEPeicOgUp","BearerToken":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiI1OWRiYWY1MGRhYTc0MzNmODRlMzE4NjZlYzFhYzA1NSIsImt2dWlkIjoxMDAwMDAwNDcwLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyOCwia3ZyaW5kaWQiOjUsImt2cmNvZGUiOiJhdXRvYXBpdmx4ZCIsImt2cmlkIjoxOTgxMiwia3Z1cmlkIjoxOTgxMiwia3ZyZ2lkIjozLCJwZXJtcyI6IiJ9.AIwzHQhbiqIzGicqMesaqv4TUJ8l407K_lP2725THHh5Ptj0gUavFqjgheQEvO-G2Ngb7iKgV1UqjYW-TKczMNTnBlusbXEl4Se9M_b6P0GzyVJTBRRx-YqTDGzP-OKpFvCH8TBYf-WZQ2JqPLhPGXSJG9ceO8HOAtM9hw-g16anjfAs3u5t1i99jy7gfo6Su0mSKtYxKsK9CPnUDtBLvr7g-zGj1DLP6P68E6APyMsUj5moOTdQEHRUnp8OD6fthkZ7_K_zio9Ml0aymRfYPDO7fpru2Zkx46EyXxaeORqkmEOxXlEchnz5tpFio-WEhiDO0SmoZeh83Xx1Pkf8Eg","CurrentBranchId":1000000028,"CurrentWarehouseId":0,"PermittedBranchIds":[1000000028,1000000062],"IsShowNotificationPopupDr":false,"IsOTPVerifcationRequired":false,"OldPasswordCountValidate":3} 
+ </msg>
+<status status="PASS" starttime="20250616 10:24:38.083" endtime="20250616 10:24:38.612"/>
+</kw>
+<msg timestamp="20250616 10:24:38.612" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:38.083" endtime="20250616 10:24:38.612"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${resp.json()}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250616 10:24:38.616" level="INFO">{'UserId': 1000000470, 'UserName': 'admin', 'SessionId': 'lI7hswSXHpgEPeicOgUp', 'BearerToken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiI1OWRiYWY1MGRhYTc0MzNmODRlMzE4NjZlYzFhYzA1NSIsImt2dWlkIjoxMDAwMDAwNDcwLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyOCwia3ZyaW5kaWQiOjUsImt2cmNvZGUiOiJhdXRvYXBpdmx4ZCIsImt2cmlkIjoxOTgxMiwia3Z1cmlkIjoxOTgxMiwia3ZyZ2lkIjozLCJwZXJtcyI6IiJ9.AIwzHQhbiqIzGicqMesaqv4TUJ8l407K_lP2725THHh5Ptj0gUavFqjgheQEvO-G2Ngb7iKgV1UqjYW-TKczMNTnBlusbXEl4Se9M_b6P0GzyVJTBRRx-YqTDGzP-OKpFvCH8TBYf-WZQ2JqPLhPGXSJG9ceO8HOAtM9hw-g16anjfAs3u5t1i99jy7gfo6Su0mSKtYxKsK9CPnUDtBLvr7g-zGj1DLP6P68E6APyMsUj5moOTdQEHRUnp8OD6fthkZ7_K_zio9Ml0aymRfYPDO7fpru2Zkx46EyXxaeORqkmEOxXlEchnz5tpFio-WEhiDO0SmoZeh83Xx1Pkf8Eg', 'CurrentBranchId': 1000000028, 'CurrentWarehouseId': 0, 'PermittedBranchIds': [1000000028, 1000000062], 'IsShowNotificationPopupDr': False, 'IsOTPVerifcationRequired': False, 'OldPasswordCountValidate': 3}</msg>
+<status status="PASS" starttime="20250616 10:24:38.612" endtime="20250616 10:24:38.616"/>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<msg timestamp="20250616 10:24:38.620" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:38.616" endtime="20250616 10:24:38.620"/>
+</kw>
+<kw name="Get Value From Json" library="JSONLibrary">
+<var>${bearertoken}</var>
+<arg>${resp.json()}</arg>
+<arg>$..BearerToken</arg>
+<doc>Get Value From JSON using JSONPath</doc>
+<msg timestamp="20250616 10:24:38.655" level="INFO">${bearertoken} = ['eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc...</msg>
+<status status="PASS" starttime="20250616 10:24:38.621" endtime="20250616 10:24:38.655"/>
+</kw>
+<kw name="Set Variable If" library="BuiltIn">
+<var>${bearertoken}</var>
+<arg>${bearertoken}</arg>
+<arg>${bearertoken}[0]</arg>
+<arg>0</arg>
+<doc>Sets variable based on the given condition.</doc>
+<msg timestamp="20250616 10:24:38.656" level="INFO">${bearertoken} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250616 10:24:38.656" endtime="20250616 10:24:38.656"/>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<arg>${AUTH_TOKEN}</arg>
+<arg>${bearertoken}</arg>
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<msg timestamp="20250616 10:24:38.657" level="INFO">${AUTH_TOKEN} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250616 10:24:38.656" endtime="20250616 10:24:38.657"/>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<arg>${AUTH_TOKEN}</arg>
+<doc>Returns from the enclosing user keyword.</doc>
+<msg timestamp="20250616 10:24:38.657" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20250616 10:24:38.657" endtime="20250616 10:24:38.657"/>
+</kw>
+<timeout value="5 minutes"/>
+<status status="PASS" starttime="20250616 10:24:38.079" endtime="20250616 10:24:38.658"/>
+</kw>
+<msg timestamp="20250616 10:24:38.658" level="INFO">${bearer_token} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250616 10:24:38.078" endtime="20250616 10:24:38.658"/>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<arg>${AUTH_TOKEN}</arg>
+<arg>${bearer_token}</arg>
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<msg timestamp="20250616 10:24:38.658" level="INFO">${AUTH_TOKEN} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250616 10:24:38.658" endtime="20250616 10:24:38.659"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:38.077" endtime="20250616 10:24:38.659"/>
+</kw>
+<test id="s1-s1-s1-s1-t1" name="RT-ORDER-005 Tính thuế trực tiếp VAT của Đặt Hàng" line="160">
+<kw name="Given Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định Với Sản Phẩm HHVATTT001" library="CreateOrderKeywords" sourcename="Chuẩn Bị Dữ Liệu Đơn Hàng Với Thuế Trực Tiếp Mặc Định Với Sản Phẩm ${product_code}">
+<doc>Prepares invoice data with default VAT rate (2%)</doc>
+<kw name="Thông tin hàng hóa" library="ProductCommonKeywords">
+<var>${product_info}</var>
+<arg>${product_code}</arg>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT Id, Name, BasePrice FROM Product WHERE Code = ? AND RetailerId = ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.670" level="INFO">${query} = SELECT Id, Name, BasePrice FROM Product WHERE Code = ? AND RetailerId = ?</msg>
+<status status="PASS" starttime="20250616 10:24:38.670" endtime="20250616 10:24:38.670"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${product_code}</arg>
+<arg>${RETAILER_ID}</arg>
+<msg timestamp="20250616 10:24:38.800" level="INFO">${result} = (1000017669, 'test', Decimal('100000.0000'))</msg>
+<status status="PASS" starttime="20250616 10:24:38.670" endtime="20250616 10:24:38.800"/>
+</kw>
+<return>
+<value>${result}</value>
+<status status="PASS" starttime="20250616 10:24:38.800" endtime="20250616 10:24:38.801"/>
+</return>
+<msg timestamp="20250616 10:24:38.801" level="INFO">${product_info} = (1000017669, 'test', Decimal('100000.0000'))</msg>
+<status status="PASS" starttime="20250616 10:24:38.669" endtime="20250616 10:24:38.801"/>
+</kw>
+<kw name="Convert To Number" library="BuiltIn">
+<var>${price}</var>
+<arg>${product_info[2]}</arg>
+<doc>Converts the given item to a floating point number.</doc>
+<msg timestamp="20250616 10:24:38.810" level="INFO">${price} = 100000.0</msg>
+<status status="PASS" starttime="20250616 10:24:38.802" endtime="20250616 10:24:38.810"/>
+</kw>
+<kw name="Deep Copy" library="DataUtilities">
+<var>${request}</var>
+<arg>${BASE_ORDER_REQUEST}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.813" level="INFO">${json_data} = {"Order": {"Id": "0", "Code": "", "PurchaseDate": "", "Description": "\u0110\u01a1n h\u00e0ng m\u1edbi", "Total": "0", "Status": "1", "ModifiedDate": "", "RetailerId": "19812", "BranchId": "1000000028...</msg>
+<status status="PASS" starttime="20250616 10:24:38.812" endtime="20250616 10:24:38.813"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.820" level="INFO">${copied_data} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.814" endtime="20250616 10:24:38.820"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250616 10:24:38.820" endtime="20250616 10:24:38.820"/>
+</return>
+<msg timestamp="20250616 10:24:38.820" level="INFO">${request} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.811" endtime="20250616 10:24:38.821"/>
+</kw>
+<kw name="Deep Copy" library="DataUtilities">
+<var>${invoice_detail_tax_body}</var>
+<arg>${order_detail_tax_body}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.822" level="INFO">${json_data} = {"TaxId": "2", "DetailTax": "3500"}</msg>
+<status status="PASS" starttime="20250616 10:24:38.822" endtime="20250616 10:24:38.822"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.823" level="INFO">${copied_data} = {'TaxId': '2', 'DetailTax': '3500'}</msg>
+<status status="PASS" starttime="20250616 10:24:38.822" endtime="20250616 10:24:38.823"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250616 10:24:38.823" endtime="20250616 10:24:38.823"/>
+</return>
+<msg timestamp="20250616 10:24:38.824" level="INFO">${invoice_detail_tax_body} = {'TaxId': '2', 'DetailTax': '3500'}</msg>
+<status status="PASS" starttime="20250616 10:24:38.821" endtime="20250616 10:24:38.824"/>
+</kw>
+<kw name="Deep Copy" library="DataUtilities">
+<var>${invoice_data}</var>
+<arg>${PRODUCT_ORDER_DETAIL}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.825" level="INFO">${json_data} = {"ProductId": "1000014178", "Quantity": "1", "Price": "100000", "Total": "100000", "Discount": "0", "DiscountRatio": "0", "Note": ""}</msg>
+<status status="PASS" starttime="20250616 10:24:38.825" endtime="20250616 10:24:38.825"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.826" level="INFO">${copied_data} = {'ProductId': '1000014178', 'Quantity': '1', 'Price': '100000', 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.826" endtime="20250616 10:24:38.826"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250616 10:24:38.826" endtime="20250616 10:24:38.826"/>
+</return>
+<msg timestamp="20250616 10:24:38.827" level="INFO">${invoice_data} = {'ProductId': '1000014178', 'Quantity': '1', 'Price': '100000', 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.824" endtime="20250616 10:24:38.827"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${invoice_data}</var>
+<arg>${invoice_data}</arg>
+<arg>ProductId</arg>
+<arg>${product_info[0]}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.832" level="INFO">@{parts} = [ ProductId ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.832" endtime="20250616 10:24:38.832"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.833" level="INFO">Length is 1</msg>
+<msg timestamp="20250616 10:24:38.833" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250616 10:24:38.833" endtime="20250616 10:24:38.833"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.834" level="INFO">${current} = {'ProductId': '1000014178', 'Quantity': '1', 'Price': '100000', 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.833" endtime="20250616 10:24:38.834"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}"/>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.837" endtime="20250616 10:24:38.838"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.838" endtime="20250616 10:24:38.838"/>
+</kw>
+<status status="NOT RUN" starttime="20250616 10:24:38.837" endtime="20250616 10:24:38.838"/>
+</iter>
+<status status="NOT RUN" starttime="20250616 10:24:38.834" endtime="20250616 10:24:38.838"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.842" level="INFO">${last_part} = ProductId</msg>
+<status status="PASS" starttime="20250616 10:24:38.838" endtime="20250616 10:24:38.842"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.842" endtime="20250616 10:24:38.842"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.842" endtime="20250616 10:24:38.842"/>
+</return>
+<msg timestamp="20250616 10:24:38.843" level="INFO">${invoice_data} = {'ProductId': 1000017669, 'Quantity': '1', 'Price': '100000', 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.827" endtime="20250616 10:24:38.843"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${invoice_data}</var>
+<arg>${invoice_data}</arg>
+<arg>Price</arg>
+<arg>${price}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.844" level="INFO">@{parts} = [ Price ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.843" endtime="20250616 10:24:38.844"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.844" level="INFO">Length is 1</msg>
+<msg timestamp="20250616 10:24:38.844" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250616 10:24:38.844" endtime="20250616 10:24:38.845"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.845" level="INFO">${current} = {'ProductId': 1000017669, 'Quantity': '1', 'Price': '100000', 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.845" endtime="20250616 10:24:38.845"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}"/>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.849" endtime="20250616 10:24:38.849"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.849" endtime="20250616 10:24:38.849"/>
+</kw>
+<status status="NOT RUN" starttime="20250616 10:24:38.848" endtime="20250616 10:24:38.849"/>
+</iter>
+<status status="NOT RUN" starttime="20250616 10:24:38.845" endtime="20250616 10:24:38.849"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.853" level="INFO">${last_part} = Price</msg>
+<status status="PASS" starttime="20250616 10:24:38.850" endtime="20250616 10:24:38.853"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.853" endtime="20250616 10:24:38.853"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.853" endtime="20250616 10:24:38.854"/>
+</return>
+<msg timestamp="20250616 10:24:38.854" level="INFO">${invoice_data} = {'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.843" endtime="20250616 10:24:38.854"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${tax_value}</var>
+<arg>${price} * 0.02*20 / 100</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.854" level="INFO">${tax_value} = 400.0</msg>
+<status status="PASS" starttime="20250616 10:24:38.854" endtime="20250616 10:24:38.854"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${tax_value}</var>
+<arg>round(${tax_value}, 0)</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:38.855" level="INFO">${tax_value} = 400.0</msg>
+<status status="PASS" starttime="20250616 10:24:38.855" endtime="20250616 10:24:38.855"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${invoice_detail_tax_body}</var>
+<arg>${invoice_detail_tax_body}</arg>
+<arg>DetailTax</arg>
+<arg>${tax_value}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.856" level="INFO">@{parts} = [ DetailTax ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.856" endtime="20250616 10:24:38.856"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.857" level="INFO">Length is 1</msg>
+<msg timestamp="20250616 10:24:38.857" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250616 10:24:38.856" endtime="20250616 10:24:38.857"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.857" level="INFO">${current} = {'TaxId': '2', 'DetailTax': '3500'}</msg>
+<status status="PASS" starttime="20250616 10:24:38.857" endtime="20250616 10:24:38.857"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}"/>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.860" endtime="20250616 10:24:38.860"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.860" endtime="20250616 10:24:38.860"/>
+</kw>
+<status status="NOT RUN" starttime="20250616 10:24:38.859" endtime="20250616 10:24:38.860"/>
+</iter>
+<status status="NOT RUN" starttime="20250616 10:24:38.857" endtime="20250616 10:24:38.860"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.864" level="INFO">${last_part} = DetailTax</msg>
+<status status="PASS" starttime="20250616 10:24:38.861" endtime="20250616 10:24:38.864"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.864" endtime="20250616 10:24:38.865"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.865" endtime="20250616 10:24:38.865"/>
+</return>
+<msg timestamp="20250616 10:24:38.865" level="INFO">${invoice_detail_tax_body} = {'TaxId': '2', 'DetailTax': 400.0}</msg>
+<status status="PASS" starttime="20250616 10:24:38.855" endtime="20250616 10:24:38.865"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${invoice_detail_tax_body}</var>
+<arg>${invoice_detail_tax_body}</arg>
+<arg>TaxId</arg>
+<arg>7</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.866" level="INFO">@{parts} = [ TaxId ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.866" endtime="20250616 10:24:38.866"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.867" level="INFO">Length is 1</msg>
+<msg timestamp="20250616 10:24:38.867" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250616 10:24:38.866" endtime="20250616 10:24:38.867"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.867" level="INFO">${current} = {'TaxId': '2', 'DetailTax': 400.0}</msg>
+<status status="PASS" starttime="20250616 10:24:38.867" endtime="20250616 10:24:38.867"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}"/>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.871" endtime="20250616 10:24:38.871"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.871" endtime="20250616 10:24:38.871"/>
+</kw>
+<status status="NOT RUN" starttime="20250616 10:24:38.870" endtime="20250616 10:24:38.871"/>
+</iter>
+<status status="NOT RUN" starttime="20250616 10:24:38.867" endtime="20250616 10:24:38.871"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.875" level="INFO">${last_part} = TaxId</msg>
+<status status="PASS" starttime="20250616 10:24:38.872" endtime="20250616 10:24:38.875"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.875" endtime="20250616 10:24:38.876"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.876" endtime="20250616 10:24:38.876"/>
+</return>
+<msg timestamp="20250616 10:24:38.876" level="INFO">${invoice_detail_tax_body} = {'TaxId': '7', 'DetailTax': 400.0}</msg>
+<status status="PASS" starttime="20250616 10:24:38.865" endtime="20250616 10:24:38.876"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>${invoice_detail_tax_body}</var>
+<arg>${invoice_detail_tax_body}</arg>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250616 10:24:38.876" level="INFO">${invoice_detail_tax_body} = [{'TaxId': '7', 'DetailTax': 400.0}]</msg>
+<status status="PASS" starttime="20250616 10:24:38.876" endtime="20250616 10:24:38.877"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${invoice_data}</var>
+<arg>${invoice_data}</arg>
+<arg>OrderDetailTaxs</arg>
+<arg>${invoice_detail_tax_body}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.878" level="INFO">@{parts} = [ OrderDetailTaxs ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.877" endtime="20250616 10:24:38.878"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.878" level="INFO">Length is 1</msg>
+<msg timestamp="20250616 10:24:38.878" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250616 10:24:38.878" endtime="20250616 10:24:38.878"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.879" level="INFO">${current} = {'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': ''}</msg>
+<status status="PASS" starttime="20250616 10:24:38.878" endtime="20250616 10:24:38.879"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}"/>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.882" endtime="20250616 10:24:38.882"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<status status="NOT RUN" starttime="20250616 10:24:38.883" endtime="20250616 10:24:38.883"/>
+</kw>
+<status status="NOT RUN" starttime="20250616 10:24:38.882" endtime="20250616 10:24:38.883"/>
+</iter>
+<status status="NOT RUN" starttime="20250616 10:24:38.879" endtime="20250616 10:24:38.883"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.886" level="INFO">${last_part} = OrderDetailTaxs</msg>
+<status status="PASS" starttime="20250616 10:24:38.883" endtime="20250616 10:24:38.886"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.887" endtime="20250616 10:24:38.887"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.887" endtime="20250616 10:24:38.887"/>
+</return>
+<msg timestamp="20250616 10:24:38.887" level="INFO">${invoice_data} = {'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': '', 'OrderDetailTaxs': [{'TaxId': '7', 'DetailTax': 400.0}]}</msg>
+<status status="PASS" starttime="20250616 10:24:38.877" endtime="20250616 10:24:38.888"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>${invoice_data}</var>
+<arg>${invoice_data}</arg>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250616 10:24:38.888" level="INFO">${invoice_data} = [{'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': '', 'OrderDetailTaxs': [{'TaxId': '7', 'DetailTax': 400.0}]}]</msg>
+<status status="PASS" starttime="20250616 10:24:38.888" endtime="20250616 10:24:38.888"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>Order.OrderDetails</arg>
+<arg>${invoice_data}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.889" level="INFO">@{parts} = [ Order | OrderDetails ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.889" endtime="20250616 10:24:38.889"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.890" level="INFO">Length is 2</msg>
+<msg timestamp="20250616 10:24:38.890" level="INFO">${parts_count} = 2</msg>
+<status status="PASS" starttime="20250616 10:24:38.889" endtime="20250616 10:24:38.890"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.890" level="INFO">${current} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.890" endtime="20250616 10:24:38.891"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}">0</var>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.894" level="INFO">${part} = Order</msg>
+<status status="PASS" starttime="20250616 10:24:38.894" endtime="20250616 10:24:38.894"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<msg timestamp="20250616 10:24:38.895" level="INFO">${current} = {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000000470', '...</msg>
+<status status="PASS" starttime="20250616 10:24:38.895" endtime="20250616 10:24:38.895"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:38.894" endtime="20250616 10:24:38.895"/>
+</iter>
+<status status="PASS" starttime="20250616 10:24:38.891" endtime="20250616 10:24:38.895"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.899" level="INFO">${last_part} = OrderDetails</msg>
+<status status="PASS" starttime="20250616 10:24:38.895" endtime="20250616 10:24:38.899"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.899" endtime="20250616 10:24:38.899"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.899" endtime="20250616 10:24:38.899"/>
+</return>
+<msg timestamp="20250616 10:24:38.900" level="INFO">${request} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.888" endtime="20250616 10:24:38.900"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>Order.TotalTax</arg>
+<arg>-${tax_value}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<kw name="Split String" library="String">
+<var>@{parts}</var>
+<arg>${property_path}</arg>
+<arg>.</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<msg timestamp="20250616 10:24:38.901" level="INFO">@{parts} = [ Order | TotalTax ]</msg>
+<status status="PASS" starttime="20250616 10:24:38.900" endtime="20250616 10:24:38.901"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${parts_count}</var>
+<arg>${parts}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250616 10:24:38.901" level="INFO">Length is 2</msg>
+<msg timestamp="20250616 10:24:38.901" level="INFO">${parts_count} = 2</msg>
+<status status="PASS" starttime="20250616 10:24:38.901" endtime="20250616 10:24:38.901"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${current}</var>
+<arg>${dictionary}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:38.902" level="INFO">${current} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.902" endtime="20250616 10:24:38.902"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${i}</var>
+<value>0</value>
+<value>${parts_count-1}</value>
+<iter>
+<var name="${i}">0</var>
+<kw name="Get From List" library="Collections">
+<var>${part}</var>
+<arg>${parts}</arg>
+<arg>${i}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.906" level="INFO">${part} = Order</msg>
+<status status="PASS" starttime="20250616 10:24:38.905" endtime="20250616 10:24:38.906"/>
+</kw>
+<kw name="Get From Dictionary" library="Collections">
+<var>${current}</var>
+<arg>${current}</arg>
+<arg>${part}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<msg timestamp="20250616 10:24:38.907" level="INFO">${current} = {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000000470', '...</msg>
+<status status="PASS" starttime="20250616 10:24:38.906" endtime="20250616 10:24:38.907"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:38.905" endtime="20250616 10:24:38.907"/>
+</iter>
+<status status="PASS" starttime="20250616 10:24:38.902" endtime="20250616 10:24:38.907"/>
+</for>
+<kw name="Get From List" library="Collections">
+<var>${last_part}</var>
+<arg>${parts}</arg>
+<arg>${parts_count-1}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<msg timestamp="20250616 10:24:38.912" level="INFO">${last_part} = TotalTax</msg>
+<status status="PASS" starttime="20250616 10:24:38.907" endtime="20250616 10:24:38.912"/>
+</kw>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${current}</arg>
+<arg>${last_part}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250616 10:24:38.913" endtime="20250616 10:24:38.913"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250616 10:24:38.913" endtime="20250616 10:24:38.913"/>
+</return>
+<msg timestamp="20250616 10:24:38.913" level="INFO">${request} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.900" endtime="20250616 10:24:38.914"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${request}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250616 10:24:38.914" level="INFO">{'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000000470', 'Discount': '0', 'DiscountRatio': '0', 'OrderDetails': [{'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': '', 'OrderDetailTaxs': [{'TaxId': '7', 'DetailTax': 400.0}]}], 'Payments': [], 'InvoiceOrderSurcharges': [], 'TotalTax': '-400.0'}}</msg>
+<status status="PASS" starttime="20250616 10:24:38.914" endtime="20250616 10:24:38.914"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${TOTAL_TAX}</arg>
+<arg>${tax_value}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250616 10:24:38.922" level="INFO">${TOTAL_TAX} = 400.0</msg>
+<status status="PASS" starttime="20250616 10:24:38.915" endtime="20250616 10:24:38.922"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${REQUEST_DATA}</arg>
+<arg>${request}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250616 10:24:38.931" level="INFO">${REQUEST_DATA} = {'Order': {'Id': '0', 'Code': '', 'PurchaseDate': '', 'Description': 'Đơn hàng mới', 'Total': '0', 'Status': '1', 'ModifiedDate': '', 'RetailerId': '19812', 'BranchId': '1000000028', 'SoldById': '1000...</msg>
+<status status="PASS" starttime="20250616 10:24:38.923" endtime="20250616 10:24:38.931"/>
+</kw>
+<return>
+<value>${request}</value>
+<status status="PASS" starttime="20250616 10:24:38.931" endtime="20250616 10:24:38.931"/>
+</return>
+<status status="PASS" starttime="20250616 10:24:38.668" endtime="20250616 10:24:38.932"/>
+</kw>
+<kw name="When Gửi Yêu Cầu Tạo Đơn Hàng" library="OrderCommonKeywords">
+<kw name="Call API With BranchId" library="Utilities">
+<var>${response}</var>
+<arg>${ORDER_ENDPOINT}</arg>
+<arg>${REQUEST_DATA}</arg>
+<kw name="Create Auth Headers With BranchId" library="Utilities">
+<var>${headers}</var>
+<arg>${token}</arg>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${headers}</var>
+<arg>Authorization=Bearer ${token}</arg>
+<arg>Content-Type=application/json</arg>
+<arg>Retailer=${RETAILER_CODE}</arg>
+<arg>BranchId=${BRANCH_ID}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250616 10:24:38.934" level="INFO">${headers} = {'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiY...</msg>
+<status status="PASS" starttime="20250616 10:24:38.934" endtime="20250616 10:24:38.934"/>
+</kw>
+<return>
+<value>${headers}</value>
+<status status="PASS" starttime="20250616 10:24:38.934" endtime="20250616 10:24:38.935"/>
+</return>
+<msg timestamp="20250616 10:24:38.935" level="INFO">${headers} = {'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiY...</msg>
+<status status="PASS" starttime="20250616 10:24:38.933" endtime="20250616 10:24:38.935"/>
+</kw>
+<kw name="POST" library="RequestHelper">
+<var>${response}</var>
+<arg>${API_URL}${endpoint}</arg>
+<arg>headers=${headers}</arg>
+<arg>json=${data}</arg>
+<kw name="Run Keyword If" library="BuiltIn">
+<var>${headers}</var>
+<arg>${headers} == ${None}</arg>
+<arg>Create Dictionary</arg>
+<arg>Content-Type=application/json</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${headers}</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<kw name="Set Variable" library="BuiltIn">
+<arg>${headers}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="PASS" starttime="20250616 10:24:38.936" endtime="20250616 10:24:38.937"/>
+</kw>
+<msg timestamp="20250616 10:24:38.937" level="INFO">${headers} = {'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiY...</msg>
+<status status="PASS" starttime="20250616 10:24:38.936" endtime="20250616 10:24:38.937"/>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>kvpos</arg>
+<arg>${url}</arg>
+<arg>verify=True</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20250616 10:24:38.937" level="INFO">Creating Session using : alias=kvpos, url=https://api-sale.kvpos.com/api/orders, headers={},                     cookies={}, auth=None, timeout=None, proxies=None, verify=True,                     debug=0 </msg>
+<status status="PASS" starttime="20250616 10:24:38.937" endtime="20250616 10:24:38.938"/>
+</kw>
+<kw name="POST On Session" library="RequestsLibrary">
+<var>${response}</var>
+<arg>kvpos</arg>
+<arg>${url}</arg>
+<arg>json=${json}</arg>
+<arg>headers=${headers}</arg>
+<arg>expected_status=anything</arg>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20250616 10:24:39.467" level="INFO">POST Request : url=https://api-sale.kvpos.com/api/orders 
+ path_url=/api/orders 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcwLCJpYXQiOjE3NTAwNDQyNzgsImV4cCI6MTc1MjQ2MzQ3OCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiI1OWRiYWY1MGRhYTc0MzNmODRlMzE4NjZlYzFhYzA1NSIsImt2dWlkIjoxMDAwMDAwNDcwLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyOCwia3ZyaW5kaWQiOjUsImt2cmNvZGUiOiJhdXRvYXBpdmx4ZCIsImt2cmlkIjoxOTgxMiwia3Z1cmlkIjoxOTgxMiwia3ZyZ2lkIjozLCJwZXJtcyI6IiJ9.AIwzHQhbiqIzGicqMesaqv4TUJ8l407K_lP2725THHh5Ptj0gUavFqjgheQEvO-G2Ngb7iKgV1UqjYW-TKczMNTnBlusbXEl4Se9M_b6P0GzyVJTBRRx-YqTDGzP-OKpFvCH8TBYf-WZQ2JqPLhPGXSJG9ceO8HOAtM9hw-g16anjfAs3u5t1i99jy7gfo6Su0mSKtYxKsK9CPnUDtBLvr7g-zGj1DLP6P68E6APyMsUj5moOTdQEHRUnp8OD6fthkZ7_K_zio9Ml0aymRfYPDO7fpru2Zkx46EyXxaeORqkmEOxXlEchnz5tpFio-WEhiDO0SmoZeh83Xx1Pkf8Eg', 'Content-Type': 'application/json', 'Retailer': 'autoapivlxd', 'BranchId': '1000000028', 'Content-Length': '544'} 
+ body=b'{"Order": {"Id": "0", "Code": "", "PurchaseDate": "", "Description": "\\u0110\\u01a1n h\\u00e0ng m\\u1edbi", "Total": "0", "Status": "1", "ModifiedDate": "", "RetailerId": "19812", "BranchId": "1000000028", "SoldById": "1000000470", "Discount": "0", "DiscountRatio": "0", "OrderDetails": [{"ProductId": 1000017669, "Quantity": "1", "Price": 100000.0, "Total": "100000", "Discount": "0", "DiscountRatio": "0", "Note": "", "OrderDetailTaxs": [{"TaxId": "7", "DetailTax": 400.0}]}], "Payments": [], "InvoiceOrderSurcharges": [], "TotalTax": "-400.0"}}' 
+ </msg>
+<msg timestamp="20250616 10:24:39.467" level="INFO">POST Response : url=https://api-sale.kvpos.com/api/orders 
+ status=200, reason=OK 
+ headers={'cache-control': 'private', 'content-type': 'application/json; charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'false', 'gatewaynodes': 'https://api-sd.kvpos.com', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0612.00', '__revision': '20250613164102', 'kv.gitcommit': 'f58f7414', 'kv.gittag': '', 'retailer': 'autoapivlxd', 'zone': '3', 'retailerindustryid': '5', 'kv.requestid': '66400294d6734e08819cfa3b8bf8c4b8', 'set-cookie': 'ss-id=y6iSc4eBnCxf4TlZHnbb; path=/; HttpOnly, ss-pid=MA77nNAyeQPUjnigrOdx; expires=Fri, 16-Jun-2045 03:24:39 GMT; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH', 'access-control-expose-headers': 'Retailer-POS-Version', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Mon, 16 Jun 2025 03:24:39 GMT', 'content-length': '1509'} 
+ body={"Id":1000001477,"CashierId":1000000470,"PurchaseDate":"2025-06-16T10:24:39.3356558+07:00","Code":"DH000003","BranchId":1000000028,"Description":"Đơn hàng mới","Status":1,"RetailerId":19812,"Discount":0,"SoldById":1000000470,"CreatedDate":"2025-06-16T10:24:39.3564922+07:00","CreatedBy":1000000470,"DiscountRatio":0,"Total":100000.0,"TotalPayment":0,"CreationBranchId":1000000028,"TotalTax":-400.0,"Seller":{"IdOld":0,"CompareGivenName":"admin","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin","IsTimeSheetException":false,"HasNoTimeSheetPermisstion":false,"IsRequestFromCpanel":false,"IsManageCustomerOfAllOtherEmployee":false,"IsManageCustomerOfOtherEmployee":false,"Id":1000000470,"GivenName":"admin","MobilePhone":"03322553899","CreatedDate":"2025-03-27T13:48:27.1470000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":19812,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","isDeleted":false,"Permissions":[],"Apps":[],"Invoices":[],"Transfers1":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"UserDevices":[],"UserPasswordChangeHistories":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"ProductTaxs":[],"PriceOldTaxs":[],"InvoiceDetailTaxs":[],"OrderDetailTaxs":[],"ReturnDetailTaxs":[],"CustomerToManageByUsers":[],"UserToManageCustomerOfOtherUsers":[],"CustomerGroupToManageByUsers":[],"PaymentTransactionReferences":[],"PaymentTransactionReferences1":[],"OrderSupplierDetailTaxes":[],"PurchaseOrderDetailTaxes":[],"PurchaseReturnDetailTaxes":[]},"Payments":[],"Invoices":[],"OrderDetails":[{"Id":1000003791,"OrderId":1000001477,"ProductId":1000017669,"Quantity":1,"Price":100000.0,"Discount":0,"CreatedDate":"2025-06-16T10:24:39.3664787+07:00","DiscountRatio":0,"Note":"","LatestUpdate":"2025-06-16T10:24:39.3356558+07:00","Uuid":"6ce591ad-1228-4c7f-9413-9fc0e7e05e3d","ViewDiscount":0,"RetailerId":19812,"OrderDetailTaxs":[{"Id":1000000006,"DetailId":1000003791,"RetailerId":19812,"TaxId":7,"DetailTax":400.0,"CreatedBy":1000000470,"CreatedDate":"2025-06-16T10:24:39.3664787+07:00","TaxName":""}],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":100000.0,"ProductType":2,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false}],"InvoiceDeliveries":[],"InvoiceOrderSurcharges":[],"DeliveryPackages":[],"DeliveryInfoes":[],"InvoiceWarranties":[],"OrderPromotions":[],"InvoiceVouchers":[],"CouponUsageTrackings":[],"IdOld":0,"TotalQuantity":1,"SubTotal":100000.0,"PaymentMethod":"","PaidAmount":0,"ToComplete":false,"StatusValue":"Phiếu tạm","CompareSoldById":1000000470,"CompareCustomerId":0,"ComparePurchaseDate":"2025-06-16T10:24:39.3356558+07:00","CompareStatus":1,"CompareDiscount":0,"CompareTotal":100000.0,"CustomerName":"","IsOffline":false,"InvoiceCodes":"","TransGuid":"00000000000000000000000000000000","EventId":0,"EventAction":0,"RetryCount":0,"DocumentTypeByEvent":0,"AllowSellWhenOutStock":false} 
+ </msg>
+<msg timestamp="20250616 10:24:39.468" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:38.938" endtime="20250616 10:24:39.468"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20250616 10:24:39.469" endtime="20250616 10:24:39.469"/>
+</return>
+<msg timestamp="20250616 10:24:39.470" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:38.935" endtime="20250616 10:24:39.470"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20250616 10:24:39.471" endtime="20250616 10:24:39.471"/>
+</return>
+<msg timestamp="20250616 10:24:39.472" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:38.933" endtime="20250616 10:24:39.472"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${RESPONSE}</arg>
+<arg>${response}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250616 10:24:39.475" level="INFO">${RESPONSE} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:39.473" endtime="20250616 10:24:39.475"/>
+</kw>
+<kw name="Set Variable If" library="BuiltIn">
+<var>${response_json}</var>
+<arg>${response.status_code} &lt; 400</arg>
+<arg>${response.json()}</arg>
+<arg>${None}</arg>
+<doc>Sets variable based on the given condition.</doc>
+<msg timestamp="20250616 10:24:39.490" level="INFO">${response_json} = {'Id': 1000001477, 'CashierId': 1000000470, 'PurchaseDate': '2025-06-16T10:24:39.3356558+07:00', 'Code': 'DH000003', 'BranchId': 1000000028, 'Description': 'Đơn hàng mới', 'Status': 1, 'RetailerId': 1...</msg>
+<status status="PASS" starttime="20250616 10:24:39.476" endtime="20250616 10:24:39.490"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${RESPONSE_JSON}</arg>
+<arg>${response_json}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250616 10:24:39.492" level="INFO">${RESPONSE_JSON} = {'Id': 1000001477, 'CashierId': 1000000470, 'PurchaseDate': '2025-06-16T10:24:39.3356558+07:00', 'Code': 'DH000003', 'BranchId': 1000000028, 'Description': 'Đơn hàng mới', 'Status': 1, 'RetailerId': 1...</msg>
+<status status="PASS" starttime="20250616 10:24:39.491" endtime="20250616 10:24:39.492"/>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<arg>${response.status_code} == 200</arg>
+<arg>Set Order Id From Response</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<kw name="Set Order Id From Response" library="OrderCommonKeywords">
+<kw name="Get From Dictionary" library="Collections">
+<var>${order_id}</var>
+<arg>${RESPONSE_JSON}</arg>
+<arg>Id</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<msg timestamp="20250616 10:24:39.498" level="INFO">${order_id} = 1000001477</msg>
+<status status="PASS" starttime="20250616 10:24:39.498" endtime="20250616 10:24:39.498"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${CREATED_ORDER_ID}</arg>
+<arg>${order_id}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250616 10:24:39.506" level="INFO">${CREATED_ORDER_ID} = 1000001477</msg>
+<status status="PASS" starttime="20250616 10:24:39.499" endtime="20250616 10:24:39.506"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.497" endtime="20250616 10:24:39.506"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.492" endtime="20250616 10:24:39.507"/>
+</kw>
+<return>
+<value>${response}</value>
+<status status="PASS" starttime="20250616 10:24:39.507" endtime="20250616 10:24:39.507"/>
+</return>
+<status status="PASS" starttime="20250616 10:24:38.932" endtime="20250616 10:24:39.507"/>
+</kw>
+<kw name="Then Mã trạng thái phải là 200" library="ResponseHelper" sourcename="Mã trạng thái phải là ${expected_status_code}">
+<kw name="Status Should Be" library="ResponseHelper">
+<arg>${expected_status_code}</arg>
+<arg>${RESPONSE}</arg>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${response.status_code}</arg>
+<arg>${expected_status}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<msg timestamp="20250616 10:24:39.513" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:39.509" endtime="20250616 10:24:39.513"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.508" endtime="20250616 10:24:39.513"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.508" endtime="20250616 10:24:39.513"/>
+</kw>
+<kw name="And Xác Thực Đơn Hàng Đã Được Tạo Trong Database" library="OrderCommonKeywords">
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT * FROM [Order] WHERE Id = ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:39.514" level="INFO">${query} = SELECT * FROM [Order] WHERE Id = ?</msg>
+<status status="PASS" starttime="20250616 10:24:39.514" endtime="20250616 10:24:39.514"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${CREATED_ORDER_ID}</arg>
+<msg timestamp="20250616 10:24:39.538" level="INFO">${result} = (1000001477, None, 1000000470, datetime.datetime(2025, 6, 16, 10, 24, 39, 337000), None, 'DH000003', None, None, 1000000028, 'Đơn hàng mới', 1, None, 19812, Decimal('0.0000'), 1000000470, None, dateti...</msg>
+<status status="PASS" starttime="20250616 10:24:39.514" endtime="20250616 10:24:39.538"/>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<arg>${result}</arg>
+<arg>${None}</arg>
+<arg>Đơn hàng không tồn tại trong CSDL</arg>
+<doc>Fails if the given objects are equal.</doc>
+<msg timestamp="20250616 10:24:39.538" level="INFO">Argument types are:
+&lt;class 'pyodbc.Row'&gt;
+&lt;class 'NoneType'&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:39.538" endtime="20250616 10:24:39.539"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.513" endtime="20250616 10:24:39.539"/>
+</kw>
+<kw name="And Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng -${TOTAL_TAX}" library="OrderCommonKeywords" sourcename="Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng ${tax_value}">
+<doc>Verifies VAT information in invoice</doc>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT TotalTax FROM [Order] WHERE Id= ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:39.541" level="INFO">${query} = SELECT TotalTax FROM [Order] WHERE Id= ?</msg>
+<status status="PASS" starttime="20250616 10:24:39.540" endtime="20250616 10:24:39.541"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${CREATED_ORDER_ID}</arg>
+<msg timestamp="20250616 10:24:39.563" level="INFO">${result} = (Decimal('-400.0000'),)</msg>
+<status status="PASS" starttime="20250616 10:24:39.541" endtime="20250616 10:24:39.564"/>
+</kw>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
+<arg>${result[0]}</arg>
+<arg>${tax_value}</arg>
+<doc>Fails if objects are unequal after converting them to real numbers.</doc>
+<msg timestamp="20250616 10:24:39.574" level="INFO">Argument types are:
+&lt;class 'decimal.Decimal'&gt;
+&lt;class 'str'&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:39.565" endtime="20250616 10:24:39.575"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.539" endtime="20250616 10:24:39.575"/>
+</kw>
+<kw name="And Xác Thực Tổng Tiền Đơn Hàng Được Tính Đúng" library="OrderCommonKeywords">
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT Total FROM [Order] WHERE Id = ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:39.577" level="INFO">${query} = SELECT Total FROM [Order] WHERE Id = ?</msg>
+<status status="PASS" starttime="20250616 10:24:39.577" endtime="20250616 10:24:39.578"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${CREATED_ORDER_ID}</arg>
+<msg timestamp="20250616 10:24:39.606" level="INFO">${result} = (Decimal('99600.0000'),)</msg>
+<status status="PASS" starttime="20250616 10:24:39.578" endtime="20250616 10:24:39.606"/>
+</kw>
+<kw name="Should Not Be Equal" library="BuiltIn">
+<arg>${result}</arg>
+<arg>${None}</arg>
+<arg>Đơn hàng không tồn tại trong CSDL</arg>
+<doc>Fails if the given objects are equal.</doc>
+<msg timestamp="20250616 10:24:39.608" level="INFO">Argument types are:
+&lt;class 'pyodbc.Row'&gt;
+&lt;class 'NoneType'&gt;</msg>
+<status status="PASS" starttime="20250616 10:24:39.607" endtime="20250616 10:24:39.608"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${total_in_db}</var>
+<arg>${result[0]}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:39.616" level="INFO">${total_in_db} = 99600.0000</msg>
+<status status="PASS" starttime="20250616 10:24:39.608" endtime="20250616 10:24:39.616"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${total_expected}</var>
+<arg>0</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:39.617" level="INFO">${total_expected} = 0</msg>
+<status status="PASS" starttime="20250616 10:24:39.617" endtime="20250616 10:24:39.617"/>
+</kw>
+<for flavor="IN">
+<var>${detail}</var>
+<value>@{REQUEST_DATA["Order"]["OrderDetails"]}</value>
+<iter>
+<var name="${detail}">{'ProductId': 1000017669, 'Quantity': '1', 'Price': 100000.0, 'Total': '100000', 'Discount': '0', 'DiscountRatio': '0', 'Note': '', 'OrderDetailTaxs': [{'TaxId': '7', 'DetailTax': 400.0}]}</var>
+<kw name="Evaluate" library="BuiltIn">
+<var>${item_total}</var>
+<arg>${detail["Quantity"]} * ${detail["Price"]}</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:39.638" level="INFO">${item_total} = 100000.0</msg>
+<status status="PASS" starttime="20250616 10:24:39.624" endtime="20250616 10:24:39.638"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${total_expected}</var>
+<arg>${total_expected} + ${item_total}</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:39.640" level="INFO">${total_expected} = 100000.0</msg>
+<status status="PASS" starttime="20250616 10:24:39.639" endtime="20250616 10:24:39.640"/>
+</kw>
+<status status="PASS" starttime="20250616 10:24:39.623" endtime="20250616 10:24:39.640"/>
+</iter>
+<status status="PASS" starttime="20250616 10:24:39.618" endtime="20250616 10:24:39.641"/>
+</for>
+<kw name="Set Variable" library="BuiltIn">
+<var>${discount_value}</var>
+<arg>${REQUEST_DATA["Order"]["Discount"]}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250616 10:24:39.646" level="INFO">${discount_value} = 0</msg>
+<status status="PASS" starttime="20250616 10:24:39.641" endtime="20250616 10:24:39.646"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${total_expected}</var>
+<arg>${total_expected} - ${discount_value}</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250616 10:24:39.647" level="INFO">${total_expected} = 100000.0</msg>
+<status status="PASS" starttime="20250616 10:24:39.646" endtime="20250616 10:24:39.647"/>
+</kw>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
+<arg>${total_in_db}</arg>
+<arg>${total_expected}</arg>
+<arg>Tổng tiền đơn hàng không khớp</arg>
+<doc>Fails if objects are unequal after converting them to real numbers.</doc>
+<msg timestamp="20250616 10:24:39.647" level="INFO">Argument types are:
+&lt;class 'decimal.Decimal'&gt;
+&lt;class 'float'&gt;</msg>
+<msg timestamp="20250616 10:24:39.648" level="FAIL">Tổng tiền đơn hàng không khớp: 99600.0 != 100000.0</msg>
+<status status="FAIL" starttime="20250616 10:24:39.647" endtime="20250616 10:24:39.648"/>
+</kw>
+<status status="FAIL" starttime="20250616 10:24:39.576" endtime="20250616 10:24:39.649"/>
+</kw>
+<doc>Kiểm tra tính thuế VAT của hóa đơn
+- Dữ liệu đầu vào:
+- Sản phẩm 1: ID=${product_with_vat}, Số lượng=1, Giá=100,000đ, Thuế suất=2%
+- Logic xử lý: InvoiceService.CalculateVAT()
+- Code: VAT = invoice.InvoiceDetails.Sum(x =&gt; x.Quantity * x.Price * x.VATRate / 100);
+- Thuế VAT = 1 * 100,000đ * 2% = 2,000đ
+- Kỳ vọng:
+- Status code: 200
+- Thuế VAT trong DB được lưu đúng: -2,000đ
+- Cờ thuế VAT được bật (IsVAT=1)</doc>
+<tag>invoice</tag>
+<tag>payment</tag>
+<tag>regression324</tag>
+<tag>vlxd</tag>
+<status status="FAIL" starttime="20250616 10:24:38.666" endtime="20250616 10:24:39.663">Tổng tiền đơn hàng không khớp: 99600.0 != 100000.0</status>
+</test>
+<doc>Test API tạo đơn hàng mới</doc>
+<status status="FAIL" starttime="20250616 10:24:37.410" endtime="20250616 10:24:39.663"/>
+</suite>
+<status status="FAIL" starttime="20250616 10:24:37.408" endtime="20250616 10:24:39.665"/>
+</suite>
+<status status="FAIL" starttime="20250616 10:24:37.405" endtime="20250616 10:24:39.666"/>
+</suite>
+<status status="FAIL" starttime="20250616 10:24:37.388" endtime="20250616 10:24:39.666"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" fail="1" skip="0">invoice</stat>
+<stat pass="0" fail="1" skip="0">payment</stat>
+<stat pass="0" fail="1" skip="0">regression324</stat>
+<stat pass="0" fail="1" skip="0">vlxd</stat>
+</tag>
+<suite>
+<stat pass="0" fail="1" skip="0" id="s1" name="TestSpecs">TestSpecs</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1" name="API">TestSpecs.API</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1-s1" name="Order">TestSpecs.API.Order</stat>
+<stat pass="0" fail="1" skip="0" id="s1-s1-s1-s1" name="CreateOrder Test">TestSpecs.API.Order.CreateOrder Test</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20250616 10:24:38.083" level="WARN">Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.</msg>
+<msg timestamp="20250616 10:24:39.649" level="ERROR">Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ebf' in position 253: character maps to &lt;undefined&gt;</msg>
+<msg timestamp="20250616 10:24:39.663" level="ERROR">Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ebf' in position 253: character maps to &lt;undefined&gt;</msg>
+</errors>
+</robot>

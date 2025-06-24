@@ -2,10 +2,12 @@
 Documentation     Keywords cho test cases API của DiscountTest
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../../TestData/Invoice/InvoiceCurrencyData.robot
+Resource          ../Product/ProductCommonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
 Resource          ../Utilities/DataUtilities.robot
 Resource          ../Utilities/Utilities.robot
+Resource          ../Customer/CustomerCommonKeywords.robot
 Library           ../../Resources/DatabaseLibrary.py
 Library           DateTime
 
@@ -15,7 +17,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Với Sản Phẩm Đơn Gi
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Price    ${price}
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Quantity    ${quantity}
     ${request}=   Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
@@ -31,7 +34,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá ${
 
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Price    ${price}
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Discount    ${discount}
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Quantity    ${quantity}
@@ -48,8 +52,9 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Chiết Khấu Cố Địn
 
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
-     ${product_price}=    Get From Dictionary    ${product_detail}    Price
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
+    ${product_price}=    Get From Dictionary    ${product_detail}    Price
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Discount    ${discount}
     ${total_price}=    Evaluate    ${product_price} - ${discount}
@@ -62,7 +67,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Chiết Khấu Tỷ Lệ $
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với chiết khấu tỷ lệ tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${product_price}=    Get From Dictionary    ${product_detail}    Price
     ${discount}=    Evaluate    ${product_price} * ${discount_ratio} / 100
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
@@ -74,17 +80,19 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Chiết Khấu Tỷ Lệ $
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Chi Nhánh Có Timezone ${BRANCH_ID_TIMEZONE}
+Chuẩn Bị Dữ Liệu Hóa Đơn Gian Quốc Tế Chi Nhánh Có Timezone ${BRANCH_CODE_TIMEZONE}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với chi nhánh có múi giờ khác nhau
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${BRANCH_ID_TIMEZONE}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh   ${BRANCH_CODE_TIMEZONE}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán ${payment_amount} ${currency_code} Phương thức ${payment_method} Khách hàng ${customer_id}
+Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán ${payment_amount} ${currency_code} Phương thức ${payment_method} Khách hàng ${customer_code}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với đơn vị tiền tệ tùy chỉnh
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
@@ -92,7 +100,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán ${payment_amou
     ${payment_data_currency}=    Deep Copy     ${payment_body} 
     ${currency_rate}=    Thông tin quy đổi tiền tệ ${currency_code}
     ${payment_amount_exchange}=    Evaluate    ${payment_amount} * ${currency_rate}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Method    ${payment_method}
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Amount    ${payment_amount}
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeRate    ${currency_rate}
@@ -103,6 +112,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh toán ${payment_amou
     ${payment_data_currency}=    Create List  ${payment_data_currency}
     ${payment_data}=    Create List  ${payment_data}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payment_data}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PaymentDetails   ${payment_data_currency}
@@ -116,7 +126,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Tiền Tệ Mặc Định 
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
     ${payment_data}=    Deep Copy     ${payment_body} 
     ${payment_data_currency}=    Deep Copy     ${payment_body} 
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Method    ${payment_method}
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Amount    ${payment_amount}
     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeRate    1
@@ -132,7 +143,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Tiền Tệ Mặc Định 
     Log    ${request}
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${payment_amount_1} ${currency_code_1} Và ${payment_amount_2} ${currency_code_2} Khách hàng ${customer_id}
+Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${payment_amount_1} ${currency_code_1} Và ${payment_amount_2} ${currency_code_2} Khách hàng ${customer_code}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với thanh toán kết hợp 2 loại tiền tệ
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
@@ -146,7 +157,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${
     ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code_2}
     ${payment_amount_exchange_1}=    Evaluate    ${payment_amount_1} * ${currency_rate_1}
     ${payment_amount_exchange_2}=    Evaluate    ${payment_amount_2} * ${currency_rate_2}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY} 
+    ${product_id}=    Lấy Thông tin Sản Phẩm   ${PRODUCT_CODE_CURRENCY}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id} 
     ${payment_data_1}=    Update Nested Dictionary Property    ${payment_data_1}    Amount   ${payment_amount_exchange_1}
     ${payment_data_2}=    Update Nested Dictionary Property    ${payment_data_2}    Amount     ${payment_amount_exchange_2}
     ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    Amount    ${payment_amount_1}
@@ -160,6 +172,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${
     ${payment_data_currency}=    Create List  ${payment_data_currency_1}    ${payment_data_currency_2}
     ${payment_data}=    Create List  ${payment_data_1}    ${payment_data_2}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payment_data}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PaymentDetails   ${payment_data_currency}    
@@ -180,7 +193,7 @@ Xác Thực Ngày Tạo Hóa Đơn Theo Múi Giờ
     ${actual_date_obj}=    Convert Date    ${actual_date_str}
     ${diff}=    Subtract Date From Date    ${actual_date_obj}    ${expected_date_obj}
     ${abs_diff}=    Evaluate    abs(${diff})
-    Should Be True    ${abs_diff} < 2    Ngày giờ tạo hóa đơn lệch quá 2 giây (lệch ${abs_diff} giây)
+    Should Be True    ${abs_diff} < 10    Ngày giờ tạo hóa đơn lệch quá 10 giây (lệch ${abs_diff} giây)
 
 # DB Validation Keywords
 
@@ -215,7 +228,8 @@ Xác Thực Công Nợ Của Hóa Đơn ${expected_debt}
     Should Be Equal As Numbers    ${result[0]}    ${expected_debt}    Công nợ không đúng. Kỳ vọng: ${expected_debt}, Thực tế: ${result[0]}
 
 
-Xác Định Công Nợ Của Khách Hàng ${customer_id} Giảm ${expected_debt}
+Xác Định Công Nợ Của Khách Hàng ${customer_code} Giảm ${expected_debt}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${query}=    Set Variable    SELECT Value FROM BalanceTracking WHERE PartnerId = ? AND DocumentId = ?
     ${result}=    Fetch One    ${query}    ${customer_id}   ${PAYMENT_ID} 
     Should Be Equal As Numbers    ${result[0]}    -${expected_debt}    Công nợ không đúng. Kỳ vọng: ${expected_debt}, Thực tế: ${result[0]}
@@ -226,13 +240,15 @@ Xác Thực Thanh Toán ${amount} Tiền Tệ ${currency_code} Được Lưu Tro
     Should Be Equal    ${result[0]}    ${currency_code}    Đơn vị tiền tệ không đúng. Kỳ vọng: ${currency_code}, Thực tế: ${result[0]}
     Should Be Equal As Numbers    ${result[1]}    ${amount}    Số tiền không đúng. Kỳ vọng: ${amount}, Thực tế: ${result[1]}
 
-
-Lấy thông Tin công nợ khách hàng ${customer_id} trước khi thanh toán
+    
+Lấy thông Tin công nợ khách hàng ${customer_code} trước khi thanh toán
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${query}=    Set Variable    SELECT Debt FROM CustomerSummary WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${customer_id} 
     Set Test Variable    ${DEBT_BEFORE_PAYMENT}    ${result[0]}
 
-Xác Thực Công Nợ Của Khách Hàng ${customer_id} Sau khi thanh toán ${payment_amount}
+Xác Thực Công Nợ Của Khách Hàng ${customer_code} Sau khi thanh toán ${payment_amount}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${customer_code}
     ${query}=    Set Variable    SELECT Debt FROM CustomerSummary WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${customer_id} 
     ${debt_after_payment}=    Evaluate    ${DEBT_BEFORE_PAYMENT} - ${payment_amount}

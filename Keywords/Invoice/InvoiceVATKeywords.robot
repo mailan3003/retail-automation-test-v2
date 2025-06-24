@@ -65,6 +65,7 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} có ${num
     ${tax_value}=    Evaluate    ${price} * 5 / 100
     ${tax_value}=    Evaluate    round(${tax_value}, 0)
     ${invoice_detail_tax_body}=    Update Nested Dictionary Property  ${invoice_detail_tax_body_master}  DetailTax    ${tax_value}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    InvoiceDetailTaxs    ${invoice_detail_tax_body}
     ${invoice_detail_tax_body_list}  Create List    ${invoice_detail_tax_body}
     ${data_product_list}=    Create List    ${invoice_data}
     FOR  ${item_number_line}    IN RANGE    ${number_line}
@@ -75,6 +76,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} có ${num
         ${tax_value_new}=    Evaluate    round(${tax_value_new}, 0)
         ${tax_value}=    Evaluate    ${tax_value_new} + ${tax_value}
         ${invoice_detail_tax_body_new}=    Update Nested Dictionary Property  ${invoice_detail_tax_body_new}   DetailTax   ${tax_value_new}
+        ${invoice_detail_tax_body_new}  Create List    ${invoice_detail_tax_body_new}
+        ${data_product_new}=    Update Nested Dictionary Property    ${data_product_new}    InvoiceDetailTaxs    ${invoice_detail_tax_body_new}
         Append To List    ${data_product_list}    ${data_product_new}
         Append To List    ${invoice_detail_tax_body_list}    ${invoice_detail_tax_body_new}
     END
@@ -106,12 +109,13 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Và ${pro
     ${invoice_detail_tax_body_2}=    Update Nested Dictionary Property    ${invoice_detail_tax_body_2}    DetailTax    ${tax_value_2}
     ${invoice_detail_tax_body_list}  Create List    ${invoice_detail_tax_body}
     ${invoice_detail_tax_body_list_2}  Create List    ${invoice_detail_tax_body_2}
+    ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    InvoiceDetailTaxs    ${invoice_detail_tax_body_list}
+    ${invoice_data_2}=    Update Nested Dictionary Property    ${invoice_data_2}    InvoiceDetailTaxs    ${invoice_detail_tax_body_list_2}
     ${data_product_list}=    Create List    ${invoice_data}    ${invoice_data_2}
     ${invoice_detail_tax_body_list}=    Create List    ${invoice_detail_tax_body}    ${invoice_detail_tax_body_2}
     ${total_tax_value}=    Evaluate    ${tax_value} + ${tax_value_2}
     ${total_tax_value}=    Evaluate    round(${total_tax_value}, 0)
     ${request}=        Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product_list}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetailTaxs    ${invoice_detail_tax_body_list}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.TotalTax    ${total_tax_value}
     Set Test Variable    ${TOTAL_TAX}    ${total_tax_value}
     Log    ${request}

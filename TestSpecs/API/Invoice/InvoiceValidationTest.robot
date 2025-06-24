@@ -1,5 +1,7 @@
 *** Settings ***
 Documentation     Test API kiểm tra và xác thực đầu vào khi tạo hóa đơn
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/InputValidationKeywords.robot
 Resource          ../../../Keywords/Invoice/UpdateInvoiceKeywords.robot
 Resource          ../../../Keywords/Invoice/PrescriptionValidationKeywords.robot
@@ -8,11 +10,11 @@ Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../TestData/Invoice/UpdateInvoiceData.robot
-Suite Setup       Suite Setup
+Resource          ../../../TestData/Invoice/InvoiceVLXDData.robot
+
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    InvoiceValidationTest
+
 
 *** Test Cases ***
 RT-IV-001 Tạo hóa đơn thành công với dữ liệu hợp lệ
@@ -55,7 +57,7 @@ RT-IV-004 Kiểm tra chi nhánh không hợp lệ
 RT-IV-005 Kiểm tra khách hàng không thuộc chi nhánh
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không thuộc chi nhánh
     [Tags]    invoicevalidate    smoke    vlxd 
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Chi Nhánh Khác
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn ${PRODUCT_CODE_VLXD} Với Khách Hàng Chi Nhánh Khác
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Khách hàng không thuộc chi nhánh hiện tại."

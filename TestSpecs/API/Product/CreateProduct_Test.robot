@@ -1,9 +1,11 @@
 *** Settings ***
 Documentation     Test API tạo sản phẩm
+Suite Setup       Init Test Environment   ${ENV}    MHQL
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 *** Variables ***
 @{value_attribute_1}   L  M   S
 &{dict_attribute_name_1}    SIZE=@{value_attribute_1}
@@ -13,9 +15,11 @@ Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
 @{list_shelves}    Vị trí 1    Vị trí 2
 @{list_pricebook}    Bảng giá chi nhánh    Bảng giá đặt hàng
 @{list_price}    1000.05    200000
+@{list_price_variant}    1000.05    200000      540000
 &{dict_product_tp_cb}   	TPC001=4     TPC002=5.98
 &{dict_product_tp}    TP001=1.55     TP002=2.7
-&{dict_product_tp_cb_combo}   		FTSX00003=7   	DTCombo07=1 
+&{dict_product_tp_cb_combo}   		FTSX00003=7   	DTCombo07=1
+
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
@@ -24,6 +28,7 @@ RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
     [Documentation]    Test tạo sản phẩm khi không cung cấp mã, hệ thống sẽ tự sinh mã
@@ -33,7 +38,7 @@ RT-PRODUCT-002 Tạo Sản Phẩm Với Mã Tự Động
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Tạo Với Mã Tự Sinh
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
     [Documentation]    Test tạo sản phẩm có nhiều đơn vị tính với tỷ lệ quy đổi
     [Tags]    AIGenerated    CreateProduct    Positive    UnitConversion      regression
@@ -42,7 +47,7 @@ RT-PRODUCT-003 Tạo Sản Phẩm Với Nhiều Đơn Vị Tính
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-004 Tạo Sản Phẩm Với Tồn Kho Ban Đầu
     [Documentation]    Test tạo sản phẩm với tồn kho ban đầu
     [Tags]    AIGenerated    CreateProduct    Positive    Inventory      regression 
@@ -51,7 +56,7 @@ RT-PRODUCT-004 Tạo Sản Phẩm Với Tồn Kho Ban Đầu
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Tồn Kho 50.5 Ở Chi Nhánh Chi nhánh trung tâm
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-005 Tạo Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
     [Documentation]    Test tạo sản phẩm có quản lý theo lô và hạn sử dụng
     [Tags]    AIGenerated    CreateProduct    Positive    BatchExpiry      regression 
@@ -60,7 +65,7 @@ RT-PRODUCT-005 Tạo Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
     [Documentation]    Test tạo sản phẩm có quản lý theo serial
     [Tags]    AIGenerated    CreateProduct    Positive    Serial        regression 
@@ -69,7 +74,7 @@ RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
     [Documentation]    Test tạo sản phẩm có thuộc tính
     [Tags]    AIGenerated    CreateProduct    Positive    Attributes      regression
@@ -78,7 +83,7 @@ RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra 
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     [Documentation]    Test tạo sản phẩm loại combo
@@ -88,7 +93,7 @@ RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Loại Combo Với Nhiều Hàng Thành Phần
     [Documentation]    Test tạo sản phẩm loại combo với nhiều hàng thành phần
     [Tags]    AIGenerated    CreateProduct    Positive    Combo          regression
@@ -98,7 +103,7 @@ Tạo Sản Phẩm Loại Combo Với Nhiều Hàng Thành Phần
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hàng Thành Phần ${LIST_MATERIAL_ID} Với Số Lượng ${LIST_MATERIAL_QUANTITY}
     And Xác Thực Sản Phẩm Có Giá Vốn ${TOTAL_COST} Ở Chi Nhánh Chi nhánh trung tâm
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Loại Sản Xuất Hàng Thành Phần Là Hàng Combo Khác
     [Documentation]    Test tạo sản phẩm loại sản xuất hàng thành phần là hàng combo 
     [Tags]    AIGenerated    CreateProduct    Positive    Manufactured          regression17
@@ -123,6 +128,7 @@ RT-PRODUCT-021 Tạo Sản Phẩm Loại Dịch Vụ
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-022 Tạo Sản Phẩm Loại Hàng Sản Xuất
     [Documentation]    Test tạo sản phẩm loại hàng sản xuất
@@ -132,6 +138,7 @@ RT-PRODUCT-022 Tạo Sản Phẩm Loại Hàng Sản Xuất
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 Tạo Sản Phẩm Hàng Sản Xuất Có Nhiều Hàng Thành Phần
@@ -142,6 +149,7 @@ Tạo Sản Phẩm Hàng Sản Xuất Có Nhiều Hàng Thành Phần
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hàng Thành Phần ${LIST_MATERIAL_ID} Với Số Lượng ${LIST_MATERIAL_QUANTITY}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-023 Tạo Sản Phẩm Có Vị Trí Lưu Trữ
@@ -152,6 +160,7 @@ RT-PRODUCT-023 Tạo Sản Phẩm Có Vị Trí Lưu Trữ
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Vị Trí Lưu Trữ Đúng
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Có Chứa Nhiều Vị Trí Lưu Trữ
     [Documentation]    Test tạo sản phẩm có chứa nhiều vị trí lưu trữ
@@ -161,6 +170,7 @@ Tạo Sản Phẩm Có Chứa Nhiều Vị Trí Lưu Trữ
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Lưu Trữ ${SHELVES_ID} Vị Trí
+     [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-024 Tạo Sản Phẩm Có Thương Hiệu
     [Documentation]    Test tạo sản phẩm có thương hiệu
@@ -170,6 +180,7 @@ RT-PRODUCT-024 Tạo Sản Phẩm Có Thương Hiệu
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thương Hiệu Đúng
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-025 Tạo Sản Phẩm Có Trọng Lượng
     [Documentation]    Test tạo sản phẩm có trọng lượng
@@ -188,6 +199,7 @@ RT-PRODUCT-026 Tạo Sản Phẩm Có Mã Barcode
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mã Barcode Đúng
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-027 Tạo Sản Phẩm Có Giá Vốn Ở Một chi nhánh
     [Documentation]    Test tạo sản phẩm có giá vốn
@@ -199,6 +211,7 @@ RT-PRODUCT-027 Tạo Sản Phẩm Có Giá Vốn Ở Một chi nhánh
     And Xác Thực Sản Phẩm Có Giá Vốn 100000 Ở Chi Nhánh Chi nhánh trung tâm
     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh A
     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-028 Tạo Sản Phẩm Không Được Bán Trực Tiếp
     [Documentation]    Test tạo sản phẩm không được bán trực tiếp
@@ -208,6 +221,7 @@ RT-PRODUCT-028 Tạo Sản Phẩm Không Được Bán Trực Tiếp
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Trạng Thái Không Bán Trực Tiếp
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Kinh Doanh Theo Chi Nhánh
     [Documentation]    Test tạo sản phẩm kinh doanh theo chi nhánh
@@ -218,7 +232,8 @@ Tạo Sản Phẩm Kinh Doanh Theo Chi Nhánh
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_name_branch[0]}
     And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_name_branch[1]}
-     And Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh Ở Chi Nhánh Nhánh B
+    And Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh Ở Chi Nhánh Nhánh B
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Vốn Áp Dụng Nhiều Chi Nhánh
     [Documentation]    Test tạo sản phẩm có giá bán 0
@@ -229,7 +244,8 @@ RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Vốn Áp Dụng Nhiều Chi Nhánh
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Vốn 3000.77 Ở Chi Nhánh ${list_name_branch[0]}
     And Xác Thực Sản Phẩm Có Giá Vốn 3000.77 Ở Chi Nhánh ${list_name_branch[1]}
-     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
+    And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán 0
     [Documentation]    Test tạo sản phẩm có giá bán 0
     [Tags]    AIGenerated    CreateProduct    Positive    ZeroPrice    regression
@@ -238,6 +254,7 @@ RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán 0
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Bán 0
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán Và Thiết Lập Bảng Giá
     [Documentation]    Test tạo sản phẩm có giá bán 0
@@ -249,6 +266,7 @@ RT-PRODUCT-031 Tạo Sản Phẩm Với Giá Bán Và Thiết Lập Bảng Giá
     And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Là 4000.44
     And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Ở Pricebook ${list_pricebook[0]} Là ${list_price[0]}
     And Xác Thực Giá Sản Phẩm ${CREATED_PRODUCT_CODE} Ở Pricebook ${list_pricebook[1]} Là ${list_price[1]}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-032 Tạo Sản Phẩm Với Giới Hạn Tồn Kho
     [Documentation]    Test tạo sản phẩm có thiết lập giới hạn tồn kho tối thiểu và tối đa
@@ -258,6 +276,7 @@ RT-PRODUCT-032 Tạo Sản Phẩm Với Giới Hạn Tồn Kho
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giới Hạn Tồn Kho Tối Thiểu 10 Và Tối Đa 100 Ở Chi Nhánh Chi Nhánh Trung Tâm
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm
     [Documentation]    Test tạo sản phẩm có tích điểm thưởng
@@ -267,6 +286,7 @@ RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Tích Điểm Thưởng
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm Và Có Điểm Thưởng
     [Documentation]    Test tạo sản phẩm tích điểm và có điểm thưởng
@@ -276,6 +296,7 @@ RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm Và Có Điểm Thưởng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Điểm Thưởng 5
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-033 Tạo Sản Phẩm Tích Điểm Và Có Điểm Thưởng Số Lẻ
     [Documentation]    Test tạo sản phẩm tích điểm và có điểm thưởng
@@ -299,15 +320,7 @@ Tạo Sản Phẩm Để Trống Nhóm Hàng
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 500
 
-RT-PRODUCT-034 Tạo Sản Phẩm Với Thời Gian Bảo Hành
-    [Documentation]    Test tạo sản phẩm có thời gian bảo hành
-    [Tags]    AIGenerated    CreateProduct    Positive    Warranty    regression178
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Có Thời Gian Bảo Hành Là 12 Tháng
-    When Gửi Yêu Cầu Tạo Sản Phẩm
-    And Save Warranty For Many Product  
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thời Gian Bảo Hành 12 Tháng
+
 
 RT-PRODUCT-035 Tạo Sản Phẩm Với Hình Ảnh
     [Documentation]    Test tạo sản phẩm có hình ảnh đính kèm
@@ -317,6 +330,7 @@ RT-PRODUCT-035 Tạo Sản Phẩm Với Hình Ảnh
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hình Ảnh Được Lưu Trữ
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-036 Tạo Sản Phẩm Với Mô Tả Ghi Chú Đặt Hàng
@@ -327,6 +341,7 @@ RT-PRODUCT-036 Tạo Sản Phẩm Với Mô Tả Ghi Chú Đặt Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng ${RANDOM_GHICHU} 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-037 Tạo Sản Phẩm Với Mô Tả Ghi Chú
     [Documentation]    Test tạo sản phẩm có mô tả ghi chú
@@ -336,7 +351,7 @@ RT-PRODUCT-037 Tạo Sản Phẩm Với Mô Tả Ghi Chú
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mô Tả Ghi Chú ${RANDOM_GHICHU} 
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
    
 
 RT-PRODUCT-038 Tạo Sản Phẩm Không Cung Cấp Tên
@@ -362,17 +377,17 @@ RT-PRODUCT-042 Tạo Sản Phẩm Với Tên Có Ký Tự Đặc Biệt
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Tên Sản Phẩm Được Chuẩn Hóa Đúng
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-044 Tạo Sản Phẩm Với Thuộc Tính Có Giá Bán Khác Nhau
     [Documentation]    Test tạo sản phẩm với các biến thể có giá bán khác nhau
     [Tags]    AIGenerated    CreateProduct    Positive    VariantPricing    
-    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể Có Giá Khác Nhau
+    Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Các Biến Thể ${dict_attribute_name_1} Có Giá Khác Nhau ${list_price_variant}
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Các Biến Thể Có Giá Bán Theo Cấu Hình
-
+    And Xác Thực Các Biến Thể Có Giá Bán ${list_price_variant} Theo Cấu Hình
+    [Teardown]     Delete Nhiều Sản Phẩm  ${LIST_PRODUCT_CODE} 
 RT-PRODUCT-045 Tạo Sản Phẩm Với Thuộc Tính Có Tồn Kho Khác Nhau
     [Documentation]    Test tạo sản phẩm với các biến thể có tồn kho ban đầu khác nhau
     [Tags]    AIGenerated    CreateProduct    Positive    VariantInventory    
@@ -382,6 +397,7 @@ RT-PRODUCT-045 Tạo Sản Phẩm Với Thuộc Tính Có Tồn Kho Khác Nhau
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Các Biến Thể Có Tồn Kho Theo Cấu Hình
     And Xác Thực Tổng Tồn Kho Sản Phẩm Chính Bằng Tổng Các Biến Thể
+    [Teardown]     Delete Nhiều Sản Phẩm  ${LIST_PRODUCT_CODE} 
 
 RT-PRODUCT-046 Tạo Sản Phẩm Với Thuộc Tính Có Mã Vạch Riêng
     [Documentation]    Test tạo sản phẩm với các biến thể có mã vạch riêng
@@ -391,6 +407,7 @@ RT-PRODUCT-046 Tạo Sản Phẩm Với Thuộc Tính Có Mã Vạch Riêng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Các Biến Thể Có Mã Vạch Theo Cấu Hình
+    [Teardown]     Xóa Sản Phẩm  ${LIST_PRODUCT_CODE} 
 
 RT-PRODUCT-047 Kiểm Tra Lỗi Khi Tạo Sản Phẩm Với Tổ Hợp Thuộc Tính Trùng
     [Documentation]    Test tạo sản phẩm có tổ hợp thuộc tính bị trùng lặp sẽ báo lỗi
@@ -408,6 +425,7 @@ RT-PRODUCT-048 Tạo Sản Phẩm Với Tên Biến Thể Tự Động
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Tên Các Biến Thể Được Tạo Đúng Theo Cấu Trúc
+    [Teardown]     Delete Nhiều Sản Phẩm  ${LIST_PRODUCT_CODE} 
 
 RT-PRODUCT-049 Tạo Sản Phẩm Với Mã Biến Thể Tự Động
     [Documentation]    Test tạo sản phẩm với mã biến thể được tạo tự động dựa trên mã sản phẩm gốc
@@ -417,6 +435,7 @@ RT-PRODUCT-049 Tạo Sản Phẩm Với Mã Biến Thể Tự Động
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Mã Các Biến Thể Được Tạo Dựa Trên Mã Sản Phẩm Gốc
+    [Teardown]     Delete Nhiều Sản Phẩm  ${LIST_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Ở MHBH
     [Documentation]    Test tạo sản phẩm ở MHBH
@@ -425,6 +444,7 @@ Tạo Sản Phẩm Ở MHBH
     When Gửi Yêu Cầu Tạo Sản Phẩm Từ MHBH
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Ở Form Khác
     [Documentation]    Test tạo sản phẩm ở form khác
@@ -433,6 +453,7 @@ Tạo Sản Phẩm Ở Form Khác
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-050 Tạo Sản Phẩm Với Nhiều Hình Ảnh
     [Documentation]    Test tạo sản phẩm với nhiều hình ảnh đính kèm
@@ -442,7 +463,7 @@ RT-PRODUCT-050 Tạo Sản Phẩm Với Nhiều Hình Ảnh
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Nhiều Hình Ảnh Được Lưu Trữ
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-051 Tạo Sản Phẩm Với Hình Ảnh Ghim Chính
     [Documentation]    Test tạo sản phẩm với hình ảnh đính kèm và chọn làm ảnh ghim chính
     [Tags]    AIGenerated    CreateProduct    Positive    PinnedImage    regression
@@ -451,6 +472,7 @@ RT-PRODUCT-051 Tạo Sản Phẩm Với Hình Ảnh Ghim Chính
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hình Ảnh Được Lưu Trữ
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-052 Tạo Sản Phẩm Với Hình Ảnh Từ URL
     [Documentation]    Test tạo sản phẩm với hình ảnh được lấy từ URL
@@ -460,7 +482,7 @@ RT-PRODUCT-052 Tạo Sản Phẩm Với Hình Ảnh Từ URL
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hình Ảnh Từ URL Được Lưu Trữ
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-053 Tạo Sản Phẩm Với Hình Ảnh Có Định Dạng Khác Nhau
     [Documentation]    Test tạo sản phẩm với hình ảnh có nhiều định dạng khác nhau (jpg, png, jpeg)
     [Tags]    AIGenerated    CreateProduct    Positive    ImageFormats    regression
@@ -469,7 +491,7 @@ RT-PRODUCT-053 Tạo Sản Phẩm Với Hình Ảnh Có Định Dạng Khác Nha
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Hình Ảnh Với Các Định Dạng Khác Nhau
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-057 Tạo Sản Phẩm Với Đơn Vị Tính Cơ Bản
@@ -480,7 +502,7 @@ RT-PRODUCT-057 Tạo Sản Phẩm Với Đơn Vị Tính Cơ Bản
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Đơn Vị Tính thùng
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-059 Tạo Sản Phẩm Với Đơn Vị Tính Có Giá Bán Khác Nhau
     [Documentation]    Test tạo sản phẩm với các đơn vị tính có giá bán khác nhau
@@ -493,10 +515,12 @@ RT-PRODUCT-059 Tạo Sản Phẩm Với Đơn Vị Tính Có Giá Bán Khác Nha
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Giá Bán Theo Đơn Vị Tính ${unit_names} Là ${prices}
+    [Teardown]      Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
     [Documentation]    Test tạo sản phẩm với các đơn vị tính có mã vạch riêng
-    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression12
+    [Tags]    AIGenerated    CreateProduct    Positive    UnitManagement    regression
     @{unit_names}    Create List    chai    loc   
     @{conversion_values}    Create List    1    6    
     @{barcodes}    Create List    8935001701638    8935001701645    
@@ -505,7 +529,8 @@ RT-PRODUCT-060 Tạo Sản Phẩm Với Đơn Vị Tính Có Mã Vạch Riêng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Mã Vạch Theo Đơn Vị Tính ${unit_names} Là ${barcodes}
-    [Teardown]   Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính Theo Quy Đổi
     [Documentation]    Test tạo sản phẩm với tồn kho theo đơn vị tính cơ bản và kiểm tra tồn kho đơn vị quy đổi
@@ -519,6 +544,8 @@ RT-PRODUCT-061 Tạo Sản Phẩm Với Đơn Vị Tính Và Tồn Kho Tính The
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "kg" Là 1000
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "ta" Là 10
     And Xác Thực Sản Phẩm Có Tồn Kho Đơn Vị "tan" Là 1
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 RT-PRODUCT-062 Tạo Sản Phẩm Với Đơn Vị Tính Và Giá Vốn Tính Theo Quy Đổi
     [Documentation]    Test tạo sản phẩm với giá vốn theo đơn vị tính cơ bản và kiểm tra giá vốn đơn vị quy đổi
@@ -532,6 +559,8 @@ RT-PRODUCT-062 Tạo Sản Phẩm Với Đơn Vị Tính Và Giá Vốn Tính Th
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "m" Là 5000
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cuon" Là 50000
     And Xác Thực Sản Phẩm Có Giá Vốn Đơn Vị "cay" Là 500000
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 Tạo Sản Phẩm Với Đơn Vị Tính Và Có Điểm Khác Nhau    
     [Documentation]    Test tạo sản phẩm với đơn vị tính và có điểm khác nhau
@@ -544,6 +573,8 @@ Tạo Sản Phẩm Với Đơn Vị Tính Và Có Điểm Khác Nhau
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Có Điểm ${different_points}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 Tạo Sản Phẩm Với Đơn Vị Tính Và Có Bán Trực Tiếp Khác Nhau 
     [Documentation]    Test tạo sản phẩm với đơn vị tính và có bán trực tiếp khác nhau lớn
@@ -556,6 +587,8 @@ Tạo Sản Phẩm Với Đơn Vị Tính Và Có Bán Trực Tiếp Khác Nhau
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm ${LIST_PRODUCT_CODE} Trạng Thái ${direct_selling} Bán Trực Tiếp 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
 
 RT-PRODUCT-065 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Lớn
     [Documentation]    Test tạo sản phẩm với số lượng đơn vị tính tối đa cho phép
@@ -565,6 +598,9 @@ RT-PRODUCT-065 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Lớn
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Đúng Số Lượng Đơn Vị Tính Tối Đa
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+
+
 
 RT-PRODUCT-066 Tạo Sản Phẩm Với Số Lượng Đơn Vị Tính Vượt Tối Đa
     [Documentation]    Test tạo sản phẩm với số lượng đơn vị tính vượt tối đa cho phép
@@ -585,6 +621,7 @@ RT-PRODUCT-066 Tạo Sản Phẩm Với Tên Đơn Vị Tính Đặc Biệt
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${conversion_values}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-072 Tạo Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Biệt
@@ -598,12 +635,13 @@ RT-PRODUCT-072 Tạo Sản Phẩm Với Thuộc Tính Chứa Ký Tự Đặc Bi�
 
 RT-PRODUCT-073 Tạo Sản Phẩm Với Số Lượng Thuộc Tính Lớn
     [Documentation]    Test tạo sản phẩm với số lượng thuộc tính lớn (>5 thuộc tính)
-    [Tags]    AIGenerated    CreateProduct    Positive    ManyAttributes    regression1
+    [Tags]    AIGenerated    CreateProduct    Positive    ManyAttributes    regression133
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Nhiều Thuộc Tính
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Đầy Đủ Các Thuộc Tính Đã Cấu Hình
+    [Teardown]     Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE} 
 
 
 RT-PRODUCT-075 Tạo Sản Phẩm Với Thiết Lập Trạng Thái Kinh Doanh Khác Nhau Cho Biến Thể
@@ -614,7 +652,7 @@ RT-PRODUCT-075 Tạo Sản Phẩm Với Thiết Lập Trạng Thái Kinh Doanh K
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Biến Thể Có Trạng Thái Kinh Doanh Đúng Theo Cấu Hình
-
+    [Teardown]     Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE} 
 RT-PRODUCT-076 Cập Nhật Thuộc Tính Cho Sản Phẩm Đã Tồn Tại
     [Documentation]    Test cập nhật thuộc tính cho sản phẩm đã tồn tại
     [Tags]    AIGenerated    CreateProduct    Positive    UpdateAttributes    regression1
@@ -635,6 +673,7 @@ RT-PRODUCT-077 Tạo Sản Phẩm Với Thuộc Tính Có Ảnh Hưởng Đến 
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Mã Vạch Của Biến Thể Được Tạo Theo Đúng Quy Tắc
+    [Teardown]     Delete Nhiều Sản Phẩm    ${LIST_PRODUCT_CODE} 
 
 RT-PRODUCT-078 Tạo Sản Phẩm Với Thuộc Tính Quá Dài
     [Documentation]    Test tạo sản phẩm với giá trị thuộc tính quá dài

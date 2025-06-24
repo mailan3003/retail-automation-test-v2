@@ -1,16 +1,16 @@
 *** Settings ***
 Documentation     Test cases API cho phần xử lý thông tin giao hàng
+Suite Setup       Init Test Environment   ${ENV}    MHBH
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Invoice/DeliveryProcessingKeywords.robot
+Resource          ../../../Keywords/Invoice/InvoiceCommonKeywords.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Library           ../../../Resources/DatabaseLibrary.py
-Suite Setup       Suite Setup
 
 *** Keywords ***
-Suite Setup
-    Set Suite Variable    ${SUITE_NAME}    DeliveryProcessingTest
 
 *** Test Cases ***
 RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy đủ
@@ -39,8 +39,8 @@ RT-DP-001 Tạo hóa đơn COD thành công với thông tin giao hàng đầy �
     And Xác Thực Thông Tin Người Nhận   Hung   0988673523
     And Xác Thực Địa Chỉ Giao Hàng     1B
     And Xác Thực Khu Vực Giao Hàng    ${DEFAULT_LOCATION_ID}   ${DEFAULT_WARD_ID_1} 
-    And Xác Thực Đối Tác Giao Hàng     ${PARTNER_DELIVERY_1_ID}
     And Xác Thực Phí Giao Hàng     ${DEFAULT_DELIVERY_PRICE}
+    [Teardown]    Delete Invoice From API
 
 
 RT-DP-006 Tạo hóa đơn COD thành công với đối tác giao hàng Để trống
@@ -66,6 +66,7 @@ RT-DP-006 Tạo hóa đơn COD thành công với đối tác giao hàng Để t
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Giao Hàng Trong DB
+    [Teardown]    Delete Invoice From API
 
 RT-DP-007 Tạo hóa đơn giao hàng thay đổi thông tin gói hàng
     [Documentation]    Kiểm tra tạo hóa đơn giao hàng thay đổi thông tin gói hàng
@@ -88,6 +89,7 @@ RT-DP-007 Tạo hóa đơn giao hàng thay đổi thông tin gói hàng
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Sử Dụng Thông Tin Trọng Lượng 1000 Và Kích Thước 20x10x15 cm
+    [Teardown]    Delete Invoice From API
 
 RT-DP-008 Tạo hóa đơn Giao hàng gắn với Khách hàng và miễn phí giao hàng
     [Documentation]    Kiểm tra tạo hóa đơn Giao hàng với miễn phí giao hàng
@@ -106,12 +108,13 @@ RT-DP-008 Tạo hóa đơn Giao hàng gắn với Khách hàng và miễn phí g
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng = 0 và cờ IsFreeShip = true
      [Tags]    apiinvoice    delivery    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${CUSTOMER_ID} Và Phí Giao Hàng 0
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Gắn Với Khách Hàng ${CUSTOMER_CODE} Và Phí Giao Hàng 0
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Phí Giao Hàng   0
-    And Xác Thực Khách Hàng ${CUSTOMER_ID}
+    And Xác Thực Khách Hàng ${CUSTOMER_CODE}
+    [Teardown]    Delete Invoice From API
 
 RT-DP-009 Tạo hóa đơn giao hàng có thanh toán 
     [Documentation]    Kiểm tra tạo hóa đơn giao hàng có thanh toán COD
@@ -134,6 +137,7 @@ RT-DP-009 Tạo hóa đơn giao hàng có thanh toán
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Số Tiền Thu Hộ   ${ORIGINAL_COD} 
+    [Teardown]    Delete Invoice From API
 
 RT-DP-010 Tạo hóa đơn giao hàng có thời gian giao hàng
     [Documentation]    Kiểm tra tạo hóa đơn giao hàng có thời gian giao hàng
@@ -157,6 +161,7 @@ RT-DP-010 Tạo hóa đơn giao hàng có thời gian giao hàng
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Trạng Thái Giao Hàng   1
     And Xác Thực Thời Gian Giao Hàng  ${date_time}
+    [Teardown]    Delete Invoice From API
 
 RT-DP-011 Tạo hóa đơn COD thành công với trạng thái đang giao hàng
     [Documentation]    Kiểm tra tạo hóa đơn COD thành công với trạng thái đang giao hàng
@@ -179,6 +184,7 @@ RT-DP-011 Tạo hóa đơn COD thành công với trạng thái đang giao hàng
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Trạng Thái Giao Hàng   2
+    [Teardown]    Delete Invoice From API
 
 RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
     [Documentation]    Kiểm tra tạo hóa đơn giao hàng thành công không thu hộ
@@ -202,6 +208,7 @@ RT-DP-012 Tạo hóa đơn giao hàng thành công không thu hộ
     And Nội dung phản hồi trả về phải tồn tại Id
     And Xác Thực Hóa Đơn Giao Hàng Trong DB Không Thu Hộ
     And Xác Thực Trạng Thái Giao Hàng    1
+    [Teardown]    Delete Invoice From API
 
 RT-DP-013 Tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
     [Documentation]    Kiểm tra tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn thời gian hóa đơn
@@ -215,7 +222,7 @@ RT-DP-013 Tạo hóa đơn thất bại khi thời gian giao hàng sớm hơn th
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
     [Tags]    apiinvoice    delivery    AIGenerated    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm Hơn Thời Gian Hóa Đơn
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Sớm So Với Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"
@@ -232,7 +239,7 @@ RT-DP-014 Tạo hóa đơn thất bại khi thời gian giao hàng trùng với 
     ...    - Status code: 420
     ...    - Thông báo lỗi: "Thời gian giao hàng phải sau thời gian hóa đơn"
     [Tags]    apiinvoice    delivery    AIGenerated    regression
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng Với Thời Gian Hóa Đơn
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Thời Gian Giao Hàng Trùng So Với Thời Gian Hóa Đơn
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 420
     And Phản hồi phải chứa lỗi "Thời gian giao hàng phải sau thời gian hóa đơn"

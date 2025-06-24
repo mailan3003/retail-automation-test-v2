@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation     Test API tạo sản phẩm
+Suite Setup       Init Test Environment   ${ENV}   MHQL
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Product/Product_Medicine_Keywords.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 Resource          ../../../Config/Env_api.robot
 
 
@@ -28,6 +30,7 @@ RT-PRODUCT-008 Tạo Sản Phẩm Là Thuốc
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Tự Động Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-009 Tạo Sản Phẩm Thuốc Có Nhiều Đơn Vị Tính
     [Documentation]    Test tạo sản phẩm là thuốc với nhiều đơn vị tính (hộp, vỉ, viên)
@@ -38,6 +41,7 @@ RT-PRODUCT-009 Tạo Sản Phẩm Thuốc Có Nhiều Đơn Vị Tính
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-010 Tạo Sản Phẩm Thuốc Với Giới Hạn Tồn Kho
     [Documentation]    Test tạo sản phẩm là thuốc với cấu hình giới hạn tồn kho tối thiểu và tối đa
@@ -48,6 +52,7 @@ RT-PRODUCT-010 Tạo Sản Phẩm Thuốc Với Giới Hạn Tồn Kho
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Giới Hạn Tồn Kho Tối Thiểu 10 Và Tối Đa 100 Ở Chi Nhánh Chi Nhánh Trung Tâm
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Thuốc Với Có Giá Vốn Áp Dung The Chi Nhánh
     [Documentation]    Test tạo sản phẩm là thuốc với cấu hình giá vốn áp dụng theo chi nhánh
@@ -60,7 +65,7 @@ Tạo Sản Phẩm Thuốc Với Có Giá Vốn Áp Dung The Chi Nhánh
     And Xác Thực Sản Phẩm Có Giá Vốn 60000 Ở Chi Nhánh Chi nhánh trung tâm
     And Xác Thực Sản Phẩm Có Giá Vốn 60000 Ở Chi Nhánh Nhánh A
     And Xác Thực Sản Phẩm Có Giá Vốn 0 Ở Chi Nhánh Nhánh B
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Thuốc Kinh Doanh theo Chi Nhánh
     [Documentation]    Test tạo sản phẩm là thuốc với cấu hình kinh doanh theo chi nhánh
@@ -73,7 +78,7 @@ Tạo Sản Phẩm Thuốc Kinh Doanh theo Chi Nhánh
     And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_branch_name[0]}
     And Xác Thực Sản Phẩm Có Trạng Thái Đang Kinh Doanh Ở Chi Nhánh ${list_branch_name[1]}
     And Xác Thực Sản Phẩm Có Trạng Thái Ngừng Kinh Doanh Ở Chi Nhánh Nhánh B
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-011 Tạo Sản Phẩm Thuốc Có Trọng Lượng
     [Documentation]    Test tạo sản phẩm là thuốc với thuộc tính
@@ -84,7 +89,7 @@ RT-PRODUCT-011 Tạo Sản Phẩm Thuốc Có Trọng Lượng
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Trọng Lượng 500 g
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Thuốc Có Hình Ảnh
     [Documentation]    Test tạo sản phẩm là thuốc với hình ảnh
     [Tags]    AIGenerated    CreateProduct    Positive    Medicine    nhathuoc
@@ -94,7 +99,7 @@ Tạo Sản Phẩm Thuốc Có Hình Ảnh
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Hình Ảnh Được Lưu Trữ
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Thuốc Có Mô tả ghi chú
     [Documentation]    Test tạo sản phẩm là thuốc với mô tả ghi chú
     [Tags]    AIGenerated    CreateProduct    Positive    Medicine    nhathuoc
@@ -105,7 +110,7 @@ Tạo Sản Phẩm Thuốc Có Mô tả ghi chú
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Ghi Chú Đặt Hàng ${NOTE}
     And Xác Thực Sản Phẩm Có Mô Tả Ghi Chú ${DESCRIPTION}
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Thuốc Có Vị Trí
     [Documentation]    Test tạo sản phẩm là thuốc với vị trí
     [Tags]    AIGenerated    CreateProduct    Positive    Medicine    nhathuoc
@@ -126,6 +131,7 @@ RT-PRODUCT-012 Tạo Sản Phẩm Thuốc Không Bán Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Trạng Thái Không Bán Trực Tiếp
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 Tạo Sản Phẩm Thuốc Từ Form Khác
     [Documentation]    Test tạo sản phẩm là thuốc từ form khác
@@ -135,7 +141,7 @@ Tạo Sản Phẩm Thuốc Từ Form Khác
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Thuốc Có Barcode
     [Documentation]    Test tạo sản phẩm là thuốc với barcode
     [Tags]    AIGenerated    CreateProduct    Positive    Medicine    nhathuoc
@@ -145,7 +151,7 @@ Tạo Sản Phẩm Thuốc Có Barcode
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Sản Phẩm Có Mã Barcode Đúng
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 Tạo Sản Phẩm Thuốc Có Thiết Lập Bảng Giá
     [Documentation]    Test tạo sản phẩm là thuốc với bảng giá
     [Tags]    AIGenerated    CreateProduct    Positive    Medicine    nhathuoc4
@@ -156,7 +162,8 @@ Tạo Sản Phẩm Thuốc Có Thiết Lập Bảng Giá
     And Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     And Xác Thực Giá Sản Phẩm ${DB_PRODUCT_CODE} Ở Pricebook ${list_pricebook[0]} Là ${list_price[0]}
     And Xác Thực Giá Sản Phẩm ${DB_PRODUCT_CODE} Ở Pricebook ${list_pricebook[1]} Là ${list_price[1]}
-    Xác Thực Giá Sản Phẩm ${DB_PRODUCT_CODE} Là 4000.45
+    And Xác Thực Giá Sản Phẩm ${DB_PRODUCT_CODE} Là 4000.45
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-014 Tạo Sản Phẩm Thuốc Không Thành Công Khi Trùng Mã Sản Phẩm
     [Documentation]    Test tạo sản phẩm là thuốc thất bại khi trùng mã sản phẩm đã tồn tại
 

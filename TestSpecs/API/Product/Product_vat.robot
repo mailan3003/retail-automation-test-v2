@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation     Test API tạo sản phẩm
+Suite Setup       Init Test Environment   ${ENV}     MHQL
+Resource          ../../../Keywords/Login/Login.robot
 Resource          ../../../Keywords/Product/CreateProductKeywords.robot
 Resource          ../../../Keywords/Product/InputValidationKeywords.robot
 Resource          ../../../Keywords/Utilities/ResponseHelper.robot
 Resource          ../../../Keywords/Product/Product_VAT_Keywords.robot
-Resource          ../../../Keywords/Product/Product_KeywordsCommand.robot
+Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 
 
 *** Variables ***
@@ -23,6 +25,7 @@ RT-PRODUCT-009 Tạo Sản Phẩm Với Thuế
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 5 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
     [Documentation]    Test tạo sản phẩm có thuế 0%
@@ -32,6 +35,7 @@ RT-PRODUCT-010 Tạo Sản Phẩm Với Thuế 0%
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 0 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế 8%
     [Documentation]    Test tạo sản phẩm dịch vụ có thuế 8%
@@ -42,6 +46,7 @@ RT-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế 8%
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 8 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế 10%
     [Documentation]    Test tạo sản phẩm serial có thuế 10%
@@ -52,6 +57,7 @@ RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế 10%
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 10 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Không Chịu Thuế
     [Documentation]    Test tạo sản phẩm không chịu thuế
@@ -62,6 +68,7 @@ RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Không Chịu Thuế
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với KCT Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-014 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế 5%
     [Documentation]    Test tạo sản phẩm loại hàng sản xuất có thuế 5%
@@ -72,7 +79,7 @@ RT-PRODUCT-014 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế 5%
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 5 Theo Dữ Liệu Đã Gửi
     And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-015 Tạo Sản Phẩm Combo Với Thuế Khấu Trừ Với KKKNT %
     [Documentation]    Test tạo sản phẩm combo có thuế
@@ -83,7 +90,7 @@ RT-PRODUCT-015 Tạo Sản Phẩm Combo Với Thuế Khấu Trừ Với KKKNT %
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với KKKNT Theo Dữ Liệu Đã Gửi
     And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-017 Tạo Sản Phẩm Với Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm có thuế trực tiếp
@@ -93,6 +100,7 @@ RT-PRODUCT-017 Tạo Sản Phẩm Với Thuế Trực Tiếp
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 2 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 T-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm dịch vụ có thuế trực tiếp
@@ -103,6 +111,7 @@ T-PRODUCT-011 Tạo Sản Phẩm Dịch Vụ Với Thuế Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Loại Là Dịch Vụ   
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 3 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm serial có thuế trực tiếp
@@ -113,6 +122,7 @@ RT-PRODUCT-012 Tạo Sản Phẩm Serial Với Thuế Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm lô và hạn sử dụng có thuế trực tiếp
@@ -123,7 +133,7 @@ RT-PRODUCT-013 Tạo Sản Phẩm Lô Và Hạn Sử Dụng Thuế Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Lô Và Hạn Sử Dụng
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 3 Theo Dữ Liệu Đã Gửi
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-018 Tạo Sản Phẩm Combo Với Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm combo có thuế trực tiếp
@@ -134,6 +144,7 @@ RT-PRODUCT-018 Tạo Sản Phẩm Combo Với Thuế Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 1 Theo Dữ Liệu Đã Gửi
     And Xác Thực Sản Phẩm Combo Có Chứa Các Thành Phần ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-019 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế Trực Tiếp
     [Documentation]    Test tạo sản phẩm loại hàng sản xuất có thuế trực tiếp
@@ -144,7 +155,7 @@ RT-PRODUCT-019 Tạo Sản Phẩm Loại Hàng Sản Xuất Với Thuế Trực 
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi   
     And Xác Thực Sản Phẩm Có Loại Là Hàng Sản Xuất Và Có Hàng ${PRODUCT_ID_MATERIAL} Với Số Lượng 5
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-022 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi
     [Documentation]    Test tạo sản phẩm có thuế và đơn vị quy đổi
@@ -155,7 +166,7 @@ RT-PRODUCT-022 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
     And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCT_CODE} Có Thuế Khấu Trừ Với 10 %
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 
 RT-PRODUCT-023 Tạo Sản Phẩm Với Thuế và Thuộc Tính
@@ -167,7 +178,7 @@ RT-PRODUCT-023 Tạo Sản Phẩm Với Thuế và Thuộc Tính
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra
     And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCTS_CODE} Có Thuế Khấu Trừ Với 8 %
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-024 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi Trực Tiếp
     [Documentation]    Test tạo sản phẩm có thuế và đơn vị quy đổi trực tiếp
@@ -178,7 +189,7 @@ RT-PRODUCT-024 Tạo Sản Phẩm Với Thuế và Đơn Vị Quy Đổi Trực 
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Con Được Tạo Với Đúng Tỷ Lệ Quy Đổi ${value}
     And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCT_CODE} Có Thuế Trực Tiếp Với 1 %
-
+    [Teardown]     Delete Nhiều Sản Phẩm  ${LIST_PRODUCT_CODE} 
 
 
 RT-PRODUCT-025 Tạo Sản Phẩm Với Thuế và Thuộc Tính Trực Tiếp
@@ -190,6 +201,7 @@ RT-PRODUCT-025 Tạo Sản Phẩm Với Thuế và Thuộc Tính Trực Tiếp
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra
     And Xác Thực Tất Cả Sản Phẩm ${LIST_PRODUCTS_CODE} Có Thuế Trực Tiếp Với 2 %
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-026 Tạo Sản Phẩm Với Mã Thuế Không Hợp Lệ
     [Documentation]    Test tạo sản phẩm với mã thuế không tồn tại
@@ -207,7 +219,8 @@ RT-PRODUCT-027 Tạo Sản Phẩm Thế Trực Tiếp Từ From Khác
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi   
+    And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi 
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-028 Tạo Sản Phẩm Thế Khấu Trừ Từ From Khác
     [Documentation]    Test tạo sản phẩm thế khấu trừ từ from khác
@@ -217,7 +230,7 @@ RT-PRODUCT-028 Tạo Sản Phẩm Thế Khấu Trừ Từ From Khác
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 8 Theo Dữ Liệu Đã Gửi
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-029 Tạo Sản Phẩm Thuế Trực Tiếp Từ MHBH
     [Documentation]    Test tạo sản phẩm thuế trực tiếp từ mhbh
     [Tags]    AIGenerated    CreateProduct    Positive    VAT     vlxd
@@ -226,6 +239,7 @@ RT-PRODUCT-029 Tạo Sản Phẩm Thuế Trực Tiếp Từ MHBH
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Trực Tiếp Với 5 Theo Dữ Liệu Đã Gửi
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-030 Tạo Sản Phẩm Thuế Khấu Trừ Từ MHBH
     [Documentation]    Test tạo sản phẩm thuế khấu trừ từ mhbh
@@ -235,7 +249,7 @@ RT-PRODUCT-030 Tạo Sản Phẩm Thuế Khấu Trừ Từ MHBH
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
     And Xác Thực Sản Phẩm Có Thuế Khấu Trừ Với 10 Theo Dữ Liệu Đã Gửi
-
+    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 *** Keywords ***
 

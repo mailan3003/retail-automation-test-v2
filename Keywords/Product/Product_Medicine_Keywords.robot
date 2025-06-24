@@ -12,33 +12,34 @@ Library           ../../Resources/DatabaseLibrary.py
 Library           ../../Resources/Databasepromotion.py
 #Resource          ../../TestData/Product/ProductInputData.robot
 Library           String
-Resource          Product_KeywordsCommand.robot
+Resource          ProductCommonKeywords.robot
 *** Variables ***
-${CATEGORY_ID_NHA_THUOC}    1000000751
 ${ROA_ID_NHA_THUOC}    1000000001
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
-  ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
-  ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
-   ${request}=    Deep Copy     ${list_product_data}
-     ${random_code}=    Generate Random String    6    [NUMBERS]
-     ${request}    Update Dictionary Property    ${request}    Code    T${random_code}
-     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
-     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-     ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_NHA_THUOC}
-     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
-     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
-     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
-     ${request}    Update Dictionary Property    ${request}    RegistrationNo    ${product_info[3]}
-     ${request}    Update Dictionary Property    ${request}    ActiveElement    ${product_info[4]}
-     ${request}    Update Dictionary Property    ${request}    Content    ${product_info[5]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerName    ${manufacturer_info[1]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
-     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-     ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${ROA_ID_NHA_THUOC}
-     ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
-     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
+    ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
+    ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
+    ${request}=    Deep Copy     ${list_product_data}
+    ${random_code}=    Generate Random String    6    [NUMBERS]
+    ${request}    Update Dictionary Property    ${request}    Code    T${random_code}
+    ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
+    ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
+    ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
+    ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
+    ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
+    ${request}    Update Dictionary Property    ${request}    RegistrationNo    ${product_info[3]}
+    ${request}    Update Dictionary Property    ${request}    ActiveElement    ${product_info[4]}
+    ${request}    Update Dictionary Property    ${request}    Content    ${product_info[5]}
+    ${request}    Update Dictionary Property    ${request}    GlobalManufacturerName    ${manufacturer_info[1]}
+    ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
+    ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
+    ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
+    ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
     ${branch_pr_cost}     Evaluate    (None, '[${branch_pr_cost}]')
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
@@ -50,6 +51,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Là Thuốc
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Đơn Vị Tính ${name_unit} Với Giá Trị ${value}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${list_unit_body}=    Create List
     ${list_product_body}=    Create List
     ${list_product_code}=    Create List
@@ -67,7 +69,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Đơn Vị Tính ${name_unit} 
         ${request}    Update Dictionary Property    ${request}    Code    ${code}
         ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
         ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-        ${request}    Update Dictionary Property    ${request}    CategoryId    ${CATEGORY_ID_NHA_THUOC}
+        ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+        ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
         ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
         ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
         ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -78,8 +81,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Đơn Vị Tính ${name_unit} 
         ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
         ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
         ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-        ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${ROA_ID_NHA_THUOC}
-         ${request}    Update Dictionary Property    ${request}   RouteOfAdministration   Đường Miệng
+        ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+        ${request}    Update Dictionary Property    ${request}   RouteOfAdministration   ${route_of_administration_name}
         ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
         ${request}    Update Dictionary Property    ${request}    Unit    ${item_name}
         ${request}    Update Dictionary Property    ${request}    ConversionValue    ${item_value}
@@ -101,12 +104,14 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Đơn Vị Tính ${name_unit} 
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Giới Hạn Tồn Kho
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TGTK${random_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -117,8 +122,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Giới Hạn Tồn Kho
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request}    Update Dictionary Property    ${request}    MinQuantity    10
     ${request}    Update Dictionary Property    ${request}    MaxQuantity    100
@@ -133,13 +138,15 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Giới Hạn Tồn Kho
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá Vốn ${cost_price} Áp Dụng Ở Chi Nhánh ${list_branch_name}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TGTK${random_code}    
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    AllowsSale    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -150,8 +157,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá Vốn ${cost_price} Áp D
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request}    Update Dictionary Property    ${request}    Cost   ${cost_price}
     ${list_branch_cost}=    Create List
@@ -173,13 +180,15 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá Vốn ${cost_price} Áp D
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Kinh Doanh Ở Chi Nhánh ${list_branch_name}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TGTK${random_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    isActive   false
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        ${CATEGORY_ID_NHA_THUOC}
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -190,8 +199,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Kinh Doanh Ở Chi Nhánh ${list_b
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${branch_id_list}=    Create List
     FOR    ${branch_name}    IN    @{list_branch_name}
@@ -210,12 +219,14 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Không Bán Trực Tiếp
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
     ${request}=    Deep Copy     ${list_product_data}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TNKD${random_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    AllowsSale    false
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -227,8 +238,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Không Bán Trực Tiếp
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
 
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request}    Update Dictionary Property    ${request}    isActive    false
     
@@ -244,12 +255,14 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Trọng Lượng ${weight} $
     ${unit}   Set Variable If    '${unit}' == 'g'    2      3
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${request}    Update Dictionary Property    ${request}    Code    TGTK${random_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -260,8 +273,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Trọng Lượng ${weight} $
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request}    Update Dictionary Property    ${request}    Weight    ${weight}
     ${request}    Update Dictionary Property    ${request}    Type4    ${unit}
@@ -277,6 +290,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Trọng Lượng ${weight} $
 Chuẩn Bị Dữ Liệu Sản Phẩm Có Mã Barcode ${n} Ký Tự
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${random_barcode}=    Generate Random String    ${n}    [NUMBERS]
@@ -284,7 +298,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Mã Barcode ${n} Ký Tự
     ${request}    Update Dictionary Property    ${request}    Barcode    ${random_barcode}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -295,8 +310,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Mã Barcode ${n} Ký Tự
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
     ${list_products}     Evaluate    (None, '[${form_data}]')
@@ -309,11 +324,13 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Có Mã Barcode ${n} Ký Tự
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mã Trùng Lặp ${product_code}
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name} =   Lấy Thông tin Đường Dùng   ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -324,8 +341,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mã Trùng Lặp ${product_c
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     
     ${branch_pr_cost}     Evaluate     str(${branch_for_cost}).replace("'",'"')
@@ -339,13 +356,15 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mã Trùng Lặp ${product_c
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Từ Form Khác
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${product_code}=    Set Variable    TGTK${random_code}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -356,8 +375,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Từ Form Khác
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
     ${list_products}     Evaluate    (None, '[${form_data}]')
@@ -368,13 +387,16 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Từ Form Khác
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Hình Ảnh
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${random_code}=    Generate Random String    6    [NUMBERS]
+
     ${product_code}=    Set Variable    TGTK${random_code}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -385,8 +407,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Hình Ảnh
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${files}=    Create Dictionary
     ${stream}=    Get File For Streaming Upload    Images/Anh1.jpg
@@ -407,11 +429,13 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mô Tả Đặt Hàng ${n} K
     ${description}=    Generate Random String    ${m}    [NUMBERS]
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -422,8 +446,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mô Tả Đặt Hàng ${n} K
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request}    Update Dictionary Property    ${request}    OrderTemplate    ${note}
     ${request}    Update Dictionary Property    ${request}    Description    ${description}
@@ -438,13 +462,15 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với Mô Tả Đặt Hàng ${n} K
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với ${list_shelves} Vị Trí
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${product_code}=    Set Variable    TGTK${random_code}
     ${request}=    Deep Copy     ${list_product_data}
     ${request}    Update Dictionary Property    ${request}    Code    ${product_code}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -455,18 +481,17 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với ${list_shelves} Vị Trí
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${shelves_body}=    Create List  
     ${shelves_id}=    Create List
     FOR    ${item}    IN    @{list_shelves}
-        ${query}=    Set Variable    SELECT Id FROM Shelves WHERE RetailerId = ? And Name = ?
-        ${result}=    Fetch One    ${query}    ${RETAILER_ID}    ${item}
+        ${shelf_id}=    Lấy ID Vị Trí Lưu Trữ Theo Tên    ${item}
         ${shelf_body}     Deep Copy    ${PRODUCT_WITH_SHELVES}
-        ${shelf_body}    Update Dictionary Property    ${shelf_body}    ShelvesId    ${result[0]}
+        ${shelf_body}    Update Dictionary Property    ${shelf_body}    ShelvesId    ${shelf_id}
         Append To List    ${shelves_body}    ${shelf_body}
-        Append To List    ${shelves_id}    ${result[0]}
+        Append To List    ${shelves_id}    ${shelf_id}
     END
     ${request}    Update Dictionary Property    ${request}    ProductShelves    ${shelves_body}
     ${form_data}=    Evaluate     str(${request}).replace("'",'"')
@@ -478,6 +503,7 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Với ${list_shelves} Vị Trí
 
 Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá ${price} Và Bảng Giá ${list_pricebook} Với ${list_price} 
     ${product_info}=    Lấy thông tin thuốc từ danh mục thuốc    1
+    ${route_of_administration_id}    ${route_of_administration_name}=    Lấy Thông tin Đường Dùng    ${ROUTE_OF_ADMINISTRATION}
     ${manufacturer_info}=    Lấy thông tin hãng sản xuất nhà thuốc  ${product_info[7]}
     ${random_code}=    Generate Random String    6    [NUMBERS]
     ${product_code}=    Set Variable    TGTK${random_code}
@@ -486,7 +512,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá ${price} Và Bảng Giá 
     ${request}    Update Dictionary Property    ${request}    Price    ${price}
     ${request}    Update Dictionary Property    ${request}    IsBatchExpireControl    true
     ${request}    Update Dictionary Property    ${request}    Name    ${product_info[2]}
-    ${request}    Update Dictionary Property    ${request}    CategoryId        1000000751
+    ${category_id}=    Lấy Thông tin Nhóm Hàng    ${CATEGORY_NAME_DRUG}
+    ${request}    Update Dictionary Property    ${request}    CategoryId    ${category_id}
     ${request}    Update Dictionary Property    ${request}    IsSyncNationalPharmacy    false
     ${request}    Update Dictionary Property    ${request}    GlobalMedicineId    ${product_info[0]}
     ${request}    Update Dictionary Property    ${request}    MedicineCode    ${product_info[1]}
@@ -497,8 +524,8 @@ Chuẩn Bị Dữ Liệu Sản Phẩm Thuốc Có Giá ${price} Và Bảng Giá 
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryName   Ấn Độ
     ${request}    Update Dictionary Property    ${request}    PackagingSize    ${product_info[6]}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerId     ${manufacturer_info[0]}
-    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    1000000001
-    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   Đường Miệng
+    ${request}    Update Dictionary Property    ${request}    GlobalRoaId    ${route_of_administration_id}
+    ${request}    Update Dictionary Property    ${request}    RouteOfAdministration   ${route_of_administration_name}
     ${request}    Update Dictionary Property    ${request}    GlobalManufacturerCountryId    2
     ${request_pricebook}    Create List
     FOR    ${item}  ${price}   IN ZIP    ${list_pricebook}    ${list_price}

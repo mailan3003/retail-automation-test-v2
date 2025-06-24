@@ -1,6 +1,4 @@
 *** Variables ***
-# Dữ liệu hóa đơn cơ bản
-${PRODUCT_WA}
 
 # Warehouse validation data
 ${DELETED_WAREHOUSE_ID}        1000000068

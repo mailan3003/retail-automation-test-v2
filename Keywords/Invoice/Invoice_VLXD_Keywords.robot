@@ -2,7 +2,9 @@
 Documentation     Keywords cho test cases API của DataProcessingTest
 Resource          ../../TestData/CommonData.robot
 Resource          ../../TestData/Invoice/InvoiceVLXDData.robot
-Resource          ../../Keywords/Invoice/InvoiceVATKeywords.robot
+Resource          InvoiceVATKeywords.robot
+Resource          ../../Keywords/Product/ProductCommonKeywords.robot
+Resource          ../../Keywords/Customer/CustomerCommonKeywords.robot
 Resource          ../../TestData/Invoice/CommonInvoiceData.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -11,10 +13,11 @@ Resource          ../Utilities/DataUtilities.robot
 Library           ../../Resources/DatabaseLibrary.py
 
 *** Keywords ***
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Và Kích Thước ${x}x${y}x${z}x${w} 
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Và Kích Thước ${x}x${y}x${z}x${w} 
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_data}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
     ${materials_data}     Deep Copy    ${STANDARD_MATERIALS_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}mx${w} 
     ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
@@ -27,12 +30,12 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Và Kích T
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_data}   
     Set Test Variable    ${REQUEST_DATA}   ${request} 
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Gạch ${product_id} Và Kích Thước ${x}x${y}x${z}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Gạch ${product_code} Và Kích Thước ${x}x${y}x${z}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_data}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
     ${materials_data}     Deep Copy    ${STANDARD_MATERIALS_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
-
     ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}
     ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
     ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute2   ${y}
@@ -41,12 +44,14 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm Gạch ${product_id} Và 
     ${request}    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_data}   
     Set Test Variable    ${REQUEST_DATA}   ${request} 
     RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id_1} Kích Thước ${x}x${y}x${z}x${w} Và ${product_id_2} Kích Thước ${x2}x${y2}x${z2}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code_1} Kích Thước ${x}x${y}x${z}x${w} Và ${product_code_2} Kích Thước ${x2}x${y2}x${z2}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_data}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
     ${product_data_2}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
     ${materials_data}     Deep Copy    ${STANDARD_MATERIALS_DETAIL}
     ${materials_data_2}     Deep Copy    ${STANDARD_MATERIALS_DETAIL}
+    ${product_id_1}=    Lấy Thông Tin Sản Phẩm    ${product_code_1}
+    ${product_id_2}=    Lấy Thông Tin Sản Phẩm    ${product_code_2}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id_1}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    Note    ${x}mx${y}mx${z}x${w}
     ${materials_data}    Update Nested Dictionary Property    ${materials_data}    Attribute1   ${x}
@@ -72,9 +77,10 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id_1} Kích Th�
 
 
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Có ${n} Gợi ý và Kích Thước ${x}x${y}${z}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Có ${n} Gợi ý và Kích Thước ${x}x${y}${z}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_data}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${dimension_string}=    Set Variable    ${EMPTY}
     FOR    ${i}    IN RANGE    ${n}+1
         ${dimension_string}=    Set Variable    ${dimension_string} ${x}mx${y}mx${z}
@@ -95,10 +101,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Có ${n} G�
     Set Test Variable    ${REQUEST_DATA}   ${request} 
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${product_data}     Deep Copy   ${STANDARD_INVOICE_DETAIL}  
     ${materials_data}     Deep Copy    ${STANDARD_MATERIALS_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    ProductId   ${product_id}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    IsMaster    ${True}
     ${product_data}    Update Nested Dictionary Property    ${product_data}    Note  ${x}mx${y}mx${z}
@@ -170,9 +177,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Giảm Gía ${discount_value} Với Thuế T
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Với Khách Hàng ${customer_id}
+Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_code} Với Khách Hàng ${customer_code}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${customer_code}
     ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_id}
     ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    1000000
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${invoice_data}
@@ -180,9 +189,11 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm ${product_id} Với Khác
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Tích Điểm Với Sản Phẩm ${product_id} Có Giảm Giá ${discount_value} và Khách Hàng ${customer_id}
+Chuẩn Bị Dữ Liệu Hóa Đơn Tích Điểm Với Sản Phẩm ${product_code} Có Giảm Giá ${discount_value} và Khách Hàng ${customer_code}
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
     ${invoice_data}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng    ${customer_code}
     ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    ProductId    ${product_id}
     ${invoice_data}=    Update Nested Dictionary Property    ${invoice_data}    Price    1000000
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${invoice_data}
@@ -191,7 +202,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Tích Điểm Với Sản Phẩm ${product_i
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
-Xác Thực Kích Thước ${x}x${y}x${z}x${w} Sản Phẩm ${product_id} Trong DB
+Xác Thực Kích Thước ${x}x${y}x${z}x${w} Sản Phẩm ${product_code} Trong DB
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${x}=    Convert To Number    ${x}
     ${y}=    Convert To Number    ${y}
     ${z}=    Convert To Number    ${z}
@@ -208,7 +220,8 @@ Xác Thực Kích Thước ${x}x${y}x${z}x${w} Sản Phẩm ${product_id} Trong 
     Should Be Equal    ${result[15]}    ${type1}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type1}, Thực tế: ${result[14]}
     Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
 
-Xác thực Sản Phẩm Gạch ${product_id} Có Kích Thước ${x}x${y}x${z} Trong DB
+Xác thực Sản Phẩm Gạch ${product_code} Có Kích Thước ${x}x${y}x${z} Trong DB
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${x}=    Convert To Number    ${x}
     ${y}=    Convert To Number    ${y}
     ${z}=    Convert To Number    ${z}
@@ -224,7 +237,8 @@ Xác thực Sản Phẩm Gạch ${product_id} Có Kích Thước ${x}x${y}x${z} 
     Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
 
 
-Xác Thực Sản Phẩm ${product_id} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z} Trong DB
+Xác Thực Sản Phẩm ${product_code} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z} Trong DB
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
     ${n_expected}=    Evaluate    ${n} + 1
     ${query}=    Set Variable    Select COUNT(Id) from TransactionDetailMaterial where TransactionId= ? And ProductId= ? 
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}    ${product_id}   
