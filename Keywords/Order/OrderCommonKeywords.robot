@@ -153,6 +153,17 @@ Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng
     ${expected_delivery}=    Convert Date    ${expected_delivery}    result_format=%Y-%m-%d %H:%M:%S
     Should Be Equal    ${expected_delivery_in_db}    ${expected_delivery}    Ngày giao dự kiến không khớp
 
+
+Xác Thực Ngày Giao Dự Kiến Được Cập Nhật Đúng Đơn Không Có Giao Hàng
+    ${query}=   Set Variable   SELECT ExpectedDeliveryDate FROM [Order] WHERE Id = ? 
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${result}    ${None}    Thông tin đơn hàng không tồn tại trong CSDL
+    ${expected_delivery_in_db}=    Set Variable    ${result[0]}
+    ${expected_delivery}=    Set Variable    ${REQUEST_DATA["Order"]["ExpectedDeliveryDate"]}
+    ${expected_delivery_in_db}=    Convert Date    ${expected_delivery_in_db}    result_format=%Y-%m-%d %H:%M:%S
+    ${expected_delivery}=    Convert Date    ${expected_delivery}    result_format=%Y-%m-%d %H:%M:%S
+    Should Be Equal    ${expected_delivery_in_db}    ${expected_delivery}    Ngày giao dự kiến không khớp đơn không có giao hàng
+
 Xác Thực Ghi Chú Giao Hàng Được Cập Nhật Đúng
     ${query}=   Set Variable   SELECT Comments FROM DeliveryPackage WHERE OrderId = ? 
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
@@ -231,6 +242,15 @@ Xác Thực Số Lượng Đặt Hàng Của ${list_product_code} Được Cập
     END
     Set Test Variable    ${LIST_ON_ORDER}    ${list_on_order}
 
+Xác Thực Số Lượng Đặt Hàng Của ${list_product_code} Là ${list_quantity}
+    FOR    ${product_code}    ${quantity}   IN ZIP    ${list_product_code}    ${list_quantity}
+       Wait Until Keyword Succeeds    15x    1s    Xác Thực Số Lượng Đặt Hàng ${quantity} Của Sản Phẩm ${product_code}
+    END
+
+
+Xác Thực Số Lượng Đặt Hàng của Sản Phẩm ${product_code} Là ${quantity}
+   Wait Until Keyword Succeeds    15x    1s    Xác Thực Số Lượng Đặt Hàng ${quantity} Của Sản Phẩm ${product_code}
+
 Xác Định Order Tracking ${product_code} Có ${quantity} 
     ${product_id}=    Lấy Thông tin Sản Phẩm    ${product_code}
     ${query}=   Set Variable   SELECT Quantity,EndReserved FROM OrderTracking WHERE DocumentId = ? AND ProductId = ? 
@@ -282,11 +302,12 @@ Xác Thực Người Nhận Đặt Trong Đơn Hàng là ${user_name}
 
 Xác Thực Bảng Giá Trong Đơn Đặt Hàng Là ${pricebook_name}
     ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá  ${pricebook_name}
-    ${query}=   Set Variable   SELECT Extra FROM [Order] WHERE Id = ${CREATED_ORDER_ID}
-    ${result}=    Fetch One    ${query}
+    ${query}=   Set Variable   SELECT Extra FROM [Order] WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
     ${extra_json}=    Evaluate    json.loads('''${result[0]}''')    json 
     ${actual_pricebook_id}=    Evaluate    $extra_json.get('PriceBookId', {}).get('Id')
     Should Be Equal As Numbers    ${actual_pricebook_id}    ${pricebook_id}    Bảng giá không khớp
+
 
 Xác Thực Chi Nhánh Xử Lý Đã Được Chuyển Thành ${branch_name}    
     ${branch_id}=    Lấy Thông tin Chi nhánh    ${branch_name}
@@ -593,6 +614,67 @@ Xác Thực Thông Tin Thuế Trong Đơn Đặt Hàng ${tax_value}
     ${query}=    Set Variable    SELECT TotalTax FROM [Order] WHERE Id= ?
     ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
     Should Be Equal As Numbers    ${result[0]}    ${tax_value}
+
+Xác Thực Tổng tiền Trong Đơn Đặt Hàng Là ${expected_total}
+    ${query}=    Set Variable    SELECT Total FROM [Order] WHERE Id= ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Be Equal As Numbers    ${result[0]}    ${expected_total}
+
+
+Xác Thực Kích Thước ${x}x${y}x${z}x${w} Sản Phẩm ${product_code} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${x}=    Convert To Number    ${x}
+    ${y}=    Convert To Number    ${y}
+    ${z}=    Convert To Number    ${z}
+    ${w}=    Convert To Number    ${w}
+    ${type1}=    Convert To Number    1
+    ${type2}=    Convert To Number    8
+    ${query}=    Set Variable    Select * from TransactionDetailMaterial where TransactionId= ? And ProductId= ?
+    ${result}=    Fetch One    ${query}   ${CREATED_ORDER_ID}  ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm VLXD với ID ${product_id} trong DB
+    Should Be Equal    ${result[10]}    ${x}    Kích thước sản phẩm không đúng. Kỳ vọng: ${x}, Thực tế: ${result[10]}
+    Should Be Equal    ${result[11]}    ${y}    Kích thước sản phẩm không đúng. Kỳ vọng: ${y}, Thực tế: ${result[11]}
+    Should Be Equal    ${result[12]}    ${z}    Kích thước sản phẩm không đúng. Kỳ vọng: ${z}, Thực tế: ${result[12]}
+    Should Be Equal    ${result[13]}    ${w}    Kích thước sản phẩm không đúng. Kỳ vọng: ${w}, Thực tế: ${result[13]}
+    Should Be Equal    ${result[15]}    ${type1}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type1}, Thực tế: ${result[14]}
+    Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
+
+Xác thực Sản Phẩm Gạch ${product_code} Có Kích Thước ${x}x${y}x${z} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${x}=    Convert To Number    ${x}
+    ${y}=    Convert To Number    ${y}
+    ${z}=    Convert To Number    ${z}
+    ${type1}=    Convert To Number    2
+    ${type2}=    Convert To Number    1
+    ${query}=    Set Variable    Select * from TransactionDetailMaterial where TransactionId= ? And ProductId= ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${product_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy sản phẩm VLXD với ID ${product_id} trong DB
+    Should Be Equal    ${result[10]}    ${x}    Kích thước sản phẩm không đúng. Kỳ vọng: ${x}, Thực tế: ${result[10]}
+    Should Be Equal    ${result[11]}    ${y}    Kích thước sản phẩm không đúng. Kỳ vọng: ${y}, Thực tế: ${result[11]}
+    Should Be Equal    ${result[13]}    ${z}    Kích thước sản phẩm không đúng. Kỳ vọng: ${z}, Thực tế: ${result[13]}
+    Should Be Equal    ${result[15]}    ${type1}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type1}, Thực tế: ${result[14]}
+    Should Be Equal    ${result[16]}    ${type2}    Kích thước sản phẩm không đúng. Kỳ vọng: ${type2}, Thực tế: ${result[15]}
+
+Xác Thực Sản Phẩm ${product_code} Có ${n} Dòng Với Kích Thước ${x}x${y}x${z} Trong Đơn Đặt Hàng
+    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    ${n_expected}=    Evaluate    ${n} + 1
+    ${query}=    Set Variable    Select COUNT(Id) from TransactionDetailMaterial where TransactionId= ? And ProductId= ? 
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${product_id}   
+    Should Be Equal    ${result[0]}    ${n_expected}    Số lượng dòng hàng không đúng. Kỳ vọng: ${n_expected}, Thực tế: ${result}
+
+Xác Định Có Giá Trị Thu Khác ${expected_value} Trong Đơn Đặt Hàng
+    ${query}=    Set Variable    SELECT Surcharge FROM [Order] WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin thu khác trong đơn hàng
+    ${surcharge_value}=    Set Variable    ${result[0]}
+    Should Be Equal As Numbers    ${surcharge_value}    ${expected_value}    Giá trị thu khác không đúng. Kỳ vọng: ${expected_value}, Thực tế: ${surcharge_value}
+
+Xác định tracking trong surcharge order ${surcharge_code}   
+    ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}    Lấy Thông Tin Thu Khác Theo Code    ${surcharge_code}
+    ${query}=    Set Variable    SELECT Id FROM InvoiceOrderSurcharge WHERE OrderId = ? AND SurchargeId = ?
+    ${result}=    Fetch One    ${query}    ${CREATED_ORDER_ID}    ${surcharge_id}
+    Should Not Be Equal    ${result}    None    Không tìm thấy thông tin tracking trong đơn hàng
+    ${tracking_id}=    Set Variable    ${result[0]}
 
 
 

@@ -8,7 +8,7 @@ Resource          InvoiceCommonKeywords.robot
 Resource          ../CommonKeywords.robot
 Resource          ../Customer/CustomerCommonKeywords.robot
 Resource          ../Product/ProductCommonKeywords.robot
-Resource          ../PriceBook/PriceBookCommonKeywords.robot
+Resource          ../PriceBook/PricebookCommonKeywords.robot
 Resource          ../Promotion/PromotionComnonKeywords.robot
 Resource          ../Utilities/RequestHelper.robot
 Resource          ../Utilities/ResponseHelper.robot
@@ -70,8 +70,8 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Không Tồn Tại
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN     ${request}
 
-Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Chi Nhánh Khác
-    ${request}   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+Chuẩn Bị Dữ Liệu Hóa Đơn ${product_code} Với Khách Hàng Chi Nhánh Khác
+    ${request}   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${product_code}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${customer_id}=    Lấy Id Khách Hàng Theo Mã Khách Hàng   ${CUSTOMER_CODE_OTHER_BRANCH}
     ${request_invoice}=    Update Nested Dictionary Property  ${request_invoice}    CustomerId    ${customer_id}
@@ -334,7 +334,7 @@ Xác Thực Tiền Thừa
 
 Xác Thực Thông Tin Sổ Giá
     [Arguments]    ${invoice_id}    ${pricebook_code}
-    ${pricebook_id}=   Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_code}
+    ${pricebook_id}=   Lấy Id Bảng Giá Theo Tên Bảng Giá    ${pricebook_code}
     ${query}=    Set Variable    SELECT PriceBookId FROM Invoice WHERE Id = ?
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Not Be Equal    ${result}    None    Hóa đơn không tồn tại

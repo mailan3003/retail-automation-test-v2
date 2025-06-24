@@ -101,7 +101,7 @@ Lấy thông tin hãng sản xuất nhà thuốc
 Lấy Thông tin Đường Dùng
     [Arguments]    ${route_of_administration}
     ${query}=    Set Variable    SELECT Id, Name FROM RetailerRouteOfAdministration WHERE Name = ? AND RetailerId = ?
-    ${result}=    Select One Master    ${query}    ${route_of_administration}    ${RETAILER_ID}
+    ${result}=   Fetch One   ${query}    ${route_of_administration}    ${RETAILER_ID}
     RETURN    ${result[0]}  ${result[1]}
 
 Lấy ID thuộc tính  
@@ -351,7 +351,7 @@ Xác Thực Sản Phẩm Là Thuốc Với Thông Tin Chính Xác
     Should Be Equal As Strings    ${result[4]}    ${manufacturer_info[1]}
     Should Be Equal As Strings    ${result[5]}    Ấn Độ
     Should Be Equal As Strings    ${result[6]}    ${product_info[7]}
-    Should Be Equal As Strings    ${result[7]}    Đường Miệng
+    Should Be Equal As Strings    ${result[7]}    Drink
     Should Be Equal As Strings    ${result[8]}    2
         
 
@@ -931,6 +931,12 @@ Lấy ID Batch của Hàng Lô
     [Arguments]    ${product_id}
     ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE ProductId = ?
     ${result_batch}=    Fetch One    ${query}    ${product_id}
+    RETURN    ${result_batch[0]}
+
+Lấy ID Batch của Hàng Lô Theo Trạng Thái
+    [Arguments]    ${product_id}    ${status}
+    ${query}=    Set Variable    SELECT ID FROM ProductBatchExpire WHERE ProductId = ? AND Status = ?
+    ${result_batch}=    Fetch One    ${query}    ${product_id}    ${status}
     RETURN    ${result_batch[0]}
 
 Thông tin hàng hóa

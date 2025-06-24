@@ -7,6 +7,7 @@ Resource    ../../TestData/CommonData.robot
 Resource    ../../TestData/Invoice/CommonInvoiceData.robot
 Resource    ../../TestData/Invoice/InvoiceWarehouseData.robot
 Resource    ../Product/ProductCommonKeywords.robot
+Resource    InvoiceCommonKeywords.robot
 Resource    ../../Config/Env_api.robot
 Library     ../../Resources/DatabaseLibrary.py
 Library     RequestsLibrary
@@ -182,6 +183,10 @@ Xác Thực Cập Nhật Tồn Kho Sản Phẩm Con Của Combo Tại Kho
 # Warehouse validation test keywords
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Bị Xóa
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${product_detail}     Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   WH00001
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
     ${warehouse}=    Create Dictionary    Id=${DELETED_WAREHOUSE_ID}    Type=2
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -189,16 +194,25 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Bị Xóa
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Hàng Đã Ngừng Hoạt Động
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_BRANCH_NAME}
-    ${warehouse}=    Create Dictionary    Id=${branch_id}    Type=2
+    ${product_detail}     Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   WH00001
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_WAREHOUSE_NAME}
+    ${warehouse}=    Create Dictionary    Id=${branch_id}   Type=2
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Bán Hàng Mặc Định Chi Nhánh Đã Bị Xóa
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${warehouse}=    Create Dictionary    Id=${DELETED_BRANCH_ID}    Type=1
-    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${DELETED_BRANCH_NAME}
+    ${product_detail}     Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   WH00001
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${DELETED_WAREHOUSE_NAME}
+    ${warehouse}=    Create Dictionary    Id=${branch_id}   Type=1
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${warehouse}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
@@ -206,8 +220,12 @@ Chuẩn Bị Dữ Liệu Hóa Đơn Với Kho Bán Hàng Mặc Định Chi Nhán
 
 Chuẩn Bị Dữ Liệu Hóa Đơn Không Chỉ Định Kho Hàng Chi Nhánh Đã Bị Vô Hiệu Hóa
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${None}
-    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_BRANCH_NAME}
+    ${product_detail}     Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${product_id}=    Lấy Thông tin Sản Phẩm   WH00001
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${branch_id}=    Lấy Thông tin Chi Nhánh    ${INACTIVE_WAREHOUSE_NAME}
+     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.WareHouse    ${None}
     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.BranchId    ${branch_id}
     Set Test Variable    ${REQUEST_DATA}    ${request}
     RETURN    ${request}

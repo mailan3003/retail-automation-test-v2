@@ -15,7 +15,7 @@ Resource          ../../../TestData/CommonData.robot
 RT-ORDER-UPDATE-010 Chuyển Chi Nhánh Xử Lý Đặt Hàng 
     [Documentation]    Chuyển Chi Nhánh Xử Lý Đặt Hàng 
     [Tags]    AIGenerated    UpdateOrder    Positive    BranchTransfer        regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản DV249 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành Nhánh A Thanh Toán Có Cập Nhật Theo
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -25,7 +25,7 @@ RT-ORDER-UPDATE-010 Chuyển Chi Nhánh Xử Lý Đặt Hàng
 RT-ORDER-UPDATE-011 Chuyển Chi Nhánh Xử Lý Đặt Hàng Là Chi Nhánh Đã Xóa
     [Documentation]    Kiểm tra Chi Nhánh Xử Lý Đặt Hàng Thành Nhánh Thanh Toán Không Cập Nhật Theo
     [Tags]    AIGenerated    UpdateOrder    Positive    BranchTransfer        regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0054 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0171 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành Nhánh Thanh Toán Không Cập Nhật Theo
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
@@ -35,7 +35,7 @@ RT-ORDER-UPDATE-011 Chuyển Chi Nhánh Xử Lý Đặt Hàng Là Chi Nhánh Đ�
 Chuyển Chi Nhánh Xử Lý Đặt Hàng là Chi Nhánh Ngừng Hoạt Động
     [Documentation]    Chuyển Chi Nhánh Xử Lý Đặt Hàng Là Chi Nhánh Ngừng Hoạt Động
     [Tags]    AIGenerated    UpdateOrder    Positive    BranchTransfer        regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0174 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Chuyển Chi Nhánh Xử Lý Đặt Hàng Thành Chi nhánh ngừng hoạt động Thanh Toán Không Cập Nhật Theo
     And Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
@@ -118,7 +118,7 @@ RT-ORDER-UPDATE-006 Cập Nhật Kênh Bán Hàng Trong Đơn Hàng
     ...    - Thay đổi kênh bán hàng từ kênh này sang kênh khác ở MHQL
     ...    - Xác thực kênh bán hàng được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    SaleChannel    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0175 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Kênh Bán Thành Kênh 3 Ở MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -130,7 +130,7 @@ RT-ORDER-UPDATE-006 Cập Nhật Người Nhận Đặt Trong Đơn Hàng
     ...    - Thay đổi người nhận đặt từ người này sang người khác ở MHQL
     ...    - Xác thực người nhận đặt được cập nhật đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    SaleChannel    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0053 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0176 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Người Nhận Đặt Thành son.dx Ở MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
@@ -193,7 +193,7 @@ Cập Nhật Đơn Hàng Thời Gian Bán Hàng Tương Lai
     ...    - PurchaseDate và ExpectedDeliveryDate ở định dạng UTC
     ...    - Hệ thống xử lý chuyển đổi múi giờ đúng
     [Tags]    AIGenerated    UpdateOrder    Positive    UTCDates    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0057 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0263 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Ngày Bán Hàng Sau 1 Ngày So Với Hiện Tại MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 420
@@ -217,17 +217,17 @@ Cập Nhật Đơn Hàng Về Trạng Thái Hoàn Thành
     And Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Thành Hoàn Thành MHQL
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 2
+    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 3
     [Teardown]    Delete Order From Api
 
-Kết Thúc Đơn Đặt Hàng 
+Chuyển trạng thái sang trạng thái Phiếu Tạm
     [Documentation]    Kết Thúc Đơn Đặt Hàng
     [Tags]    AIGenerated    UpdateOrder    Positive    OrderStatus    regression
     Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0061 Để Cập Nhật
     And Chuẩn Bị Cập Nhật Trạng Thái Đơn Hàng Sang Phiếu Tạm
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 3
+    And Xác Thực Trạng Thái Đơn Hàng Đã Được Cập Là 1
     [Teardown]    Delete Order From Api
 
 Cập Nhập Thông Tin Giao Hàng

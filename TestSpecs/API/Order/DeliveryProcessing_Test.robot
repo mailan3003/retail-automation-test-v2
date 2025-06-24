@@ -29,7 +29,7 @@ RT-DP-001 Tạo Đơn Hàng COD thành công với thông tin giao hàng đầy 
     ...    - Hóa đơn COD được lưu vào CSDL với thông tin giao hàng đầy đủ
     ...    - UsingCod được bật trong hóa đơn
     [Tags]        delivery    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thông Tin Giao Hàng
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0170 Có Thông Tin Giao Hàng
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đặt Hàng Giao Hàng Trong DB
@@ -81,7 +81,7 @@ RT-DP-007 Tạo đơn hàng giao hàng thay đổi thông tin gói hàng
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với phí giao hàng cao
     [Tags]    apiinvoice    delivery    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có khối lượng 1000 g Và Kích thước 20x10x15 cm
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0291 Có khối lượng 1000 g Và Kích thước 20x10x15 cm
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200
     And Xác Thực Đặt Hàng Giao Hàng Trong DB
@@ -125,7 +125,7 @@ RT-DP-009 Tạo đơn hàng giao hàng có thanh toán
     ...    - Kỳ vọng:
     ...    - Status code: 200
     ...    - Hóa đơn COD được lưu vào CSDL với trạng thái giao hàng Pending
-     [Tags]    apiinvoice    delivery    regression5345
+     [Tags]    apiinvoice    delivery    regression
     Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Giao Hàng Với Thu Hộ và Thanh Toán 30000
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã trạng thái phải là 200

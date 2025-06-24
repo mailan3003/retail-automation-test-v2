@@ -11,8 +11,8 @@ Resource          ../../../TestData/CommonData.robot
 
 Test Teardown     Delete Invoice From API
 
+*** Variables ***
 
-*** Keywords ***
 *** Test Cases ***
 RT-RP-001 Tính điểm thưởng theo sản phẩm có điểm cố định
     [Documentation]    Kiểm tra tính điểm thưởng theo sản phẩm có điểm cố định:

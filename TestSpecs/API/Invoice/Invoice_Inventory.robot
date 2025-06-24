@@ -154,11 +154,11 @@ RT-INU-004 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm theo s
     And Serial ${SERIAL_NUMBER} chuyển sang trạng thái đã bán
  
 RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm
-    [Tags]    inventory    smoke   apiinvoice    regression
+    [Tags]    inventory    smoke   apiinvoice    regression4355s
     [Documentation]    Kiểm tra cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩm khác nhau
     ...    - Dữ liệu đầu vào:
-    ...    - Sản phẩm 1: ${PRODUCT_CODE_NOMAL}, Số lượng=3, Giá=100,000đ
-    ...    - Sản phẩm 2: ${PRODUCT_CODE_DECIMAL}, Số lượng=2.5, Giá=150,000đ
+    ...    - Sản phẩm 1: GHDU003, Số lượng=3, Giá=100,000đ
+    ...    - Sản phẩm 2: GHDU004, Số lượng=2.5, Giá=150,000đ
     ...    - Logic xử lý: ProductBranchService.UpdateInventory() cho từng sản phẩm
     ...    - Code: productBranch.OnHand -= invoiceDetail.Quantity
     ...    - Kỳ vọng:
@@ -167,14 +167,14 @@ RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với nhiều sản phẩ
     ...    - Số lượng tồn kho sản phẩm 2 giảm 2.5 đơn vị
     ...    - Lịch sử tồn kho được ghi nhận cho cả hai sản phẩm
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Sản Phẩm GHDU003 Số Lượng 3 Và Hàng Hóa GHDU004 Số Lượng 2.5
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${PRODUCT_CODE_NOMAL}
-    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm ${PRODUCT_CODE_DECIMAL}
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm GHDU003
+    And Xem Thông Tin Tồn Kho Ban Đầu Của Sản Phẩm GHDU004
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
-    And Tồn kho sản phẩm ${PRODUCT_CODE_NOMAL} đã giảm 3 đơn vị
-    And Tồn kho sản phẩm ${PRODUCT_CODE_DECIMAL} đã giảm 2.5 đơn vị
-    And Lịch sử tồn kho được tạo với số lượng 3 đơn vị cho sản phẩm ${PRODUCT_CODE_NOMAL}
-    And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm ${PRODUCT_CODE_DECIMAL}
+    And Tồn kho sản phẩm GHDU003 đã giảm 3 đơn vị
+    And Tồn kho sản phẩm GHDU004 đã giảm 2.5 đơn vị
+    And Lịch sử tồn kho được tạo với số lượng 3 đơn vị cho sản phẩm GHDU003
+    And Lịch sử tồn kho được tạo với số lượng 2.5 đơn vị cho sản phẩm GHDU004
 
 RT-INU-009 Cập nhật tồn kho khi tạo hóa đơn với sản phẩm nhiều dòng
     [Tags]    inventory    smoke   apiinvoice    regression

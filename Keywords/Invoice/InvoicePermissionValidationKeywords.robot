@@ -7,7 +7,7 @@ Resource    ../CommonKeywords.robot
 Resource    ../Promotion/PromotionComnonKeywords.robot
 Resource    ../Product/ProductCommonKeywords.robot
 Resource    ../Customer/CustomerCommonKeywords.robot
-Resource    ../PriceBook/PriceBookCommonKeywords.robot
+Resource    ../Pricebook/PricebookCommonKeywords.robot
 Resource    InvoiceCommonKeywords.robot
 Resource    ../Utilities/Utilities.robot
 Resource    ../Utilities/DataUtilities.robot
@@ -84,7 +84,7 @@ Chuẩn bị dữ liệu hóa đơn với bảng giá ${pricebook_id}
 
 
 Chuẩn bị dữ liệu hóa đơn với bảng giá là ${pricebook_name}
-    ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá   ${pricebook_name}
+    ${pricebook_id}=    Lấy Id Bảng Giá Theo Tên Bảng Giá     ${pricebook_name}
     ${request}=   Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    PricebookId    ${pricebook_id}

@@ -92,7 +92,7 @@ Chuẩn Bị Hóa Đơn Thanh Toán Bằng Voucher Đợt ${Voucher_campain}
     ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${data}=    Deep Copy     ${payment_body} 
-    ${data_product}=    Set Variable    ${STANDARD_INVOICE_DETAIL} 
+    ${data_product}=    Deep Copy   ${STANDARD_INVOICE_DETAIL} 
     ${data_product}=    Update Nested Dictionary Property     ${data_product}    Quantity    5
     ${request_invoice}=    Update Nested Dictionary Property     ${request_invoice}     InvoiceDetails  ${data_product}
     ${data}=    Update Nested Dictionary Property    ${data}    Method    ${PAYMENT_VOUCHER}
@@ -189,11 +189,7 @@ Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn ${expected_total_payment}
 
 
 Xác Thực Công Nợ Của Hóa Đơn ${expected_debt}
-     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
-    ${query}=    Set Variable    SELECT Debt FROM Invoice WHERE Id = ?
-    ${result}=    Fetch One    ${query}    ${invoice_id}
-    Should Be Equal As Numbers    ${result[0]}    ${expected_debt}    Công nợ không đúng. Kỳ vọng: ${expected_debt}, Thực tế: ${result[0]}
-
+    Wait Until Keyword Succeeds    10x    1s    Xác Thực Công Nợ Hóa Đơn    ${INVOICE_ID}    ${expected_debt}
 
 Xác Thực Thanh Toán Được Ghi Nhận Phương Thức ${payment_method} Với Số Tiền ${expected_amount}
     ${invoice_id}=    Set Variable    ${RESPONSE.json()["Id"]}
@@ -408,7 +404,7 @@ Xác Thực Tổng Tiền Thanh Toán Của Hóa Đơn
     ${result}=    Fetch One    ${query}    ${invoice_id}
     Should Be Equal As Numbers    ${result[0]}    ${expected_total_payment}    Tổng tiền thanh toán không đúng. Kỳ vọng: ${expected_total_payment}, Thực tế: ${result[0]}
 
-Xác Thực Công Nợ Của Hóa Đơn
+Xác Thực Công Nợ Hóa Đơn
     [Arguments]    ${invoice_id}=None    ${expected_debt}=0
     
     # Lấy invoice_id từ response nếu không được cung cấp

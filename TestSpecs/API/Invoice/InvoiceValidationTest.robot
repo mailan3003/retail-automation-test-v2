@@ -10,6 +10,7 @@ Resource          ../../../Keywords/Utilities/Utilities.robot
 Resource          ../../../Keywords/Utilities/DataUtilities.robot
 Resource          ../../../Keywords/Utilities/RequestHelper.robot
 Resource          ../../../TestData/Invoice/UpdateInvoiceData.robot
+Resource          ../../../TestData/Invoice/InvoiceVLXDData.robot
 
 
 *** Keywords ***
@@ -56,7 +57,7 @@ RT-IV-004 Kiểm tra chi nhánh không hợp lệ
 RT-IV-005 Kiểm tra khách hàng không thuộc chi nhánh
     [Documentation]    Kiểm tra lỗi khi tạo hóa đơn với khách hàng không thuộc chi nhánh
     [Tags]    invoicevalidate    smoke    vlxd 
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Với Khách Hàng Chi Nhánh Khác
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn ${PRODUCT_CODE_VLXD} Với Khách Hàng Chi Nhánh Khác
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã Trạng Thái Phải Là 420
     And Response Should Have Error "Khách hàng không thuộc chi nhánh hiện tại."

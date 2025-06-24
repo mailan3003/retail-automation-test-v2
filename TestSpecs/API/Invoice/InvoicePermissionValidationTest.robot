@@ -66,7 +66,7 @@ Chuẩn bị dữ liệu hóa đơn với ngày bán không đúng định dạn
 Chuẩn bị dữ liệu hóa đơn gắn với bảng giá 
     [Documentation]    Chuẩn bị dữ liệu hóa đơn gắn với bảng giá
     [Tags]    apiinvoice    validation    permission    regression
-    And Chuẩn bị dữ liệu hóa đơn với bảng giá là ${PRICEBOOK_NAME}   
+    Given Chuẩn bị dữ liệu hóa đơn với bảng giá là ${PRICEBOOK_NAME}   
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200
     And Nội dung phản hồi trả về phải tồn tại Id

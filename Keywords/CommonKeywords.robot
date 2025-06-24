@@ -28,3 +28,17 @@ Lấy Thông tin Người Dùng Theo Tên
     Should Not Be Equal    ${result}    ${None}    Người dùng không tồn tại trong CSDL
     ${user_id}=    Set Variable    ${result[0]}
     Return From Keyword    ${user_id}
+
+Lấy Thông Tin Thu Khác Theo Code
+    [Arguments]    ${code}
+    ${query}=   Set Variable   SELECT Id,Value,ValueRatio FROM Surcharge Where Code=? AND RetailerId=?
+    ${result}=    Fetch One    ${query}    ${code}    ${RETAILER_ID}
+    Should Not Be Equal    ${result}    ${None}    Thu khác không tồn tại trong CSDL
+    ${surcharge_id}=    Set Variable    ${result[0]}
+    ${surcharge_value}=  Run Keyword If    '${result[1]}' == 'None'    Set Variable   0   ELSE    Convert To Number    ${result[1]}
+    ${surcharge_value_ratio}=  Run Keyword If    '${result[2]}' == 'None'    Set Variable   0   ELSE    Convert To Number    ${result[2]}
+    Return From Keyword    ${surcharge_id}    ${surcharge_value}    ${surcharge_value_ratio}
+
+
+
+
