@@ -264,3 +264,192 @@ Xác Thực Chiết Khấu Hóa Đơn ${expected_discount}
     ${result}=    Fetch One    ${query}    ${INVOICE_ID}
     Should Be Equal As Numbers    ${result[0]}    ${expected_discount}    Chiết khấu không đúng. Kỳ vọng: ${expected_discount}, Thực tế: ${result[0]}
 
+Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${payment_amount_1} ${currency_code_1} ${PAYMENT_TRANSFER} Và ${payment_amount_2} ${currency_code_2} ${PAYMENT_TRANSFER} Và ${payment_amount_3} ${currency_code_3} ${PAYMENT_TRANSFER} Khách hàng ${customer_id}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn với thanh toán kết hợp 3 loại tiền tệ
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    ${payment_data_1}=    Deep Copy     ${payment_body} 
+    ${payment_data_2}=    Deep Copy     ${payment_body} 
+    ${payment_data_3}=    Deep Copy     ${payment_body} 
+    ${payment_data_currency_1}=    Deep Copy     ${payment_body} 
+    ${payment_data_currency_2}=    Deep Copy     ${payment_body} 
+    ${payment_data_currency_3}=    Deep Copy     ${payment_body} 
+
+    ${currency_rate_1}=   Run Keyword If    '${currency_code_1}' == 'PHP'    Set Variable    1   
+    ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code_1}
+    ${currency_rate_2}=    Run Keyword If    '${currency_code_2}' == 'PHP'    Set Variable    1   
+    ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code_2}
+    ${currency_rate_3}=    Run Keyword If    '${currency_code_3}' == 'PHP'    Set Variable    1   
+    ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code_3}
+
+    ${payment_amount_exchange_1}=    Evaluate    ${payment_amount_1} * ${currency_rate_1}
+    ${payment_amount_exchange_2}=    Evaluate    ${payment_amount_2} * ${currency_rate_2}
+    ${payment_amount_exchange_3}=    Evaluate    ${payment_amount_3} * ${currency_rate_3}
+
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId       ${PRODUCT_ID_CURRENCY}   
+    
+    ${payment_data_1}=    Update Nested Dictionary Property    ${payment_data_1}    Amount   ${payment_amount_exchange_1}
+    ${payment_data_1}=    Update Nested Dictionary Property    ${payment_data_1}    Method   ${PAYMENT_TRANSFER}
+    ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    Amount    ${payment_amount_1}
+    ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    ExchangeRate    ${currency_rate_1}
+    ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    CurrencyCode    ${currency_code_1}
+    ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    ExchangeAmount    ${payment_amount_exchange_1}
+    ${payment_data_currency_1}=    Update Nested Dictionary Property    ${payment_data_currency_1}    Method    ${PAYMENT_TRANSFER}
+
+    ${payment_data_2}=    Update Nested Dictionary Property    ${payment_data_2}    Amount     ${payment_amount_exchange_2}
+    ${payment_data_2}=    Update Nested Dictionary Property    ${payment_data_2}    Method   ${PAYMENT_TRANSFER}
+    ${payment_data_currency_2}=    Update Nested Dictionary Property    ${payment_data_currency_2}    Amount    ${payment_amount_2}
+    ${payment_data_currency_2}=    Update Nested Dictionary Property    ${payment_data_currency_2}    ExchangeRate    ${currency_rate_2}
+    ${payment_data_currency_2}=    Update Nested Dictionary Property    ${payment_data_currency_2}    CurrencyCode    ${currency_code_2}
+    ${payment_data_currency_2}=    Update Nested Dictionary Property    ${payment_data_currency_2}    ExchangeAmount    ${payment_amount_exchange_2}
+    ${payment_data_currency_2}=    Update Nested Dictionary Property    ${payment_data_currency_2}    Method   ${PAYMENT_TRANSFER}
+   
+    ${payment_data_3}=    Update Nested Dictionary Property    ${payment_data_3}    Amount     ${payment_amount_exchange_3}
+    ${payment_data_3}=    Update Nested Dictionary Property    ${payment_data_3}    Method   ${PAYMENT_TRANSFER}
+    ${payment_data_currency_3}=    Update Nested Dictionary Property    ${payment_data_currency_3}    Amount    ${payment_amount_3}
+    ${payment_data_currency_3}=    Update Nested Dictionary Property    ${payment_data_currency_3}    ExchangeRate    ${currency_rate_3}
+    ${payment_data_currency_3}=    Update Nested Dictionary Property    ${payment_data_currency_3}    CurrencyCode    ${currency_code_3}
+    ${payment_data_currency_3}=    Update Nested Dictionary Property    ${payment_data_currency_3}    ExchangeAmount    ${payment_amount_exchange_3}
+    ${payment_data_currency_3}=    Update Nested Dictionary Property    ${payment_data_currency_3}    Method    ${PAYMENT_TRANSFER}
+   
+    ${payment_data_currency}=    Create List  ${payment_data_currency_1}    ${payment_data_currency_2}      ${payment_data_currency_3}
+    ${payment_data}=    Create List  ${payment_data_1}    ${payment_data_2}     ${payment_data_3}
+    
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.CustomerId    ${customer_id}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payment_data}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PaymentDetails   ${payment_data_currency}    
+    ${total_payment}=    Evaluate     ${payment_amount_exchange_1} + ${payment_amount_exchange_2} + ${payment_amount_exchange_3}
+    Set Test Variable    ${TOTAL_PAYMENT}    ${total_payment}
+    Log    ${request}
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+
+Xác Thực Số Lượng Phiếu Thu Được Tạo
+    [Documentation]    Xác thực phiếu thu được tạo với số tiền và đơn vị tiền tệ tùy chỉnh
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ?
+    ${result}=    Fetch One    ${query}     ${INVOICE_ID}
+    Should Be Equal As Numbers    ${result[0]}    3    Không tìm thấy phiếu thu cho hóa đơn ID ${invoice_id}
+
+    ${query}=    Set Variable    SELECT SUM(Amount) FROM Payment WHERE InvoiceId = ?
+    ${result}=    Fetch One    ${query}    ${INVOICE_ID}
+    Set Test Variable    ${PAYMENT_AMOUNT}    ${result[0]}
+
+    ${query}=    Set Variable    SELECT Id FROM Payment WHERE InvoiceId = ?
+    ${result}=    Fetch All    ${query}    ${INVOICE_ID}
+    FOR    ${index}    IN RANGE    3
+        Set Test Variable    ${PAYMENT_ID_${index+1}}    ${result[${index}][0]}
+    END
+
+Xác Định Số Lượng Phiếu Thu Của Khách Hàng ${customer_id}
+    ${query}=    Set Variable    SELECT DocumentType FROM BalanceTracking WHERE PartnerId = ? AND DocumentId = ?
+    ${result}=    Fetch One    ${query}    ${customer_id}   ${INVOICE_ID}
+    Should Be Equal As Numbers    3    ${result[0]}    Số lượng phiếu thu không đúng. Kỳ vọng: 3, Thực tế: ${result[0]}
+
+Xác Định Số Phiếu Công Nợ Của Khách Hàng ${customer_id} Số phiếu ${expected_debt_count} Trong Sổ Quỹ
+    ${total_rows}=    Set Variable    0
+    FOR    ${index}    IN RANGE    3
+        ${query}=    Set Variable    SELECT COUNT(*) FROM BalanceTracking WHERE PartnerId = ? AND DocumentId = ?
+        ${result}=    Fetch One    ${query}    ${customer_id}   ${PAYMENT_ID_${index+1}} 
+        ${total_rows}=    Evaluate    ${total_rows} + ${result[0]}
+    END
+    Set Test Variable    ${total_rows}    ${total_rows}
+    Should Be Equal As Numbers    ${total_rows}    ${expected_debt_count}    Số lượng phiếu công nợ không đúng. Kỳ vọng: ${expected_debt_count}, Thực tế: ${total_rows}
+
+# Chuẩn Bị Dữ Liệu Hóa Đơn Thanh Toán Kết Hợp ${payment_amount} ${currency_code} Và Voucher ${voucher_campaign_id} Khách Hàng ${customer_id}
+#     [Documentation]    Chuẩn bị dữ liệu hóa đơn bằng tiền mặt và voucher
+#     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+#     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+#     ${payment_data_1}=    Deep Copy     ${payment_body} 
+#     ${payment_data_currency}=    Deep Copy     ${payment_body} 
+#     ${currency_rate}=   Run Keyword If    '${currency_code}' == 'PHP'    Set Variable    1   
+#     ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code}
+#     ${payment_amount_exchange}=    Evaluate    ${payment_amount} * ${currency_rate}
+
+    
+#     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId       ${PRODUCT_ID_CURRENCY}   
+    
+#     ${payment_data_1}=    Update Nested Dictionary Property    ${payment_data_1}    Amount   ${payment_amount_exchange}
+#     ${payment_data_1}=    Update Nested Dictionary Property    ${payment_data_1}    Method   ${PAYMENT_CASH}
+#     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Amount    ${payment_amount}
+#     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeRate    ${currency_rate}
+#     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    CurrencyCode    ${currency_code}
+#     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeAmount    ${payment_amount_exchange}
+#     ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Method    ${PAYMENT_CASH}
+
+#     ${query}=    Set Variable    SELECT top(1) Id, Code, VoucherCampaignId FROM Voucher WHERE VoucherCampaignId = ? AND Status = 0
+#     ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
+#     Set Test Variable    ${voucher_id}    ${voucher[0]}
+#     Set Test Variable    ${voucher_code}    ${voucher[1]}
+    
+#     ${payments}=    Create List    ${payment_voucher}    ${PAYMENT_CASH}
+#     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+#     ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${voucher_code}
+    
+#     Set Test Variable    ${REQUEST_DATA}    ${request}
+#     RETURN    ${request}
+Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Thanh Toán Kết Hợp ${payment_amount} ${currency_code} Và Voucher ${voucher_campaign_id} Khách Hàng ${customer_id}
+    [Documentation]    Chuẩn bị dữ liệu hóa đơn bằng tiền mặt và voucher
+    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
+    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
+    
+    # Tính tỷ giá và số tiền quy đổi
+    ${currency_rate}=   Run Keyword If    '${currency_code}' == 'PHP'    Set Variable    1   
+    ...    ELSE    Thông tin quy đổi tiền tệ ${currency_code}
+    ${payment_amount_exchange}=    Evaluate    ${payment_amount} * ${currency_rate}
+
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID_CURRENCY}
+
+    # Tạo payment tiền mặt
+    ${payment_cash}=    Deep Copy    ${payment_body}
+    ${payment_cash}=    Update Nested Dictionary Property    ${payment_cash}    Method    Cash
+    ${payment_cash}=    Update Nested Dictionary Property    ${payment_cash}    Amount    ${payment_amount_exchange}
+    ${payment_cash}=    Update Nested Dictionary Property    ${payment_cash}    ExchangeRate    ${currency_rate}
+    ${payment_cash}=    Update Nested Dictionary Property    ${payment_cash}    CurrencyCode    ${currency_code}
+    ${payment_cash}=    Update Nested Dictionary Property    ${payment_cash}    ExchangeAmount    ${payment_amount_exchange}
+
+    # Lấy voucher hợp lệ
+    ${query}=    Set Variable    SELECT top(1) Id, Code, Price FROM Voucher WHERE VoucherCampaignId = ? AND Status = 1
+    ${voucher}=    Fetch One    ${query}    ${voucher_campaign_id}
+    Set Test Variable    ${voucher_id}    ${voucher[0]}
+    Set Test Variable    ${voucher_code}    ${voucher[1]}
+    Set Test Variable    ${voucher_price}   ${voucher[2]}
+    ${voucher_price}=    Convert To Number    ${voucher_price}
+
+    # Tạo payment voucher
+    ${payment_voucher}=    Deep Copy    ${payment_body}
+    ${payment_voucher}=    Update Nested Dictionary Property    ${payment_voucher}    Method    Voucher
+    ${payment_voucher}=    Update Nested Dictionary Property    ${payment_voucher}    Amount    ${voucher_price}
+    ${payment_voucher}=    Update Nested Dictionary Property    ${payment_voucher}    VoucherId    ${voucher_id}
+
+    # Tạo list payments đúng định dạng
+    ${payments}=    Create List    ${payment_voucher}    ${payment_cash}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payments}
+    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Code    ${voucher_code}
+
+    Set Test Variable    ${REQUEST_DATA}    ${request}
+    RETURN    ${request}
+    
+Xác Thực Thanh Toán Voucher Hóa Đơn
+    [Arguments]    ${invoice_id}    ${voucher_id}    ${amount}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = 'Voucher' AND VoucherId = ? AND Amount = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${voucher_id}    ${amount}
+    Should Be Equal As Numbers    ${result[0]}    1    Thanh toán bằng voucher không được ghi nhận đúng
+
+Xác Thực Thanh Toán Tiền Mặt Hóa Đơn
+    [Arguments]    ${invoice_id}    ${amount}
+    ${query}=    Set Variable    SELECT COUNT(*) FROM Payment WHERE InvoiceId = ? AND Method = 'Cash' AND Amount = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}    ${amount}
+    Should Be Equal As Numbers    ${result[0]}    1    Thanh toán bằng tiền mặt không được ghi nhận đúng
+
+Xác Thực Tổng Tiền Thanh Toán Hóa Đơn
+    [Arguments]    ${invoice_id}    ${amount}
+    ${query}=    Set Variable    SELECT SUM(Amount) FROM Payment WHERE InvoiceId = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${amount}    Tổng tiền thanh toán không khớp
+
+Xác Thực Trạng Thái Thanh Toán Hóa Đơn
+    [Arguments]    ${invoice_id}    ${status}
+    ${query}=    Set Variable    SELECT Status FROM Invoice WHERE Id = ?
+    ${result}=    Fetch One    ${query}    ${invoice_id}
+    Should Be Equal As Numbers    ${result[0]}    ${status}    Trạng thái thanh toán không đúng

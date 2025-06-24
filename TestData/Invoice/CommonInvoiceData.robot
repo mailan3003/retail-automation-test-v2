@@ -39,6 +39,9 @@ Resource          ../../Config/Env_${ENV}.robot
 &{payment_body} 
 ...    Method=Cash
 ...    Amount=100000
+&{payment_body} 
+...    Method=Transfer
+...    Amount=100000
 
 &{STANDARD_COUPON}  
 ...    Code=COUPON_TEST_001
@@ -244,3 +247,9 @@ Resource          ../../Config/Env_${ENV}.robot
 &{invoice_request_body_update}     Invoice=&{invoice_body_update}      IsUpdatePayment=false
 
 &{invoice_request_body_update_delivery}     Invoice=&{delivery_update_body_1}    
+
+# Product data
+${PRODUCT_1}                1000017664
+${PRODUCT_1_CODE}           	HGB0002 
+${PRODUCT_1_NAME}           Sản Hàng Hóa currency
+${MASTER_PRODUCT_1_ID}      1000017664

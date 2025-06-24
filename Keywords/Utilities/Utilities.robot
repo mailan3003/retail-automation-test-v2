@@ -4,7 +4,6 @@ Library           Collections
 Library           String
 Library           RequestsLibrary
 Library           OperatingSystem
-Resource          RequestHelper.robot
 #Resource          ../../Config/Env.robot
 #Resource          ../../Config/Env_currency.robot
 #Resource          ../../Config/Env_nhathuoc.robot
@@ -23,8 +22,13 @@ Create Auth Headers With File
 
 
 Create Auth Headers With BranchId
-    [Arguments]    ${token}=${AUTH_TOKEN}
+    [Arguments]    ${token}=${AUTH_TOKEN}   
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${BRANCH_ID}
+    RETURN    ${headers}
+
+Create Auth Headers With Custom BranchId
+    [Arguments]    ${branch_id}    ${token}=${AUTH_TOKEN}   
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${branch_id}
     RETURN    ${headers}
 
 Call API
@@ -51,11 +55,12 @@ Call API With BranchId
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
 
-Call API MAN With BranchId
-    [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
-    ${headers}=    Create Auth Headers With BranchId    ${token}
-    ${response}=    POST    ${API_MAN_URL}${endpoint}    headers=${headers}    json=${data}
+Call API With Custom BranchId
+    [Arguments]    ${endpoint}    ${data}    ${branch_id}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With Custom BranchId    ${branch_id}    ${token}
+    ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
+
 Should Have Nested Property
     [Arguments]    ${data}    ${property_path}    ${expected_value}=${None}
     @{parts}=    Split String    ${property_path}    .
@@ -80,5 +85,6 @@ Should Contain Nested Property
 Delete Data
     [Arguments]    ${endpoint}    ${token}=${AUTH_TOKEN}
     ${headers}=    Create Auth Headers    ${token}
-    ${response}=    Call Delete Request    ${API_MAN_URL}${endpoint}    headers=${headers}    
+    ${response}=    DELETE    ${API_MAN_URL}${endpoint}    headers=${headers}    
     RETURN    ${response}
+
