@@ -22,8 +22,13 @@ Create Auth Headers With File
 
 
 Create Auth Headers With BranchId
-    [Arguments]    ${token}=${AUTH_TOKEN}
+    [Arguments]    ${token}=${AUTH_TOKEN}   
     ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${BRANCH_ID}
+    RETURN    ${headers}
+
+Create Auth Headers With Custom BranchId
+    [Arguments]    ${branch_id}    ${token}=${AUTH_TOKEN}   
+    ${headers}=    Create Dictionary    Authorization=Bearer ${token}    Content-Type=application/json      Retailer=${RETAILER_CODE}    BranchId=${branch_id}
     RETURN    ${headers}
 
 Call API
@@ -47,6 +52,12 @@ Call API Man
 Call API With BranchId
     [Arguments]    ${endpoint}    ${data}    ${token}=${AUTH_TOKEN}    ${method}=POST
     ${headers}=    Create Auth Headers With BranchId    ${token}
+    ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
+    RETURN    ${response}
+
+Call API With Custom BranchId
+    [Arguments]    ${endpoint}    ${data}    ${branch_id}    ${token}=${AUTH_TOKEN}    ${method}=POST
+    ${headers}=    Create Auth Headers With Custom BranchId    ${branch_id}    ${token}
     ${response}=    POST    ${API_URL}${endpoint}    headers=${headers}    json=${data}
     RETURN    ${response}
 
@@ -76,3 +87,4 @@ Delete Data
     ${headers}=    Create Auth Headers    ${token}
     ${response}=    DELETE    ${API_MAN_URL}${endpoint}    headers=${headers}    
     RETURN    ${response}
+
