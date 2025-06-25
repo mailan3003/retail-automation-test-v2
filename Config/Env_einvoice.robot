@@ -1,0 +1,19 @@
+*** Variables ***
+${AUTH_TOKEN}   eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDcxLCJpYXQiOjE3NDczNzk1MzEsImV4cCI6MTc0OTc5ODczMSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiI1NWE0MWRmNzkzZDA0MjZkYWQ4MDA5YmIwYWRlMmIyNiIsImt2dWlkIjoxMDAwMDAwNDcxLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyOSwia3ZyaW5kaWQiOjgsImt2cmNvZGUiOiJhdXRvYXBpY3VycmVuY3kiLCJrdnJpZCI6MTk4MTMsImt2dXJpZCI6MTk4MTMsImt2cmdpZCI6MywicGVybXMiOiIifQ.hXnG00-4cZWoC7ePp6q0MmTlCcE9evrukf0Ow7J5ctM3TvUUTFDDYof_TPVwFoOSJoSG_jQ5pEx_sq3mMZke0ovgcNSbX4Cj4wT523l85YsdK4XgtJgjp0oXltHi-u_eh6fBnhSDoxUiqqv6oOQekr2L9hSwghbPMFUu1ktCpSY2OZkLNcyySFtrwhR6rkYqVYO0tzjSH0lt_Yafmdg1t4pF8zGqZnWT0GpCCwN8TjMngws5_WjYqdZvmpAAsvo1VhUsKlQ93kHbkfUn19YETsaKn9J8IyyahPwzYeI43JSS3ZRX7gomWv72z-drk1AkhH3ASsOjRG2bSyKI3n1tcw
+${RETAILER_CODE}      autoapi
+${RETAILER_ID}        19809
+
+
+${USER_ID}          1000000467
+${SOLD_BY_ID}       ${USER_ID}
+
+${DEFAULT_BRANCH_ID}        ${BRANCH_ID} 
+${BRANCH_ID}        1000000025
+${DEFAULT_USER_ID}          1000000471
+${DEFAULT_CUSTOMER_ID}      1000009032
+${API_URL}                  https://api-sale.kvpos.com/api/
+${API_MAN_URL}               https://api-man.kvpos.com/api/
+${WARRANTY_API_URL}       https://api-guarantee.kvpos.com/api/
+${REQUEST_FILES}    ${None}
+${USER_NAME}       admin
+${PASSWORD}        123
