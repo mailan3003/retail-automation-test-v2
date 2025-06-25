@@ -58,7 +58,7 @@ Tạo Đơn Giảm Giá VND
 Tạo Đơn Với Khách Hàng 
     [Documentation]    Test tạo đơn hàng mới với khách hàng 
     [Tags]    AIGenerated    CreateOrder    Negative    InvalidCustomer    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Khách Hàng CTKH264
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0293 Có Khách Hàng CTKH264
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Khách Hàng Trong Đơn Đặt Hàng Là CTKH264
@@ -107,7 +107,7 @@ RT-ORDER-005 Tạo Đơn Hàng Bảng Giá
 Tạo Đơn Hàng Với Ngày Dự Kiến Giao Hàng Thời Gian Tương Lai
     [Documentation]    Test tạo đơn hàng mới có ngày dự kiến giao hàng thời gian tương lai
     [Tags]    AIGenerated    CreateOrder    Positive    ExpectedDeliveryDate    regression
-    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0115 Có Thời Gian Giao Hàng Sau 2 Ngày So Với Ngày Hiện Tại
+    Given Chuẩn Bị Dữ Liệu Đơn Hàng HH0294 Có Thời Gian Giao Hàng Sau 2 Ngày So Với Ngày Hiện Tại
     When Gửi Yêu Cầu Tạo Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Thời Gian Giao Hàng Đã Được Cập Nhật Thành Sau 2 Ngày So Với Ngày Hiện Tại
