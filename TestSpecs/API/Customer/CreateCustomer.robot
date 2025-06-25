@@ -79,7 +79,7 @@ RT-CU-008 Tạo khách hàng thành công Với Địa Chỉ 2 Cấp
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200
     And Xác Thực Khách Hàng Có Địa Chỉ ${CUSTOMER_ADDRESS} Tỉnh Thành Phố ${PROVINCE_ID} Phường/Xã ${WARD_ID}
-    [Teardown]   Xóa Khách Hàng From API
+    #[Teardown]   Xóa Khách Hàng From API
 
 RT-CU-008 Tạo khách hàng thành công với địa chỉ đầy đủ
     [Documentation]    Kiểm tra tạo khách hàng thành công với địa chỉ đầy đủ:

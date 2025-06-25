@@ -141,7 +141,7 @@ RT-ORDER-UPDATE-006 Cập Nhật Người Nhận Đặt Trong Đơn Hàng
 Cập Nhật Ghi Chú Đơn Hàng ở MHQL
     [Documentation]    Cập Nhật Ghi Chú Đơn Hàng ở MHQL
     [Tags]    AIGenerated    UpdateOrder    Positive    Description    regression
-    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0054 Để Cập Nhật
+    Given Chuẩn Bị Tạo Đơn Đặt Hàng Cơ Bản HH0295 Để Cập Nhật
     And Chuẩn Bị Dữ Liệu Cập Nhật Ghi Chú 300 Kí Tự Ở MHQL 
     When Gửi Yêu Cầu Cập Nhật Đơn Hàng
     Then Mã Trạng Thái Phải Là 200
