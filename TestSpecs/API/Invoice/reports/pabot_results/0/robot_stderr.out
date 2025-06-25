@@ -1,9 +1,0 @@
-[ ERROR ] Error in file 'D:\Project\AI\retail-automation-test-v2\TestData\Invoice\EInvoice_VLXD_Data.robot' on line 37: Setting variable '&{einvoice_request_body_basic}' failed: Variable '${INVOICE_ID}' not found. Did you mean:
-    ${VOID_INVOICE_ID}
-    ${INVOICE_ID_VOID}
-    ${invoice_body}
-[ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
-[ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
-[ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
-[ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
-[ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
