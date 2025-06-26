@@ -15,7 +15,7 @@ Library           DateTime
 *** Keywords ***
 Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản
     [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng cơ bản với thông tin giao hàng tiêu chuẩn
-    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1_CODE}
+    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_1}
     ${delivery_id}=    Lấy Id Đối Tác Giao Hàng Theo Mã    ${DELIVERY_PARTNER_CODE} 
     ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
     ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
