@@ -15,7 +15,7 @@ RT-INPV-01 Tạo hóa đơn điện tử thành công
     ...    - Logic kiểm tra: Tạo hóa đơn trước, sau đó tạo hóa đơn điện tử với Invoice ID từ response
     ...    - Kỳ vọng: Tạo thành công hóa đơn điện tử với các tham số cố định (Includes, PartnerType, EInvoiceTemplateId)
     [Tags]    apieinvoice   apiroundingtotalamount
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử 
@@ -30,11 +30,12 @@ RT-INPV-02 Tạo hóa đơn điện tử với hóa đơn đã phát hành
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn đã phát hành
     ...    - Kỳ vọng: Tạo không thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội dung phản hồi trả về phải tồn tại Id
     And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử 
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
+    And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     Then Response Status Code Should Be 420
 
@@ -44,13 +45,14 @@ RT-INPV-03 Tạo hóa đơn điện tử với hóa đơn đã phát hành
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn đã phát hành
     ...    - Kỳ vọng: Tạo không thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử 
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     Then Response Status Code Should Be 420
+    And Nội dung phản hồi phải chứa message DataExisted
 
 RT-INPV-04 Tạo Hóa đơn điện tử không có template HDDT
     [Documentation]    Tạo Hóa đơn điện tử không có template HDDT
@@ -58,7 +60,7 @@ RT-INPV-04 Tạo Hóa đơn điện tử không có template HDDT
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử không có template HDDT
     ...    - Kỳ vọng: Tạo không thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử Không Template
@@ -71,7 +73,7 @@ RT-INPV-05 Tạo Hóa đơn điện tử thành công với hóa đơn đã hủ
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn đã hủy
     ...    - Kỳ vọng: Tạo không thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Cập Nhật Hóa Đơn Sang Trạng Thái Hủy
@@ -87,7 +89,7 @@ RT-INPV-06 Tạo Hóa đơn điện tử thành công với hóa đơn giao hàn
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn giao hàng
     ...    - Kỳ vọng: Tạo thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản Chi Nhánh ${DEFAULT_BRANCH_ID}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Cập nhật hóa đơn sang hình thức giao hàng
@@ -105,7 +107,7 @@ RT-INPV-07 Tạo Hóa đơn điện tử với user không có quyền xuất h�
     ...    - Kỳ vọng: Tạothành công hóa đơn điện tử
     [Tags]    apieinvoice
 
-    Thiết Lập Session Cho User Autotest    autotest    Autotest1
+    Given Thiết Lập Session Cho User Autotest    autotest    Autotest1
     And Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
     When Gửi Yêu Cầu Tạo Hóa Đơn Với User Autotest
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
