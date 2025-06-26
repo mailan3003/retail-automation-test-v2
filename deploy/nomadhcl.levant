@@ -33,7 +33,7 @@ job "automation-test-job-[[ or (env "BUILD_NUMBER") "BUILD_NUMBER" ]]" {
                 volumes = [
                     "reports:/reports"
                 ]
-                entrypoint = ["pabot","--processes","35","-d","/reports"[[ range .variables ]],"--variable","[[ . ]]"[[ end ]],"-i","[[ .include_tags ]]","TestSpecs"]
+                entrypoint = ["pabot","--processes","40","-d","/reports"[[ range .variables ]],"--variable","[[ . ]]"[[ end ]],"-i","[[ .include_tags ]]","TestSpecs"]
             }
             resources {
                 cpu = 2000 # Mhz
