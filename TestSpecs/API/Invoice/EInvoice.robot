@@ -38,23 +38,9 @@ RT-INPV-02 Tạo hóa đơn điện tử với hóa đơn đã phát hành
     And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     Then Response Status Code Should Be 420
-
-RT-INPV-03 Tạo hóa đơn điện tử với hóa đơn đã phát hành
-    [Documentation]    Tạo hóa đơn điện tử với hóa đơn đã phát hành
-    ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành
-    ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn đã phát hành
-    ...    - Kỳ vọng: Tạo không thành công hóa đơn điện tử 
-    [Tags]    apieinvoice
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
-    When Gửi Yêu Cầu Tạo Hóa Đơn
-    And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
-    And Chuẩn Bị Dữ Liệu Hóa Đơn Điện Tử 
-    And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
-    And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
-    Then Response Status Code Should Be 420
     And Nội dung phản hồi phải chứa message DataExisted
 
-RT-INPV-04 Tạo Hóa đơn điện tử không có template HDDT
+RT-INPV-03 Tạo Hóa đơn điện tử không có template HDDT
     [Documentation]    Tạo Hóa đơn điện tử không có template HDDT
     ...    - Dữ liệu đầu vào: Hóa đơn đã phát hành
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử không có template HDDT
@@ -67,7 +53,7 @@ RT-INPV-04 Tạo Hóa đơn điện tử không có template HDDT
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     Then Response Status Code Should Be 420
 
-RT-INPV-05 Tạo Hóa đơn điện tử thành công với hóa đơn đã hủy
+RT-INPV-04 Tạo Hóa đơn điện tử thành công với hóa đơn đã hủy
     [Documentation]     Tạo Hóa đơn điện tử thành công với hóa đơn đã hủy
     ...    - Dữ liệu đầu vào: Hóa đơn đã hủy
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn đã hủy
@@ -83,7 +69,7 @@ RT-INPV-05 Tạo Hóa đơn điện tử thành công với hóa đơn đã hủ
     And Nội Dung Phản Hồi Phải Tồn Tại Code HDDT
     And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
 
-RT-INPV-06 Tạo Hóa đơn điện tử thành công với hóa đơn giao hàng
+RT-INPV-05 Tạo Hóa đơn điện tử thành công với hóa đơn giao hàng
     [Documentation]     Tạo Hóa đơn điện tử thành công với hóa đơn giao hàng
     ...    - Dữ liệu đầu vào: Hóa đơn đã giao hàng
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn giao hàng
@@ -99,13 +85,13 @@ RT-INPV-06 Tạo Hóa đơn điện tử thành công với hóa đơn giao hàn
     And Nội Dung Phản Hồi Phải Tồn Tại Code HDDT
     And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
 
-RT-INPV-07 Tạo Hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử
+RT-INPV-06 Tạo Hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử
 #  API không chặn lỗi user không có quyền xuất hóa đơn điện tử
     [Documentation]    Tạo Hóa đơn điện tử với user không có quyền xuất hóa đơn điện tử
     ...    - Dữ liệu đầu vào: Hóa đơn được tạo bởi user autotest
     ...    - Logic kiểm tra: User autotest tạo hóa đơn và thử xuất hóa đơn điện tử
     ...    - Kỳ vọng: Tạothành công hóa đơn điện tử
-    [Tags]    apieinvoice
+    [Tags]    apieinvoice 
 
     Given Thiết Lập Session Cho User Autotest    autotest    Autotest1
     And Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá 68000 VND Số Lượng 1
