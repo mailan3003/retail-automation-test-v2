@@ -16,53 +16,14 @@ Library    uuid
 Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá ${price} VND Số Lượng ${quantity}
     [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh, thanh toán bằng tiền mặt, tự động tạo UUID
     ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
+    
     # Tạo UUID mới
     ${invoice_uuid}=    Evaluate    str(uuid.uuid4())    uuid
     Set Test Variable    ${INVOICE_UUID}    ${invoice_uuid}
     
     # Thêm chi tiết sản phẩm
     ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Price    ${price}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Quantity    ${quantity}
-    ${total_price}=    Evaluate    ${price} * ${quantity}
-    ${total_price}=    Evaluate    round(${total_price}, ${CURRENCY_DECIMAL_PLACE})
-
-    # Tạo thanh toán tiền mặt
-    ${payment_data}=    Deep Copy    ${payment_body}
-    ${payment_data_currency}=    Deep Copy    ${payment_body}
-    ${payment_data}=    Update Nested Dictionary Property    ${payment_data}    Method    ${PAYMENT_CASH}
-    ${payment_data}=    Update Nested Dictionary Property    ${payment_data}    Amount    ${total_price}
-    ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Method    ${PAYMENT_CASH}
-    ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    Amount    ${total_price}
-    ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeRate    1
-    ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    CurrencyCode    VND
-    ${payment_data_currency}=    Update Nested Dictionary Property    ${payment_data_currency}    ExchangeAmount    ${total_price}
-
-    ${payment_data}=    Create List    ${payment_data}
-    ${payment_data_currency}=    Create List    ${payment_data_currency}
-
-    # Cập nhật request với UUID và các thông tin khác
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Uuid    ${invoice_uuid}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${product_detail}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.Payments    ${payment_data}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice.PaymentDetails    ${payment_data_currency}
-    
-    Set Test Variable    ${TOTAL_PRICE}    ${total_price}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-Chuẩn Bị Dữ Liệu Hóa Đơn Quốc Tế Với Sản Phẩm Đơn Giá ${price} VND Số Lượng ${quantity} Với Hình Thức Giao Hàng
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn với sản phẩm có đơn giá và số lượng tùy chỉnh, thanh toán bằng tiền mặt, tự động tạo UUID
-    ${request}=    Deep Copy    ${delivery_detail_body}
-    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
-    # Tạo UUID mới
-    ${invoice_uuid}=    Evaluate    str(uuid.uuid4())    uuid
-    Set Test Variable    ${INVOICE_UUID}    ${invoice_uuid}
-    
-    # Thêm chi tiết sản phẩm
-    ${product_detail}=    Deep Copy    ${STANDARD_INVOICE_DETAIL}
-    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${product_id}
+    ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    ProductId    ${PRODUCT_ID}
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Price    ${price}
     ${product_detail}=    Update Nested Dictionary Property    ${product_detail}    Quantity    ${quantity}
     ${total_price}=    Evaluate    ${price} * ${quantity}
@@ -200,35 +161,3 @@ Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử Với User Autotest
     ${resp}=    POST On Session    ${AUTOTEST_SESSION}    e-invoice/publishEInvoice    json=${E_INVOICE_REQUEST_DATA}
     Set Test Variable    ${RESPONSE}    ${resp}
     Return From Keyword    ${resp}
-
-Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản Chi Nhánh ${branch_id}
-    [Documentation]    Chuẩn bị dữ liệu hóa đơn giao hàng cơ bản với thông tin giao hàng tiêu chuẩn
-    ${request}=    Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${PRODUCT_CODE}
-    ${invoice_uuid}=    Evaluate    str(uuid.uuid4())    uuid
-    Set Test Variable    ${INVOICE_UUID}    ${invoice_uuid}
-    
-    ${request_invoice}=    Get From Dictionary    ${REQUEST_DATA}    Invoice
-    ${delivery_detail_body}=    Deep Copy    ${default_delivery_detail_body}
-    ${delivery_detail_body}=    Update Nested Dictionary Property    ${delivery_detail_body}    DeliveryBy    ${DELIVERY_PARTNER_CODE}
-    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    DeliveryDetail    ${delivery_detail_body}
-    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    UsingCod    1
-    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    Uuid    ${invoice_uuid}
-    ${request_invoice}=    Update Nested Dictionary Property    ${request_invoice}    BranchId    ${branch_id}
-    ${request}=    Update Nested Dictionary Property    ${request}    Invoice    ${request_invoice}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Chuẩn Bị Dữ Liệu Cơ Bản Hóa Đơn Với Sản Phẩm ${product_code}
-    ${product_id}=    Lấy Thông Tin Sản Phẩm    ${product_code}
-    ${request}=    Deep Copy    ${invoice_request_body_not_delivery}
-    ${data_product}=   Deep Copy   ${STANDARD_INVOICE_DETAIL}
-    ${data_product}=    Update Dictionary Property    ${data_product}    ProductId    ${product_id}
-    ${request}  Update Nested Dictionary Property    ${request}    Invoice.InvoiceDetails    ${data_product}
-    Set Test Variable    ${REQUEST_DATA}    ${request}
-    RETURN    ${request}
-
-Lấy Thông tin Sản Phẩm  
-    [Arguments]    ${product_code}
-    ${query}=    Set Variable    SELECT Id FROM Product WHERE Code = ? AND RetailerId = ?
-    ${result}=    Fetch One    ${query}    ${product_code}    ${RETAILER_ID}
-    RETURN    ${result[0]}

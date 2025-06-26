@@ -41,11 +41,3 @@ Nội dung phản hồi trả về phải tồn tại ${path}
         ${current}=    Evaluate    ${current}.get("${key}", None) if isinstance(${current}, dict) else None
         Run Keyword If    '${current}' == 'None'    Fail    Key '${path}' not found in dictionary
     END
-
-Nội dung phản hồi phải chứa message ${expected_message}
-    [Documentation]    Kiểm tra response có chứa message cụ thể
-    Log     ${RESPONSE.json()}    
-    ${cleaned_message}=    Replace String    ${expected_message}    "    ${EMPTY}
-    ${message_json}=    Get From Dictionary    ${RESPONSE.json()["ResponseStatus"]}    Message
-    ${parsed_message}=    Evaluate    json.loads('''${message_json}''')    json
-    Should Have Nested Property     ${parsed_message}  message  ${cleaned_message}
