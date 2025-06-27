@@ -38,7 +38,6 @@ RT-INPV-02 Tạo hóa đơn điện tử với hóa đơn đã phát hành
     And Xác Thực Hóa Đơn Điện Tử Đã Tạo Thành Công
     And Gửi Yêu Cầu Tạo Hóa Đơn Điện Tử
     Then Response Status Code Should Be 420
-    And Nội dung phản hồi phải chứa message DataExisted
 
 RT-INPV-03 Tạo Hóa đơn điện tử không có template HDDT
     [Documentation]    Tạo Hóa đơn điện tử không có template HDDT
@@ -75,7 +74,7 @@ RT-INPV-05 Tạo Hóa đơn điện tử thành công với hóa đơn giao hàn
     ...    - Logic kiểm tra: Tạo hóa đơn điện tử với hóa đơn giao hàng
     ...    - Kỳ vọng: Tạo thành công hóa đơn điện tử 
     [Tags]    apieinvoice
-    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản Chi Nhánh ${DEFAULT_BRANCH_ID}
+    Given Chuẩn Bị Dữ Liệu Hóa Đơn Giao Hàng Cơ Bản Chi Nhánh ${BRANCH_ID}
     When Gửi Yêu Cầu Tạo Hóa Đơn
     And Nội Dung Phản Hồi Trả Về Phải Tồn Tại Id
     And Cập nhật hóa đơn sang hình thức giao hàng

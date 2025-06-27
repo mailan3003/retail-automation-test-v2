@@ -16,10 +16,9 @@ ${CUSTOMER_ID_CURRENCY_3}   1000009376
 
 ${VOUCHER_CAMPAIGN_ID_2}    1000000031    
 
-${PRODUCT_ID}                1000014171
-${PRODUCT_1_CODE}           	HH0113 
-${PRODUCT_1_NAME}           Bánh Tipo Hữu Nghị trà xanh hộp 90g
-${MASTER_PRODUCT_1_ID}      1000014171
+${PRODUCT_CODE}           	HH0113 
+${PRODUCT_NAME}           Bánh Tipo Hữu Nghị trà xanh hộp 90g
+${MASTER_PRODUCT_ID}      1000014171
 
 # E-Invoice Fixed Values (không thay đổi trong mọi request)
 ${E_INVOICE_TEMPLATE_ID}    99b93352-b1e9-4af2-92fd-eb5c3410642d
