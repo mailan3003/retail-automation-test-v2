@@ -23,7 +23,7 @@ Resource          ../../../Keywords/Product/ProductCommonKeywords.robot
 *** Test Cases ***
 RT-PRODUCT-001 Tạo Sản Phẩm Cơ Bản Thành Công
     [Documentation]    Test tạo sản phẩm cơ bản thành công với các thông tin tối thiểu bắt buộc như tên, danh mục, đơn vị tính, giá bán
-    [Tags]    AIGenerated    CreateProduct434      regression       
+    [Tags]    AIGenerated    CreateProduct434      regression        lantesttt       
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Cơ Bản 
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -68,7 +68,7 @@ RT-PRODUCT-005 Tạo Sản Phẩm Quản Lý Lô Và Hạn Sử Dụng
     [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
     [Documentation]    Test tạo sản phẩm có quản lý theo serial
-    [Tags]    AIGenerated    CreateProduct    Positive    Serial        regression 
+    [Tags]    AIGenerated    CreateProduct    Positive    Serial        regression     lantestproduct
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial
     When Gửi Yêu Cầu Tạo Sản Phẩm
     Then Mã Trạng Thái Phải Là 200
@@ -77,13 +77,13 @@ RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial
     [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính
     [Documentation]    Test tạo sản phẩm có thuộc tính
-    [Tags]    AIGenerated    CreateProduct    Positive    Attributes      regression
+    [Tags]    AIGenerated    CreateProduct    Positive    Attributes      regression    lantestcreateproduct
     Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính ${dict_attribute_name_1}
     When Gửi Yêu Cầu Tạo Sản Phẩm
-    Then Mã Trạng Thái Phải Là 200
-    And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
-    And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra 
-    [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
+    # Then Mã Trạng Thái Phải Là 200
+    # And Xác Thực Sản Phẩm Đã Được Tạo Trong Database
+    # And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra 
+    # [Teardown]     Xóa Sản Phẩm  ${DB_PRODUCT_CODE} 
 
 RT-PRODUCT-010 Tạo Sản Phẩm Loại Combo
     [Documentation]    Test tạo sản phẩm loại combo

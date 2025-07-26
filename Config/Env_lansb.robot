@@ -1,0 +1,38 @@
+*** Variables ***
+${AUTH_TOKEN}      eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo2NTQyLCJpYXQiOjE3NTA5OTc3NjQsImV4cCI6MTc1MzQxNjk2NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiJhMzJmZjBmYzZkODY0MGZlOTdhOWI3NmY1OTI1Y2FmMSIsImt2dWlkIjo2NTQyLCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjIsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6NzA5Niwia3ZyaW5kaWQiOjQsImt2cmNvZGUiOiJ0ZXN0c2IiLCJrdnJpZCI6OTAzNywia3Z1cmlkIjo5MDM3LCJrdnJnaWQiOjEsInBlcm1zIjoiIn0.lD3tKG8lu8Musa6YX_e7DTJwQfxz7RpO1ieyoMV1UXVY_4x1yQXf9UBywqhQ3qxfw7SwnIwODvi4BclO9y6QRuXOSTD-AkSsN6Dl41s5Mp6A0TWeV0OsZox1H7-8zNPRGTokoky165UMRJ8S__hEv9hM72YumkcW-ndjadek-lMZ3Vl3RcJB4p6_BMfDl4Kopv7dyLvSV3y0c3L3D6TxAfHg5bjoFNE7sM_7-9DSs9bWzVaq6hi-YWkMLFo3j6o0VxDof4EJoTHlaT2882a9CNzGX6Amoicw6T1irpwq_Mi9SlJnDMZGotm8h0Uvm8uSrbo02_nNjZ3dQzOXyn-erw
+${RETAILER_CODE}      testsb
+${RETAILER_ID}        9037
+
+${DEFAULT_RETAILER_ID}        9037
+
+${BRANCH_ID}        7096  
+${USER_ID}          6542
+${SOLD_BY_ID}       ${USER_ID}
+
+${DEFAULT_BRANCH_ID}        7096
+${DEFAULT_USER_ID}          6542
+${DEFAULT_CUSTOMER_ID}      650561
+${DEFAULT_PRODUCT_ID}       1751190
+${DEFAULT_BRANCH_NAME}       "Hà Đông"
+
+${API_URL}                  https://api-sale.kvpos.com:8443/api/
+${API_MAN_URL}               https://api-man.kvpos.com:8443/api/
+${WARRANTY_API_URL}       https://api-guarantee.kvpos.com:8443/api/
+
+${REDIS_HOST}      103.252.0.202
+${REDIS_PORT}      6679
+${REDIS_DB}        0
+${REDIS_PASSWORD}  ${EMPTY}
+${REQUEST_FILES}    ${None}
+${USER_NAME}       admin
+${PASSWORD}        Kiotviet123456
+
+# Payment
+${ACCOUNT_ID}    4361
+${INVALID_ACCOUNT_ID}    12345
+
+
+${CASH}    Cash
+${CARD}    Card
+${TRANSFER}    Transfer
+${WALLET}    Wallet

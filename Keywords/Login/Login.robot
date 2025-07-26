@@ -6,6 +6,8 @@ Library           SeleniumLibrary
 Library           Collections
 Library           OperatingSystem
 Library           JSONLibrary
+Library           RequestsLibrary
+
 *** Keywords ***
 Get BearerToken from API
     [Timeout]    5 minutes

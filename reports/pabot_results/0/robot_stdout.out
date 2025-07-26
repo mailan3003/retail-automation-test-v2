@@ -1,0 +1,40 @@
+==============================================================================
+TestSpecs                                                                     
+==============================================================================
+TestSpecs.API                                                                 
+==============================================================================
+TestSpecs.API.Product                                                         
+==============================================================================
+TestSpecs.API.Product.CreateProduct Test :: Test API t?o s?n ph?m             
+==============================================================================
+RT-PRODUCT-006 T?o S?n Ph?m Qu?n Lý Serial :: Test t?o s?n ph?m có... | FAIL |
+Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable
+
+Also teardown failed:
+Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}
+------------------------------------------------------------------------------
+RT-PRODUCT-007 T?o S?n Ph?m V?i Thu?c Tính :: Test t?o s?n ph?m có... | FAIL |
+Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable
+
+Also teardown failed:
+Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}
+------------------------------------------------------------------------------
+TestSpecs.API.Product.CreateProduct Test :: Test API t?o s?n ph?m     | FAIL |
+2 tests, 0 passed, 2 failed
+==============================================================================
+TestSpecs.API.Product                                                 | FAIL |
+2 tests, 0 passed, 2 failed
+==============================================================================
+TestSpecs.API                                                         | FAIL |
+2 tests, 0 passed, 2 failed
+==============================================================================
+TestSpecs                                                             | FAIL |
+2 tests, 0 passed, 2 failed
+==============================================================================
+Output:  C:\Users\lan.ntm\Code\retail-automation-test-v2\reports\pabot_results\0\output-20250720-215053.xml

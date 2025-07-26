@@ -23,7 +23,7 @@ RT-CU-001 Tạo khách hàng thành công với thông tin cơ bản
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Tạo khách hàng mới với thông tin cơ bản
     ...    - Code: POST /customers
-    [Tags]    AIGenerated    Customer    Create    Success    regression
+    [Tags]    AIGenerated    Customer    Create    Success    regression     lannnn
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Tên ${CUSTOMER_NAME} Số Điện Thoại ${CUSTOMER_PHONE} Email ${CUSTOMER_EMAIL} Và Facebook ${CUSTOMER_FACEBOOK_URL}
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 200

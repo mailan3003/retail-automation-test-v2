@@ -31,7 +31,7 @@ RT-RC-001 Tạo phiếu thu tiền mặt khi tạo hóa đơn
     ...    - Ngày tạo phiếu thu là ngày hiện tại
     ...    - Tổng tiền thanh toán của hóa đơn = 100,000đ
     ...    - Công nợ của hóa đơn = 0
-    [Tags]    payment    smoke    apiinvoice    regression
+    [Tags]    payment    smoke    apiinvoice    regression    Lantesttt
     Given Chuẩn Bị Dữ Liệu Hóa Đơn Tiêu Chuẩn Thanh Toán Phương Thức ${PAYMENT_CASH} Với Số Tiền 100000
     When Gửi Yêu Cầu Tạo Hóa Đơn
     Then Mã trạng thái phải là 200

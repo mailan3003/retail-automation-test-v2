@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.7.7 on win32)" generated="20250720 21:50:53.837" rpa="false" schemaversion="4">
+<suite id="s1" name="TestSpecs" source="C:\Users\lan.ntm\Code\retail-automation-test-v2\TestSpecs">
+<suite id="s1-s1" name="API" source="C:\Users\lan.ntm\Code\retail-automation-test-v2\TestSpecs\API">
+<suite id="s1-s1-s1" name="Product" source="C:\Users\lan.ntm\Code\retail-automation-test-v2\TestSpecs\API\Product">
+<suite id="s1-s1-s1-s1" name="CreateProduct Test" source="C:\Users\lan.ntm\Code\retail-automation-test-v2\TestSpecs\API\Product\CreateProduct_Test.robot">
+<kw name="Init Test Environment" library="Login" type="SETUP">
+<arg>${ENV}</arg>
+<arg>MHQL</arg>
+<kw name="Run Keyword If" library="BuiltIn">
+<var>${bearer_token}</var>
+<arg>"${role}" == "MHQL"</arg>
+<arg>Get BearerToken MHQL</arg>
+<arg>ELSE</arg>
+<arg>Get BearerToken from API</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<kw name="Get BearerToken MHQL" library="Login">
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${model}</var>
+<arg>RememberMe=${TRUE}</arg>
+<arg>ShowCaptcha=${FALSE}</arg>
+<arg>UserName=${USER_NAME}</arg>
+<arg>Password=${PASSWORD}</arg>
+<arg>Language=vi-VN</arg>
+<arg>LatestBranchId=${DEFAULT_BRANCH_ID}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250720 21:50:54.617" level="INFO">${model} = {'RememberMe': True, 'ShowCaptcha': False, 'UserName': 'admin', 'Password': '123', 'Language': 'vi-VN', 'LatestBranchId': '1000000025'}</msg>
+<status status="PASS" starttime="20250720 21:50:54.616" endtime="20250720 21:50:54.617"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${credential}</var>
+<arg>model=${model}</arg>
+<arg>IsManageSide=${TRUE}</arg>
+<arg>FingerPrintKey=4a8fafc3cfc372c6d68c09367d2a8b24_Chrome_Desktop_MÃ¡ytÃ­nh Windows</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250720 21:50:54.617" level="INFO">${credential} = {'model': {'RememberMe': True, 'ShowCaptcha': False, 'UserName': 'admin', 'Password': '123', 'Language': 'vi-VN', 'LatestBranchId': '1000000025'}, 'IsManageSide': True, 'FingerPrintKey': '4a8fafc3cfc3...</msg>
+<status status="PASS" starttime="20250720 21:50:54.617" endtime="20250720 21:50:54.618"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${headers1}</var>
+<arg>Content-Type=application/json</arg>
+<arg>Retailer=${RETAILER_CODE}</arg>
+<arg>Branchid=${DEFAULT_BRANCH_ID}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<msg timestamp="20250720 21:50:54.618" level="INFO">${headers1} = {'Content-Type': 'application/json', 'Retailer': 'autoapi', 'Branchid': '1000000025'}</msg>
+<status status="PASS" starttime="20250720 21:50:54.618" endtime="20250720 21:50:54.618"/>
+</kw>
+<kw name="Create Session" library="RequestsLibrary">
+<arg>ali</arg>
+<arg>${API_URL}</arg>
+<arg>headers=${headers1}</arg>
+<arg>verify=True</arg>
+<doc>Create Session: create a HTTP session to a server</doc>
+<msg timestamp="20250720 21:50:54.619" level="INFO">Creating Session using : alias=ali, url=https://api-sale.kvpos.com/api/, headers={'Content-Type': 'application/json', 'Retailer': 'autoapi', 'Branchid': '1000000025'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=True,                     debug=0 </msg>
+<status status="PASS" starttime="20250720 21:50:54.619" endtime="20250720 21:50:54.619"/>
+</kw>
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<var>${resp}</var>
+<arg>3x</arg>
+<arg>0s</arg>
+<arg>Post Request</arg>
+<arg>ali</arg>
+<arg>account/login</arg>
+<arg>data=${credential}</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<kw name="Post Request" library="RequestsLibrary">
+<arg>ali</arg>
+<arg>account/login</arg>
+<arg>data=${credential}</arg>
+<doc>*DEPRECATED* Please use `POST On Session` instead.</doc>
+<msg timestamp="20250720 21:50:54.620" level="WARN">Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.</msg>
+<msg timestamp="20250720 21:50:55.316" level="INFO">POST Request : url=https://api-sale.kvpos.com/api/account/login 
+ path_url=/api/account/login 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Retailer': 'autoapi', 'Branchid': '1000000025', 'Content-Length': '275'} 
+ body={"model": {"RememberMe": true, "ShowCaptcha": false, "UserName": "admin", "Password": "123", "Language": "vi-VN", "LatestBranchId": "1000000025"}, "IsManageSide": true, "FingerPrintKey": "4a8fafc3cfc372c6d68c09367d2a8b24_Chrome_Desktop_M\u00c3\u00a1yt\u00c3\u00adnh Windows"} 
+ </msg>
+<msg timestamp="20250720 21:50:55.316" level="INFO">POST Response : url=https://api-sale.kvpos.com/api/account/login 
+ status=200, reason=OK 
+ headers={'cache-control': 'private', 'content-type': 'application/json; charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'kv.requestid': '8661113375514619840e7eb222be6fe9', 'set-cookie': 'ss-id=zv05kxauWMkWTEV8JqR2; path=/; HttpOnly, ss-pid=tVSckIlQ9MkQY48h7EOm; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, ss-opt=temp; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, l_19809_1000000467=vi-VN; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, newfnb=0; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, Retailer=autoapi; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, LatestBranch_19809_1000000467=1000000025; expires=Thu, 20-Jul-2045 14:50:54 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiIxZmUwYzJjM2QyYWE0ZmVhOTU5NDg5NTg0MTllM2U4OCIsImt2dWlkIjoxMDAwMDAwNDY3LCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjMsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyNSwia3ZyaW5kaWQiOjgsImt2cmNvZGUiOiJhdXRvYXBpIiwia3ZyaWQiOjE5ODA5LCJrdnVyaWQiOjE5ODA5LCJrdnJnaWQiOjMsInBlcm1zIjoiIn0.KkotAlWV_w7KMnoPVFFRYA8jewzCYgb_W7Wjl-z9ApZHILqzIGcwxxdpAoec-ySQbJ99rArGuwVBop8R0aYJfQtD-343uNiPjgfwQZDR2EX8hzaWMnxbN_Kc48YjUVZLvKvRgfyN_YDXHBy81Vn_HejAMeYfU40X-5tOfhAyGMaynkvt7W1AXAgmzBiMalOzlVheQItAm3mml309CK5rYapWUQDFdjZP_PaYFFJNNvJDQxLy02L6Hz-LGV_hMFP-c1q6gxc_v56j8OIYfoZE6VwxTLk8XP7bThn9u_NsZU4wmEvTG10SKufZruP8E6TJfYSmV4gyiHNh30YNkVPtUQ; expires=Sun, 17-Aug-2025 14:50:54 GMT; path=/; HttpOnly, is-coffee=0; path=/; HttpOnly, trial=0; path=/; HttpOnly, zone=3; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH', 'access-control-expose-headers': 'Retailer-POS-Version', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sun, 20 Jul 2025 14:50:53 GMT', 'content-length': '1296'} 
+ body={"isSuccess":true,"checkLimitTime":true,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiIxZmUwYzJjM2QyYWE0ZmVhOTU5NDg5NTg0MTllM2U4OCIsImt2dWlkIjoxMDAwMDAwNDY3LCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjMsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyNSwia3ZyaW5kaWQiOjgsImt2cmNvZGUiOiJhdXRvYXBpIiwia3ZyaWQiOjE5ODA5LCJrdnVyaWQiOjE5ODA5LCJrdnJnaWQiOjMsInBlcm1zIjoiIn0.KkotAlWV_w7KMnoPVFFRYA8jewzCYgb_W7Wjl-z9ApZHILqzIGcwxxdpAoec-ySQbJ99rArGuwVBop8R0aYJfQtD-343uNiPjgfwQZDR2EX8hzaWMnxbN_Kc48YjUVZLvKvRgfyN_YDXHBy81Vn_HejAMeYfU40X-5tOfhAyGMaynkvt7W1AXAgmzBiMalOzlVheQItAm3mml309CK5rYapWUQDFdjZP_PaYFFJNNvJDQxLy02L6Hz-LGV_hMFP-c1q6gxc_v56j8OIYfoZE6VwxTLk8XP7bThn9u_NsZU4wmEvTG10SKufZruP8E6TJfYSmV4gyiHNh30YNkVPtUQ","currentBranch":1000000025,"permittedBranchIds":[1000000074,1000000025,1000000048,1000000049],"OldPasswordCountValidate":3} 
+ </msg>
+<status status="PASS" starttime="20250720 21:50:54.620" endtime="20250720 21:50:55.316"/>
+</kw>
+<msg timestamp="20250720 21:50:55.316" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250720 21:50:54.619" endtime="20250720 21:50:55.317"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${resp.json()}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250720 21:50:55.320" level="INFO">{'isSuccess': True, 'checkLimitTime': True, 'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiIxZmUwYzJjM2QyYWE0ZmVhOTU5NDg5NTg0MTllM2U4OCIsImt2dWlkIjoxMDAwMDAwNDY3LCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjMsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyNSwia3ZyaW5kaWQiOjgsImt2cmNvZGUiOiJhdXRvYXBpIiwia3ZyaWQiOjE5ODA5LCJrdnVyaWQiOjE5ODA5LCJrdnJnaWQiOjMsInBlcm1zIjoiIn0.KkotAlWV_w7KMnoPVFFRYA8jewzCYgb_W7Wjl-z9ApZHILqzIGcwxxdpAoec-ySQbJ99rArGuwVBop8R0aYJfQtD-343uNiPjgfwQZDR2EX8hzaWMnxbN_Kc48YjUVZLvKvRgfyN_YDXHBy81Vn_HejAMeYfU40X-5tOfhAyGMaynkvt7W1AXAgmzBiMalOzlVheQItAm3mml309CK5rYapWUQDFdjZP_PaYFFJNNvJDQxLy02L6Hz-LGV_hMFP-c1q6gxc_v56j8OIYfoZE6VwxTLk8XP7bThn9u_NsZU4wmEvTG10SKufZruP8E6TJfYSmV4gyiHNh30YNkVPtUQ', 'currentBranch': 1000000025, 'permittedBranchIds': [1000000074, 1000000025, 1000000048, 1000000049], 'OldPasswordCountValidate': 3}</msg>
+<status status="PASS" starttime="20250720 21:50:55.317" endtime="20250720 21:50:55.320"/>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${resp.status_code}</arg>
+<arg>200</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<msg timestamp="20250720 21:50:55.324" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<status status="PASS" starttime="20250720 21:50:55.321" endtime="20250720 21:50:55.324"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${resp.cookies}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250720 21:50:55.328" level="INFO">&lt;RequestsCookieJar[&lt;Cookie LatestBranch_19809_1000000467=1000000025 for api-sale.kvpos.com/&gt;, &lt;Cookie Retailer=autoapi for api-sale.kvpos.com/&gt;, &lt;Cookie is-coffee=0 for api-sale.kvpos.com/&gt;, &lt;Cookie l_19809_1000000467=vi-VN for api-sale.kvpos.com/&gt;, &lt;Cookie newfnb=0 for api-sale.kvpos.com/&gt;, &lt;Cookie ss-id=zv05kxauWMkWTEV8JqR2 for api-sale.kvpos.com/&gt;, &lt;Cookie ss-opt=temp for api-sale.kvpos.com/&gt;, &lt;Cookie ss-pid=tVSckIlQ9MkQY48h7EOm for api-sale.kvpos.com/&gt;, &lt;Cookie ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2VyIl0sImt2c291cmNlIjoiUmV0YWlsIiwia3Z1c2V0ZmEiOjAsImt2d2FpdG90cCI6MCwia3ZzZXMiOiIxZmUwYzJjM2QyYWE0ZmVhOTU5NDg5NTg0MTllM2U4OCIsImt2dWlkIjoxMDAwMDAwNDY3LCJrdmxhbmciOiJ2aS1WTiIsImt2dXR5cGUiOjAsImt2dWxpbWl0IjoiRmFsc2UiLCJrdnVhZG1pbiI6IlRydWUiLCJrdnVhY3QiOiJUcnVlIiwia3Z1bGltaXR0cmFucyI6IkZhbHNlIiwia3Z1c2hvd3N1bSI6IlRydWUiLCJrdmJpIjoiVHJ1ZSIsImt2Y3R5cGUiOjMsInVzZUJJIjp7IkN1c3RvbWVyQklSZXBvcnRfUmVhZCI6W10sIlNhbGVCSVJlcG9ydF9SZWFkIjpbXSwiUHJvZHVjdEJJUmVwb3J0X1JlYWQiOltdLCJGaW5hbmNlQklSZXBvcnRfUmVhZCI6W119LCJrdmJpZCI6MTAwMDAwMDAyNSwia3ZyaW5kaWQiOjgsImt2cmNvZGUiOiJhdXRvYXBpIiwia3ZyaWQiOjE5ODA5LCJrdnVyaWQiOjE5ODA5LCJrdnJnaWQiOjMsInBlcm1zIjoiIn0.KkotAlWV_w7KMnoPVFFRYA8jewzCYgb_W7Wjl-z9ApZHILqzIGcwxxdpAoec-ySQbJ99rArGuwVBop8R0aYJfQtD-343uNiPjgfwQZDR2EX8hzaWMnxbN_Kc48YjUVZLvKvRgfyN_YDXHBy81Vn_HejAMeYfU40X-5tOfhAyGMaynkvt7W1AXAgmzBiMalOzlVheQItAm3mml309CK5rYapWUQDFdjZP_PaYFFJNNvJDQxLy02L6Hz-LGV_hMFP-c1q6gxc_v56j8OIYfoZE6VwxTLk8XP7bThn9u_NsZU4wmEvTG10SKufZruP8E6TJfYSmV4gyiHNh30YNkVPtUQ for api-sale.kvpos.com/&gt;, &lt;Cookie trial=0 for api-sale.kvpos.com/&gt;, &lt;Cookie zone=3 for api-sale.kvpos.com/&gt;]&gt;</msg>
+<status status="PASS" starttime="20250720 21:50:55.325" endtime="20250720 21:50:55.328"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${AUTH_TOKEN}</var>
+<arg>${resp.json()}[token]</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.332" level="INFO">${AUTH_TOKEN} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250720 21:50:55.328" endtime="20250720 21:50:55.332"/>
+</kw>
+<kw name="Return From Keyword" library="BuiltIn">
+<arg>${AUTH_TOKEN}</arg>
+<doc>Returns from the enclosing user keyword.</doc>
+<msg timestamp="20250720 21:50:55.332" level="INFO">Returning from the enclosing user keyword.</msg>
+<status status="PASS" starttime="20250720 21:50:55.332" endtime="20250720 21:50:55.332"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:54.616" endtime="20250720 21:50:55.332"/>
+</kw>
+<msg timestamp="20250720 21:50:55.333" level="INFO">${bearer_token} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250720 21:50:54.615" endtime="20250720 21:50:55.333"/>
+</kw>
+<kw name="Set Global Variable" library="BuiltIn">
+<arg>${AUTH_TOKEN}</arg>
+<arg>${bearer_token}</arg>
+<doc>Makes a variable available globally in all tests and suites.</doc>
+<msg timestamp="20250720 21:50:55.339" level="INFO">${AUTH_TOKEN} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InNCeCJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjoxMDAwMDAwNDY3LCJpYXQiOjE3NTMwMjMwNTQsImV4cCI6MTc1NTQ0MjI1NCwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJyb2xlcyI6WyJVc2V...</msg>
+<status status="PASS" starttime="20250720 21:50:55.333" endtime="20250720 21:50:55.339"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:54.614" endtime="20250720 21:50:55.339"/>
+</kw>
+<test id="s1-s1-s1-s1-t1" name="RT-PRODUCT-006 Tạo Sản Phẩm Quản Lý Serial" line="69">
+<kw name="Given Chuẩn Bị Dữ Liệu Sản Phẩm Quản Lý Serial" library="CreateProductKeywords">
+<kw name="Deep Copy" library="DataUtilities">
+<var>${request}</var>
+<arg>${list_product_data}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250720 21:50:55.342" level="INFO">${json_data} = {"Id": "0", "ProductType": "2", "CategoryId": "1000000717", "CategoryName": "", "isActive": "false", "AllowsSale": "true", "isDeleted": "false", "Code": "", "BasePrice": "50000", "Cost": "0", "LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.341" endtime="20250720 21:50:55.342"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250720 21:50:55.346" level="INFO">${copied_data} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': '', 'BasePrice': '50000', 'Cost': '0', 'LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.342" endtime="20250720 21:50:55.346"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250720 21:50:55.346" endtime="20250720 21:50:55.347"/>
+</return>
+<msg timestamp="20250720 21:50:55.347" level="INFO">${request} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': '', 'BasePrice': '50000', 'Cost': '0', 'LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.341" endtime="20250720 21:50:55.347"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random_code}</var>
+<arg>8</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<msg timestamp="20250720 21:50:55.349" level="INFO">${random_code} = 32869047</msg>
+<status status="PASS" starttime="20250720 21:50:55.348" endtime="20250720 21:50:55.349"/>
+</kw>
+<kw name="Update Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>Code</arg>
+<arg>IMEI${random_code}</arg>
+<doc>Updates a property in a dictionary, useful for request modification</doc>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${dictionary}</arg>
+<arg>${property_name}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.350" endtime="20250720 21:50:55.350"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250720 21:50:55.350" endtime="20250720 21:50:55.351"/>
+</return>
+<msg timestamp="20250720 21:50:55.351" level="INFO">${request} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': 'IMEI32869047', 'BasePrice': '50000', 'Cost': '...</msg>
+<status status="PASS" starttime="20250720 21:50:55.349" endtime="20250720 21:50:55.351"/>
+</kw>
+<kw name="Update Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>IsLotSerialControl</arg>
+<arg>true</arg>
+<doc>Updates a property in a dictionary, useful for request modification</doc>
+<kw name="Set To Dictionary" library="Collections">
+<arg>${dictionary}</arg>
+<arg>${property_name}=${property_value}</arg>
+<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.352" endtime="20250720 21:50:55.352"/>
+</kw>
+<return>
+<value>${dictionary}</value>
+<status status="PASS" starttime="20250720 21:50:55.352" endtime="20250720 21:50:55.353"/>
+</return>
+<msg timestamp="20250720 21:50:55.353" level="INFO">${request} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': 'IMEI32869047', 'BasePrice': '50000', 'Cost': '...</msg>
+<status status="PASS" starttime="20250720 21:50:55.351" endtime="20250720 21:50:55.353"/>
+</kw>
+<kw name="Lấy Thông tin Nhóm Hàng" library="ProductCommonKeywords">
+<var>${category_id}</var>
+<arg>${CATEGORY_NAME}</arg>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.354" level="INFO">${query} = SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?</msg>
+<status status="PASS" starttime="20250720 21:50:55.354" endtime="20250720 21:50:55.354"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${group_name}</arg>
+<arg>${RETAILER_ID}</arg>
+<msg timestamp="20250720 21:50:55.445" level="INFO">${result} = None</msg>
+<status status="PASS" starttime="20250720 21:50:55.354" endtime="20250720 21:50:55.445"/>
+</kw>
+<return>
+<value>${result[0]}</value>
+<status status="PASS" starttime="20250720 21:50:55.445" endtime="20250720 21:50:55.445"/>
+</return>
+<msg timestamp="20250720 21:50:55.449" level="FAIL">Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable</msg>
+<status status="FAIL" starttime="20250720 21:50:55.353" endtime="20250720 21:50:55.449"/>
+</kw>
+<kw name="Update Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>CategoryId</arg>
+<arg>${category_id}</arg>
+<doc>Updates a property in a dictionary, useful for request modification</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.449" endtime="20250720 21:50:55.450"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${branch_pr_cost}</var>
+<arg>str(${branch_for_cost}).replace("'",'"')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.450" endtime="20250720 21:50:55.450"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${branch_pr_cost}</var>
+<arg>(None, '[${branch_pr_cost}]')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.450" endtime="20250720 21:50:55.450"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${form_data}</var>
+<arg>str(${request}).replace("'",'"')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.451" endtime="20250720 21:50:55.451"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${list_products}</var>
+<arg>(None, '[${form_data}]')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.451" endtime="20250720 21:50:55.451"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${payload}</var>
+<arg>ListProductsString=${list_products}</arg>
+<arg>BranchForProductCostss=${branch_pr_cost}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.452" endtime="20250720 21:50:55.452"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${REQUEST_DATA}</arg>
+<arg>${payload}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.452" endtime="20250720 21:50:55.452"/>
+</kw>
+<return>
+<value>${request}</value>
+<status status="NOT RUN" starttime="20250720 21:50:55.452" endtime="20250720 21:50:55.452"/>
+</return>
+<status status="FAIL" starttime="20250720 21:50:55.340" endtime="20250720 21:50:55.453"/>
+</kw>
+<kw name="When Gửi Yêu Cầu Tạo Sản Phẩm" library="ProductCommonKeywords">
+<status status="NOT RUN" starttime="20250720 21:50:55.453" endtime="20250720 21:50:55.453"/>
+</kw>
+<kw name="Then Mã Trạng Thái Phải Là 200" library="ResponseHelper" sourcename="Mã trạng thái phải là ${expected_status_code}">
+<status status="NOT RUN" starttime="20250720 21:50:55.454" endtime="20250720 21:50:55.454"/>
+</kw>
+<kw name="And Xác Thực Sản Phẩm Đã Được Tạo Trong Database" library="ProductCommonKeywords">
+<status status="NOT RUN" starttime="20250720 21:50:55.454" endtime="20250720 21:50:55.454"/>
+</kw>
+<kw name="And Xác Thực Sản Phẩm Được Cấu Hình Quản Lý Serial" library="ProductCommonKeywords">
+<status status="NOT RUN" starttime="20250720 21:50:55.455" endtime="20250720 21:50:55.455"/>
+</kw>
+<kw name="Xóa Sản Phẩm" library="ProductCommonKeywords" type="TEARDOWN">
+<arg>${DB_PRODUCT_CODE}</arg>
+<msg timestamp="20250720 21:50:55.462" level="FAIL">Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</msg>
+<status status="FAIL" starttime="20250720 21:50:55.455" endtime="20250720 21:50:55.462">Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</status>
+</kw>
+<doc>Test tạo sản phẩm có quản lý theo serial</doc>
+<tag>AIGenerated</tag>
+<tag>CreateProduct</tag>
+<tag>lantestproduct</tag>
+<tag>Positive</tag>
+<tag>regression</tag>
+<tag>Serial</tag>
+<status status="FAIL" starttime="20250720 21:50:55.339" endtime="20250720 21:50:55.471">Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable
+
+Also teardown failed:
+Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</status>
+</test>
+<test id="s1-s1-s1-s1-t2" name="RT-PRODUCT-007 Tạo Sản Phẩm Với Thuộc Tính" line="78">
+<kw name="Given Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính ${dict_attribute_name_1}" library="CreateProductKeywords" sourcename="Chuẩn Bị Dữ Liệu Sản Phẩm Với Thuộc Tính ${dict_attribute_name}">
+<kw name="Create List" library="BuiltIn">
+<var>${list_products}</var>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250720 21:50:55.473" level="INFO">${list_products} = []</msg>
+<status status="PASS" starttime="20250720 21:50:55.473" endtime="20250720 21:50:55.474"/>
+</kw>
+<kw name="Get Dictionary Keys" library="Collections">
+<var>${attribute_names}</var>
+<arg>${dict_attribute_name}</arg>
+<doc>Returns keys of the given ``dictionary`` as a list.</doc>
+<msg timestamp="20250720 21:50:55.474" level="INFO">${attribute_names} = ['SIZE']</msg>
+<status status="PASS" starttime="20250720 21:50:55.474" endtime="20250720 21:50:55.474"/>
+</kw>
+<kw name="Get Length" library="BuiltIn">
+<var>${length}</var>
+<arg>${attribute_names}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250720 21:50:55.475" level="INFO">Length is 1</msg>
+<msg timestamp="20250720 21:50:55.475" level="INFO">${length} = 1</msg>
+<status status="PASS" starttime="20250720 21:50:55.474" endtime="20250720 21:50:55.475"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>${all_attribute_values}</var>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250720 21:50:55.475" level="INFO">${all_attribute_values} = []</msg>
+<status status="PASS" starttime="20250720 21:50:55.475" endtime="20250720 21:50:55.475"/>
+</kw>
+<for flavor="IN">
+<var>${attr_name}</var>
+<value>@{attribute_names}</value>
+<iter>
+<var name="${attr_name}">SIZE</var>
+<kw name="Get From Dictionary" library="Collections">
+<var>${attr_values}</var>
+<arg>${dict_attribute_name}</arg>
+<arg>${attr_name}</arg>
+<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
+<msg timestamp="20250720 21:50:55.477" level="INFO">${attr_values} = ['L', 'M', 'S']</msg>
+<status status="PASS" starttime="20250720 21:50:55.476" endtime="20250720 21:50:55.477"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${all_attribute_values}</arg>
+<arg>${attr_values}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.477" endtime="20250720 21:50:55.477"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:55.476" endtime="20250720 21:50:55.477"/>
+</iter>
+<status status="PASS" starttime="20250720 21:50:55.476" endtime="20250720 21:50:55.477"/>
+</for>
+<kw name="Create List" library="BuiltIn">
+<var>${combinations}</var>
+<arg>${EMPTY}</arg>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250720 21:50:55.481" level="INFO">${combinations} = ['']</msg>
+<status status="PASS" starttime="20250720 21:50:55.478" endtime="20250720 21:50:55.481"/>
+</kw>
+<for flavor="IN">
+<var>${attr_values}</var>
+<value>@{all_attribute_values}</value>
+<iter>
+<var name="${attr_values}">['L', 'M', 'S']</var>
+<kw name="Create List" library="BuiltIn">
+<var>${new_combinations}</var>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250720 21:50:55.482" level="INFO">${new_combinations} = []</msg>
+<status status="PASS" starttime="20250720 21:50:55.482" endtime="20250720 21:50:55.483"/>
+</kw>
+<for flavor="IN">
+<var>${combination}</var>
+<value>@{combinations}</value>
+<iter>
+<var name="${combination}"/>
+<for flavor="IN">
+<var>${value}</var>
+<value>@{attr_values}</value>
+<iter>
+<var name="${value}">L</var>
+<kw name="Set Variable" library="BuiltIn">
+<var>${new_combination}</var>
+<arg>${combination}${value}|</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.484" level="INFO">${new_combination} = L|</msg>
+<status status="PASS" starttime="20250720 21:50:55.484" endtime="20250720 21:50:55.484"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${new_combinations}</arg>
+<arg>${new_combination}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.485" endtime="20250720 21:50:55.485"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:55.484" endtime="20250720 21:50:55.485"/>
+</iter>
+<iter>
+<var name="${value}">M</var>
+<kw name="Set Variable" library="BuiltIn">
+<var>${new_combination}</var>
+<arg>${combination}${value}|</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.486" level="INFO">${new_combination} = M|</msg>
+<status status="PASS" starttime="20250720 21:50:55.486" endtime="20250720 21:50:55.486"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${new_combinations}</arg>
+<arg>${new_combination}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.486" endtime="20250720 21:50:55.487"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:55.485" endtime="20250720 21:50:55.487"/>
+</iter>
+<iter>
+<var name="${value}">S</var>
+<kw name="Set Variable" library="BuiltIn">
+<var>${new_combination}</var>
+<arg>${combination}${value}|</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.488" level="INFO">${new_combination} = S|</msg>
+<status status="PASS" starttime="20250720 21:50:55.487" endtime="20250720 21:50:55.488"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${new_combinations}</arg>
+<arg>${new_combination}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="PASS" starttime="20250720 21:50:55.488" endtime="20250720 21:50:55.488"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:55.487" endtime="20250720 21:50:55.488"/>
+</iter>
+<status status="PASS" starttime="20250720 21:50:55.483" endtime="20250720 21:50:55.489"/>
+</for>
+<status status="PASS" starttime="20250720 21:50:55.483" endtime="20250720 21:50:55.489"/>
+</iter>
+<status status="PASS" starttime="20250720 21:50:55.483" endtime="20250720 21:50:55.489"/>
+</for>
+<kw name="Set Variable" library="BuiltIn">
+<var>${combinations}</var>
+<arg>${new_combinations}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.489" level="INFO">${combinations} = ['L|', 'M|', 'S|']</msg>
+<status status="PASS" starttime="20250720 21:50:55.489" endtime="20250720 21:50:55.489"/>
+</kw>
+<status status="PASS" starttime="20250720 21:50:55.481" endtime="20250720 21:50:55.490"/>
+</iter>
+<status status="PASS" starttime="20250720 21:50:55.481" endtime="20250720 21:50:55.490"/>
+</for>
+<kw name="Create List" library="BuiltIn">
+<var>${list_products_code}</var>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20250720 21:50:55.490" level="INFO">${list_products_code} = []</msg>
+<status status="PASS" starttime="20250720 21:50:55.490" endtime="20250720 21:50:55.490"/>
+</kw>
+<for flavor="IN">
+<var>${combination}</var>
+<value>@{combinations}</value>
+<iter>
+<var name="${combination}">L|</var>
+<kw name="Deep Copy" library="DataUtilities">
+<var>${request}</var>
+<arg>${list_product_data}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250720 21:50:55.492" level="INFO">${json_data} = {"Id": "0", "ProductType": "2", "CategoryId": "1000000717", "CategoryName": "", "isActive": "false", "AllowsSale": "true", "isDeleted": "false", "Code": "", "BasePrice": "50000", "Cost": "0", "LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.492" endtime="20250720 21:50:55.492"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250720 21:50:55.493" level="INFO">${copied_data} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': '', 'BasePrice': '50000', 'Cost': '0', 'LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.493" endtime="20250720 21:50:55.493"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250720 21:50:55.493" endtime="20250720 21:50:55.494"/>
+</return>
+<msg timestamp="20250720 21:50:55.494" level="INFO">${request} = {'Id': '0', 'ProductType': '2', 'CategoryId': '1000000717', 'CategoryName': '', 'isActive': 'false', 'AllowsSale': 'true', 'isDeleted': 'false', 'Code': '', 'BasePrice': '50000', 'Cost': '0', 'LatestP...</msg>
+<status status="PASS" starttime="20250720 21:50:55.491" endtime="20250720 21:50:55.494"/>
+</kw>
+<kw name="Lấy Thông tin Nhóm Hàng" library="ProductCommonKeywords">
+<var>${category_id}</var>
+<arg>${CATEGORY_NAME}</arg>
+<kw name="Set Variable" library="BuiltIn">
+<var>${query}</var>
+<arg>SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250720 21:50:55.495" level="INFO">${query} = SELECT Id FROM Category WHERE Name = ? AND RetailerId = ?</msg>
+<status status="PASS" starttime="20250720 21:50:55.495" endtime="20250720 21:50:55.495"/>
+</kw>
+<kw name="Fetch One" library="DatabaseLibrary">
+<var>${result}</var>
+<arg>${query}</arg>
+<arg>${group_name}</arg>
+<arg>${RETAILER_ID}</arg>
+<msg timestamp="20250720 21:50:55.511" level="INFO">${result} = None</msg>
+<status status="PASS" starttime="20250720 21:50:55.495" endtime="20250720 21:50:55.511"/>
+</kw>
+<return>
+<value>${result[0]}</value>
+<status status="PASS" starttime="20250720 21:50:55.511" endtime="20250720 21:50:55.512"/>
+</return>
+<msg timestamp="20250720 21:50:55.515" level="FAIL">Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable</msg>
+<status status="FAIL" starttime="20250720 21:50:55.494" endtime="20250720 21:50:55.515"/>
+</kw>
+<kw name="Update Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>CategoryId</arg>
+<arg>${category_id}</arg>
+<doc>Updates a property in a dictionary, useful for request modification</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.516" endtime="20250720 21:50:55.516"/>
+</kw>
+<kw name="Generate Random String" library="String">
+<var>${random_code}</var>
+<arg>8</arg>
+<arg>[NUMBERS]</arg>
+<doc>Generates a string with a desired ``length`` from the given ``chars``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.516" endtime="20250720 21:50:55.516"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${code}</var>
+<arg>HHTT${random_code}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.516" endtime="20250720 21:50:55.517"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${list_products_code}</arg>
+<arg>${code}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.517" endtime="20250720 21:50:55.517"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>Code</arg>
+<arg>${code}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.517" endtime="20250720 21:50:55.517"/>
+</kw>
+<kw name="Split String" library="String">
+<var>${combination_values}</var>
+<arg>${combination}</arg>
+<arg>|</arg>
+<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.518" endtime="20250720 21:50:55.518"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${product_name}</var>
+<arg>Sản phẩm</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.518" endtime="20250720 21:50:55.518"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${index}</var>
+<value>${length}</value>
+<iter>
+<var name="${index}"/>
+<kw name="Get From List" library="Collections">
+<var>${value}</var>
+<arg>${combination_values}</arg>
+<arg>${index}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.519" endtime="20250720 21:50:55.519"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${product_name}</var>
+<arg>${product_name}-${value}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.519" endtime="20250720 21:50:55.520"/>
+</kw>
+<status status="NOT RUN" starttime="20250720 21:50:55.519" endtime="20250720 21:50:55.520"/>
+</iter>
+<status status="NOT RUN" starttime="20250720 21:50:55.518" endtime="20250720 21:50:55.520"/>
+</for>
+<kw name="Set Variable" library="BuiltIn">
+<var>${product_name}</var>
+<arg>${product_name}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.520" endtime="20250720 21:50:55.520"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>Name</arg>
+<arg>Sản phẩm</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.520" endtime="20250720 21:50:55.521"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>FullName</arg>
+<arg>${value}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.521" endtime="20250720 21:50:55.521"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>CompareFullName</arg>
+<arg>${product_name}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.521" endtime="20250720 21:50:55.521"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>${product_attributes}</var>
+<doc>Returns a list containing given items.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.522" endtime="20250720 21:50:55.522"/>
+</kw>
+<for flavor="IN RANGE">
+<var>${index}</var>
+<value>${length}</value>
+<iter>
+<var name="${index}"/>
+<kw name="Deep Copy" library="DataUtilities">
+<var>${attribute}</var>
+<arg>${standard_product_attributes}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.522" endtime="20250720 21:50:55.523"/>
+</kw>
+<kw name="Get From List" library="Collections">
+<var>${value}</var>
+<arg>${combination_values}</arg>
+<arg>${index}</arg>
+<doc>Returns the value specified with an ``index`` from ``list``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.523" endtime="20250720 21:50:55.523"/>
+</kw>
+<kw name="Lấy ID thuộc tính" library="ProductCommonKeywords">
+<var>${attribute_id}</var>
+<arg>${attr_name}</arg>
+<status status="NOT RUN" starttime="20250720 21:50:55.523" endtime="20250720 21:50:55.523"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${attribute}</var>
+<arg>${attribute}</arg>
+<arg>AttributeId</arg>
+<arg>${attribute_id}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.524" endtime="20250720 21:50:55.524"/>
+</kw>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${attribute}</var>
+<arg>${attribute}</arg>
+<arg>Value</arg>
+<arg>${value}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.524" endtime="20250720 21:50:55.524"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${product_attributes}</arg>
+<arg>${attribute}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.525" endtime="20250720 21:50:55.525"/>
+</kw>
+<status status="NOT RUN" starttime="20250720 21:50:55.522" endtime="20250720 21:50:55.525"/>
+</iter>
+<status status="NOT RUN" starttime="20250720 21:50:55.522" endtime="20250720 21:50:55.525"/>
+</for>
+<kw name="Update Nested Dictionary Property" library="DataUtilities">
+<var>${request}</var>
+<arg>${request}</arg>
+<arg>ProductAttributes</arg>
+<arg>${product_attributes}</arg>
+<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.525" endtime="20250720 21:50:55.525"/>
+</kw>
+<kw name="Append To List" library="Collections">
+<arg>${list_products}</arg>
+<arg>${request}</arg>
+<doc>Adds ``values`` to the end of ``list``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.526" endtime="20250720 21:50:55.526"/>
+</kw>
+<status status="FAIL" starttime="20250720 21:50:55.491" endtime="20250720 21:50:55.526"/>
+</iter>
+<status status="FAIL" starttime="20250720 21:50:55.490" endtime="20250720 21:50:55.526"/>
+</for>
+<kw name="Evaluate" library="BuiltIn">
+<var>${branch_pr_cost}</var>
+<arg>str(${branch_for_cost}).replace("'",'"')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.526" endtime="20250720 21:50:55.527"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${branch_pr_cost}</var>
+<arg>(None, '[${branch_pr_cost}]')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.527" endtime="20250720 21:50:55.527"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${form_data}</var>
+<arg>str(${list_products} ).replace("'",'"')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.527" endtime="20250720 21:50:55.527"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${list_products_attribute}</var>
+<arg>(None, '${form_data}')</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.528" endtime="20250720 21:50:55.528"/>
+</kw>
+<kw name="Create Dictionary" library="BuiltIn">
+<var>${payload}</var>
+<arg>ListProductsString=${list_products_attribute}</arg>
+<arg>BranchForProductCostss=${branch_pr_cost}</arg>
+<doc>Creates and returns a dictionary based on the given ``items``.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.528" endtime="20250720 21:50:55.528"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>${payload}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.528" endtime="20250720 21:50:55.529"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${REQUEST_DATA}</arg>
+<arg>${payload}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.529" endtime="20250720 21:50:55.529"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${LIST_PRODUCTS_CODE}</arg>
+<arg>${list_products_code}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="NOT RUN" starttime="20250720 21:50:55.529" endtime="20250720 21:50:55.529"/>
+</kw>
+<return>
+<value>${REQUEST_DATA}</value>
+<status status="NOT RUN" starttime="20250720 21:50:55.530" endtime="20250720 21:50:55.530"/>
+</return>
+<status status="FAIL" starttime="20250720 21:50:55.473" endtime="20250720 21:50:55.530"/>
+</kw>
+<kw name="When Gửi Yêu Cầu Tạo Sản Phẩm" library="ProductCommonKeywords">
+<status status="NOT RUN" starttime="20250720 21:50:55.531" endtime="20250720 21:50:55.531"/>
+</kw>
+<kw name="Then Mã Trạng Thái Phải Là 200" library="ResponseHelper" sourcename="Mã trạng thái phải là ${expected_status_code}">
+<status status="NOT RUN" starttime="20250720 21:50:55.531" endtime="20250720 21:50:55.531"/>
+</kw>
+<kw name="And Xác Thực Sản Phẩm Đã Được Tạo Trong Database" library="ProductCommonKeywords">
+<status status="NOT RUN" starttime="20250720 21:50:55.532" endtime="20250720 21:50:55.532"/>
+</kw>
+<kw name="And Xác Thực Sản Phẩm Có ${LIST_PRODUCTS_CODE} Được Tạo Ra" library="ProductCommonKeywords" sourcename="Xác Thực Sản Phẩm Có ${list_product_code} Được Tạo Ra">
+<status status="NOT RUN" starttime="20250720 21:50:55.533" endtime="20250720 21:50:55.533"/>
+</kw>
+<kw name="Xóa Sản Phẩm" library="ProductCommonKeywords" type="TEARDOWN">
+<arg>${DB_PRODUCT_CODE}</arg>
+<msg timestamp="20250720 21:50:55.540" level="FAIL">Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</msg>
+<status status="FAIL" starttime="20250720 21:50:55.533" endtime="20250720 21:50:55.540">Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</status>
+</kw>
+<doc>Test tạo sản phẩm có thuộc tính</doc>
+<tag>AIGenerated</tag>
+<tag>Attributes</tag>
+<tag>CreateProduct</tag>
+<tag>lantestproduct</tag>
+<tag>Positive</tag>
+<tag>regression</tag>
+<status status="FAIL" starttime="20250720 21:50:55.471" endtime="20250720 21:50:55.547">Replacing variables from keyword return value failed: Resolving variable '${result[0]}' failed: TypeError: 'NoneType' object is not subscriptable
+
+Also teardown failed:
+Variable '${DB_PRODUCT_CODE}' not found. Did you mean:
+    ${PRODUCT_CODE}
+    ${PRODUCT_2_CODE}
+    ${PRODUCT_1_CODE}</status>
+</test>
+<doc>Test API tạo sản phẩm</doc>
+<status status="FAIL" starttime="20250720 21:50:53.870" endtime="20250720 21:50:55.548"/>
+</suite>
+<status status="FAIL" starttime="20250720 21:50:53.868" endtime="20250720 21:50:55.549"/>
+</suite>
+<status status="FAIL" starttime="20250720 21:50:53.866" endtime="20250720 21:50:55.550"/>
+</suite>
+<status status="FAIL" starttime="20250720 21:50:53.846" endtime="20250720 21:50:55.551"/>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="2" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" fail="2" skip="0">AIGenerated</stat>
+<stat pass="0" fail="1" skip="0">Attributes</stat>
+<stat pass="0" fail="2" skip="0">CreateProduct</stat>
+<stat pass="0" fail="2" skip="0">lantestproduct</stat>
+<stat pass="0" fail="2" skip="0">Positive</stat>
+<stat pass="0" fail="2" skip="0">regression</stat>
+<stat pass="0" fail="1" skip="0">Serial</stat>
+</tag>
+<suite>
+<stat pass="0" fail="2" skip="0" id="s1" name="TestSpecs">TestSpecs</stat>
+<stat pass="0" fail="2" skip="0" id="s1-s1" name="API">TestSpecs.API</stat>
+<stat pass="0" fail="2" skip="0" id="s1-s1-s1" name="Product">TestSpecs.API.Product</stat>
+<stat pass="0" fail="2" skip="0" id="s1-s1-s1-s1" name="CreateProduct Test">TestSpecs.API.Product.CreateProduct Test</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20250720 21:50:54.620" level="WARN">Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.</msg>
+<msg timestamp="20250720 21:50:55.470" level="ERROR">Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ea1' in position 255: character maps to &lt;undefined&gt;</msg>
+<msg timestamp="20250720 21:50:55.547" level="ERROR">Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ea1' in position 255: character maps to &lt;undefined&gt;</msg>
+</errors>
+</robot>
