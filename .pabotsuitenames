@@ -1,5 +1,5 @@
-datasources:42bf539004fc5861056de76a1e6c90636c3f1630
-commandlineoptions:25f9cdf17dedbef659f17c642d399fa666f98b1e
+datasources:579c9d0321d2520ce0ee089129b088334a9d90ab
+commandlineoptions:54f7ac023957acb070456561f3356433d500f0e6
 suitesfrom:no-suites-from-option
-file:192f4e8b8ba64011e380846bc5c36c35f7826aac
---suite TestSpecs.API.Product.CreateProduct Test
+file:1f1e4d7aeae8f487ffb58b395c5c9f4f24ae0a15
+--suite TestSpecs.API.Customer.CustomerValidation

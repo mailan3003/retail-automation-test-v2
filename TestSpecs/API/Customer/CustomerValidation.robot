@@ -137,7 +137,7 @@ RT-CU-034 Tạo khách hàng thất bại khi ngày sinh không hợp lệ
     ...    - Source: CustomerApi.cs > Post(CustomerCreateOrUpdate req)
     ...    - Logic: Không cho phép tạo khách hàng khi ngày sinh không hợp lệ
     ...    - Code: POST /customers
-    [Tags]    API Không Chặn
+    [Tags]    API Không Chặn    lantestthu
     Given Chuẩn Bị Dữ Liệu Khách Hàng Với Ngày Sinh 32-13-2023
     When Gửi Yêu Cầu Tạo Khách Hàng
     Then Mã Trạng Thái Phải Là 420

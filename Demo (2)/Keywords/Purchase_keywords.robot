@@ -2,6 +2,7 @@
 Resource    ../Data/Purchase_data.robot
 Resource    ../../Keywords/Utilities/DataUtilities.robot
 Library    RequestsLibrary
+Library    Process
 Resource    ../Data/env_live.robot
 
 *** Keywords ***
@@ -16,12 +17,47 @@ Chuẩn bị dữ liệu phiếu nhập hàng với nhiều hàng hóa
     Set Test Variable    ${REQUEST_DATA}    ${request}
 
 Gửi yêu cầu nhập hàng
-    # ${response}=    POST On Session    session    url=purchaseOrders    json=${REQUEST_DATA}
-    # Set Test Variable    ${RESPONSE}    ${response}
-    ${response}=    Run Keyword And Ignore Error    POST    url=${URL}purchaseOrders    json=${REQUEST_DATA}    headers=${HEADERS}    raise_exception=False
-    Set Test Variable    ${RESPONSE}    ${response[1]}
+    ${response}=    POST On Session    session    url=purchaseOrders    json=${REQUEST_DATA}
+    Set Test Variable    ${RESPONSE}    ${response}
+
+Gửi yêu cầu nhập hàng thất bại
+    # ${result}=    Run Keyword And Ignore Error    POST On Session    session    purchaseOrders    json=${REQUEST_DATA}
+    # ${status}=    Set Variable    ${result[0]}
+    # ${response}=  Set Variable    ${result[1]}
+
+    # Run Keyword If    '${status}' == 'FAIL'    Log    ⚠️ Gọi API thất bại nhưng tiếp tục xử lý
+    # Run Keyword If    '${status}' == 'FAIL'    Log    ${response}    # In ra chuỗi lỗi
+
+    # # Nếu thành công thì mới xử lý như đối tượng Response
+    # Run Keyword If    '${status}' == 'PASS'    Log    Status code: ${response.status_code}
+    # Run Keyword If    '${status}' == 'PASS'    Log    Body: ${response.text}
+
+    ${result}=    Run Keyword And Ignore Error    POST On Session    session    purchaseOrders    json=${REQUEST_DATA}
+    ${status}=    Set Variable    ${result[0]}
+    ${response}=  Set Variable    ${result[1]}
+
+    IF    '${status}' == 'FAIL'
+        Log    ❌ API call FAIL
+        Log    Exception: ${response}
+
+        ${json_body}=    Get Json From Error Message    ${response}
+        Log    ✅ Extracted Message: ${json_body["ResponseStatus"]["Message"]}
+    ELSE
+        Log    ✅ API call SUCCESS
+        Log    Status: ${response.status_code}
+        Log    Body: ${response.text}
+    END
 
 
+Get Json From Error Message
+    [Arguments]    ${error_message}
+    ${msg}=        Convert To String    ${error_message}
+    ${start}=      Evaluate    "${msg}".find("{")
+    Run Keyword If    ${start} == -1    Fail    Không tìm thấy JSON trong chuỗi lỗi!
+    ${json_str}=   Evaluate    "${msg}"[${start}:]
+    ${json}=       Evaluate    json.loads("""${json_str}""")    json
+    [Return]       ${json}
+ 
 Mã trạng thái trả về là ${status_code}
     Should Be Equal As Numbers    ${status_code}    ${RESPONSE.status_code}
 
@@ -72,8 +108,14 @@ Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0
     Log    requestbody: ${request_body}
     Set Test Variable    ${REQUEST_DATA}    ${request_body}
 
-
-
 # ${product_id}=    Set Variable    ${RESPONSE.json()["OrderDetails"][0]["ProductId"]}
 
+Kiểm tra mã lỗi trả về là
+
+
+Kiểm tra message lỗi chứa ${expected_message}
+    ${body}=    Convert To String    ${RESPONSE.content}
+    ${message}=    Evaluate    json.loads('''${body}''')["ResponseStatus"]["Message"]    json
+    Log    MESSAGE LỖI: ${message}
+    Should Contain    ${message}    ${expected_message}
     

@@ -1,1 +1,87 @@
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\CommonKeywords.robot' on line 11: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\CommonKeywords.robot' on line 12: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\Databasepromotion.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\Databasepromotion.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\Product\ProductCommonKeywords.robot' on line 9: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\Product\ProductCommonKeywords.robot' on line 10: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\Databasepromotion.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\Databasepromotion.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\Customer\CustomerCommonKeywords.robot' on line 13: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\Customer\CreateCustomerKeywords.robot' on line 12: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
+[ ERROR ] Error in file 'D:\LAN\AutoTest\retail-automation-test-v2\Keywords\Customer\UpdateCustomerKeywords.robot' on line 13: Importing library 'D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py' failed: ModuleNotFoundError: No module named 'pyodbc'
+Traceback (most recent call last):
+  File "D:\LAN\AutoTest\retail-automation-test-v2\Resources\DatabaseLibrary.py", line 2, in <module>
+    import pyodbc
+PYTHONPATH:
+  D:\LAN\AutoTest\retail-automation-test-v2\Resources
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Scripts\robot.exe
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\python313.zip
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\DLLs
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313
+  C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages
 [ WARN ] Keyword 'RequestsLibrary.Post Request' is deprecated. Please use `POST On Session` instead.
+[ ERROR ] Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ea1' in position 246: character maps to <undefined>
+[ ERROR ] Calling method 'end_keyword' of listener 'RobotStackTracer' failed: UnicodeEncodeError: 'charmap' codec can't encode character '\u1ea1' in position 246: character maps to <undefined>

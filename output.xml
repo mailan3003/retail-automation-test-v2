@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 6.1.1 (Python 3.7.7 on win32)" generated="20250725 17:33:33.817" rpa="false" schemaversion="4">
-<suite id="s1" name="Purchase" source="c:\Users\lan.ntm\Code\retail-automation-test-v2\Demo (2)\Testcase\Purchase.robot">
+<robot generator="Robot 6.1.1 (Python 3.13.5 on win32)" generated="20250726 13:24:44.165" rpa="false" schemaversion="4">
+<suite id="s1" name="Purchase" source="d:\LAN\AutoTest\retail-automation-test-v2\Demo (2)\Testcase\Purchase.robot">
 <kw name="Tạo session" library="Login_keywords" type="SETUP">
 <arg>testz23</arg>
 <arg>admin</arg>
@@ -10,8 +10,8 @@
 <arg>content-type=application/json;charset=utf-8</arg>
 <arg>retailer=${RETAILER}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250725 17:33:34.016" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'}</msg>
-<status status="PASS" starttime="20250725 17:33:34.015" endtime="20250725 17:33:34.017"/>
+<msg timestamp="20250726 13:24:44.502" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'}</msg>
+<status status="PASS" starttime="20250726 13:24:44.501" endtime="20250726 13:24:44.506"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${body}</var>
@@ -22,14 +22,14 @@
 <arg>Language=vi-VN</arg>
 <arg>LatestBranchId=30</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250725 17:33:34.018" level="INFO">${body} = {'RememberMe': 'true', 'ShowCaptcha': 'false', 'UserName': 'admin', 'Password': 'Kiotviet123456', 'Language': 'vi-VN', 'LatestBranchId': '30'}</msg>
-<status status="PASS" starttime="20250725 17:33:34.018" endtime="20250725 17:33:34.019"/>
+<msg timestamp="20250726 13:24:44.508" level="INFO">${body} = {'RememberMe': 'true', 'ShowCaptcha': 'false', 'UserName': 'admin', 'Password': 'Kiotviet123456', 'Language': 'vi-VN', 'LatestBranchId': '30'}</msg>
+<status status="PASS" starttime="20250726 13:24:44.507" endtime="20250726 13:24:44.508"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${request}</var>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250725 17:33:34.019" level="INFO">${request} = {}</msg>
-<status status="PASS" starttime="20250725 17:33:34.019" endtime="20250725 17:33:34.019"/>
+<msg timestamp="20250726 13:24:44.509" level="INFO">${request} = {}</msg>
+<status status="PASS" starttime="20250726 13:24:44.509" endtime="20250726 13:24:44.510"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -40,13 +40,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.019" endtime="20250725 17:33:34.020"/>
+<status status="PASS" starttime="20250726 13:24:44.511" endtime="20250726 13:24:44.511"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.020" endtime="20250725 17:33:34.020"/>
+<status status="PASS" starttime="20250726 13:24:44.512" endtime="20250726 13:24:44.512"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.019" endtime="20250725 17:33:34.021"/>
+<status status="PASS" starttime="20250726 13:24:44.510" endtime="20250726 13:24:44.512"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -57,13 +57,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.021" endtime="20250725 17:33:34.022"/>
+<status status="PASS" starttime="20250726 13:24:44.513" endtime="20250726 13:24:44.514"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.022" endtime="20250725 17:33:34.022"/>
+<status status="PASS" starttime="20250726 13:24:44.514" endtime="20250726 13:24:44.514"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.021" endtime="20250725 17:33:34.022"/>
+<status status="PASS" starttime="20250726 13:24:44.513" endtime="20250726 13:24:44.515"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -74,21 +74,21 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.023" endtime="20250725 17:33:34.024"/>
+<status status="PASS" starttime="20250726 13:24:44.516" endtime="20250726 13:24:44.516"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.024" endtime="20250725 17:33:34.024"/>
+<status status="PASS" starttime="20250726 13:24:44.517" endtime="20250726 13:24:44.517"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.023" endtime="20250725 17:33:34.025"/>
+<status status="PASS" starttime="20250726 13:24:44.515" endtime="20250726 13:24:44.517"/>
 </kw>
 <kw name="Create Session" library="RequestsLibrary">
 <arg>login</arg>
 <arg>${URL}</arg>
 <arg>headers=${headers}</arg>
 <doc>Create Session: create a HTTP session to a server</doc>
-<msg timestamp="20250725 17:33:34.025" level="INFO">Creating Session using : alias=login, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
-<status status="PASS" starttime="20250725 17:33:34.025" endtime="20250725 17:33:34.026"/>
+<msg timestamp="20250726 13:24:44.520" level="INFO">Creating Session using : alias=login, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20250726 13:24:44.519" endtime="20250726 13:24:44.521"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${response}</var>
@@ -96,27 +96,27 @@
 <arg>url=account/login?quan-ly=true</arg>
 <arg>json=${request}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20250725 17:33:34.157" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
+<msg timestamp="20250726 13:24:44.936" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
  path_url=/api/account/login?quan-ly=true 
  headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Content-Length': '273'} 
  body=b'{"model": {"RememberMe": "true", "ShowCaptcha": "false", "UserName": "admin", "Password": "Kiotviet123456", "Language": "vi-VN", "LatestBranchId": "30"}, "IsManageSide": "true", "FingerPrintKey": "9260aa1de596f0d80658143cbe38c670_Chrome_Desktop_M\\u00e1y t\\u00ednh Windows"}' 
  </msg>
-<msg timestamp="20250725 17:33:34.157" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
+<msg timestamp="20250726 13:24:44.936" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
  status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'kv.requestid': '9162260c9508452faab7444184eb570a', 'set-cookie': 'ss-id=YxqtobrtwXLsXjUtYVyB; path=/; HttpOnly, ss-pid=DUOiuY4AmbasgGvCR7gq; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, ss-opt=temp; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, l_861751_510=vi-VN; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, newfnb=0; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, Retailer=testz23; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, LatestBranch_861751_510=30; expires=Tue, 25-Jul-2045 10:33:34 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzQzOTYxNCwiZXhwIjoxNzU1ODU4ODE0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmMWNjOWVmOWIwODQ1ODA5MDUzNjA5NDY5OGVhNjQ2Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.t7SHBNyJs17wSl40guyMBEP4fMpgZLIoQ6NGFAQToVU0oMbWv6E-MCWv26E2gEBQZo2Rcuz-nYcC7N1vYjrC9Jto49UfL2vNZqDd7SzZEwvJlb19-NEr5w-kqrWDAhtlQ5V64LP9lgrUeYu-CHRaZVFp4eLWYfkAgv6CkcCU-SXoV7gmtaQgu-Xuwy8hFjnIb506F3FbERsIZIav16hsu5whB5_gi3rpKMshrt4Z-GvloBG_igrhzaEHi1JFFGPWJzV7l0BXjJzptxinVoaKbaW9OyBm3LvwIShCCA8V5nNL-Y4cj54IXAKDc7_TodgxfN4mq1BERTTp5pbrIrXn-g; expires=Fri, 22-Aug-2025 10:33:34 GMT; path=/; HttpOnly, is-coffee=0; path=/; HttpOnly, trial=0; path=/; HttpOnly, zone=23; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Fri, 25 Jul 2025 10:33:34 GMT', 'content-length': '1133'} 
- body={"isSuccess":true,"checkLimitTime":true,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzQzOTYxNCwiZXhwIjoxNzU1ODU4ODE0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmMWNjOWVmOWIwODQ1ODA5MDUzNjA5NDY5OGVhNjQ2Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.t7SHBNyJs17wSl40guyMBEP4fMpgZLIoQ6NGFAQToVU0oMbWv6E-MCWv26E2gEBQZo2Rcuz-nYcC7N1vYjrC9Jto49UfL2vNZqDd7SzZEwvJlb19-NEr5w-kqrWDAhtlQ5V64LP9lgrUeYu-CHRaZVFp4eLWYfkAgv6CkcCU-SXoV7gmtaQgu-Xuwy8hFjnIb506F3FbERsIZIav16hsu5whB5_gi3rpKMshrt4Z-GvloBG_igrhzaEHi1JFFGPWJzV7l0BXjJzptxinVoaKbaW9OyBm3LvwIShCCA8V5nNL-Y4cj54IXAKDc7_TodgxfN4mq1BERTTp5pbrIrXn-g","currentBranch":30,"permittedBranchIds":[30,100048,1224016],"OldPasswordCountValidate":3} 
+ headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'kv.requestid': '46950e5365b4435dad602dd05ba91822', 'set-cookie': 'ss-id=Yg23UQ0fld3W0kErTy5Z; path=/; HttpOnly, ss-pid=AZ0KInnAxglYJCejYr5M; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, ss-opt=temp; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, l_861751_510=vi-VN; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, newfnb=0; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, Retailer=testz23; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, LatestBranch_861751_510=30; expires=Wed, 26-Jul-2045 06:24:44 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjlhNDRiYjMwZjRkNzQ4OWE5OWQ1YjE0ZDNkOTQzMWU0Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.CQuUSwztCHtx8VO3VkFdUvxal6ky3P1eCyvan1L04RE3clPqPgaRO764F_mMs8aKikZZE_Eoz0wfS63vyQ6ye4sq0G216ZEnHwkdE6b10u5yKTueXu1cYAh-Q8A8LrfNcjX2jJ3tTovaxANVmdgrmgY_TiKiOsn_kgJhNju65COy2HN2UXRWYJQEtvROL-0uMLnuc3YmX5ZvA5rBIslzBoS_vplhytz-6nz6E84_ROvldbPIGg5i0rC8i2--HrO44uaGhL9B41xNr4jP1WAmLivRErVGpuDZW5sG1cxVboSK1BR8FE7HNREd96HTvKYZczeAa4L5c3LLleMURU2kNg; expires=Sat, 23-Aug-2025 06:24:44 GMT; path=/; HttpOnly, is-coffee=0; path=/; HttpOnly, trial=0; path=/; HttpOnly, zone=23; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 06:24:43 GMT', 'content-length': '1133'} 
+ body={"isSuccess":true,"checkLimitTime":true,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjlhNDRiYjMwZjRkNzQ4OWE5OWQ1YjE0ZDNkOTQzMWU0Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.CQuUSwztCHtx8VO3VkFdUvxal6ky3P1eCyvan1L04RE3clPqPgaRO764F_mMs8aKikZZE_Eoz0wfS63vyQ6ye4sq0G216ZEnHwkdE6b10u5yKTueXu1cYAh-Q8A8LrfNcjX2jJ3tTovaxANVmdgrmgY_TiKiOsn_kgJhNju65COy2HN2UXRWYJQEtvROL-0uMLnuc3YmX5ZvA5rBIslzBoS_vplhytz-6nz6E84_ROvldbPIGg5i0rC8i2--HrO44uaGhL9B41xNr4jP1WAmLivRErVGpuDZW5sG1cxVboSK1BR8FE7HNREd96HTvKYZczeAa4L5c3LLleMURU2kNg","currentBranch":30,"permittedBranchIds":[30,100048,1224016],"OldPasswordCountValidate":3} 
  </msg>
-<msg timestamp="20250725 17:33:34.158" level="INFO">C:\Users\lan.ntm\AppData\Local\Programs\Python\Python37-32\lib\site-packages\urllib3\connectionpool.py:1107: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  InsecureRequestWarning,</msg>
-<msg timestamp="20250725 17:33:34.158" level="INFO">${response} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250725 17:33:34.026" endtime="20250725 17:33:34.158"/>
+<msg timestamp="20250726 13:24:44.937" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(</msg>
+<msg timestamp="20250726 13:24:44.940" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250726 13:24:44.522" endtime="20250726 13:24:44.940"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${auth}</var>
 <arg>${response.json()["token"]}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250725 17:33:34.160" level="INFO">${auth} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzQzOTYxNCwiZXhwIjoxNzU1ODU4ODE0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Z...</msg>
-<status status="PASS" starttime="20250725 17:33:34.159" endtime="20250725 17:33:34.160"/>
+<msg timestamp="20250726 13:24:44.942" level="INFO">${auth} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Z...</msg>
+<status status="PASS" starttime="20250726 13:24:44.941" endtime="20250726 13:24:44.942"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <var>${headers}</var>
@@ -128,14 +128,14 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.161" endtime="20250725 17:33:34.161"/>
+<status status="PASS" starttime="20250726 13:24:44.944" endtime="20250726 13:24:44.944"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.161" endtime="20250725 17:33:34.162"/>
+<status status="PASS" starttime="20250726 13:24:44.945" endtime="20250726 13:24:44.945"/>
 </return>
-<msg timestamp="20250725 17:33:34.162" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250725 17:33:34.160" endtime="20250725 17:33:34.162"/>
+<msg timestamp="20250726 13:24:44.945" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250726 13:24:44.943" endtime="20250726 13:24:44.946"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <var>${headers}</var>
@@ -147,38 +147,38 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.163" endtime="20250725 17:33:34.164"/>
+<status status="PASS" starttime="20250726 13:24:44.947" endtime="20250726 13:24:44.947"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.164" endtime="20250725 17:33:34.165"/>
+<status status="PASS" starttime="20250726 13:24:44.948" endtime="20250726 13:24:44.948"/>
 </return>
-<msg timestamp="20250725 17:33:34.165" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250725 17:33:34.162" endtime="20250725 17:33:34.165"/>
+<msg timestamp="20250726 13:24:44.948" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250726 13:24:44.946" endtime="20250726 13:24:44.949"/>
 </kw>
 <kw name="Create Session" library="RequestsLibrary">
 <arg>session</arg>
 <arg>${URL}</arg>
 <arg>${headers}</arg>
 <doc>Create Session: create a HTTP session to a server</doc>
-<msg timestamp="20250725 17:33:34.166" level="INFO">Creating Session using : alias=session, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzQzOTYxNCwiZXhwIjoxNzU1ODU4ODE0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmMWNjOWVmOWIwODQ1ODA5MDUzNjA5NDY5OGVhNjQ2Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.t7SHBNyJs17wSl40guyMBEP4fMpgZLIoQ6NGFAQToVU0oMbWv6E-MCWv26E2gEBQZo2Rcuz-nYcC7N1vYjrC9Jto49UfL2vNZqDd7SzZEwvJlb19-NEr5w-kqrWDAhtlQ5V64LP9lgrUeYu-CHRaZVFp4eLWYfkAgv6CkcCU-SXoV7gmtaQgu-Xuwy8hFjnIb506F3FbERsIZIav16hsu5whB5_gi3rpKMshrt4Z-GvloBG_igrhzaEHi1JFFGPWJzV7l0BXjJzptxinVoaKbaW9OyBm3LvwIShCCA8V5nNL-Y4cj54IXAKDc7_TodgxfN4mq1BERTTp5pbrIrXn-g', 'BranchId': '30'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
-<status status="PASS" starttime="20250725 17:33:34.166" endtime="20250725 17:33:34.167"/>
+<msg timestamp="20250726 13:24:44.950" level="INFO">Creating Session using : alias=session, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjlhNDRiYjMwZjRkNzQ4OWE5OWQ1YjE0ZDNkOTQzMWU0Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.CQuUSwztCHtx8VO3VkFdUvxal6ky3P1eCyvan1L04RE3clPqPgaRO764F_mMs8aKikZZE_Eoz0wfS63vyQ6ye4sq0G216ZEnHwkdE6b10u5yKTueXu1cYAh-Q8A8LrfNcjX2jJ3tTovaxANVmdgrmgY_TiKiOsn_kgJhNju65COy2HN2UXRWYJQEtvROL-0uMLnuc3YmX5ZvA5rBIslzBoS_vplhytz-6nz6E84_ROvldbPIGg5i0rC8i2--HrO44uaGhL9B41xNr4jP1WAmLivRErVGpuDZW5sG1cxVboSK1BR8FE7HNREd96HTvKYZczeAa4L5c3LLleMURU2kNg', 'BranchId': '30'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20250726 13:24:44.949" endtime="20250726 13:24:44.950"/>
 </kw>
 <kw name="Set Global Variable" library="BuiltIn">
 <arg>${AUTH_TOKEN}</arg>
 <arg>Bearer ${auth}</arg>
 <doc>Makes a variable available globally in all tests and suites.</doc>
-<msg timestamp="20250725 17:33:34.169" level="INFO">${AUTH_TOKEN} = Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzQzOTYxNCwiZXhwIjoxNzU1ODU4ODE0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIi...</msg>
-<status status="PASS" starttime="20250725 17:33:34.167" endtime="20250725 17:33:34.169"/>
+<msg timestamp="20250726 13:24:44.953" level="INFO">${AUTH_TOKEN} = Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIi...</msg>
+<status status="PASS" starttime="20250726 13:24:44.951" endtime="20250726 13:24:44.953"/>
 </kw>
 <kw name="Set Global Variable" library="BuiltIn">
 <arg>${HEADERS}</arg>
 <arg>${headers}</arg>
 <doc>Makes a variable available globally in all tests and suites.</doc>
-<msg timestamp="20250725 17:33:34.170" level="INFO">${HEADERS} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250725 17:33:34.170" endtime="20250725 17:33:34.170"/>
+<msg timestamp="20250726 13:24:44.954" level="INFO">${HEADERS} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250726 13:24:44.953" endtime="20250726 13:24:44.954"/>
 </kw>
-<status status="PASS" starttime="20250725 17:33:34.014" endtime="20250725 17:33:34.171"/>
+<status status="PASS" starttime="20250726 13:24:44.498" endtime="20250726 13:24:44.955"/>
 </kw>
 <test id="s1-t1" name="Nhập hàng thất bại do Id sản phẩm = 0" line="14">
 <kw name="Given Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0" library="Purchase_keywords">
@@ -191,23 +191,23 @@
 <arg>json.dumps(${data})</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.174" level="INFO">${json_data} = {"ProductId": "6326422", "ConversionValue": "1", "ProductName": "Xo\u00e0i T\u1ee9 Qu\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "58000", "Quantity": "1", "...</msg>
-<status status="PASS" starttime="20250725 17:33:34.173" endtime="20250725 17:33:34.174"/>
+<msg timestamp="20250726 13:24:44.966" level="INFO">${json_data} = {"ProductId": "6326422", "ConversionValue": "1", "ProductName": "Xo\u00e0i T\u1ee9 Qu\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "58000", "Quantity": "1", "...</msg>
+<status status="PASS" starttime="20250726 13:24:44.965" endtime="20250726 13:24:44.967"/>
 </kw>
 <kw name="Evaluate" library="BuiltIn">
 <var>${copied_data}</var>
 <arg>json.loads($json_data)</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.180" level="INFO">${copied_data} = {'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': ...</msg>
-<status status="PASS" starttime="20250725 17:33:34.174" endtime="20250725 17:33:34.180"/>
+<msg timestamp="20250726 13:24:44.968" level="INFO">${copied_data} = {'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': ...</msg>
+<status status="PASS" starttime="20250726 13:24:44.967" endtime="20250726 13:24:44.969"/>
 </kw>
 <return>
 <value>${copied_data}</value>
-<status status="PASS" starttime="20250725 17:33:34.180" endtime="20250725 17:33:34.181"/>
+<status status="PASS" starttime="20250726 13:24:44.969" endtime="20250726 13:24:44.969"/>
 </return>
-<msg timestamp="20250725 17:33:34.181" level="INFO">${product_detail01} = {'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': ...</msg>
-<status status="PASS" starttime="20250725 17:33:34.172" endtime="20250725 17:33:34.182"/>
+<msg timestamp="20250726 13:24:44.969" level="INFO">${product_detail01} = {'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': ...</msg>
+<status status="PASS" starttime="20250726 13:24:44.964" endtime="20250726 13:24:44.970"/>
 </kw>
 <kw name="Deep Copy" library="DataUtilities">
 <var>${product_detail02}</var>
@@ -218,23 +218,23 @@
 <arg>json.dumps(${data})</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.183" level="INFO">${json_data} = {"ProductId": "5816657", "ConversionValue": "1", "ProductName": "Redbull", "ProductCode": "SP9934437062", "BasePrice": "10000", "Price": "10000", "Cost": "10000", "Quantity": "1", "SelectedUnit": "581...</msg>
-<status status="PASS" starttime="20250725 17:33:34.183" endtime="20250725 17:33:34.183"/>
+<msg timestamp="20250726 13:24:44.972" level="INFO">${json_data} = {"ProductId": "5816657", "ConversionValue": "1", "ProductName": "Redbull", "ProductCode": "SP9934437062", "BasePrice": "10000", "Price": "10000", "Cost": "10000", "Quantity": "1", "SelectedUnit": "581...</msg>
+<status status="PASS" starttime="20250726 13:24:44.971" endtime="20250726 13:24:44.973"/>
 </kw>
 <kw name="Evaluate" library="BuiltIn">
 <var>${copied_data}</var>
 <arg>json.loads($json_data)</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.184" level="INFO">${copied_data} = {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '581...</msg>
-<status status="PASS" starttime="20250725 17:33:34.184" endtime="20250725 17:33:34.184"/>
+<msg timestamp="20250726 13:24:44.974" level="INFO">${copied_data} = {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '581...</msg>
+<status status="PASS" starttime="20250726 13:24:44.973" endtime="20250726 13:24:44.974"/>
 </kw>
 <return>
 <value>${copied_data}</value>
-<status status="PASS" starttime="20250725 17:33:34.185" endtime="20250725 17:33:34.185"/>
+<status status="PASS" starttime="20250726 13:24:44.974" endtime="20250726 13:24:44.975"/>
 </return>
-<msg timestamp="20250725 17:33:34.185" level="INFO">${product_detail02} = {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '581...</msg>
-<status status="PASS" starttime="20250725 17:33:34.182" endtime="20250725 17:33:34.185"/>
+<msg timestamp="20250726 13:24:44.975" level="INFO">${product_detail02} = {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '581...</msg>
+<status status="PASS" starttime="20250726 13:24:44.971" endtime="20250726 13:24:44.975"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${product_detail01}</arg>
@@ -245,27 +245,27 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.186" endtime="20250725 17:33:34.187"/>
+<status status="PASS" starttime="20250726 13:24:44.977" endtime="20250726 13:24:44.977"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.187" endtime="20250725 17:33:34.187"/>
+<status status="PASS" starttime="20250726 13:24:44.977" endtime="20250726 13:24:44.978"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.185" endtime="20250725 17:33:34.188"/>
+<status status="PASS" starttime="20250726 13:24:44.976" endtime="20250726 13:24:44.978"/>
 </kw>
 <kw name="Create List" library="BuiltIn">
 <var>${purchase_product_list}</var>
 <arg>${product_detail01}</arg>
 <arg>${product_detail02}</arg>
 <doc>Returns a list containing given items.</doc>
-<msg timestamp="20250725 17:33:34.189" level="INFO">${purchase_product_list} = [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326...</msg>
-<status status="PASS" starttime="20250725 17:33:34.188" endtime="20250725 17:33:34.190"/>
+<msg timestamp="20250726 13:24:44.979" level="INFO">${purchase_product_list} = [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326...</msg>
+<status status="PASS" starttime="20250726 13:24:44.978" endtime="20250726 13:24:44.979"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>purchase_product_detail: ${purchase_product_list}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20250725 17:33:34.191" level="INFO">purchase_product_detail: [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326422', 'Stotal': '58000', 'Allocation': '2900', 'AllocationSuppliers': '483.84', 'OrderByNumber': '0'}, {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '5816657', 'Stotal': '10000', 'Allocation': '500', 'AllocationSuppliers': '83.42', 'OrderByNumber': '1'}]</msg>
-<status status="PASS" starttime="20250725 17:33:34.190" endtime="20250725 17:33:34.192"/>
+<msg timestamp="20250726 13:24:44.980" level="INFO">purchase_product_detail: [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326422', 'Stotal': '58000', 'Allocation': '2900', 'AllocationSuppliers': '483.84', 'OrderByNumber': '0'}, {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '5816657', 'Stotal': '10000', 'Allocation': '500', 'AllocationSuppliers': '83.42', 'OrderByNumber': '1'}]</msg>
+<status status="PASS" starttime="20250726 13:24:44.980" endtime="20250726 13:24:44.981"/>
 </kw>
 <kw name="Deep Copy" library="DataUtilities">
 <var>${purchase_order_detail}</var>
@@ -276,23 +276,23 @@
 <arg>json.dumps(${data})</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.195" level="INFO">${json_data} = {"PurchaseOrderDetails": [{"ProductId": "6326422", "ConversionValue": "1", "ProductName": "Xo\u00e0i T\u1ee9 Qu\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "...</msg>
-<status status="PASS" starttime="20250725 17:33:34.194" endtime="20250725 17:33:34.195"/>
+<msg timestamp="20250726 13:24:44.983" level="INFO">${json_data} = {"PurchaseOrderDetails": [{"ProductId": "6326422", "ConversionValue": "1", "ProductName": "Xo\u00e0i T\u1ee9 Qu\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "...</msg>
+<status status="PASS" starttime="20250726 13:24:44.982" endtime="20250726 13:24:44.983"/>
 </kw>
 <kw name="Evaluate" library="BuiltIn">
 <var>${copied_data}</var>
 <arg>json.loads($json_data)</arg>
 <arg>json</arg>
 <doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250725 17:33:34.196" level="INFO">${copied_data} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
-<status status="PASS" starttime="20250725 17:33:34.195" endtime="20250725 17:33:34.196"/>
+<msg timestamp="20250726 13:24:44.985" level="INFO">${copied_data} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
+<status status="PASS" starttime="20250726 13:24:44.984" endtime="20250726 13:24:44.985"/>
 </kw>
 <return>
 <value>${copied_data}</value>
-<status status="PASS" starttime="20250725 17:33:34.197" endtime="20250725 17:33:34.197"/>
+<status status="PASS" starttime="20250726 13:24:44.985" endtime="20250726 13:24:44.986"/>
 </return>
-<msg timestamp="20250725 17:33:34.198" level="INFO">${purchase_order_detail} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
-<status status="PASS" starttime="20250725 17:33:34.193" endtime="20250725 17:33:34.198"/>
+<msg timestamp="20250726 13:24:44.986" level="INFO">${purchase_order_detail} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
+<status status="PASS" starttime="20250726 13:24:44.981" endtime="20250726 13:24:44.986"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${purchase_order_detail}</arg>
@@ -303,13 +303,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.200" endtime="20250725 17:33:34.201"/>
+<status status="PASS" starttime="20250726 13:24:44.988" endtime="20250726 13:24:44.988"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.201" endtime="20250725 17:33:34.201"/>
+<status status="PASS" starttime="20250726 13:24:44.989" endtime="20250726 13:24:44.989"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.198" endtime="20250725 17:33:34.202"/>
+<status status="PASS" starttime="20250726 13:24:44.987" endtime="20250726 13:24:44.989"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${purchase_order_detail}</arg>
@@ -320,13 +320,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.204" endtime="20250725 17:33:34.207"/>
+<status status="PASS" starttime="20250726 13:24:44.991" endtime="20250726 13:24:44.993"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.208" endtime="20250725 17:33:34.208"/>
+<status status="PASS" starttime="20250726 13:24:44.994" endtime="20250726 13:24:44.994"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.202" endtime="20250725 17:33:34.208"/>
+<status status="PASS" starttime="20250726 13:24:44.990" endtime="20250726 13:24:44.994"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${purchase_order_detail}</arg>
@@ -337,19 +337,19 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.210" endtime="20250725 17:33:34.211"/>
+<status status="PASS" starttime="20250726 13:24:44.996" endtime="20250726 13:24:44.996"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.211" endtime="20250725 17:33:34.212"/>
+<status status="PASS" starttime="20250726 13:24:44.997" endtime="20250726 13:24:44.997"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.209" endtime="20250725 17:33:34.212"/>
+<status status="PASS" starttime="20250726 13:24:44.995" endtime="20250726 13:24:44.998"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${request_body}</var>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250725 17:33:34.213" level="INFO">${request_body} = {}</msg>
-<status status="PASS" starttime="20250725 17:33:34.212" endtime="20250725 17:33:34.213"/>
+<msg timestamp="20250726 13:24:44.998" level="INFO">${request_body} = {}</msg>
+<status status="PASS" starttime="20250726 13:24:44.998" endtime="20250726 13:24:44.999"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request_body}</arg>
@@ -360,78 +360,171 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.214" endtime="20250725 17:33:34.214"/>
+<status status="PASS" starttime="20250726 13:24:45.000" endtime="20250726 13:24:45.001"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250725 17:33:34.215" endtime="20250725 17:33:34.215"/>
+<status status="PASS" starttime="20250726 13:24:45.001" endtime="20250726 13:24:45.001"/>
 </return>
-<status status="PASS" starttime="20250725 17:33:34.213" endtime="20250725 17:33:34.215"/>
+<status status="PASS" starttime="20250726 13:24:44.999" endtime="20250726 13:24:45.002"/>
 </kw>
 <kw name="Set To Dictionary" library="Collections">
 <arg>${request_body}</arg>
 <arg>Complete=True</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250725 17:33:34.216" endtime="20250725 17:33:34.217"/>
+<status status="PASS" starttime="20250726 13:24:45.002" endtime="20250726 13:24:45.003"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>requestbody: ${request_body}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20250725 17:33:34.218" level="INFO">requestbody: {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326422', 'Stotal': '58000', 'Allocation': '2900', 'AllocationSuppliers': '483.84', 'OrderByNumber': '0'}, {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '5816657', 'Stotal': '10000', 'Allocation': '500', 'AllocationSuppliers': '83.42', 'OrderByNumber': '1'}], 'UserId': '510', 'SupplierId': '2001401362', 'Supplier': {'Id': '2001401362', 'Name': 'Haley', 'Phone': '491-469-0696', 'Email': 'Laverne20@yahoo.com', 'Address': 'Lueilwitzview', 'Code': 'NIGILTM1'}, 'BranchId': '30', 'Branch': {'Id': '30', 'Name': 'Chi nhánh trung tâm', 'Address': '160 Trần Hưng Đạo', 'LocationName': 'Hà Nội - Quận Hoàn Kiếm', 'WardName': 'Phường Đồng Xuân', 'ContactNumber': '+84987964658'}, 'SubTotal': '76000', 'Discount': '3800', 'DiscountRatio': '5', 'Total': '72834', 'TotalQuantity': '3', 'PayingAmount': '50000', 'Status': '3', 'StatusValue': 'Đã nhập hàng', 'PurchaseOrderExpensesOthers': {'ExpensesOtherId': '1000300566', 'ExValue': '634', 'Name': 'Quitzon', 'Code': 'LNDUTHQ1'}, 'Payments': ["{'paymentMethod': 'Cash', 'PayingAmount': 50000}"]}, 'Complete': 'True'}</msg>
-<status status="PASS" starttime="20250725 17:33:34.217" endtime="20250725 17:33:34.218"/>
+<msg timestamp="20250726 13:24:45.004" level="INFO">requestbody: {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326422', 'Stotal': '58000', 'Allocation': '2900', 'AllocationSuppliers': '483.84', 'OrderByNumber': '0'}, {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '5816657', 'Stotal': '10000', 'Allocation': '500', 'AllocationSuppliers': '83.42', 'OrderByNumber': '1'}], 'UserId': '510', 'SupplierId': '2001401362', 'Supplier': {'Id': '2001401362', 'Name': 'Haley', 'Phone': '491-469-0696', 'Email': 'Laverne20@yahoo.com', 'Address': 'Lueilwitzview', 'Code': 'NIGILTM1'}, 'BranchId': '30', 'Branch': {'Id': '30', 'Name': 'Chi nhánh trung tâm', 'Address': '160 Trần Hưng Đạo', 'LocationName': 'Hà Nội - Quận Hoàn Kiếm', 'WardName': 'Phường Đồng Xuân', 'ContactNumber': '+84987964658'}, 'SubTotal': '76000', 'Discount': '3800', 'DiscountRatio': '5', 'Total': '72834', 'TotalQuantity': '3', 'PayingAmount': '50000', 'Status': '3', 'StatusValue': 'Đã nhập hàng', 'PurchaseOrderExpensesOthers': {'ExpensesOtherId': '1000300566', 'ExValue': '634', 'Name': 'Quitzon', 'Code': 'LNDUTHQ1'}, 'Payments': ["{'paymentMethod': 'Cash', 'PayingAmount': 50000}"]}, 'Complete': 'True'}</msg>
+<status status="PASS" starttime="20250726 13:24:45.003" endtime="20250726 13:24:45.004"/>
 </kw>
 <kw name="Set Test Variable" library="BuiltIn">
 <arg>${REQUEST_DATA}</arg>
 <arg>${request_body}</arg>
 <doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250725 17:33:34.220" level="INFO">${REQUEST_DATA} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '580...</msg>
-<status status="PASS" starttime="20250725 17:33:34.218" endtime="20250725 17:33:34.220"/>
+<msg timestamp="20250726 13:24:45.006" level="INFO">${REQUEST_DATA} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '0', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '580...</msg>
+<status status="PASS" starttime="20250726 13:24:45.004" endtime="20250726 13:24:45.006"/>
 </kw>
-<status status="PASS" starttime="20250725 17:33:34.172" endtime="20250725 17:33:34.220"/>
+<status status="PASS" starttime="20250726 13:24:44.964" endtime="20250726 13:24:45.007"/>
 </kw>
-<kw name="When Gửi yêu cầu nhập hàng" library="Purchase_keywords">
+<kw name="When Gửi yêu cầu nhập hàng thất bại" library="Purchase_keywords">
 <kw name="Run Keyword And Ignore Error" library="BuiltIn">
-<var>${response}</var>
-<arg>POST</arg>
-<arg>url=${URL}purchaseOrders</arg>
+<var>${result}</var>
+<arg>POST On Session</arg>
+<arg>session</arg>
+<arg>purchaseOrders</arg>
 <arg>json=${REQUEST_DATA}</arg>
-<arg>headers=${HEADERS}</arg>
-<arg>raise_exception=False</arg>
 <doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
-<kw name="POST" library="RequestsLibrary">
-<arg>url=${URL}purchaseOrders</arg>
+<kw name="POST On Session" library="RequestsLibrary">
+<arg>session</arg>
+<arg>purchaseOrders</arg>
 <arg>json=${REQUEST_DATA}</arg>
-<arg>headers=${HEADERS}</arg>
-<arg>raise_exception=False</arg>
-<doc>Sends a POST request.</doc>
-<msg timestamp="20250725 17:33:34.223" level="FAIL">TypeError: request() got an unexpected keyword argument 'raise_exception'</msg>
-<status status="FAIL" starttime="20250725 17:33:34.222" endtime="20250725 17:33:34.226"/>
+<doc>Sends a POST request on a previously created HTTP Session.</doc>
+<msg timestamp="20250726 13:24:45.437" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/purchaseOrders 
+ path_url=/api/purchaseOrders 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzUxMTA4NCwiZXhwIjoxNzU1OTMwMjg0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjlhNDRiYjMwZjRkNzQ4OWE5OWQ1YjE0ZDNkOTQzMWU0Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.CQuUSwztCHtx8VO3VkFdUvxal6ky3P1eCyvan1L04RE3clPqPgaRO764F_mMs8aKikZZE_Eoz0wfS63vyQ6ye4sq0G216ZEnHwkdE6b10u5yKTueXu1cYAh-Q8A8LrfNcjX2jJ3tTovaxANVmdgrmgY_TiKiOsn_kgJhNju65COy2HN2UXRWYJQEtvROL-0uMLnuc3YmX5ZvA5rBIslzBoS_vplhytz-6nz6E84_ROvldbPIGg5i0rC8i2--HrO44uaGhL9B41xNr4jP1WAmLivRErVGpuDZW5sG1cxVboSK1BR8FE7HNREd96HTvKYZczeAa4L5c3LLleMURU2kNg', 'BranchId': '30', 'Content-Length': '1561'} 
+ body=b'{"PurchaseOrder": {"PurchaseOrderDetails": [{"ProductId": "0", "ConversionValue": "1", "ProductName": "Xo\\u00e0i T\\u1ee9 Qu\\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "58000", "Quantity": "1", "SelectedUnit": "6326422", "Stotal": "58000", "Allocation": "2900", "AllocationSuppliers": "483.84", "OrderByNumber": "0"}, {"ProductId": "5816657", "ConversionValue": "1", "ProductName": "Redbull", "ProductCode": "SP9934437062", "BasePrice": "10000", "Price": "10000", "Cost": "10000", "Quantity": "1", "SelectedUnit": "5816657", "Stotal": "10000", "Allocation": "500", "AllocationSuppliers": "83.42", "OrderByNumber": "1"}], "UserId": "510", "SupplierId": "2001401362", "Supplier": {"Id": "2001401362", "Name": "Haley", "Phone": "491-469-0696", "Email": "Laverne20@yahoo.com", "Address": "Lueilwitzview", "Code": "NIGILTM1"}, "BranchId": "30", "Branch": {"Id": "30", "Name": "Chi nh\\u00e1nh trung t\\u00e2m", "Address": "160 Tr\\u1ea7n H\\u01b0ng \\u0110\\u1ea1o", "LocationName": "H\\u00e0 N\\u1ed9i - Qu\\u1eadn Ho\\u00e0n Ki\\u1ebfm", "WardName": "Ph\\u01b0\\u1eddng \\u0110\\u1ed3ng Xu\\u00e2n", "ContactNumber": "+84987964658"}, "SubTotal": "76000", "Discount": "3800", "DiscountRatio": "5", "Total": "72834", "TotalQuantity": "3", "PayingAmount": "50000", "Status": "3", "StatusValue": "\\u0110\\u00e3 nh\\u1eadp h\\u00e0ng", "PurchaseOrderExpensesOthers": {"ExpensesOtherId": "1000300566", "ExValue": "634", "Name": "Quitzon", "Code": "LNDUTHQ1"}, "Payments": ["{\'paymentMethod\': \'Cash\', \'PayingAmount\': 50000}"]}, "Complete": "True"}' 
+ </msg>
+<msg timestamp="20250726 13:24:45.437" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/purchaseOrders 
+ status=420, reason=KvValidatePurchaseOrderException 
+ headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'vary': 'Accept', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726095119', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '9a3e6ed96973478eabb85c0495632502', 'set-cookie': 'ss-id=rWfwF9E9Lo7Ud9hrlc2A; path=/; HttpOnly, ss-pid=P2rgp4ac8dx3DPRZ1SV3; expires=Wed, 26-Jul-2045 06:24:45 GMT; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 06:24:45 GMT', 'content-length': '163'} 
+ body={"ResponseStatus":{"ErrorCode":"KvValidatePurchaseOrderException","Message":"Không tìm thấy sản phẩm SP9934437195 (có thể đã bị xóa)","Errors":[]}} 
+ </msg>
+<msg timestamp="20250726 13:24:45.438" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(</msg>
+<msg timestamp="20250726 13:24:45.439" level="FAIL">HTTPError: 420 Client Error: KvValidatePurchaseOrderException for url: https://api-man1.kiotviet.vn/api/purchaseOrders</msg>
+<status status="FAIL" starttime="20250726 13:24:45.011" endtime="20250726 13:24:45.443"/>
 </kw>
-<msg timestamp="20250725 17:33:34.227" level="INFO">${response} = ('FAIL', "TypeError: request() got an unexpected keyword argument 'raise_exception'")</msg>
-<status status="PASS" starttime="20250725 17:33:34.222" endtime="20250725 17:33:34.227"/>
+<msg timestamp="20250726 13:24:45.444" level="INFO">${result} = ('FAIL', 'HTTPError: 420 Client Error: KvValidatePurchaseOrderException for url: https://api-man1.kiotviet.vn/api/purchaseOrders')</msg>
+<status status="PASS" starttime="20250726 13:24:45.010" endtime="20250726 13:24:45.444"/>
 </kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${RESPONSE}</arg>
-<arg>${response[1]}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250725 17:33:34.228" level="INFO">${RESPONSE} = TypeError: request() got an unexpected keyword argument 'raise_exception'</msg>
-<status status="PASS" starttime="20250725 17:33:34.227" endtime="20250725 17:33:34.228"/>
+<kw name="Set Variable" library="BuiltIn">
+<var>${status}</var>
+<arg>${result[0]}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250726 13:24:45.446" level="INFO">${status} = FAIL</msg>
+<status status="PASS" starttime="20250726 13:24:45.445" endtime="20250726 13:24:45.447"/>
 </kw>
-<status status="PASS" starttime="20250725 17:33:34.221" endtime="20250725 17:33:34.228"/>
+<kw name="Set Variable" library="BuiltIn">
+<var>${response}</var>
+<arg>${result[1]}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20250726 13:24:45.448" level="INFO">${response} = HTTPError: 420 Client Error: KvValidatePurchaseOrderException for url: https://api-man1.kiotviet.vn/api/purchaseOrders</msg>
+<status status="PASS" starttime="20250726 13:24:45.447" endtime="20250726 13:24:45.449"/>
 </kw>
-<kw name="Then Mã trạng thái trả về là 420" library="Purchase_keywords" sourcename="Mã trạng thái trả về là ${status_code}">
-<kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${status_code}</arg>
-<arg>${RESPONSE.status_code}</arg>
-<doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<msg timestamp="20250725 17:33:34.230" level="FAIL">Resolving variable '${RESPONSE.status_code}' failed: AttributeError: 'str' object has no attribute 'status_code'</msg>
-<status status="FAIL" starttime="20250725 17:33:34.230" endtime="20250725 17:33:34.232"/>
+<if>
+<branch type="IF" condition="'${status}' == 'FAIL'">
+<kw name="Log" library="BuiltIn">
+<arg>❌ API call FAIL</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250726 13:24:45.450" level="INFO">❌ API call FAIL</msg>
+<status status="PASS" starttime="20250726 13:24:45.449" endtime="20250726 13:24:45.450"/>
 </kw>
-<status status="FAIL" starttime="20250725 17:33:34.229" endtime="20250725 17:33:34.233"/>
+<kw name="Log" library="BuiltIn">
+<arg>Exception: ${response}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250726 13:24:45.451" level="INFO">Exception: HTTPError: 420 Client Error: KvValidatePurchaseOrderException for url: https://api-man1.kiotviet.vn/api/purchaseOrders</msg>
+<status status="PASS" starttime="20250726 13:24:45.450" endtime="20250726 13:24:45.451"/>
 </kw>
-<status status="FAIL" starttime="20250725 17:33:34.171" endtime="20250725 17:33:34.234">Resolving variable '${RESPONSE.status_code}' failed: AttributeError: 'str' object has no attribute 'status_code'</status>
+<kw name="Get Json From Error Message" library="Purchase_keywords">
+<var>${json_body}</var>
+<arg>${response}</arg>
+<kw name="Convert To String" library="BuiltIn">
+<var>${msg}</var>
+<arg>${error_message}</arg>
+<doc>Converts the given item to a Unicode string.</doc>
+<msg timestamp="20250726 13:24:45.452" level="INFO">${msg} = HTTPError: 420 Client Error: KvValidatePurchaseOrderException for url: https://api-man1.kiotviet.vn/api/purchaseOrders</msg>
+<status status="PASS" starttime="20250726 13:24:45.452" endtime="20250726 13:24:45.453"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${start}</var>
+<arg>"${msg}".find("{")</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250726 13:24:45.453" level="INFO">${start} = -1</msg>
+<status status="PASS" starttime="20250726 13:24:45.453" endtime="20250726 13:24:45.454"/>
+</kw>
+<kw name="Run Keyword If" library="BuiltIn">
+<arg>${start} == -1</arg>
+<arg>Fail</arg>
+<arg>Không tìm thấy JSON trong chuỗi lỗi!</arg>
+<doc>Runs the given keyword with the given arguments, if ``condition`` is true.</doc>
+<kw name="Fail" library="BuiltIn">
+<arg>Không tìm thấy JSON trong chuỗi lỗi!</arg>
+<doc>Fails the test with the given message and optionally alters its tags.</doc>
+<msg timestamp="20250726 13:24:45.455" level="FAIL">Không tìm thấy JSON trong chuỗi lỗi!</msg>
+<status status="FAIL" starttime="20250726 13:24:45.455" endtime="20250726 13:24:45.457"/>
+</kw>
+<status status="FAIL" starttime="20250726 13:24:45.454" endtime="20250726 13:24:45.458"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_str}</var>
+<arg>"${msg}"[${start}:]</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.458" endtime="20250726 13:24:45.459"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json}</var>
+<arg>json.loads("""${json_str}""")</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.459" endtime="20250726 13:24:45.459"/>
+</kw>
+<status status="FAIL" starttime="20250726 13:24:45.451" endtime="20250726 13:24:45.460"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>✅ Extracted Message: ${json_body["ResponseStatus"]["Message"]}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.460" endtime="20250726 13:24:45.461"/>
+</kw>
+<status status="FAIL" starttime="20250726 13:24:45.449" endtime="20250726 13:24:45.461"/>
+</branch>
+<branch type="ELSE">
+<kw name="Log" library="BuiltIn">
+<arg>✅ API call SUCCESS</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.461" endtime="20250726 13:24:45.462"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Status: ${response.status_code}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.462" endtime="20250726 13:24:45.462"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Body: ${response.text}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20250726 13:24:45.462" endtime="20250726 13:24:45.463"/>
+</kw>
+<status status="NOT RUN" starttime="20250726 13:24:45.461" endtime="20250726 13:24:45.463"/>
+</branch>
+<status status="FAIL" starttime="20250726 13:24:45.449" endtime="20250726 13:24:45.463"/>
+</if>
+<status status="FAIL" starttime="20250726 13:24:45.010" endtime="20250726 13:24:45.463"/>
+</kw>
+<status status="FAIL" starttime="20250726 13:24:44.955" endtime="20250726 13:24:45.464">Không tìm thấy JSON trong chuỗi lỗi!</status>
 </test>
-<status status="FAIL" starttime="20250725 17:33:33.823" endtime="20250725 17:33:34.238"/>
+<status status="FAIL" starttime="20250726 13:24:44.175" endtime="20250726 13:24:45.467"/>
 </suite>
 <statistics>
 <total>

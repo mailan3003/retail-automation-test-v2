@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 6.1.1 (Python 3.7.7 on win32)" generated="20250721 23:13:53.922" rpa="false" schemaversion="4">
-<suite id="s1" name="Robot Interactive Console" source="c:\Users\lan.ntm\.cursor\extensions\robocorp.robotframework-lsp-1.13.0-universal\src\robotframework_ls\vendored\robotframework_interactive\robot_interactive_console.robot">
+<robot generator="Robot 6.1.1 (Python 3.13.5 on win32)" generated="20250726 12:02:07.896" rpa="false" schemaversion="4">
+<suite id="s1" name="Robot Interactive Console" source="c:\Users\ADMIN\.cursor\extensions\robocorp.robotframework-lsp-1.13.0-universal\src\robotframework_ls\vendored\robotframework_interactive\robot_interactive_console.robot">
 <test id="s1-t1" name="Default Task/Test" line="5">
 <kw name="Interpreter Main Loop" library="MainLoop">
-<status status="PASS" starttime="20250721 23:13:53.950" endtime="20250721 23:14:01.238"/>
+<kw name="Given Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0">
+<msg timestamp="20250726 12:02:09.324" level="FAIL">No keyword with name 'Given Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0' found.</msg>
+<status status="FAIL" starttime="20250726 12:02:09.324" endtime="20250726 12:02:09.324"/>
 </kw>
-<status status="PASS" starttime="20250721 23:13:53.950" endtime="20250721 23:14:01.239"/>
+<kw name="When">
+<arg>${status_string}</arg>
+<arg>${error_value}=</arg>
+<arg>Run Keyword And Expect Error</arg>
+<arg>HTTPError: 420* Gửi yêu cầu nhập hàng</arg>
+<status status="NOT RUN" starttime="20250726 12:02:09.325" endtime="20250726 12:02:09.326"/>
+</kw>
+<kw name="Then Kiểm tra message lỗi chứa Không tìm thấy sản phẩm SP9934437195 (có thể đã bị xóa)">
+<status status="NOT RUN" starttime="20250726 12:02:09.327" endtime="20250726 12:02:09.327"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<arg>Thông báo lỗi đã bắt được: ${error_value}</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="NOT RUN" starttime="20250726 12:02:09.327" endtime="20250726 12:02:09.327"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${error_value}</arg>
+<arg>Không tìm thấy sản phẩm SP9934437195 (có thể đã bị xóa)</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20250726 12:02:09.327" endtime="20250726 12:02:09.327"/>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<arg>${error_value}</arg>
+<arg>KvValidatePurchaseOrderException</arg>
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<status status="NOT RUN" starttime="20250726 12:02:09.327" endtime="20250726 12:02:09.327"/>
+</kw>
+<status status="PASS" starttime="20250726 12:02:07.937" endtime="20250726 12:02:30.629"/>
+</kw>
+<status status="PASS" starttime="20250726 12:02:07.937" endtime="20250726 12:02:30.629"/>
 </test>
-<status status="PASS" starttime="20250721 23:13:53.924" endtime="20250721 23:14:01.240"/>
+<status status="PASS" starttime="20250726 12:02:07.898" endtime="20250726 12:02:30.630"/>
 </suite>
 <statistics>
 <total>

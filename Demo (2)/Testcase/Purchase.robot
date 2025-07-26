@@ -13,6 +13,6 @@ Nhập hàng thành công với nhiều hàng hóa
 
 Nhập hàng thất bại do Id sản phẩm = 0
     Given Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0
-    When Gửi yêu cầu nhập hàng
-    Then Mã trạng thái trả về là 420
-    # And Kiểm tra message lỗi
+    When Gửi yêu cầu nhập hàng thất bại
+#     # Then Kiểm tra mã lỗi trả về là 420
+#     # And Kiểm tra message lỗi

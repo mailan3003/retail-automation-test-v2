@@ -3,22 +3,23 @@ TestSpecs
 ==============================================================================
 TestSpecs.API                                                                 
 ==============================================================================
-TestSpecs.API.Product                                                         
+TestSpecs.API.Customer                                                        
 ==============================================================================
-TestSpecs.API.Product.CreateProduct Test :: Test API t?o s?n ph?m             
+TestSpecs.API.Customer.CustomerValidation                                     
 ==============================================================================
-RT-PRODUCT-007 T?o S?n Ph?m V?i Thu?c Tính :: Test t?o s?n ph?m có... | PASS |
+RT-CU-034 T?o khách hàng th?t b?i khi ngày sinh không h?p l? :: Ki... | FAIL |
+B?n ch?a nh?p Tên khách hàng != Ngày sinh không h?p l?
 ------------------------------------------------------------------------------
-TestSpecs.API.Product.CreateProduct Test :: Test API t?o s?n ph?m     | PASS |
-1 test, 1 passed, 0 failed
+TestSpecs.API.Customer.CustomerValidation                             | FAIL |
+1 test, 0 passed, 1 failed
 ==============================================================================
-TestSpecs.API.Product                                                 | PASS |
-1 test, 1 passed, 0 failed
+TestSpecs.API.Customer                                                | FAIL |
+1 test, 0 passed, 1 failed
 ==============================================================================
-TestSpecs.API                                                         | PASS |
-1 test, 1 passed, 0 failed
+TestSpecs.API                                                         | FAIL |
+1 test, 0 passed, 1 failed
 ==============================================================================
-TestSpecs                                                             | PASS |
-1 test, 1 passed, 0 failed
+TestSpecs                                                             | FAIL |
+1 test, 0 passed, 1 failed
 ==============================================================================
-Output:  C:\Users\lan.ntm\Code\retail-automation-test-v2\pabot_results\0\output.xml
+Output:  D:\LAN\AutoTest\retail-automation-test-v2\pabot_results\0\output.xml
