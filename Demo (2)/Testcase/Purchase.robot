@@ -10,6 +10,8 @@ Nhập hàng thành công với nhiều hàng hóa
     When Gửi yêu cầu nhập hàng
     Then Mã trạng thái trả về là 200
     And Kiểm tra phiếu nhập hàng được tạo thông qua list danh sách
+    And Kiểm tra thông tin chi tiết phiếu
+    And Kiểm tra công nợ NCC
 
 Nhập hàng thất bại do Id sản phẩm = 0
     Given Chuẩn bị dữ liệu phiếu nhập hàng với Id hàng hóa = 0

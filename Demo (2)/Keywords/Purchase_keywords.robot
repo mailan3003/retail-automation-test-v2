@@ -3,7 +3,13 @@ Resource    ../Data/Purchase_data.robot
 Resource    ../../Keywords/Utilities/DataUtilities.robot
 Library    RequestsLibrary
 Library    Process
+Library    JSONLibrary
 Resource    ../Data/env_live.robot
+
+
+*** Variables ***
+${endpoint_purchaseOrder_detail}    purchaseOrders/{0}?Includes=PurchaseOrderDetails%2CSupplier%2CPaidAmount%2CBranch%2CUser%2CPurchasePayments
+${endpoint_supplier_detail}    suppliers/{0}?Includes=SupplierGroupDetails
 
 *** Keywords ***
 Chuẩn bị dữ liệu phiếu nhập hàng với nhiều hàng hóa
@@ -119,3 +125,76 @@ Kiểm tra message lỗi chứa ${expected_message}
     Log    MESSAGE LỖI: ${message}
     Should Contain    ${message}    ${expected_message}
     
+
+
+
+Kiểm tra thông tin chi tiết phiếu
+    # ${PRODUCT_ID1}=    Convert To Integer    ${PRODUCT_ID1}
+    ${purchase_id}=    Set Variable    ${RESPONSE.json()["Id"]}
+    ${endpoint}=    Format String    ${endpoint_purchaseOrder_detail}    ${purchase_id}
+    ${result_detail}=    GET On Session    session    ${endpoint}
+    
+    # Parse response content to JSON
+    ${json}=    Convert String To Json    ${result_detail.content}
+    # Nếu Convert String To Json không được, thay bằng:
+    # ${json}=    Evaluate    ${result_detail.json()}    json
+
+    # Kiểm tra mã phiếu nhập hàng
+    ${purchase_code}=    Set Variable    ${RESPONSE.json()["Code"]}
+    ${pur_detail_code}=    Set Variable    ${json["Code"]}
+    Should Be Equal As Strings    ${purchase_code}    ${pur_detail_code}    Mã phiếu nhập không khớp
+
+    # Kiểm tra chi tiết hàng hóa
+    ${pur_detail_productName1}=    Get Value From Json    ${json}    $.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID1})].ProductName
+    ${pur_detail_productName2}=    Get Value From Json    ${json}    $.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID2})].ProductName
+    ${pur_detail_productName3}=    Get Value From Json    ${json}    $.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID3})].ProductName
+    Should Not Be Empty    ${pur_detail_productName1}    Không có hàng hóa thứ 1
+    Should Not Be Empty    ${pur_detail_productName2}    Không có hàng hóa thứ 2
+    Should Not Be Empty    ${pur_detail_productName3}    Không có hàng hóa thứ 3
+
+    # Kiểm tra tổng số lượng hàng nhập
+    ${purchase_quantity}=    Set Variable    ${RESPONSE.json()["TotalQuantity"]}
+    ${pur_detail_quantity}=    Get Value From Json    ${json}    $.TotalQuantity
+    ${quantity}=         Set Variable    ${pur_detail_quantity[0]}
+    Should Be Equal As Numbers    ${purchase_quantity}    ${quantity}    Số lượng hàng nhập không bằng nhau
+
+    # Kiểm tra tổng tiền hàng
+    ${purchase_subtotal}=    Set Variable    ${RESPONSE.json()["SubTotal"]}
+    ${pur_detail_subtotal}=    Get Value From Json    ${json}    $.SubTotal
+    ${subtotal}=         Set Variable    ${pur_detail_subtotal[0]}
+    Should Be Equal As Numbers    ${purchase_subtotal}    ${subtotal}    Tổng tiền hàng không bằng nhau
+
+    # Kiểm tra tổng tiền cần trả NCC
+    ${purchase_total}=    Set Variable    ${RESPONSE.json()["Total"]}
+    ${pur_detail_total}=    Get Value From Json    ${json}    $.Total
+    ${total}=         Set Variable    ${pur_detail_total[0]}
+    Should Be Equal As Numbers    ${purchase_total}    ${total}    Tổng tiền cần trả NCC không bằng nhau
+
+    ${SupplierOldDebt}=    Get Value From Json    ${json}    $.SupplierOldDebt
+    ${SupplierOldDebt}=         Set Variable    ${SupplierOldDebt[0]}
+    Set Test Variable    ${SUPPLIEROLDDEBT}    ${SupplierOldDebt}
+    Set Test Variable    ${TOTAL}    ${total}
+    # ${allDetails}=    Get Value From Json    ${json}    $.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID1})].ProductName
+    # Log    ${allDetails}
+
+    # ${ids}=    Get Value From Json    ${json}    $.PurchaseOrderDetails[*].ProductId
+    # Log    ${ids}
+
+    # Log    ${json}
+
+Kiểm tra công nợ NCC
+    ${supplier_id}=    Set Variable    ${RESPONSE.json()["SupplierId"]}
+    ${endpoint}=    Format String    ${endpoint_supplier_detail}    ${supplier_id}
+    ${result_detail}=    GET On Session    session    ${endpoint}
+    # ${json}=    Convert String To Json    ${result_detail.content}
+
+    ${supplier_debt}=    Set Variable    ${result_detail.json()["Debt"]}
+    # ${debt}=    Set Variable    ${supplier_debt[0]}
+    
+    ${SUM}=    Evaluate    ${SUPPLIEROLDDEBT} + ${TOTAL}
+    Log    Tổng nợ + tổng đơn: ${SUM}
+    Should Be Equal As Numbers    ${SUM}    ${supplier_debt}    Công nợ sau khi nhập hàng của NCC không đúng
+    # Kiểm tra công nợ trước đó của NCC (trong chi tiết phieus nhập hàng), sau đó check với trong chi tiết NCC
+
+
+

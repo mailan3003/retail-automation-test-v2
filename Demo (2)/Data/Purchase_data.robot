@@ -2,8 +2,13 @@
 
 
 *** Variables ***
+
+${PRODUCT_ID1}    6326422
+${PRODUCT_ID2}    5816657
+${PRODUCT_ID3}    2001424958
+
 &{PRODUCT1}    
-...    ProductId=6326422
+...    ProductId=${PRODUCT_ID1}
 ...    ConversionValue=1
 ...    ProductName=Xoài Tứ Quý
 ...    ProductCode=SP9934437195
@@ -18,7 +23,7 @@
 ...    OrderByNumber=0
 
 &{PRODUCT2}
-...    ProductId=5816657
+...    ProductId=${PRODUCT_ID2}
 ...    ConversionValue=1
 ...    ProductName=Redbull
 ...    ProductCode=SP9934437062
@@ -33,7 +38,7 @@
 ...    OrderByNumber=1
 
 &{PRODUCT3}
-...    ProductId=2001424958
+...    ProductId=${PRODUCT_ID3}
 ...    ConversionValue=1
 ...    ProductName=Hộp phở bò phố cổ
 ...    ProductCode=ggg235325
