@@ -6,16 +6,20 @@
 ${PRODUCT_ID1}    6326422
 ${PRODUCT_ID2}    5816657
 ${PRODUCT_ID3}    2001424958
+${ProductCode1}    SP9934437195
+${QUANTITY1}    1
+${QUANTITY2}    1
+${QUANTITY3}    1
 
 &{PRODUCT1}    
 ...    ProductId=${PRODUCT_ID1}
 ...    ConversionValue=1
 ...    ProductName=Xoài Tứ Quý
-...    ProductCode=SP9934437195
+...    ProductCode=${ProductCode1}
 ...    BasePrice=89000
 ...    Price=58000
 ...    Cost=58000
-...    Quantity=1
+...    Quantity=${QUANTITY1}
 ...    SelectedUnit=6326422
 ...    Stotal=58000
 ...    Allocation=2900
@@ -30,7 +34,7 @@ ${PRODUCT_ID3}    2001424958
 ...    BasePrice=10000
 ...    Price=10000
 ...    Cost=10000
-...    Quantity=1
+...    Quantity=${QUANTITY2}
 ...    SelectedUnit=5816657
 ...    Stotal=10000
 ...    Allocation=500
@@ -45,7 +49,7 @@ ${PRODUCT_ID3}    2001424958
 ...    BasePrice=10000
 ...    Price=8000
 ...    Cost=8694.38
-...    Quantity=1
+...    Quantity=${QUANTITY3}
 ...    SelectedUnit=2001424958
 ...    Stotal=8000
 ...    Allocation=400
