@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 6.1.1 (Python 3.13.5 on win32)" generated="20250726 23:13:43.792" rpa="false" schemaversion="4">
-<suite id="s1" name="Purchase" source="d:\LAN\AutoTest\retail-automation-test-v2\Demo (2)\Testcase\Purchase.robot">
+<robot generator="Robot 6.1.1 (Python 3.13.5 on win32)" generated="20250728 22:40:41.704" rpa="false" schemaversion="4">
+<suite id="s1" name="Orders" source="d:\LAN\AutoTest\retail-automation-test-v2\Demo (2)\Testcase\Orders.robot">
 <kw name="Tạo session" library="Login_keywords" type="SETUP">
 <arg>testz23</arg>
 <arg>admin</arg>
@@ -10,8 +10,8 @@
 <arg>content-type=application/json;charset=utf-8</arg>
 <arg>retailer=${RETAILER}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250726 23:13:44.007" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'}</msg>
-<status status="PASS" starttime="20250726 23:13:44.007" endtime="20250726 23:13:44.009"/>
+<msg timestamp="20250728 22:40:41.905" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'}</msg>
+<status status="PASS" starttime="20250728 22:40:41.904" endtime="20250728 22:40:41.907"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${body}</var>
@@ -22,14 +22,14 @@
 <arg>Language=vi-VN</arg>
 <arg>LatestBranchId=30</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250726 23:13:44.010" level="INFO">${body} = {'RememberMe': 'true', 'ShowCaptcha': 'false', 'UserName': 'admin', 'Password': 'Kiotviet123456', 'Language': 'vi-VN', 'LatestBranchId': '30'}</msg>
-<status status="PASS" starttime="20250726 23:13:44.009" endtime="20250726 23:13:44.010"/>
+<msg timestamp="20250728 22:40:41.907" level="INFO">${body} = {'RememberMe': 'true', 'ShowCaptcha': 'false', 'UserName': 'admin', 'Password': 'Kiotviet123456', 'Language': 'vi-VN', 'LatestBranchId': '30'}</msg>
+<status status="PASS" starttime="20250728 22:40:41.907" endtime="20250728 22:40:41.907"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${request}</var>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250726 23:13:44.011" level="INFO">${request} = {}</msg>
-<status status="PASS" starttime="20250726 23:13:44.010" endtime="20250726 23:13:44.011"/>
+<msg timestamp="20250728 22:40:41.908" level="INFO">${request} = {}</msg>
+<status status="PASS" starttime="20250728 22:40:41.908" endtime="20250728 22:40:41.908"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -40,13 +40,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.011" endtime="20250726 23:13:44.012"/>
+<status status="PASS" starttime="20250728 22:40:41.908" endtime="20250728 22:40:41.909"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.012" endtime="20250726 23:13:44.012"/>
+<status status="PASS" starttime="20250728 22:40:41.909" endtime="20250728 22:40:41.909"/>
 </return>
-<status status="PASS" starttime="20250726 23:13:44.011" endtime="20250726 23:13:44.012"/>
+<status status="PASS" starttime="20250728 22:40:41.908" endtime="20250728 22:40:41.910"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -57,13 +57,13 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.013" endtime="20250726 23:13:44.014"/>
+<status status="PASS" starttime="20250728 22:40:41.910" endtime="20250728 22:40:41.910"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.014" endtime="20250726 23:13:44.014"/>
+<status status="PASS" starttime="20250728 22:40:41.910" endtime="20250728 22:40:41.911"/>
 </return>
-<status status="PASS" starttime="20250726 23:13:44.013" endtime="20250726 23:13:44.014"/>
+<status status="PASS" starttime="20250728 22:40:41.910" endtime="20250728 22:40:41.911"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <arg>${request}</arg>
@@ -74,21 +74,21 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.015" endtime="20250726 23:13:44.016"/>
+<status status="PASS" starttime="20250728 22:40:41.911" endtime="20250728 22:40:41.911"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.016" endtime="20250726 23:13:44.016"/>
+<status status="PASS" starttime="20250728 22:40:41.911" endtime="20250728 22:40:41.912"/>
 </return>
-<status status="PASS" starttime="20250726 23:13:44.014" endtime="20250726 23:13:44.016"/>
+<status status="PASS" starttime="20250728 22:40:41.911" endtime="20250728 22:40:41.912"/>
 </kw>
 <kw name="Create Session" library="RequestsLibrary">
 <arg>login</arg>
 <arg>${URL}</arg>
 <arg>headers=${headers}</arg>
 <doc>Create Session: create a HTTP session to a server</doc>
-<msg timestamp="20250726 23:13:44.017" level="INFO">Creating Session using : alias=login, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
-<status status="PASS" starttime="20250726 23:13:44.017" endtime="20250726 23:13:44.017"/>
+<msg timestamp="20250728 22:40:41.912" level="INFO">Creating Session using : alias=login, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20250728 22:40:41.912" endtime="20250728 22:40:41.912"/>
 </kw>
 <kw name="POST On Session" library="RequestsLibrary">
 <var>${response}</var>
@@ -96,27 +96,27 @@
 <arg>url=account/login?quan-ly=true</arg>
 <arg>json=${request}</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.238" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
+<msg timestamp="20250728 22:40:42.131" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
  path_url=/api/account/login?quan-ly=true 
  headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Content-Length': '273'} 
  body=b'{"model": {"RememberMe": "true", "ShowCaptcha": "false", "UserName": "admin", "Password": "Kiotviet123456", "Language": "vi-VN", "LatestBranchId": "30"}, "IsManageSide": "true", "FingerPrintKey": "9260aa1de596f0d80658143cbe38c670_Chrome_Desktop_M\\u00e1y t\\u00ednh Windows"}' 
  </msg>
-<msg timestamp="20250726 23:13:44.239" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
+<msg timestamp="20250728 22:40:42.132" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/account/login?quan-ly=true 
  status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'kv.requestid': '785d6cd7a8f54ebe8a6cbe40f8150dc7', 'set-cookie': 'ss-id=yc4G03mA0iQacTxSE3zf; path=/; HttpOnly, ss-pid=ogwBwkOiFelCAlLICyin; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, ss-opt=temp; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, l_861751_510=vi-VN; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, newfnb=0; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, Retailer=testz23; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, LatestBranch_861751_510=30; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w; expires=Sat, 23-Aug-2025 16:13:44 GMT; path=/; HttpOnly, is-coffee=0; path=/; HttpOnly, trial=0; path=/; HttpOnly, zone=23; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '1136'} 
- body={"isSuccess":true,"checkLimitTime":true,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w","currentBranch":30,"permittedBranchIds":[30,100048,1224016],"OldPasswordCountValidate":3} 
+ headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'kv.requestid': 'f25b9332d6b848c8b79819bb7581acc3', 'set-cookie': 'ss-id=eFuKHBxWXgQyYnknmpmA; path=/; HttpOnly, ss-pid=5GrZ4jzpwfOeflFuXk4M; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, ss-opt=temp; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, l_861751_510=vi-VN; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, newfnb=0; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, Retailer=testz23; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, LatestBranch_861751_510=30; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly, ss-tok=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6ImY0OTZhN2M3NjBhOTQxMjZhNjUzYzEwYzVhM2IyMzg3Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.ZTsLopAkynOr9Gw1wlmG3Q2i5VcirwBwa0cPOwN8sgR88Dw5kPsBJGVFfB_14MeEJbVnRynYx4w5O7x64_q6dp6TdvhJE7ppoxIicn1c6EsoWeLUJbhvKT2Mep3SQcCrA2IUYnbsteyUAgtfAdOjqpCp1dPMggIY9ebvjcI3J2ZTLUBrV73CJzFMo30Nz7Ai9F7jAR85rZit0_PJaJ49BqUU9PDWNg2-cc9RyiucCETg_JSkbD332RzXlag18AHXbw8vySlrLOyWv4I-EpMEX6dgfrHmUvUHC0KYQKvR0iL793D5pCWxssUeGhQHGGrOoJz7KUdvg_kweq_CjmzhYA; expires=Mon, 25-Aug-2025 15:40:42 GMT; path=/; HttpOnly, is-coffee=0; path=/; HttpOnly, trial=0; path=/; HttpOnly, zone=23; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Mon, 28 Jul 2025 15:40:41 GMT', 'content-length': '1130'} 
+ body={"isSuccess":true,"checkLimitTime":true,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6ImY0OTZhN2M3NjBhOTQxMjZhNjUzYzEwYzVhM2IyMzg3Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.ZTsLopAkynOr9Gw1wlmG3Q2i5VcirwBwa0cPOwN8sgR88Dw5kPsBJGVFfB_14MeEJbVnRynYx4w5O7x64_q6dp6TdvhJE7ppoxIicn1c6EsoWeLUJbhvKT2Mep3SQcCrA2IUYnbsteyUAgtfAdOjqpCp1dPMggIY9ebvjcI3J2ZTLUBrV73CJzFMo30Nz7Ai9F7jAR85rZit0_PJaJ49BqUU9PDWNg2-cc9RyiucCETg_JSkbD332RzXlag18AHXbw8vySlrLOyWv4I-EpMEX6dgfrHmUvUHC0KYQKvR0iL793D5pCWxssUeGhQHGGrOoJz7KUdvg_kweq_CjmzhYA","currentBranch":30,"permittedBranchIds":[30,100048,1224016],"OldPasswordCountValidate":3} 
  </msg>
-<msg timestamp="20250726 23:13:44.239" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+<msg timestamp="20250728 22:40:42.132" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.239" level="INFO">${response} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.018" endtime="20250726 23:13:44.239"/>
+<msg timestamp="20250728 22:40:42.132" level="INFO">${response} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250728 22:40:41.912" endtime="20250728 22:40:42.133"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${auth}</var>
 <arg>${response.json()["token"]}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.241" level="INFO">${auth} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Z...</msg>
-<status status="PASS" starttime="20250726 23:13:44.240" endtime="20250726 23:13:44.241"/>
+<msg timestamp="20250728 22:40:42.134" level="INFO">${auth} = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Z...</msg>
+<status status="PASS" starttime="20250728 22:40:42.133" endtime="20250728 22:40:42.134"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <var>${headers}</var>
@@ -128,14 +128,14 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.241" endtime="20250726 23:13:44.242"/>
+<status status="PASS" starttime="20250728 22:40:42.135" endtime="20250728 22:40:42.135"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.242" endtime="20250726 23:13:44.242"/>
+<status status="PASS" starttime="20250728 22:40:42.135" endtime="20250728 22:40:42.135"/>
 </return>
-<msg timestamp="20250726 23:13:44.242" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250726 23:13:44.241" endtime="20250726 23:13:44.242"/>
+<msg timestamp="20250728 22:40:42.136" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250728 22:40:42.134" endtime="20250728 22:40:42.136"/>
 </kw>
 <kw name="Update Dictionary Property" library="DataUtilities">
 <var>${headers}</var>
@@ -147,1081 +147,353 @@
 <arg>${dictionary}</arg>
 <arg>${property_name}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.242" endtime="20250726 23:13:44.243"/>
+<status status="PASS" starttime="20250728 22:40:42.136" endtime="20250728 22:40:42.137"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.243" endtime="20250726 23:13:44.243"/>
+<status status="PASS" starttime="20250728 22:40:42.137" endtime="20250728 22:40:42.137"/>
 </return>
-<msg timestamp="20250726 23:13:44.243" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250726 23:13:44.242" endtime="20250726 23:13:44.243"/>
+<msg timestamp="20250728 22:40:42.137" level="INFO">${headers} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250728 22:40:42.136" endtime="20250728 22:40:42.137"/>
 </kw>
 <kw name="Create Session" library="RequestsLibrary">
 <arg>session</arg>
 <arg>${URL}</arg>
 <arg>${headers}</arg>
 <doc>Create Session: create a HTTP session to a server</doc>
-<msg timestamp="20250726 23:13:44.243" level="INFO">Creating Session using : alias=session, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
-<status status="PASS" starttime="20250726 23:13:44.243" endtime="20250726 23:13:44.244"/>
+<msg timestamp="20250728 22:40:42.138" level="INFO">Creating Session using : alias=session, url=https://api-man1.kiotviet.vn/api/, headers={'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6ImY0OTZhN2M3NjBhOTQxMjZhNjUzYzEwYzVhM2IyMzg3Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.ZTsLopAkynOr9Gw1wlmG3Q2i5VcirwBwa0cPOwN8sgR88Dw5kPsBJGVFfB_14MeEJbVnRynYx4w5O7x64_q6dp6TdvhJE7ppoxIicn1c6EsoWeLUJbhvKT2Mep3SQcCrA2IUYnbsteyUAgtfAdOjqpCp1dPMggIY9ebvjcI3J2ZTLUBrV73CJzFMo30Nz7Ai9F7jAR85rZit0_PJaJ49BqUU9PDWNg2-cc9RyiucCETg_JSkbD332RzXlag18AHXbw8vySlrLOyWv4I-EpMEX6dgfrHmUvUHC0KYQKvR0iL793D5pCWxssUeGhQHGGrOoJz7KUdvg_kweq_CjmzhYA', 'BranchId': '30'},                     cookies={}, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<status status="PASS" starttime="20250728 22:40:42.137" endtime="20250728 22:40:42.138"/>
 </kw>
 <kw name="Set Global Variable" library="BuiltIn">
 <arg>${AUTH_TOKEN}</arg>
 <arg>Bearer ${auth}</arg>
 <doc>Makes a variable available globally in all tests and suites.</doc>
-<msg timestamp="20250726 23:13:44.245" level="INFO">${AUTH_TOKEN} = Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIi...</msg>
-<status status="PASS" starttime="20250726 23:13:44.244" endtime="20250726 23:13:44.245"/>
+<msg timestamp="20250728 22:40:42.140" level="INFO">${AUTH_TOKEN} = Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIi...</msg>
+<status status="PASS" starttime="20250728 22:40:42.138" endtime="20250728 22:40:42.140"/>
 </kw>
 <kw name="Set Global Variable" library="BuiltIn">
 <arg>${HEADERS}</arg>
 <arg>${headers}</arg>
 <doc>Makes a variable available globally in all tests and suites.</doc>
-<msg timestamp="20250726 23:13:44.245" level="INFO">${HEADERS} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
-<status status="PASS" starttime="20250726 23:13:44.245" endtime="20250726 23:13:44.245"/>
+<msg timestamp="20250728 22:40:42.141" level="INFO">${HEADERS} = {'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1...</msg>
+<status status="PASS" starttime="20250728 22:40:42.140" endtime="20250728 22:40:42.141"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:44.005" endtime="20250726 23:13:44.245"/>
+<status status="PASS" starttime="20250728 22:40:41.904" endtime="20250728 22:40:42.141"/>
 </kw>
-<test id="s1-t1" name="Nhập hàng thành công với nhiều hàng hóa" line="8">
-<kw name="Given Chuẩn bị dữ liệu phiếu nhập hàng với nhiều hàng hóa" library="Purchase_keywords">
+<test id="s1-t1" name="Tạo đơn đặt hàng thành công" line="9">
+<kw name="Given Chuẩn bị dữ liệu tạo đơn đặt hàng" library="Orders_keywords">
+<kw name="Deep Copy" library="DataUtilities">
+<var>${request}</var>
+<arg>${ORDER}</arg>
+<doc>Creates a deep copy of any data structure using JSON serialization</doc>
+<kw name="Evaluate" library="BuiltIn">
+<var>${json_data}</var>
+<arg>json.dumps(${data})</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250728 22:40:42.144" level="INFO">${json_data} = {"BranchId": "30", "RetailerId": "861751", "CustomerId": "1001445647", "SoldById": "510", "SoldBy": {"Id": "510", "UserName": "admin", "Email": "a@gmail.com", "GivenName": "aydlllll", "IsActive": true...</msg>
+<status status="PASS" starttime="20250728 22:40:42.143" endtime="20250728 22:40:42.145"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${copied_data}</var>
+<arg>json.loads($json_data)</arg>
+<arg>json</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20250728 22:40:42.146" level="INFO">${copied_data} = {'BranchId': '30', 'RetailerId': '861751', 'CustomerId': '1001445647', 'SoldById': '510', 'SoldBy': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsActive': True...</msg>
+<status status="PASS" starttime="20250728 22:40:42.145" endtime="20250728 22:40:42.146"/>
+</kw>
+<return>
+<value>${copied_data}</value>
+<status status="PASS" starttime="20250728 22:40:42.146" endtime="20250728 22:40:42.146"/>
+</return>
+<msg timestamp="20250728 22:40:42.146" level="INFO">${request} = {'BranchId': '30', 'RetailerId': '861751', 'CustomerId': '1001445647', 'SoldById': '510', 'SoldBy': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsActive': True...</msg>
+<status status="PASS" starttime="20250728 22:40:42.142" endtime="20250728 22:40:42.147"/>
+</kw>
 <kw name="Create Dictionary" library="BuiltIn">
-<var>${request}</var>
+<var>${request_body}</var>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250726 23:13:44.246" level="INFO">${request} = {}</msg>
-<status status="PASS" starttime="20250726 23:13:44.246" endtime="20250726 23:13:44.247"/>
-</kw>
-<kw name="Update Dictionary Property" library="DataUtilities">
-<arg>${request}</arg>
-<arg>PurchaseOrder</arg>
-<arg>${PURCHASE_ORDER}</arg>
-<doc>Updates a property in a dictionary, useful for request modification</doc>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${dictionary}</arg>
-<arg>${property_name}=${property_value}</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.248" endtime="20250726 23:13:44.248"/>
-</kw>
-<return>
-<value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.249" endtime="20250726 23:13:44.249"/>
-</return>
-<status status="PASS" starttime="20250726 23:13:44.247" endtime="20250726 23:13:44.249"/>
-</kw>
-<kw name="Update Dictionary Property" library="DataUtilities">
-<arg>${request}</arg>
-<arg>BranchId</arg>
-<arg>${DEFAULT_BRANCH_ID}</arg>
-<doc>Updates a property in a dictionary, useful for request modification</doc>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${dictionary}</arg>
-<arg>${property_name}=${property_value}</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.250" endtime="20250726 23:13:44.251"/>
-</kw>
-<return>
-<value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.251" endtime="20250726 23:13:44.251"/>
-</return>
-<status status="PASS" starttime="20250726 23:13:44.250" endtime="20250726 23:13:44.252"/>
+<msg timestamp="20250728 22:40:42.147" level="INFO">${request_body} = {}</msg>
+<status status="PASS" starttime="20250728 22:40:42.147" endtime="20250728 22:40:42.148"/>
 </kw>
 <kw name="Update Nested Dictionary Property" library="DataUtilities">
-<var>${request}</var>
+<var>${request_body}</var>
+<arg>${request_body}</arg>
+<arg>Order</arg>
 <arg>${request}</arg>
-<arg>PurchaseOrder.PurchaseOrderExpensesOthers</arg>
-<arg>${EXPENSE}</arg>
 <doc>Updates a nested property in a dictionary using a dot-notation path</doc>
 <kw name="Split String" library="String">
 <var>@{parts}</var>
 <arg>${property_path}</arg>
 <arg>.</arg>
 <doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
-<msg timestamp="20250726 23:13:44.253" level="INFO">@{parts} = [ PurchaseOrder | PurchaseOrderExpensesOthers ]</msg>
-<status status="PASS" starttime="20250726 23:13:44.253" endtime="20250726 23:13:44.254"/>
+<msg timestamp="20250728 22:40:42.149" level="INFO">@{parts} = [ Order ]</msg>
+<status status="PASS" starttime="20250728 22:40:42.148" endtime="20250728 22:40:42.149"/>
 </kw>
 <kw name="Get Length" library="BuiltIn">
 <var>${parts_count}</var>
 <arg>${parts}</arg>
 <doc>Returns and logs the length of the given item as an integer.</doc>
-<msg timestamp="20250726 23:13:44.254" level="INFO">Length is 2</msg>
-<msg timestamp="20250726 23:13:44.254" level="INFO">${parts_count} = 2</msg>
-<status status="PASS" starttime="20250726 23:13:44.254" endtime="20250726 23:13:44.254"/>
+<msg timestamp="20250728 22:40:42.149" level="INFO">Length is 1</msg>
+<msg timestamp="20250728 22:40:42.149" level="INFO">${parts_count} = 1</msg>
+<status status="PASS" starttime="20250728 22:40:42.149" endtime="20250728 22:40:42.149"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${current}</var>
 <arg>${dictionary}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.255" level="INFO">${current} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost'...</msg>
-<status status="PASS" starttime="20250726 23:13:44.254" endtime="20250726 23:13:44.255"/>
+<msg timestamp="20250728 22:40:42.150" level="INFO">${current} = {}</msg>
+<status status="PASS" starttime="20250728 22:40:42.150" endtime="20250728 22:40:42.150"/>
 </kw>
 <for flavor="IN RANGE">
 <var>${i}</var>
 <value>0</value>
 <value>${parts_count-1}</value>
 <iter>
-<var name="${i}">0</var>
+<var name="${i}"/>
 <kw name="Get From List" library="Collections">
 <var>${part}</var>
 <arg>${parts}</arg>
 <arg>${i}</arg>
 <doc>Returns the value specified with an ``index`` from ``list``.</doc>
-<msg timestamp="20250726 23:13:44.257" level="INFO">${part} = PurchaseOrder</msg>
-<status status="PASS" starttime="20250726 23:13:44.256" endtime="20250726 23:13:44.257"/>
+<status status="NOT RUN" starttime="20250728 22:40:42.151" endtime="20250728 22:40:42.151"/>
 </kw>
 <kw name="Get From Dictionary" library="Collections">
 <var>${current}</var>
 <arg>${current}</arg>
 <arg>${part}</arg>
 <doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
-<msg timestamp="20250726 23:13:44.258" level="INFO">${current} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
-<status status="PASS" starttime="20250726 23:13:44.257" endtime="20250726 23:13:44.258"/>
+<status status="NOT RUN" starttime="20250728 22:40:42.151" endtime="20250728 22:40:42.151"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:44.256" endtime="20250726 23:13:44.258"/>
+<status status="NOT RUN" starttime="20250728 22:40:42.151" endtime="20250728 22:40:42.151"/>
 </iter>
-<status status="PASS" starttime="20250726 23:13:44.255" endtime="20250726 23:13:44.258"/>
+<status status="NOT RUN" starttime="20250728 22:40:42.150" endtime="20250728 22:40:42.151"/>
 </for>
 <kw name="Get From List" library="Collections">
 <var>${last_part}</var>
 <arg>${parts}</arg>
 <arg>${parts_count-1}</arg>
 <doc>Returns the value specified with an ``index`` from ``list``.</doc>
-<msg timestamp="20250726 23:13:44.259" level="INFO">${last_part} = PurchaseOrderExpensesOthers</msg>
-<status status="PASS" starttime="20250726 23:13:44.258" endtime="20250726 23:13:44.259"/>
+<msg timestamp="20250728 22:40:42.152" level="INFO">${last_part} = Order</msg>
+<status status="PASS" starttime="20250728 22:40:42.151" endtime="20250728 22:40:42.152"/>
 </kw>
 <kw name="Set To Dictionary" library="Collections">
 <arg>${current}</arg>
 <arg>${last_part}=${property_value}</arg>
 <doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.259" endtime="20250726 23:13:44.259"/>
+<status status="PASS" starttime="20250728 22:40:42.152" endtime="20250728 22:40:42.153"/>
 </kw>
 <return>
 <value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.259" endtime="20250726 23:13:44.259"/>
+<status status="PASS" starttime="20250728 22:40:42.153" endtime="20250728 22:40:42.153"/>
 </return>
-<msg timestamp="20250726 23:13:44.260" level="INFO">${request} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost'...</msg>
-<status status="PASS" starttime="20250726 23:13:44.252" endtime="20250726 23:13:44.260"/>
-</kw>
-<kw name="Update Nested Dictionary Property" library="DataUtilities">
-<var>${request}</var>
-<arg>${request}</arg>
-<arg>PurchaseOrder.Payments</arg>
-<arg>${PAYMENTS}</arg>
-<doc>Updates a nested property in a dictionary using a dot-notation path</doc>
-<kw name="Split String" library="String">
-<var>@{parts}</var>
-<arg>${property_path}</arg>
-<arg>.</arg>
-<doc>Splits the ``string`` using ``separator`` as a delimiter string.</doc>
-<msg timestamp="20250726 23:13:44.260" level="INFO">@{parts} = [ PurchaseOrder | Payments ]</msg>
-<status status="PASS" starttime="20250726 23:13:44.260" endtime="20250726 23:13:44.260"/>
-</kw>
-<kw name="Get Length" library="BuiltIn">
-<var>${parts_count}</var>
-<arg>${parts}</arg>
-<doc>Returns and logs the length of the given item as an integer.</doc>
-<msg timestamp="20250726 23:13:44.261" level="INFO">Length is 2</msg>
-<msg timestamp="20250726 23:13:44.261" level="INFO">${parts_count} = 2</msg>
-<status status="PASS" starttime="20250726 23:13:44.261" endtime="20250726 23:13:44.261"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${current}</var>
-<arg>${dictionary}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.261" level="INFO">${current} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost'...</msg>
-<status status="PASS" starttime="20250726 23:13:44.261" endtime="20250726 23:13:44.261"/>
-</kw>
-<for flavor="IN RANGE">
-<var>${i}</var>
-<value>0</value>
-<value>${parts_count-1}</value>
-<iter>
-<var name="${i}">0</var>
-<kw name="Get From List" library="Collections">
-<var>${part}</var>
-<arg>${parts}</arg>
-<arg>${i}</arg>
-<doc>Returns the value specified with an ``index`` from ``list``.</doc>
-<msg timestamp="20250726 23:13:44.262" level="INFO">${part} = PurchaseOrder</msg>
-<status status="PASS" starttime="20250726 23:13:44.262" endtime="20250726 23:13:44.263"/>
-</kw>
-<kw name="Get From Dictionary" library="Collections">
-<var>${current}</var>
-<arg>${current}</arg>
-<arg>${part}</arg>
-<doc>Returns a value from the given ``dictionary`` based on the given ``key``.</doc>
-<msg timestamp="20250726 23:13:44.263" level="INFO">${current} = {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quanti...</msg>
-<status status="PASS" starttime="20250726 23:13:44.263" endtime="20250726 23:13:44.263"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:44.262" endtime="20250726 23:13:44.263"/>
-</iter>
-<status status="PASS" starttime="20250726 23:13:44.261" endtime="20250726 23:13:44.263"/>
-</for>
-<kw name="Get From List" library="Collections">
-<var>${last_part}</var>
-<arg>${parts}</arg>
-<arg>${parts_count-1}</arg>
-<doc>Returns the value specified with an ``index`` from ``list``.</doc>
-<msg timestamp="20250726 23:13:44.264" level="INFO">${last_part} = Payments</msg>
-<status status="PASS" starttime="20250726 23:13:44.263" endtime="20250726 23:13:44.264"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${current}</arg>
-<arg>${last_part}=${property_value}</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.264" endtime="20250726 23:13:44.264"/>
-</kw>
-<return>
-<value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.264" endtime="20250726 23:13:44.264"/>
-</return>
-<msg timestamp="20250726 23:13:44.265" level="INFO">${request} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost'...</msg>
-<status status="PASS" starttime="20250726 23:13:44.260" endtime="20250726 23:13:44.265"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>Complete=True</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.266" endtime="20250726 23:13:44.266"/>
+<msg timestamp="20250728 22:40:42.153" level="INFO">${request_body} = {'Order': {'BranchId': '30', 'RetailerId': '861751', 'CustomerId': '1001445647', 'SoldById': '510', 'SoldBy': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsAct...</msg>
+<status status="PASS" starttime="20250728 22:40:42.148" endtime="20250728 22:40:42.153"/>
 </kw>
 <kw name="Log" library="BuiltIn">
-<arg>${request}</arg>
+<arg>${request_body}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20250726 23:13:44.267" level="INFO">{'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost': '58000', 'Quantity': '1', 'SelectedUnit': '6326422', 'Stotal': '58000', 'Allocation': '2900', 'AllocationSuppliers': '483.84', 'OrderByNumber': '0'}, {'ProductId': '5816657', 'ConversionValue': '1', 'ProductName': 'Redbull', 'ProductCode': 'SP9934437062', 'BasePrice': '10000', 'Price': '10000', 'Cost': '10000', 'Quantity': '1', 'SelectedUnit': '5816657', 'Stotal': '10000', 'Allocation': '500', 'AllocationSuppliers': '83.42', 'OrderByNumber': '1'}, {'ProductId': '2001424958', 'ConversionValue': '1', 'ProductName': 'Hộp phở bò phố cổ', 'ProductCode': 'ggg235325', 'BasePrice': '10000', 'Price': '8000', 'Cost': '8694.38', 'Quantity': '1', 'SelectedUnit': '2001424958', 'Stotal': '8000', 'Allocation': '400', 'AllocationSuppliers': '66.74', 'OrderByNumber': '2'}], 'UserId': '510', 'SupplierId': '2001401362', 'Supplier': {'Id': '2001401362', 'Name': 'Haley', 'Phone': '491-469-0696', 'Email': 'Laverne20@yahoo.com', 'Address': 'Lueilwitzview', 'Code': 'NIGILTM1'}, 'BranchId': '30', 'Branch': {'Id': '30', 'Name': 'Chi nhánh trung tâm', 'Address': '160 Trần Hưng Đạo', 'LocationName': 'Hà Nội - Quận Hoàn Kiếm', 'WardName': 'Phường Đồng Xuân', 'ContactNumber': '+84987964658'}, 'SubTotal': '76000', 'Discount': '3800', 'DiscountRatio': '5', 'Total': '72834', 'TotalQuantity': '3', 'PayingAmount': '50000', 'Status': '3', 'StatusValue': 'Đã nhập hàng', 'PurchaseOrderExpensesOthers': {'ExpensesOtherId': '1000300566', 'ExValue': '634', 'Name': 'Quitzon', 'Code': 'LNDUTHQ1'}, 'Payments': ["{'paymentMethod': 'Cash', 'PayingAmount': 50000}"]}, 'BranchId': '30', 'Complete': 'True'}</msg>
-<status status="PASS" starttime="20250726 23:13:44.266" endtime="20250726 23:13:44.267"/>
+<msg timestamp="20250728 22:40:42.153" level="INFO">{'Order': {'BranchId': '30', 'RetailerId': '861751', 'CustomerId': '1001445647', 'SoldById': '510', 'SoldBy': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsActive': True, 'IsAdmin': True, 'Type': '0', 'Language': 'vi-VN', 'MobilePhone': '+84339062167', 'isDeleted': False, 'CreatedBy': '0', 'CreatedDate': '2021-01-19T07:36:27.233Z'}, 'Seller': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsActive': True, 'IsAdmin': True, 'Type': '0', 'Language': 'vi-VN', 'MobilePhone': '+84339062167', 'isDeleted': False, 'CreatedBy': '0', 'CreatedDate': '2021-01-19T07:36:27.233Z'}, 'Code': 'Đặt hàng 1', 'Discount': '11500', 'OrderDetails': [{'ProductId': '6326422', 'ProductCode': 'SP1005202255', 'ProductName': 'Khẩu trang KT39', 'Quantity': '1', 'BasePrice': '40000', 'Price': '40000', 'OriginPrice': '40000', 'AllocationDiscount': '4000', 'IsLotSerialControl': True, 'IsRewardPoint': True, 'Uuid': ''}, {'ProductId': '5816657', 'ProductCode': 'SP000077', 'ProductName': 'Hoa cẩm tú cầu - Xanh 2 - Đà Lạt 2 - (bông)', 'Quantity': '1', 'BasePrice': '50000', 'Price': '50000', 'OriginPrice': '50000', 'AllocationDiscount': '5000', 'IsLotSerialControl': False, 'Uuid': ''}, {'ProductId': '2001424958', 'ProductCode': '8936131180934', 'ProductName': 'Thebol sữa tắm thảo dược Vitamin E nước hoa 2 plus vàng 650g', 'Quantity': '1', 'BasePrice': '25000', 'Price': '25000', 'OriginPrice': '25000', 'AllocationDiscount': '2500', 'IsLotSerialControl': False, 'IsRewardPoint': True, 'ProductTradeMarkName': 'Vinaacecook', 'Uuid': ''}], 'InvoiceOrderSurcharges': [{'SurchargeId': '1000000044', 'Code': 'THK000004', 'Name': 'Thu Khác Test abc', 'Price': '30000', 'Value': '30000', 'SurValue': '30000', 'isAuto': True, 'UsageFlag': True, 'RetailerId': '861751', 'CreatedDate': '2021-12-11T07:18:53.453Z'}], 'OrderPromotions': [{'PromotionId': '500307501', 'SalePromotionId': '501269090', 'DiscountRatio': '10', 'Type': '1', 'TargetType': '0', 'PromotionInfo': 'Giảm giá hóa đơn:\n Tổng tiền hàng từ 10,000\n giảm giá 10% cho hóa đơn', 'PrintPromotionInfo': 'Giảm giá hóa đơn:\n Tổng tiền hàng từ 10,000\n giảm giá 10% cho hóa đơn'}], 'Status': '1', 'Total': '133500', 'Extra': '{"Amount":0,"Method":{"Id":"Cash","Label":"Tiền mặt"},"ResetPromotion":false}', 'Surcharge': '30000', 'Type': '2', 'Uuid': '', 'PayingAmount': '0', 'TotalBeforeDiscount': '115000', 'DiscountByPromotion': '11500', 'DiscountByPromotionRatio': '10', 'CreatedBy': '510', 'CreatedDate': '2025-07-28T14:01:42.074Z'}}</msg>
+<status status="PASS" starttime="20250728 22:40:42.153" endtime="20250728 22:40:42.154"/>
 </kw>
 <kw name="Set Test Variable" library="BuiltIn">
 <arg>${REQUEST_DATA}</arg>
-<arg>${request}</arg>
+<arg>${request_body}</arg>
 <doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:44.269" level="INFO">${REQUEST_DATA} = {'PurchaseOrder': {'PurchaseOrderDetails': [{'ProductId': '6326422', 'ConversionValue': '1', 'ProductName': 'Xoài Tứ Quý', 'ProductCode': 'SP9934437195', 'BasePrice': '89000', 'Price': '58000', 'Cost'...</msg>
-<status status="PASS" starttime="20250726 23:13:44.267" endtime="20250726 23:13:44.269"/>
+<msg timestamp="20250728 22:40:42.155" level="INFO">${REQUEST_DATA} = {'Order': {'BranchId': '30', 'RetailerId': '861751', 'CustomerId': '1001445647', 'SoldById': '510', 'SoldBy': {'Id': '510', 'UserName': 'admin', 'Email': 'a@gmail.com', 'GivenName': 'aydlllll', 'IsAct...</msg>
+<status status="PASS" starttime="20250728 22:40:42.154" endtime="20250728 22:40:42.155"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:44.246" endtime="20250726 23:13:44.269"/>
+<status status="PASS" starttime="20250728 22:40:42.142" endtime="20250728 22:40:42.155"/>
 </kw>
-<kw name="And Lấy tồn kho hàng hóa trước khi nhập hàng" library="Purchase_keywords">
-<kw name="Format String" library="String">
-<var>${endpoint1}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID1}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:44.270" level="INFO">${endpoint1} = products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:44.270" endtime="20250726 23:13:44.270"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint2}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID2}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:44.271" level="INFO">${endpoint2} = products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:44.271" endtime="20250726 23:13:44.271"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint3}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID3}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:44.272" level="INFO">${endpoint3} = products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:44.271" endtime="20250726 23:13:44.272"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result1}</var>
-<arg>session</arg>
-<arg>${endpoint1}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.526" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:44.526" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '94a95d0f011544c2aa63fa3a3ef678ba', 'set-cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; path=/; HttpOnly, ss-pid=Jr2bgHqclSfEifpqLQdR; expires=Wed, 26-Jul-2045 16:13:44 GMT; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '805'} 
- body={"Product":{"Id":6326422,"ProductType":2,"CategoryId":1454797,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Xoài Tứ Quý","FullName":"Xoài Tứ Quý","Code":"SP9934437195","BasePrice":89000.0000,"Cost":55583.8400,"LatestPurchasePrice":58000.0000,"OnHand":133,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":133,"CompareCost":55583.8400,"CompareBasePrice":89000.0000,"CompareCode":"SP9934437195","CompareName":"Xoài Tứ Quý","CompareProductShelves":[],"CompareMinQuantity":0,"CompareMaxQuantity":999999999,"CompareCategoryId":1454797,"CompareWeight":0,"Weight":0,"Reserved":4,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":999999999,"CustomId":0,"CustomValue":0,"ConversionValue":1,"ProductAttributes":[],"ProductShelves":[],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":8,"CompareRewardPoint":8,"IsBatchExpireControl":false,"FormulaCount":0,"TradeMarkName":"","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:44.527" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.529" level="INFO">${result1} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.272" endtime="20250726 23:13:44.530"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_before_product1}</var>
-<arg>${result1.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.531" level="INFO">${onhand_before_product1} = 133</msg>
-<status status="PASS" starttime="20250726 23:13:44.530" endtime="20250726 23:13:44.532"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_BEF_PRODUCT1}</arg>
-<arg>${onhand_before_product1}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:44.533" level="INFO">${ONHAND_BEF_PRODUCT1} = 133</msg>
-<status status="PASS" starttime="20250726 23:13:44.532" endtime="20250726 23:13:44.533"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result2}</var>
-<arg>session</arg>
-<arg>${endpoint2}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.621" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:44.621" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'd911fea0423d44e1b2fcd3031247c436', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '811'} 
- body={"Product":{"Id":5816657,"ProductType":2,"CategoryId":1000050035,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Redbull","FullName":"Redbull","Code":"SP9934437062","Description":"","BasePrice":10000.0000,"Cost":9646.8300,"LatestPurchasePrice":10000.0000,"OnHand":145,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":145,"CompareCost":9646.8300,"CompareBasePrice":10000.0000,"CompareCode":"SP9934437062","CompareBarcode":"","CompareName":"Redbull","CompareProductShelves":[],"CompareMinQuantity":0,"CompareMaxQuantity":999999999,"CompareCategoryId":1000050035,"CompareDescription":"","CompareOrderTemplate":"","Reserved":7,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":999999999,"CustomId":0,"CustomValue":0,"ConversionValue":1,"OrderTemplate":"","ProductAttributes":[],"ProductShelves":[],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":1,"CompareRewardPoint":1,"IsBatchExpireControl":false,"FormulaCount":0,"Barcode":"","TradeMarkName":"","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:44.622" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.622" level="INFO">${result2} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.534" endtime="20250726 23:13:44.622"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_before_product2}</var>
-<arg>${result2.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.623" level="INFO">${onhand_before_product2} = 145</msg>
-<status status="PASS" starttime="20250726 23:13:44.622" endtime="20250726 23:13:44.623"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_BEF_PRODUCT2}</arg>
-<arg>${onhand_before_product2}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:44.625" level="INFO">${ONHAND_BEF_PRODUCT2} = 145</msg>
-<status status="PASS" starttime="20250726 23:13:44.624" endtime="20250726 23:13:44.625"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result3}</var>
-<arg>session</arg>
-<arg>${endpoint3}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.712" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:44.712" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'fa53cd4b2077485fad5a4f534af87b41', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '920'} 
- body={"Product":{"Id":2001424958,"ProductType":2,"CategoryId":1000000002,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Hộp phở bò phố cổ","FullName":"Hộp phở bò phố cổ","Code":"ggg235325","BasePrice":10000.0000,"Cost":7845.4700,"LatestPurchasePrice":8000.0000,"OnHand":145,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":145,"CompareCost":7845.4700,"CompareBasePrice":10000.0000,"CompareCode":"ggg235325","CompareBarcode":"","CompareTradeMarkId":1000000001,"CompareName":"Hộp phở bò phố cổ","CompareProductShelves":[{"Id":1000000008,"ShelvesId":100036,"ProductId":2001424958,"RetailerId":861751,"CreatedDate":"2021-08-03T12:01:06.5770000+07:00"}],"CompareMinQuantity":0,"CompareMaxQuantity":50,"CompareCategoryId":1000000002,"CompareWeight":0,"Weight":0,"Reserved":0,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":50,"CustomId":0,"CustomValue":0,"ConversionValue":1,"ProductAttributes":[],"ProductShelves":[{"Id":1000000008,"ShelvesId":100036,"ProductId":2001424958,"RetailerId":861751,"CreatedDate":"2021-08-03T12:01:06.5770000+07:00"}],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":1,"CompareRewardPoint":1,"IsBatchExpireControl":false,"FormulaCount":0,"Barcode":"","TradeMarkId":1000000001,"TradeMarkName":"Hảo hảo","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:44.713" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.713" level="INFO">${result3} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.625" endtime="20250726 23:13:44.713"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_before_product3}</var>
-<arg>${result3.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.715" level="INFO">${onhand_before_product3} = 145</msg>
-<status status="PASS" starttime="20250726 23:13:44.713" endtime="20250726 23:13:44.715"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_BEF_PRODUCT3}</arg>
-<arg>${onhand_before_product3}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:44.716" level="INFO">${ONHAND_BEF_PRODUCT3} = 145</msg>
-<status status="PASS" starttime="20250726 23:13:44.715" endtime="20250726 23:13:44.716"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:44.270" endtime="20250726 23:13:44.717"/>
-</kw>
-<kw name="When Gửi yêu cầu nhập hàng" library="Purchase_keywords">
+<kw name="When Gửi yêu cầu tạo đơn đặt hàng" library="Orders_keywords">
 <kw name="POST On Session" library="RequestsLibrary">
-<var>${response}</var>
+<var>${response_data}</var>
 <arg>session</arg>
-<arg>url=purchaseOrders</arg>
+<arg>url=orders</arg>
 <arg>json=${REQUEST_DATA}</arg>
-<arg>expected_status=anything</arg>
 <doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.864" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/purchaseOrders 
- path_url=/api/purchaseOrders 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR', 'Content-Length': '1925'} 
- body=b'{"PurchaseOrder": {"PurchaseOrderDetails": [{"ProductId": "6326422", "ConversionValue": "1", "ProductName": "Xo\\u00e0i T\\u1ee9 Qu\\u00fd", "ProductCode": "SP9934437195", "BasePrice": "89000", "Price": "58000", "Cost": "58000", "Quantity": "1", "SelectedUnit": "6326422", "Stotal": "58000", "Allocation": "2900", "AllocationSuppliers": "483.84", "OrderByNumber": "0"}, {"ProductId": "5816657", "ConversionValue": "1", "ProductName": "Redbull", "ProductCode": "SP9934437062", "BasePrice": "10000", "Price": "10000", "Cost": "10000", "Quantity": "1", "SelectedUnit": "5816657", "Stotal": "10000", "Allocation": "500", "AllocationSuppliers": "83.42", "OrderByNumber": "1"}, {"ProductId": "2001424958", "ConversionValue": "1", "ProductName": "H\\u1ed9p ph\\u1edf b\\u00f2 ph\\u1ed1 c\\u1ed5", "ProductCode": "ggg235325", "BasePrice": "10000", "Price": "8000", "Cost": "8694.38", "Quantity": "1", "SelectedUnit": "2001424958", "Stotal": "8000", "Allocation": "400", "AllocationSuppliers": "66.74", "OrderByNumber": "2"}], "UserId": "510", "SupplierId": "2001401362", "Supplier": {"Id": "2001401362", "Name": "Haley", "Phone": "491-469-0696", "Email": "Laverne20@yahoo.com", "Address": "Lueilwitzview", "Code": "NIGILTM1"}, "BranchId": "30", "Branch": {"Id": "30", "Name": "Chi nh\\u00e1nh trung t\\u00e2m", "Address": "160 Tr\\u1ea7n H\\u01b0ng \\u0110\\u1ea1o", "LocationName": "H\\u00e0 N\\u1ed9i - Qu\\u1eadn Ho\\u00e0n Ki\\u1ebfm", "WardName": "Ph\\u01b0\\u1eddng \\u0110\\u1ed3ng Xu\\u00e2n", "ContactNumber": "+84987964658"}, "SubTotal": "76000", "Discount": "3800", "DiscountRatio": "5", "Total": "72834", "TotalQuantity": "3", "PayingAmount": "50000", "Status": "3", "StatusValue": "\\u0110\\u00e3 nh\\u1eadp h\\u00e0ng", "PurchaseOrderExpensesOthers": {"ExpensesOtherId": "1000300566", "ExValue": "634", "Name": "Quitzon", "Code": "LNDUTHQ1"}, "Payments": ["{\'paymentMethod\': \'Cash\', \'PayingAmount\': 50000}"]}, "BranchId": "30", "Complete": "True"}' 
+<msg timestamp="20250728 22:40:42.798" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/orders 
+ path_url=/api/orders 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6ImY0OTZhN2M3NjBhOTQxMjZhNjUzYzEwYzVhM2IyMzg3Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.ZTsLopAkynOr9Gw1wlmG3Q2i5VcirwBwa0cPOwN8sgR88Dw5kPsBJGVFfB_14MeEJbVnRynYx4w5O7x64_q6dp6TdvhJE7ppoxIicn1c6EsoWeLUJbhvKT2Mep3SQcCrA2IUYnbsteyUAgtfAdOjqpCp1dPMggIY9ebvjcI3J2ZTLUBrV73CJzFMo30Nz7Ai9F7jAR85rZit0_PJaJ49BqUU9PDWNg2-cc9RyiucCETg_JSkbD332RzXlag18AHXbw8vySlrLOyWv4I-EpMEX6dgfrHmUvUHC0KYQKvR0iL793D5pCWxssUeGhQHGGrOoJz7KUdvg_kweq_CjmzhYA', 'BranchId': '30', 'Content-Length': '2812'} 
+ body=b'{"Order": {"BranchId": "30", "RetailerId": "861751", "CustomerId": "1001445647", "SoldById": "510", "SoldBy": {"Id": "510", "UserName": "admin", "Email": "a@gmail.com", "GivenName": "aydlllll", "IsActive": true, "IsAdmin": true, "Type": "0", "Language": "vi-VN", "MobilePhone": "+84339062167", "isDeleted": false, "CreatedBy": "0", "CreatedDate": "2021-01-19T07:36:27.233Z"}, "Seller": {"Id": "510", "UserName": "admin", "Email": "a@gmail.com", "GivenName": "aydlllll", "IsActive": true, "IsAdmin": true, "Type": "0", "Language": "vi-VN", "MobilePhone": "+84339062167", "isDeleted": false, "CreatedBy": "0", "CreatedDate": "2021-01-19T07:36:27.233Z"}, "Code": "\\u0110\\u1eb7t h\\u00e0ng 1", "Discount": "11500", "OrderDetails": [{"ProductId": "6326422", "ProductCode": "SP1005202255", "ProductName": "Kh\\u1ea9u trang KT39", "Quantity": "1", "BasePrice": "40000", "Price": "40000", "OriginPrice": "40000", "AllocationDiscount": "4000", "IsLotSerialControl": true, "IsRewardPoint": true, "Uuid": ""}, {"ProductId": "5816657", "ProductCode": "SP000077", "ProductName": "Hoa c\\u1ea9m t\\u00fa c\\u1ea7u - Xanh 2 - \\u0110\\u00e0 L\\u1ea1t 2 - (b\\u00f4ng)", "Quantity": "1", "BasePrice": "50000", "Price": "50000", "OriginPrice": "50000", "AllocationDiscount": "5000", "IsLotSerialControl": false, "Uuid": ""}, {"ProductId": "2001424958", "ProductCode": "8936131180934", "ProductName": "Thebol s\\u1eefa t\\u1eafm th\\u1ea3o d\\u01b0\\u1ee3c Vitamin E n\\u01b0\\u1edbc hoa 2 plus v\\u00e0ng 650g", "Quantity": "1", "BasePrice": "25000", "Price": "25000", "OriginPrice": "25000", "AllocationDiscount": "2500", "IsLotSerialControl": false, "IsRewardPoint": true, "ProductTradeMarkName": "Vinaacecook", "Uuid": ""}], "InvoiceOrderSurcharges": [{"SurchargeId": "1000000044", "Code": "THK000004", "Name": "Thu Kh\\u00e1c Test abc", "Price": "30000", "Value": "30000", "SurValue": "30000", "isAuto": true, "UsageFlag": true, "RetailerId": "861751", "CreatedDate": "2021-12-11T07:18:53.453Z"}], "OrderPromotions": [{"PromotionId": "500307501", "SalePromotionId": "501269090", "DiscountRatio": "10", "Type": "1", "TargetType": "0", "PromotionInfo": "Gi\\u1ea3m gi\\u00e1 h\\u00f3a \\u0111\\u01a1n:\\n T\\u1ed5ng ti\\u1ec1n h\\u00e0ng t\\u1eeb 10,000\\n gi\\u1ea3m gi\\u00e1 10% cho h\\u00f3a \\u0111\\u01a1n", "PrintPromotionInfo": "Gi\\u1ea3m gi\\u00e1 h\\u00f3a \\u0111\\u01a1n:\\n T\\u1ed5ng ti\\u1ec1n h\\u00e0ng t\\u1eeb 10,000\\n gi\\u1ea3m gi\\u00e1 10% cho h\\u00f3a \\u0111\\u01a1n"}], "Status": "1", "Total": "133500", "Extra": "{\\"Amount\\":0,\\"Method\\":{\\"Id\\":\\"Cash\\",\\"Label\\":\\"Ti\\u1ec1n m\\u1eb7t\\"},\\"ResetPromotion\\":false}", "Surcharge": "30000", "Type": "2", "Uuid": "", "PayingAmount": "0", "TotalBeforeDiscount": "115000", "DiscountByPromotion": "11500", "DiscountByPromotionRatio": "10", "CreatedBy": "510", "CreatedDate": "2025-07-28T14:01:42.074Z"}}' 
  </msg>
-<msg timestamp="20250726 23:13:44.864" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/purchaseOrders 
+<msg timestamp="20250728 22:40:42.798" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/orders 
  status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'dde45c432d6c4dac96ab25b90200fa8b', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '899'} 
- body={"Id":2998866,"Code":"PN000442","PurchaseDate":"2025-07-26T23:13:45.2363518+07:00","SupplierId":2001401362,"BranchId":30,"RetailerId":861751,"UserId":510,"Status":3,"DiscountRatio":5,"Discount":3800,"CreatedDate":"2025-07-26T23:13:45.2519736+07:00","CreatedBy":510,"Total":72200,"PurchaseOrderDetails":[{"Id":8536290,"PurchaseId":2998866,"ProductId":6326422,"Quantity":1,"Price":58000,"Discount":0,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":2900,"OrderByNumber":0,"AllocationSuppliers":483.84,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":58000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0},{"Id":8536291,"PurchaseId":2998866,"ProductId":5816657,"Quantity":1,"Price":10000,"Discount":0,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":500,"OrderByNumber":1,"AllocationSuppliers":83.42,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":10000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0},{"Id":8536292,"PurchaseId":2998866,"ProductId":2001424958,"Quantity":1,"Price":8000,"Discount":0,"CreatedDate":"2025-07-26T23:13:45.2600000+07:00","Allocation":400,"OrderByNumber":2,"AllocationSuppliers":66.74,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":8000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0}],"PurchaseReturns":[],"PurchasePayments":[],"PurchaseOrderExpensesOthers":[],"IdOld":0,"CompareCode":"PN000442","CompareUserId":0,"CompareSupplierId":2001401362,"ComparePurchaseDate":"2025-07-26T23:13:45.2363518+07:00","CompareDiscount":3800,"TotalQuantity":3,"TotalProductType":3,"SubTotal":76000,"PaidAmount":0,"ToComplete":false,"CompareStatusValue":"Đã nhập hàng","StatusValue":"Đã nhập hàng","ViewPrice":false,"SupplierDebt":0,"SupplierOldDebt":0,"IsHideDiscount":false,"UpdatePurchaseId":0,"EventId":0,"EventAction":0,"RetryCount":0,"DocumentTypeByEvent":0,"MasterBranchId":0,"IsApplyPurchaseTax":false,"DiscountPayment":0} 
+ headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0728.00', '__revision': '20250728205101', 'kv.gitcommit': '12d403e', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'b9ea66073ddc4e58bf36464cb973e819', 'set-cookie': 'ss-id=8gubWX9FGuTsNU7UMS47; path=/; HttpOnly, ss-pid=JHdd3ijTlo4TgwRSGDBC; expires=Fri, 28-Jul-2045 15:40:42 GMT; path=/; HttpOnly', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Mon, 28 Jul 2025 15:40:42 GMT', 'content-length': '2852'} 
+ body={"Id":2906132,"CustomerId":1001445647,"CashierId":510,"PurchaseDate":"2025-07-28T22:40:42.8025654+07:00","Code":"DH000340","BranchId":30,"Status":1,"RetailerId":861751,"Discount":11500,"SoldById":510,"CreatedDate":"2025-07-28T22:40:42.9332741+07:00","CreatedBy":510,"Extra":"{\"Amount\":0,\"Method\":{\"Id\":\"Cash\",\"Label\":\"Tiền mặt\"},\"ResetPromotion\":false}","Total":133500,"TotalPayment":0,"Surcharge":30000,"Uuid":"","CreationBranchId":30,"Seller":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","TfaOtpPhone":"0373322955","TfaSecretKey":"L0ly5T1IOsHRIO08xjSqM1maGRKOD5WolPzJNqh1PFi5rQlTHcdFwxWvuBVtD+b4uQkMlVH5EwEz1Z3CgXMdwpZemhVgIlRgbqW8j4CG5wWv6RyyIlfHw5UDRplzd5fFEGyLB1J/9tf+YfTa5CM9gcbYt7lDgy4ykR9SQJgrj1XpnJfEPK80c/6IG1L1GWjczrFPZgaUOjYydAaYYNKkEccVAuWeAFrv0aFMkQuIgHYUGje9XWM9YUMG1PoTTq5Za2u1YAQhW/8h5ybaVBPzTn+dFerrAg0xYK17HXoCFt+mIJiVklxs8aZzVlyFTr6Jj0BkOWEI3D8EcOd6tdSYUA==","AdministrativeAreaId":909,"Permissions":[],"Apps":[],"Invoices":[],"Transfers1":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"UserDevices":[],"UserPasswordChangeHistories":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"ProductTaxs":[],"PriceOldTaxs":[],"InvoiceDetailTaxs":[],"OrderDetailTaxs":[],"ReturnDetailTaxs":[],"CustomerToManageByUsers":[],"UserToManageCustomerOfOtherUsers":[],"CustomerGroupToManageByUsers":[],"PaymentTransactionReferences":[],"PaymentTransactionReferences1":[],"OrderSupplierDetailTaxes":[],"PurchaseOrderDetailTaxes":[],"PurchaseReturnDetailTaxes":[],"IdOld":0,"CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin","IsTimeSheetException":false,"HasNoTimeSheetPermisstion":false,"IsRequestFromCpanel":false,"IsManageCustomerOfAllOtherEmployee":false,"IsManageCustomerOfOtherEmployee":false},"Customer":{"Id":1001445647,"Type":0,"Code":"8006","Name":"Anh Tân","RetailerId":861751,"Debt":-9000.0000,"ModifiedDate":"2025-02-21T13:39:47.1130000+07:00","CreatedDate":"2022-09-08T11:26:05.6470000+07:00","CreatedBy":510,"LocationName":"","Uuid":"8aa7ae0663de4a059aa36aba4c006048","IsActive":true,"BranchId":30,"WardName":"","LastTradingDate":"2025-02-21T13:39:46.8870000+07:00","TotalPoint":0,"Revision":"AAAAACTUq8E=","CustomerGroupDetails":[],"CustomerSocials":[],"AddressBooks":[],"PaymentAllocation":[],"CustomerSupplierCombines":[],"CustomerToManageByUsers":[],"CompareCode":"8006","CompareName":"Anh Tân","GenderName":"","MustUpdateDebt":false,"MustUpdatePoint":false,"InvoiceCount":0,"IsCusSupCombine":false,"ConfirmAdjustDebt":0,"ActiveMergeCusSup":false,"DisableReplicateKyc":false,"IsOptimizeUpdateKyc":false,"IdOld":0},"Payments":[],"Invoices":[],"OrderDetails":[{"Id":8482737,"OrderId":2906132,"ProductId":6326422,"Quantity":1,"Price":40000,"Discount":0,"CreatedDate":"2025-07-28T22:40:42.9412838+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8025654+07:00","Uuid":"4ffad264-3f93-4118-b2a4-d8fa2505fb03","ViewDiscount":0,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":40000,"ProductType":2,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482738,"OrderId":2906132,"ProductId":5816657,"Quantity":1,"Price":50000,"Discount":0,"CreatedDate":"2025-07-28T22:40:42.9412838+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8025654+07:00","Uuid":"6ffacb16-536f-439b-b4be-8c6677f8b7f3","ViewDiscount":0,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":50000,"ProductType":2,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482739,"OrderId":2906132,"ProductId":2001424958,"Quantity":1,"Price":25000,"Discount":0,"CreatedDate":"2025-07-28T22:40:42.9412838+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8025654+07:00","Uuid":"b28d5a6a-5c5e-47f4-bf4c-daab60185964","ViewDiscount":0,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":25000,"ProductType":2,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false}],"InvoiceDeliveries":[],"InvoiceOrderSurcharges":[{"Id":1647553,"OrderId":2906132,"SurchargeId":1000000044,"SurValue":30000,"Price":30000,"CreatedDate":"2021-12-11T14:18:53.4530000+07:00","RetailerId":861751,"SurchargeName":"","SurchargeIsReturnAuto":false}],"DeliveryPackages":[],"DeliveryInfoes":[],"InvoiceWarranties":[],"OrderPromotions":[{"Id":30151,"OrderId":2906132,"PromotionId":500307501,"SalePromotionId":501269090,"PromotionInfo":"Giảm giá hóa đơn:\n Tổng tiền hàng từ 10,000\n giảm giá 10% cho hóa đơn","Type":1,"DiscountRatio":10,"TargetType":0,"PrintPromotionInfo":"Giảm giá hóa đơn:\n Tổng tiền hàng từ 10,000\n giảm giá 10% cho hóa đơn","RetailerId":861751,"IdOld":0}],"InvoiceVouchers":[],"CouponUsageTrackings":[],"IdOld":0,"TotalQuantity":3,"SubTotal":115000,"PaymentMethod":"","PaidAmount":0,"ToComplete":false,"StatusValue":"Phiếu tạm","CompareSoldById":510,"CompareCustomerId":1001445647,"ComparePurchaseDate":"2025-07-28T22:40:42.8025654+07:00","CompareStatus":1,"CompareDiscount":11500,"CompareTotal":133500,"CustomerDebt":-9000.0000,"CustomerName":"Anh Tân","IsOffline":false,"InvoiceCodes":"","TransGuid":"00000000000000000000000000000000","EventId":0,"EventAction":0,"RetryCount":0,"DocumentTypeByEvent":0,"AllowSellWhenOutStock":false} 
  </msg>
-<msg timestamp="20250726 23:13:44.865" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+<msg timestamp="20250728 22:40:42.798" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.866" level="INFO">${response} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.718" endtime="20250726 23:13:44.866"/>
+<msg timestamp="20250728 22:40:42.799" level="INFO">${response_data} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250728 22:40:42.156" endtime="20250728 22:40:42.799"/>
 </kw>
 <kw name="Set Test Variable" library="BuiltIn">
 <arg>${RESPONSE}</arg>
-<arg>${response}</arg>
+<arg>${response_data}</arg>
 <doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:44.867" level="INFO">${RESPONSE} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.867" endtime="20250726 23:13:44.868"/>
+<msg timestamp="20250728 22:40:42.801" level="INFO">${RESPONSE} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250728 22:40:42.799" endtime="20250728 22:40:42.801"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:44.717" endtime="20250726 23:13:44.868"/>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${ORDERS_ID}</arg>
+<arg>${response_data.json()["Id"]}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250728 22:40:42.803" level="INFO">${ORDERS_ID} = 2906132</msg>
+<status status="PASS" starttime="20250728 22:40:42.801" endtime="20250728 22:40:42.803"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${ORDERS_CODE}</arg>
+<arg>${response_data.json()["Code"]}</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<msg timestamp="20250728 22:40:42.805" level="INFO">${ORDERS_CODE} = DH000340</msg>
+<status status="PASS" starttime="20250728 22:40:42.803" endtime="20250728 22:40:42.805"/>
+</kw>
+<status status="PASS" starttime="20250728 22:40:42.155" endtime="20250728 22:40:42.805"/>
 </kw>
 <kw name="Then Mã trạng thái trả về là 200" library="Purchase_keywords" sourcename="Mã trạng thái trả về là ${status_code}">
 <kw name="Should Be Equal As Numbers" library="BuiltIn">
 <arg>${status_code}</arg>
 <arg>${RESPONSE.status_code}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<msg timestamp="20250726 23:13:44.870" level="INFO">Argument types are:
+<msg timestamp="20250728 22:40:42.807" level="INFO">Argument types are:
 &lt;class 'str'&gt;
 &lt;class 'int'&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.870" endtime="20250726 23:13:44.871"/>
+<status status="PASS" starttime="20250728 22:40:42.806" endtime="20250728 22:40:42.808"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:44.869" endtime="20250726 23:13:44.871"/>
+<status status="PASS" starttime="20250728 22:40:42.806" endtime="20250728 22:40:42.808"/>
 </kw>
-<kw name="And Kiểm tra phiếu nhập hàng được tạo thông qua list danh sách" library="Purchase_keywords">
-<kw name="Create Dictionary" library="BuiltIn">
-<var>${request}</var>
-<doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20250726 23:13:44.872" level="INFO">${request} = {}</msg>
-<status status="PASS" starttime="20250726 23:13:44.872" endtime="20250726 23:13:44.872"/>
-</kw>
-<kw name="Create List" library="BuiltIn">
-<var>${includes}</var>
-<arg>Branch</arg>
-<arg>Total</arg>
-<arg>PaidAmount</arg>
-<arg>TotalQuantity</arg>
-<arg>TotalProductType</arg>
-<arg>SubTotal</arg>
-<arg>Supplier</arg>
-<arg>User</arg>
-<arg>OrderSupplier</arg>
-<arg>User1</arg>
-<arg>PurchaseReturns</arg>
-<arg>DiscountPayment</arg>
-<doc>Returns a list containing given items.</doc>
-<msg timestamp="20250726 23:13:44.872" level="INFO">${includes} = ['Branch', 'Total', 'PaidAmount', 'TotalQuantity', 'TotalProductType', 'SubTotal', 'Supplier', 'User', 'OrderSupplier', 'User1', 'PurchaseReturns', 'DiscountPayment']</msg>
-<status status="PASS" starttime="20250726 23:13:44.872" endtime="20250726 23:13:44.872"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>format=json</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.872" endtime="20250726 23:13:44.873"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>ForSummaryRow=true</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.873" endtime="20250726 23:13:44.873"/>
-</kw>
-<kw name="Update Dictionary Property" library="DataUtilities">
-<arg>${request}</arg>
-<arg>Includes</arg>
-<arg>${includes}</arg>
-<doc>Updates a property in a dictionary, useful for request modification</doc>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${dictionary}</arg>
-<arg>${property_name}=${property_value}</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.874" endtime="20250726 23:13:44.874"/>
-</kw>
-<return>
-<value>${dictionary}</value>
-<status status="PASS" starttime="20250726 23:13:44.874" endtime="20250726 23:13:44.874"/>
-</return>
-<status status="PASS" starttime="20250726 23:13:44.873" endtime="20250726 23:13:44.875"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>$inlinecount=allpages</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.875" endtime="20250726 23:13:44.875"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>$format=json</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.876" endtime="20250726 23:13:44.876"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>$filter=(BranchId eq 30 and PurchaseDate eq 'month' and (Status eq 1 or Status eq 3))</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.876" endtime="20250726 23:13:44.876"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>$top=15</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.877" endtime="20250726 23:13:44.877"/>
-</kw>
-<kw name="Set To Dictionary" library="Collections">
-<arg>${request}</arg>
-<arg>$skip=0</arg>
-<doc>Adds the given ``key_value_pairs`` and/or ``items`` to the ``dictionary``.</doc>
-<status status="PASS" starttime="20250726 23:13:44.877" endtime="20250726 23:13:44.877"/>
-</kw>
-<kw name="POST On Session" library="RequestsLibrary">
-<var>${response_list}</var>
-<arg>session</arg>
-<arg>url=purchaseOrders/list</arg>
-<arg>json=${request}</arg>
-<doc>Sends a POST request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:44.962" level="INFO">POST Request : url=https://api-man1.kiotviet.vn/api/purchaseOrders/list 
- path_url=/api/purchaseOrders/list 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR', 'Content-Length': '390'} 
- body=b'{"format": "json", "ForSummaryRow": "true", "Includes": ["Branch", "Total", "PaidAmount", "TotalQuantity", "TotalProductType", "SubTotal", "Supplier", "User", "OrderSupplier", "User1", "PurchaseReturns", "DiscountPayment"], "$inlinecount": "allpages", "$format": "json", "$filter": "(BranchId eq 30 and PurchaseDate eq \'month\' and (Status eq 1 or Status eq 3))", "$top": "15", "$skip": "0"}' 
- </msg>
-<msg timestamp="20250726 23:13:44.963" level="INFO">POST Response : url=https://api-man1.kiotviet.vn/api/purchaseOrders/list 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'f5bd5ccf689d4c379be990300adcbd18', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '5938'} 
- body={"Total1Value":5106926814,"Total2Value":17403,"Total3Value":0,"Total":180,"PageSize":0,"Data":[{"Id":-1,"BranchId":0,"RetailerId":0,"UserId":0,"Status":0,"Discount":572500.0000,"CreatedBy":0,"Total":5106926814,"ExReturnSuppliers":13314.0000,"ExReturnThirdParty":0.0000,"TotalTax":0.0000,"RoundAmount":0.0000,"PurchaseOrderDetails":[],"PurchaseReturns":[],"PurchasePayments":[],"PurchaseOrderExpensesOthers":[],"CompareUserId":0,"CompareSupplierId":0,"CompareDiscount":572500.0000,"TotalQuantity":17403,"TotalProductType":0,"SubTotal":5107486000.0000,"PaidAmount":1340000.0000,"ToComplete":false,"CompareStatusValue":"Pending","StatusValue":"Pending","ViewPrice":true,"SupplierDebt":0,"SupplierOldDebt":0,"IsHideDiscount":false,"UpdatePurchaseId":0,"MasterBranchId":0,"DiscountPayment":0},{"Id":2998866,"Code":"PN000442","PurchaseDate":"2025-07-26T23:13:45.2370000+07:00","SupplierId":2001401362,"BranchId":30,"RetailerId":861751,"UserId":510,"Status":3,"DiscountRatio":5,"Discount":3800.0000,"CreatedDate":"2025-07-26T23:13:45.2530000+07:00","CreatedBy":510,"Total":72200.0000,"Supplier":{"Id":2001401362,"Name":"Haley","Phone":"491-469-0696","Email":"Laverne20@yahoo.com","Address":"Lueilwitzview","RetailerId":861751,"Code":"NIGILTM1","CreatedDate":"2022-06-08T10:38:20.5170000+07:00","CreatedBy":510,"ModifiedDate":"2025-07-26T23:13:45.3500000+07:00","ModifiedBy":510,"Debt":8850080.0000,"TaxCode":"","Comment":"Borders","LocationName":"","WardName":"","BranchId":30,"isDeleted":false,"isActive":true,"SearchNumber":"","PurchaseOrders":[],"PurchaseReturns":[],"PurchasePayments":[],"SupplierGroupDetails":[],"OrderSuppliers":[]},"User":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","AdministrativeAreaId":909,"Permissions":[],"PurchaseOrders":[],"Apps":[],"Returns":[],"BalanceAdjustments":[],"ObjectAccesses":[],"Payments":[],"Invoices":[],"Transfers":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"EInvoices":[],"Name":"aydlllll","CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin"},"Branch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","GmbStatus":2,"AdministrativeAreaId":3981,"Invoices":[],"ObjectAccesses":[],"Orders":[],"Permissions":[],"PriceBookBranches":[],"PurchaseOrders":[],"Returns":[],"StockTakes":[],"Transfers":[],"Transfers1":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"EInvoices":[]},"PurchaseReturns":[],"User1":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","AdministrativeAreaId":909,"Permissions":[],"PurchaseOrders":[],"Apps":[],"Returns":[],"BalanceAdjustments":[],"ObjectAccesses":[],"Payments":[],"Invoices":[],"Transfers":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"EInvoices":[],"Name":"aydlllll","CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin"},"PurchaseOrderExpensesOthers":[],"CompareCode":"PN000442","CompareUserId":510,"CompareSupplierId":2001401362,"ComparePurchaseDate":"2025-07-26T23:13:45.2370000+07:00","CompareDiscount":3800.0000,"TotalQuantity":3,"TotalProductType":3,"SubTotal":76000.0000,"PaidAmount":0,"ToComplete":false,"CompareStatusValue":"Đã nhập hàng","StatusValue":"Đã nhập hàng","ViewPrice":true,"SupplierDebt":0,"SupplierOldDebt":0,"IsHideDiscount":false,"UpdatePurchaseId":0,"MasterBranchId":0,"DiscountPayment":0},{"Id":2998864,"Code":"PN000441","PurchaseDate":"2025-07-26T23:10:11.5770000+07:00","SupplierId":2001401362,"BranchId":30,"RetailerId":861751,"UserId":510,"Status":3,"DiscountRatio":5,"Discount":3800.0000,"CreatedDate":"2025-07-26T23:10:11.6100000+07:00","CreatedBy":510,"Total":72200.0000,"Supplier":{"Id":2001401362,"Name":"Haley","Phone":"491-469-0696","Email":"Laverne20@yahoo.com","Address":"Lueilwitzview","RetailerId":861751,"Code":"NIGILTM1","CreatedDate":"2022-06-08T10:38:20.5170000+07:00","CreatedBy":510,"ModifiedDate":"2025-07-26T23:13:45.3500000+07:00","ModifiedBy":510,"Debt":8850080.0000,"TaxCode":"","Comment":"Borders","LocationName":"","WardName":"","BranchId":30,"isDeleted":false,"isActive":true,"SearchNumber":"","PurchaseOrders":[],"PurchaseReturns":[],"PurchasePayments":[],"SupplierGroupDetails":[],"OrderSuppliers":[]},"User":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","AdministrativeAreaId":909,"Permissions":[],"PurchaseOrders":[],"Apps":[],"Returns":[],"BalanceAdjustments":[],"ObjectAccesses":[],"Payments":[],"Invoices":[],"Transfers":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"EInvoices":[],"Name":"aydlllll","CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin"},"Branch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","GmbStatus":2,"AdministrativeAreaId":3981,"Invoices":[],"ObjectAccesses":[],"Orders":[],"Permissions":[],"PriceBookBranches":[],"PurchaseOrders":[],"Returns":[],"StockTakes":[],"Transfers":[],"Transfers1":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"EInvoices":[]},"PurchaseReturns":[],"User1":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","AdministrativeAreaId":909,"Permissions":[],"PurchaseOrders":[],"Apps":[],"Returns":[],"BalanceAdjustments":[],"ObjectAccesses":[],"Payments":[],"Invoices":[],"Transfers":[],"PropertyAccesses":[],"PurchaseReturns":[],"PurchasePayments":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"EInvoices":[],"Name":"aydlllll","CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin"},"PurchaseOrderExpensesOthers":[],"CompareCode":"PN000441","CompareUserId":510,"CompareSupplierId":2001401362,"ComparePurchaseDate":"2025-07-26T23:10:11.5770000+07:00","CompareDiscount":3800.0000,"TotalQuantity":3,"TotalProductType":3,"SubTotal":76000.0000,"PaidAmount":0,"ToComplete":false,"CompareStatusValue":"Đã nhập hàng","StatusValue":"Đã nhập hàng","ViewPrice":true,"SupplierDebt":0,"SupplierOldDebt":0,"IsHideDiscount":false,"UpdatePurchaseId":0,"MasterBranchId":0,"DiscountPayment":0},{"Id":2998863,"Cod... (set the log level to DEBUG or TRACE to see the full content) 
- </msg>
-<msg timestamp="20250726 23:13:44.963" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:44.980" level="INFO">${response_list} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:44.877" endtime="20250726 23:13:44.981"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_id}</var>
-<arg>${RESPONSE.json()["Id"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.982" level="INFO">${purchase_id} = 2998866</msg>
-<status status="PASS" starttime="20250726 23:13:44.981" endtime="20250726 23:13:44.983"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_code}</var>
-<arg>${RESPONSE.json()["Code"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.984" level="INFO">${purchase_code} = PN000442</msg>
-<status status="PASS" starttime="20250726 23:13:44.983" endtime="20250726 23:13:44.984"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${pur_id}</var>
-<arg>${response_list.json()["Data"][1]["Id"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.989" level="INFO">${pur_id} = 2998866</msg>
-<status status="PASS" starttime="20250726 23:13:44.985" endtime="20250726 23:13:44.989"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${pur_code}</var>
-<arg>${response_list.json()["Data"][1]["Code"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:44.993" level="INFO">${pur_code} = PN000442</msg>
-<status status="PASS" starttime="20250726 23:13:44.989" endtime="20250726 23:13:44.993"/>
-</kw>
-<kw name="Should Be Equal As Strings" library="BuiltIn">
-<arg>${purchase_id}</arg>
-<arg>${pur_id}</arg>
-<doc>Fails if objects are unequal after converting them to strings.</doc>
-<status status="PASS" starttime="20250726 23:13:44.993" endtime="20250726 23:13:44.994"/>
-</kw>
-<kw name="Should Be Equal As Strings" library="BuiltIn">
-<arg>${purchase_code}</arg>
-<arg>${pur_code}</arg>
-<doc>Fails if objects are unequal after converting them to strings.</doc>
-<status status="PASS" starttime="20250726 23:13:44.994" endtime="20250726 23:13:44.994"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:44.871" endtime="20250726 23:13:44.994"/>
-</kw>
-<kw name="And Kiểm tra thông tin chi tiết phiếu" library="Purchase_keywords">
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_id}</var>
-<arg>${RESPONSE.json()["Id"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.004" level="INFO">${purchase_id} = 2998866</msg>
-<status status="PASS" starttime="20250726 23:13:45.003" endtime="20250726 23:13:45.004"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint}</var>
-<arg>${endpoint_purchaseOrder_detail}</arg>
-<arg>${purchase_id}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.006" level="INFO">${endpoint} = purchaseOrders/2998866?Includes=PurchaseOrderDetails%2CSupplier%2CPaidAmount%2CBranch%2CUser%2CPurchasePayments</msg>
-<status status="PASS" starttime="20250726 23:13:45.005" endtime="20250726 23:13:45.006"/>
-</kw>
+<kw name="And Kiểm tra đơn đặt hàng được tạo qua danh sách đơn đặt hàng" library="Orders_keywords">
 <kw name="GET On Session" library="RequestsLibrary">
-<var>${result_detail}</var>
+<var>${list_order}</var>
 <arg>session</arg>
-<arg>${endpoint}</arg>
+<arg>url=${endpoint_list_orders}</arg>
 <doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.095" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/purchaseOrders/2998866?Includes=PurchaseOrderDetails%2CSupplier%2CPaidAmount%2CBranch%2CUser%2CPurchasePayments 
- path_url=/api/purchaseOrders/2998866?Includes=PurchaseOrderDetails%2CSupplier%2CPaidAmount%2CBranch%2CUser%2CPurchasePayments 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
+<msg timestamp="20250728 22:40:42.867" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/orders?format=json&amp;Includes=Branch&amp;BranchIds=%5B30%5D&amp;%24filter=(BranchId+eq+30+and+PurchaseDate+eq+%27month%27+and+PurchaseDate+eq+%27month%27) 
+ path_url=/api/orders?format=json&amp;Includes=Branch&amp;BranchIds=%5B30%5D&amp;%24filter=(BranchId+eq+30+and+PurchaseDate+eq+%27month%27+and+PurchaseDate+eq+%27month%27) 
+ headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzcxNzI0MiwiZXhwIjoxNzU2MTM2NDQyLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6ImY0OTZhN2M3NjBhOTQxMjZhNjUzYzEwYzVhM2IyMzg3Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.ZTsLopAkynOr9Gw1wlmG3Q2i5VcirwBwa0cPOwN8sgR88Dw5kPsBJGVFfB_14MeEJbVnRynYx4w5O7x64_q6dp6TdvhJE7ppoxIicn1c6EsoWeLUJbhvKT2Mep3SQcCrA2IUYnbsteyUAgtfAdOjqpCp1dPMggIY9ebvjcI3J2ZTLUBrV73CJzFMo30Nz7Ai9F7jAR85rZit0_PJaJ49BqUU9PDWNg2-cc9RyiucCETg_JSkbD332RzXlag18AHXbw8vySlrLOyWv4I-EpMEX6dgfrHmUvUHC0KYQKvR0iL793D5pCWxssUeGhQHGGrOoJz7KUdvg_kweq_CjmzhYA', 'BranchId': '30', 'Cookie': 'ss-id=8gubWX9FGuTsNU7UMS47; ss-pid=JHdd3ijTlo4TgwRSGDBC'} 
  body=None 
  </msg>
-<msg timestamp="20250726 23:13:45.095" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/purchaseOrders/2998866?Includes=PurchaseOrderDetails%2CSupplier%2CPaidAmount%2CBranch%2CUser%2CPurchasePayments 
+<msg timestamp="20250728 22:40:42.867" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/orders?format=json&amp;Includes=Branch&amp;BranchIds=%5B30%5D&amp;%24filter=(BranchId+eq+30+and+PurchaseDate+eq+%27month%27+and+PurchaseDate+eq+%27month%27) 
  status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '342d4aa9e6ae45ceb8d33b4aede9b509', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:44 GMT', 'content-length': '3952'} 
- body={"Id":2998866,"Code":"PN000442","PurchaseDate":"2025-07-26T23:13:45.2370000+07:00","SupplierId":2001401362,"BranchId":30,"RetailerId":861751,"UserId":510,"Status":3,"DiscountRatio":5,"Discount":3800.0000,"CreatedDate":"2025-07-26T23:13:45.2530000+07:00","CreatedBy":510,"Total":72200.0000,"ExReturnSuppliers":0,"ExReturnThirdParty":0,"PurchaseOrderDetails":[{"Id":8536290,"PurchaseId":2998866,"ProductId":6326422,"Quantity":1,"Price":58000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":2900.0000,"OrderByNumber":0,"AllocationSuppliers":483.8400,"RetailerId":0,"BaseCost":0,"Product":{"Id":6326422,"Code":"SP9934437195","Name":"Xoài Tứ Quý","CategoryId":1454797,"AllowsSale":true,"BasePrice":89000.0000,"Tax":0,"RetailerId":861751,"isActive":true,"CreatedDate":"2025-04-24T10:31:30.4000000+07:00","ProductType":2,"HasVariants":false,"ConversionValue":1,"FullName":"Xoài Tứ Quý","IsLotSerialControl":false,"Weight":0,"IsRewardPoint":true,"isDeleted":false,"MasterCode":"SPC000554","Revision":"AAAAACfSn+M=","IsBatchExpireControl":false,"RewardPoint":8,"Formula":[],"ProductImages":[],"PurchaseReturnDetails":[],"ProductChild":[],"ProductAttributes":[],"ProductChildUnit":[],"PriceBookDetails":[],"ProductBranches":[],"TableAndRooms":[],"Manufacturings":[],"ManufacturingDetails":[],"DamageDetails":[],"ProductSerials":[],"ProductFormulaHistories":[],"OrderSupplierDetails":[],"ProductShelves":[],"PrescriptionDetails":[],"SamplePrescriptionDetails":[],"ProductExtraMaterials":[],"WarehouseInventoryTrackings":[],"ProductTaxs":[],"IdOld":0,"CrudGuid":"00000000000000000000000000000000","CategoryOld":0,"SyncProductSearchEventId":0},"IdOld":0,"ProductName":"Xoài Tứ Quý","ProductCode":"SP9934437195","ReturnQuantity":0,"SubTotal":58000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ConversionValue":1,"ProductSName":"Xoài Tứ Quý","BasePrice":89000.0000},{"Id":8536291,"PurchaseId":2998866,"ProductId":5816657,"Quantity":1,"Price":10000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":500.0000,"OrderByNumber":1,"AllocationSuppliers":83.4200,"RetailerId":0,"BaseCost":0,"Product":{"Id":5816657,"Code":"SP9934437062","Name":"Redbull","CategoryId":1000050035,"Description":"","AllowsSale":true,"BasePrice":10000.0000,"Tax":0,"RetailerId":861751,"isActive":true,"CreatedDate":"2024-10-28T11:40:08.0830000+07:00","ProductType":2,"HasVariants":false,"ConversionValue":1,"OrderTemplate":"","FullName":"Redbull","IsLotSerialControl":false,"IsRewardPoint":true,"ShortDescription":"","isDeleted":false,"MasterCode":"SPC000481","Revision":"AAAAACfSm2E=","RewardPoint":1,"Barcode":"","Formula":[],"ProductImages":[],"PurchaseReturnDetails":[],"ProductChild":[],"ProductAttributes":[],"ProductChildUnit":[],"PriceBookDetails":[],"ProductBranches":[],"TableAndRooms":[],"Manufacturings":[],"ManufacturingDetails":[],"DamageDetails":[],"ProductSerials":[],"ProductFormulaHistories":[],"OrderSupplierDetails":[],"ProductShelves":[],"PrescriptionDetails":[],"SamplePrescriptionDetails":[],"ProductExtraMaterials":[],"WarehouseInventoryTrackings":[],"ProductTaxs":[],"IdOld":0,"CrudGuid":"00000000000000000000000000000000","CategoryOld":0,"SyncProductSearchEventId":0},"IdOld":0,"ProductName":"Redbull","ProductCode":"SP9934437062","ReturnQuantity":0,"SubTotal":10000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ConversionValue":1,"ProductSName":"Redbull","BasePrice":10000.0000},{"Id":8536292,"PurchaseId":2998866,"ProductId":2001424958,"Quantity":1,"Price":8000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2600000+07:00","Allocation":400.0000,"OrderByNumber":2,"AllocationSuppliers":66.7400,"RetailerId":0,"BaseCost":0,"Product":{"Id":2001424958,"Code":"ggg235325","Name":"Hộp phở bò phố cổ","CategoryId":1000000002,"AllowsSale":true,"BasePrice":10000.0000,"Tax":0,"RetailerId":861751,"isActive":true,"CreatedDate":"2021-08-03T12:01:39.1130000+07:00","ProductType":2,"HasVariants":false,"ConversionValue":1,"FullName":"Hộp phở bò phố cổ","IsLotSerialControl":false,"Weight":0,"IsRewardPoint":true,"MasterCode":"SPC2108031201396658","Revision":"AAAAACfSoJQ=","IsBatchExpireControl":false,"IsWarranty":3,"RewardPoint":1,"Barcode":"","TradeMarkId":1000000001,"Formula":[],"ProductImages":[],"PurchaseReturnDetails":[],"ProductChild":[],"ProductAttributes":[],"ProductChildUnit":[],"PriceBookDetails":[],"ProductBranches":[],"TableAndRooms":[],"Manufacturings":[],"ManufacturingDetails":[],"DamageDetails":[],"ProductSerials":[],"ProductFormulaHistories":[],"OrderSupplierDetails":[],"ProductShelves":[],"PrescriptionDetails":[],"SamplePrescriptionDetails":[],"ProductExtraMaterials":[],"WarehouseInventoryTrackings":[],"ProductTaxs":[],"IdOld":0,"CrudGuid":"00000000000000000000000000000000","CategoryOld":0,"SyncProductSearchEventId":0},"IdOld":0,"ProductName":"Hộp phở bò phố cổ","ProductCode":"ggg235325","ReturnQuantity":0,"SubTotal":8000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ConversionValue":1,"ProductSName":"Hộp phở bò phố cổ","BasePrice":10000.0000}],"Supplier":{"Id":2001401362,"Name":"Haley","Phone":"491-469-0696","Email":"Laverne20@yahoo.com","Address":"Lueilwitzview","RetailerId":861751,"Code":"NIGILTM1","CreatedDate":"2022-06-08T10:38:20.5170000+07:00","CreatedBy":510,"ModifiedDate":"2025-07-26T23:13:45.3500000+07:00","ModifiedBy":510,"Debt":8850080.0000,"TaxCode":"","Comment":"Borders","LocationName":"","WardName":"","BranchId":30,"isDeleted":false,"isActive":true,"SearchNumber":"","PurchaseOrders":[],"PurchaseReturns":[],"PurchasePayments":[],"SupplierGroupDetails":[],"OrderSuppliers":[],"CustomerSupplierCombines":[],"IdOld":0,"TotalInvoiced":0,"CompareCode":"NIGILTM1","CompareName":"Haley","ComparePhone":"491-469-0696","IsCusSupCombine":false},"User":{"Id":510,"Email":"a@gmail.com","GivenName":"aydlllll","DOB":"2000-08-01T00:00:00.0000000+07:00","MobilePhone":"+84339062167","CreatedDate":"2021-01-19T14:36:27.2330000+07:00","IsActive":true,"IsAdmin":true,"RetailerId":861751,"UserName":"admin","Type":0,"CreatedBy":0,"CanAccessAnySite":false,"Language":"vi-VN","LocationName":"An Giang - Thành phố Long Xuyên","WardName":"Phường Mỹ Xuyên","IsLimitedByTrans":false,"isDeleted":false,"Description":"123","TfaOtpPhone":"0373322955","TfaSecretKey":"L0ly5T1IOsHRIO08xjSqM1maGRKOD5WolPzJNqh1PFi5rQlTHcdFwxWvuBVtD+b4uQkMlVH5EwEz1Z3CgXMdwpZemhVgIlRgbqW8j4CG5wWv6RyyIlfHw5UDRplzd5fFEGyLB1J/9tf+YfTa5CM9gcbYt7lDgy4ykR9SQJgrj1XpnJfEPK80c/6IG1L1GWjczrFPZgaUOjYydAaYYNKkEccVAuWeAFrv0aFMkQuIgHYUGje9XWM9YUMG1PoTTq5Za2u1YAQhW/8h5ybaVBPzTn+dFerrAg0xYK17HXoCFt+mIJiVklxs8aZzVlyFTr6Jj0BkOWEI3D8EcOd6tdSYUA==","AdministrativeAreaId":909,"Permissions":[],"Apps":[],"Invoices":[],"Transfers1":[],"PriceBookUsers":[],"CashFlows":[],"Invoices1":[],"Orders":[],"Returns1":[],"Manufacturings":[],"DamageItems":[],"TokenApis":[],"SmsEmailTemplates":[],"BalanceAdjustments1":[],"PointAdjustments":[],"PointAdjustmentsCreatedBy":[],"NotificationSettings":[],"DamageItems1":[],"PurchaseOrders1":[],"PurchaseReturns1":[],"CostAdjustments":[],"Devices":[],"OrderSuppliers":[],"OrderSuppliers1":[],"UserDevices":[],"UserPasswordChangeHistories":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"ProductTaxs":[],"PriceOldTaxs":[],"InvoiceDetailTaxs":[],"OrderDetailTaxs":[],"ReturnDetailTaxs":[],"CustomerToManageByUsers":[],"UserToManageCustomerOfOtherUsers":[],"CustomerGroupToManageByUsers":[],"PaymentTransactionReferences":[],"PaymentTransactionReferences1":[],"OrderSupplierDetailTaxes":[],"PurchaseOrderDetailTaxes":[],"PurchaseReturnDetailTaxes":[],"IdOld":0,"CompareGivenName":"aydlllll","CompareIsLimitedByTrans":false,"CompareIsShowSumRow":true,"CompareUserName":"admin","IsTimeSheetException":false,"HasNoTimeSheetPermisstion":false,"IsRequestFromCpanel":false,"IsManageCustomerOfAllOtherEmployee":false,"IsManageCustomerOfOtherEmployee":false},"Branch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","District":"Quận Hoàn Kiếm","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","isAcceptBookClosing":true,"BookClosingDate":"2025-04-30T00:00:00.0000000+07:00","GmbStatus":2,"GmbLocationName":"locations/9462138418018233597","GmbEmail":"phuong.nh@citigo.com.vn","SubContactNumber":"","ConfirmStatus":1,"AdministrativeAreaId":3981,"Orders":[],"Transfers1":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"Patients":[],"Clinics":[],"Doctors":[],"DoctorQualifications":[],"DoctorSpecialities":[],"Prescriptions":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"Manufacturings":[],"BankAccountBranches":[],"ClearDataTransactionTrackings":[],"ClearDataEvents":[],"ClearDataSchedules":[],"TotalUser":0,"CompareBranchName":"Chi nhánh trung tâm","StatusGmbValue":"Chờ xác thực","IsTimeSheetException":false,"LocationId":0,"WardId":0,"SyncProductSearchEventId":0,"IsHaveSyncedTransactionPharmacy":false,"IdOld":0},"PurchaseReturns":[],"PurchasePayments":[],"PurchaseOrderExpensesOthers":[{"Id":1277441,"ExValue":634.0000,"Price":0.0000,"CreatedDate":"2025-07-26T23:13:45.2530000+07:00","PurchaseOrderId":2998866,"ExpensesOtherId":1000300566,"RetailerId":0,"ExpensesOther":{"Id":1000300566,"Code":"LNDUTHQ1","Name":"Quitzon","ForAllBranch":true,"Value":634.0000,"Form":0,"isActive":true,"isAuto":false,"CreatedDate":"2022-06-08T10:38:19.7530000+07:00","CreatedBy":510,"isReturnAuto":false,"RetailerId":861751,"PurchaseOrderExpensesOthers":[],"PurchaseReturnExpensesOthers":[],"ExpensesOtherBranches":[],"OrderSupplierExpensesOthers":[],"IdOld":0},"ExpensesOtherName":"Quitzon","ExpensesOtherCode":"LNDUTHQ1","ExpensesOtherCreatedDate":"2022-06-08T10:38:19.7530000+07:00","isReturnAuto":false}],"I... (set the log level to DEBUG or TRACE to see the full content) 
+ headers={'cache-control': 'private', 'content-type': 'application/json; charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0728.00', '__revision': '20250728205101', 'kv.gitcommit': '12d403e', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'aa89a1541bd948339aade14840023443', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Mon, 28 Jul 2025 15:40:42 GMT', 'content-length': '9737'} 
+ body={"Total1Value":0,"Total2Value":0,"Total3Value":0,"Total4Value":0,"Total5Value":0,"Total6Value":0,"TotalTax":0,"Total":17,"PageSize":0,"Data":[{"Id":2906132,"CustomerId":1001445647,"CashierId":510,"PurchaseDate":"2025-07-28T22:40:42.8030000+07:00","Code":"DH000340","BranchId":30,"Status":1,"RetailerId":861751,"Discount":11500.0000,"SoldById":510,"CreatedDate":"2025-07-28T22:40:42.9330000+07:00","CreatedBy":510,"Extra":"{\"Amount\":0,\"Method\":{\"Id\":\"Cash\",\"Label\":\"Tiền mặt\"},\"ResetPromotion\":false}","Total":133500.0000,"TotalPayment":0.0000,"Surcharge":30000.0000,"Uuid":"","CreationBranchId":30,"Branch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","District":"Quận Hoàn Kiếm","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","isAcceptBookClosing":true,"BookClosingDate":"2025-04-30T00:00:00.0000000+07:00","GmbStatus":2,"GmbLocationName":"locations/9462138418018233597","GmbEmail":"phuong.nh@citigo.com.vn","SubContactNumber":"","ConfirmStatus":1,"AdministrativeAreaId":3981,"Orders":[],"Transfers1":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"Patients":[],"Clinics":[],"Doctors":[],"DoctorQualifications":[],"DoctorSpecialities":[],"Prescriptions":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"Manufacturings":[],"BankAccountBranches":[],"ClearDataTransactionTrackings":[],"ClearDataEvents":[],"ClearDataSchedules":[],"TotalUser":0,"CompareBranchName":"Chi nhánh trung tâm","StatusGmbValue":"Chờ xác thực","IsTimeSheetException":false,"LocationId":0,"WardId":0,"SyncProductSearchEventId":0,"IsHaveSyncedTransactionPharmacy":false,"IdOld":0},"OrderDetails":[{"Id":8482737,"OrderId":2906132,"ProductId":6326422,"Quantity":1,"Price":40000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:40:42.9400000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8030000+07:00","Uuid":"4ffad264-3f93-4118-b2a4-d8fa2505fb03","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":40000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482738,"OrderId":2906132,"ProductId":5816657,"Quantity":1,"Price":50000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:40:42.9400000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8030000+07:00","Uuid":"6ffacb16-536f-439b-b4be-8c6677f8b7f3","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":50000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482739,"OrderId":2906132,"ProductId":2001424958,"Quantity":1,"Price":25000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:40:42.9400000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:40:42.8030000+07:00","Uuid":"b28d5a6a-5c5e-47f4-bf4c-daab60185964","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":25000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false}],"InvoiceDeliveries":[],"InvoiceOrderSurcharges":[],"DeliveryPackages":[],"DeliveryInfoes":[],"InvoiceVouchers":[],"CouponUsageTrackings":[],"CreationBranch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","District":"Quận Hoàn Kiếm","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","isAcceptBookClosing":true,"BookClosingDate":"2025-04-30T00:00:00.0000000+07:00","GmbStatus":2,"GmbLocationName":"locations/9462138418018233597","GmbEmail":"phuong.nh@citigo.com.vn","SubContactNumber":"","ConfirmStatus":1,"AdministrativeAreaId":3981,"Orders":[],"Transfers1":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"Patients":[],"Clinics":[],"Doctors":[],"DoctorQualifications":[],"DoctorSpecialities":[],"Prescriptions":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"Manufacturings":[],"BankAccountBranches":[],"ClearDataTransactionTrackings":[],"ClearDataEvents":[],"ClearDataSchedules":[],"TotalUser":0,"CompareBranchName":"Chi nhánh trung tâm","StatusGmbValue":"Chờ xác thực","IsTimeSheetException":false,"LocationId":0,"WardId":0,"SyncProductSearchEventId":0,"IsHaveSyncedTransactionPharmacy":false,"IdOld":0},"IdOld":0,"TotalQuantity":3,"SubTotal":115000.0000,"PaidAmount":0.0000,"ToComplete":false,"StatusValue":"Phiếu tạm","CompareSoldById":510,"CompareCustomerId":1001445647,"ComparePurchaseDate":"2025-07-28T22:40:42.8030000+07:00","CompareStatus":1,"CompareDiscount":11500.0000,"CompareTotal":133500.0000,"CustomerName":"","IsOffline":false,"TransGuid":"00000000000000000000000000000000","EventId":0,"EventAction":0,"RetryCount":0,"DocumentTypeByEvent":0,"AllowSellWhenOutStock":false},{"Id":2906130,"CustomerId":1001445647,"CashierId":510,"PurchaseDate":"2025-07-28T22:39:17.7330000+07:00","Code":"DH000339","BranchId":30,"Status":1,"RetailerId":861751,"Discount":11500.0000,"SoldById":510,"CreatedDate":"2025-07-28T22:39:17.7430000+07:00","CreatedBy":510,"Extra":"{\"Amount\":0,\"Method\":{\"Id\":\"Cash\",\"Label\":\"Tiền mặt\"},\"ResetPromotion\":false}","Total":133500.0000,"TotalPayment":0.0000,"Surcharge":30000.0000,"Uuid":"","CreationBranchId":30,"Branch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","District":"Quận Hoàn Kiếm","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","isAcceptBookClosing":true,"BookClosingDate":"2025-04-30T00:00:00.0000000+07:00","GmbStatus":2,"GmbLocationName":"locations/9462138418018233597","GmbEmail":"phuong.nh@citigo.com.vn","SubContactNumber":"","ConfirmStatus":1,"AdministrativeAreaId":3981,"Orders":[],"Transfers1":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"Patients":[],"Clinics":[],"Doctors":[],"DoctorQualifications":[],"DoctorSpecialities":[],"Prescriptions":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"Manufacturings":[],"BankAccountBranches":[],"ClearDataTransactionTrackings":[],"ClearDataEvents":[],"ClearDataSchedules":[],"TotalUser":0,"CompareBranchName":"Chi nhánh trung tâm","StatusGmbValue":"Chờ xác thực","IsTimeSheetException":false,"LocationId":0,"WardId":0,"SyncProductSearchEventId":0,"IsHaveSyncedTransactionPharmacy":false,"IdOld":0},"OrderDetails":[{"Id":8482733,"OrderId":2906130,"ProductId":6326422,"Quantity":1,"Price":40000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:39:17.7470000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:39:17.7330000+07:00","Uuid":"0ed46bf7-bc08-45be-81e5-18f8b50588bb","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":40000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482734,"OrderId":2906130,"ProductId":5816657,"Quantity":1,"Price":50000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:39:17.7470000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:39:17.7330000+07:00","Uuid":"04076bc6-1a37-44fd-a49c-933c8c2974d5","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":50000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false},{"Id":8482735,"OrderId":2906130,"ProductId":2001424958,"Quantity":1,"Price":25000.0000,"Discount":0.0000,"CreatedDate":"2025-07-28T22:39:17.7470000+07:00","DiscountRatio":0,"LatestUpdate":"2025-07-28T22:39:17.7330000+07:00","Uuid":"62e104a8-5a39-44c7-b6b5-d6facf27751c","ViewDiscount":0.0000,"RetailerId":861751,"OrderDetailTaxs":[],"IdOld":0,"ProductName":"","ProductSName":"","ProductCode":"","SubTotal":25000.0000,"ProductType":0,"SoldQuantity":0,"ProductAllowSellWhenOutStock":false}],"InvoiceDeliveries":[],"InvoiceOrderSurcharges":[],"DeliveryPackages":[],"DeliveryInfoes":[],"InvoiceVouchers":[],"CouponUsageTrackings":[],"CreationBranch":{"Id":30,"Name":"Chi nhánh trung tâm","Type":0,"Address":"160 Trần Hưng Đạo","Province":"Hà Nội","District":"Quận Hoàn Kiếm","ContactNumber":"+84987964658","IsActive":true,"RetailerId":861751,"CreatedBy":0,"LimitAccess":false,"LocationName":"Hà Nội - Quận Hoàn Kiếm","WardName":"Phường Đồng Xuân","isAcceptBookClosing":true,"BookClosingDate":"2025-04-30T00:00:00.0000000+07:00","GmbStatus":2,"GmbLocationName":"locations/9462138418018233597","GmbEmail":"phuong.nh@citigo.com.vn","SubContactNumber":"","ConfirmStatus":1,"AdministrativeAreaId":3981,"Orders":[],"Transfers1":[],"DamageItems":[],"SurchargeBranches":[],"AdrApplications":[],"Customers":[],"Suppliers":[],"ExpensesOtherBranches":[],"OrderSuppliers":[],"WarrantyBranchGroups":[],"BranchTakingAddresses":[],"Patients":[],"Clinics":[],"Doctors":[],"DoctorQualifications":[],"DoctorSpecialities":[],"Prescriptions":[],"PayslipPayments":[],"PayslipPaymentAllocations":[],"EInvoices":[],"Manufacturings":[],"BankAccountBranches":[],"ClearDataTransactionTrackings":[],"ClearDataEvents":[],"ClearDataSchedules":[],"TotalUser":0,"CompareBranchName":"Chi nhánh trung tâm","StatusGmbValue":"Chờ xác thực","IsTimeSheetException":false,"LocationId":0,"WardId":0,"SyncProductSearchEventId":0,"IsHaveSyncedTransactionPharmacy":false,"IdOl... (set the log level to DEBUG or TRACE to see the full content) 
  </msg>
-<msg timestamp="20250726 23:13:45.096" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+<msg timestamp="20250728 22:40:42.868" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
   warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.096" level="INFO">${result_detail} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.006" endtime="20250726 23:13:45.096"/>
-</kw>
-<kw name="Convert String To JSON" library="JSONLibrary">
-<var>${json}</var>
-<arg>${result_detail.content}</arg>
-<doc>Convert String to JSON object</doc>
-<msg timestamp="20250726 23:13:45.099" level="INFO">${json} = {'Id': 2998866, 'Code': 'PN000442', 'PurchaseDate': '2025-07-26T23:13:45.2370000+07:00', 'SupplierId': 2001401362, 'BranchId': 30, 'RetailerId': 861751, 'UserId': 510, 'Status': 3, 'DiscountRatio': 5,...</msg>
-<status status="PASS" starttime="20250726 23:13:45.097" endtime="20250726 23:13:45.099"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_code}</var>
-<arg>${RESPONSE.json()["Code"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.100" level="INFO">${purchase_code} = PN000442</msg>
-<status status="PASS" starttime="20250726 23:13:45.099" endtime="20250726 23:13:45.100"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${pur_detail_code}</var>
-<arg>${json["Code"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.101" level="INFO">${pur_detail_code} = PN000442</msg>
-<status status="PASS" starttime="20250726 23:13:45.101" endtime="20250726 23:13:45.101"/>
-</kw>
-<kw name="Should Be Equal As Strings" library="BuiltIn">
-<arg>${purchase_code}</arg>
-<arg>${pur_detail_code}</arg>
-<arg>Mã phiếu nhập không khớp</arg>
-<doc>Fails if objects are unequal after converting them to strings.</doc>
-<status status="PASS" starttime="20250726 23:13:45.102" endtime="20250726 23:13:45.102"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_productName1}</var>
-<arg>${json}</arg>
-<arg>$.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID1})].ProductName</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.124" level="INFO">${pur_detail_productName1} = ['Xoài Tứ Quý']</msg>
-<status status="PASS" starttime="20250726 23:13:45.102" endtime="20250726 23:13:45.125"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_productName2}</var>
-<arg>${json}</arg>
-<arg>$.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID2})].ProductName</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.139" level="INFO">${pur_detail_productName2} = ['Redbull']</msg>
-<status status="PASS" starttime="20250726 23:13:45.125" endtime="20250726 23:13:45.139"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_productName3}</var>
-<arg>${json}</arg>
-<arg>$.PurchaseOrderDetails[?(@.ProductId==${PRODUCT_ID3})].ProductName</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.155" level="INFO">${pur_detail_productName3} = ['Hộp phở bò phố cổ']</msg>
-<status status="PASS" starttime="20250726 23:13:45.140" endtime="20250726 23:13:45.155"/>
-</kw>
-<kw name="Should Not Be Empty" library="BuiltIn">
-<arg>${pur_detail_productName1}</arg>
-<arg>Không có hàng hóa thứ 1</arg>
-<doc>Verifies that the given item is not empty.</doc>
-<msg timestamp="20250726 23:13:45.156" level="INFO">Length is 1</msg>
-<status status="PASS" starttime="20250726 23:13:45.155" endtime="20250726 23:13:45.156"/>
-</kw>
-<kw name="Should Not Be Empty" library="BuiltIn">
-<arg>${pur_detail_productName2}</arg>
-<arg>Không có hàng hóa thứ 2</arg>
-<doc>Verifies that the given item is not empty.</doc>
-<msg timestamp="20250726 23:13:45.156" level="INFO">Length is 1</msg>
-<status status="PASS" starttime="20250726 23:13:45.156" endtime="20250726 23:13:45.156"/>
-</kw>
-<kw name="Should Not Be Empty" library="BuiltIn">
-<arg>${pur_detail_productName3}</arg>
-<arg>Không có hàng hóa thứ 3</arg>
-<doc>Verifies that the given item is not empty.</doc>
-<msg timestamp="20250726 23:13:45.157" level="INFO">Length is 1</msg>
-<status status="PASS" starttime="20250726 23:13:45.156" endtime="20250726 23:13:45.157"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_quantity}</var>
-<arg>${RESPONSE.json()["TotalQuantity"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.157" level="INFO">${purchase_quantity} = 3</msg>
-<status status="PASS" starttime="20250726 23:13:45.157" endtime="20250726 23:13:45.157"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_quantity}</var>
-<arg>${json}</arg>
-<arg>$.TotalQuantity</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.171" level="INFO">${pur_detail_quantity} = [3]</msg>
-<status status="PASS" starttime="20250726 23:13:45.158" endtime="20250726 23:13:45.172"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${quantity}</var>
-<arg>${pur_detail_quantity[0]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.173" level="INFO">${quantity} = 3</msg>
-<status status="PASS" starttime="20250726 23:13:45.172" endtime="20250726 23:13:45.173"/>
+<msg timestamp="20250728 22:40:42.868" level="INFO">${list_order} = &lt;Response [200]&gt;</msg>
+<status status="PASS" starttime="20250728 22:40:42.809" endtime="20250728 22:40:42.868"/>
 </kw>
 <kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${purchase_quantity}</arg>
-<arg>${quantity}</arg>
-<arg>Số lượng hàng nhập không bằng nhau</arg>
+<arg>${ORDERS_ID}</arg>
+<arg>${list_order.json()["Data"][0]["Id"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<status status="PASS" starttime="20250726 23:13:45.173" endtime="20250726 23:13:45.173"/>
+<status status="PASS" starttime="20250728 22:40:42.868" endtime="20250728 22:40:42.871"/>
 </kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_subtotal}</var>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${ORDERS_CODE}</arg>
+<arg>${list_order.json()["Data"][0]["Code"]}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" starttime="20250728 22:40:42.872" endtime="20250728 22:40:42.874"/>
+</kw>
+<kw name="Should Be Equal As Strings" library="BuiltIn">
+<arg>${RESPONSE.json()["CustomerId"]}</arg>
+<arg>${list_order.json()["Data"][0]["CustomerId"]}</arg>
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<status status="PASS" starttime="20250728 22:40:42.874" endtime="20250728 22:40:42.878"/>
+</kw>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
 <arg>${RESPONSE.json()["SubTotal"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.174" level="INFO">${purchase_subtotal} = 76000</msg>
-<status status="PASS" starttime="20250726 23:13:45.173" endtime="20250726 23:13:45.174"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_subtotal}</var>
-<arg>${json}</arg>
-<arg>$.SubTotal</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.188" level="INFO">${pur_detail_subtotal} = [76000.0]</msg>
-<status status="PASS" starttime="20250726 23:13:45.174" endtime="20250726 23:13:45.188"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${subtotal}</var>
-<arg>${pur_detail_subtotal[0]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.189" level="INFO">${subtotal} = 76000.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.189" endtime="20250726 23:13:45.189"/>
-</kw>
-<kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${purchase_subtotal}</arg>
-<arg>${subtotal}</arg>
-<arg>Tổng tiền hàng không bằng nhau</arg>
+<arg>${list_order.json()["Data"][0]["SubTotal"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<msg timestamp="20250726 23:13:45.190" level="INFO">Argument types are:
+<msg timestamp="20250728 22:40:42.881" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;class 'float'&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.190" endtime="20250726 23:13:45.190"/>
+<status status="PASS" starttime="20250728 22:40:42.879" endtime="20250728 22:40:42.881"/>
 </kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_total}</var>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
 <arg>${RESPONSE.json()["Total"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.191" level="INFO">${purchase_total} = 72200</msg>
-<status status="PASS" starttime="20250726 23:13:45.190" endtime="20250726 23:13:45.191"/>
-</kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${pur_detail_total}</var>
-<arg>${json}</arg>
-<arg>$.Total</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.204" level="INFO">${pur_detail_total} = [72200.0]</msg>
-<status status="PASS" starttime="20250726 23:13:45.191" endtime="20250726 23:13:45.205"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${total}</var>
-<arg>${pur_detail_total[0]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.205" level="INFO">${total} = 72200.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.205" endtime="20250726 23:13:45.205"/>
-</kw>
-<kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${purchase_total}</arg>
-<arg>${total}</arg>
-<arg>Tổng tiền cần trả NCC không bằng nhau</arg>
+<arg>${list_order.json()["Data"][0]["Total"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<msg timestamp="20250726 23:13:45.206" level="INFO">Argument types are:
+<msg timestamp="20250728 22:40:42.884" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;class 'float'&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.206" endtime="20250726 23:13:45.206"/>
+<status status="PASS" starttime="20250728 22:40:42.881" endtime="20250728 22:40:42.884"/>
 </kw>
-<kw name="Get Value From Json" library="JSONLibrary">
-<var>${SupplierOldDebt}</var>
-<arg>${json}</arg>
-<arg>$.SupplierOldDebt</arg>
-<doc>Get Value From JSON using JSONPath</doc>
-<msg timestamp="20250726 23:13:45.219" level="INFO">${SupplierOldDebt} = [8777880.0]</msg>
-<status status="PASS" starttime="20250726 23:13:45.206" endtime="20250726 23:13:45.219"/>
+<kw name="Should Be Equal As Numbers" library="BuiltIn">
+<arg>${RESPONSE.json()["TotalPayment"]}</arg>
+<arg>${list_order.json()["Data"][0]["TotalPayment"]}</arg>
+<doc>Fails if objects are unequal after converting them to real numbers.</doc>
+<msg timestamp="20250728 22:40:42.887" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'float'&gt;</msg>
+<status status="PASS" starttime="20250728 22:40:42.884" endtime="20250728 22:40:42.887"/>
 </kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${SupplierOldDebt}</var>
-<arg>${SupplierOldDebt[0]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.220" level="INFO">${SupplierOldDebt} = 8777880.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.219" endtime="20250726 23:13:45.220"/>
+<kw name="Get Length" library="BuiltIn">
+<var>${length}</var>
+<arg>${RESPONSE.json()["OrderDetails"]}</arg>
+<doc>Returns and logs the length of the given item as an integer.</doc>
+<msg timestamp="20250728 22:40:42.888" level="INFO">Length is 3</msg>
+<msg timestamp="20250728 22:40:42.888" level="INFO">${length} = 3</msg>
+<status status="PASS" starttime="20250728 22:40:42.887" endtime="20250728 22:40:42.888"/>
 </kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${SUPPLIEROLDDEBT}</arg>
-<arg>${SupplierOldDebt}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:45.221" level="INFO">${SUPPLIEROLDDEBT} = 8777880.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.220" endtime="20250726 23:13:45.221"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${TOTAL}</arg>
-<arg>${total}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:45.221" level="INFO">${TOTAL} = 72200.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.221" endtime="20250726 23:13:45.221"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:45.002" endtime="20250726 23:13:45.221"/>
-</kw>
-<kw name="And Kiểm tra công nợ NCC" library="Purchase_keywords">
-<kw name="Set Variable" library="BuiltIn">
-<var>${supplier_id}</var>
-<arg>${RESPONSE.json()["SupplierId"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.223" level="INFO">${supplier_id} = 2001401362</msg>
-<status status="PASS" starttime="20250726 23:13:45.222" endtime="20250726 23:13:45.223"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint}</var>
-<arg>${endpoint_supplier_detail}</arg>
-<arg>${supplier_id}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.224" level="INFO">${endpoint} = suppliers/2001401362?Includes=SupplierGroupDetails</msg>
-<status status="PASS" starttime="20250726 23:13:45.223" endtime="20250726 23:13:45.224"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result_detail}</var>
-<arg>session</arg>
-<arg>${endpoint}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.276" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/suppliers/2001401362?Includes=SupplierGroupDetails 
- path_url=/api/suppliers/2001401362?Includes=SupplierGroupDetails 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:45.276" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/suppliers/2001401362?Includes=SupplierGroupDetails 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '248b4f827c164d4b88759f58abb91776', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '550'} 
- body={"Id":2001401362,"Name":"Haley","Phone":"491-469-0696","Email":"Laverne20@yahoo.com","Address":"Lueilwitzview","RetailerId":861751,"Code":"NIGILTM1","CreatedDate":"2022-06-08T10:38:20.5170000+07:00","CreatedBy":510,"ModifiedDate":"2025-07-26T23:13:45.3500000+07:00","ModifiedBy":510,"Debt":8850080.0000,"TaxCode":"","Comment":"Borders","LocationName":"","WardName":"","BranchId":30,"isDeleted":false,"isActive":true,"SearchNumber":"491-469-0696","PurchaseOrders":[],"PurchaseReturns":[],"PurchasePayments":[],"SupplierGroupDetails":[],"OrderSuppliers":[],"CustomerSupplierCombines":[],"IdOld":0,"TotalInvoiced":0,"CompareCode":"NIGILTM1","CompareName":"Haley","ComparePhone":"491-469-0696","IsCusSupCombine":false} 
- </msg>
-<msg timestamp="20250726 23:13:45.276" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.297" level="INFO">${result_detail} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.224" endtime="20250726 23:13:45.297"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${supplier_debt}</var>
-<arg>${result_detail.json()["Debt"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.299" level="INFO">${supplier_debt} = 8850080.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.297" endtime="20250726 23:13:45.299"/>
-</kw>
-<kw name="Evaluate" library="BuiltIn">
-<var>${SUM}</var>
-<arg>${SUPPLIEROLDDEBT} + ${TOTAL}</arg>
-<doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250726 23:13:45.300" level="INFO">${SUM} = 8850080.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.300" endtime="20250726 23:13:45.300"/>
-</kw>
+<for flavor="IN RANGE">
+<var>${index}</var>
+<value>0</value>
+<value>${length}</value>
+<iter>
+<var name="${index}">0</var>
 <kw name="Log" library="BuiltIn">
-<arg>Tổng nợ + tổng đơn: ${SUM}</arg>
+<arg>${index}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20250726 23:13:45.301" level="INFO">Tổng nợ + tổng đơn: 8850080.0</msg>
-<status status="PASS" starttime="20250726 23:13:45.300" endtime="20250726 23:13:45.301"/>
+<msg timestamp="20250728 22:40:42.889" level="INFO">0</msg>
+<status status="PASS" starttime="20250728 22:40:42.889" endtime="20250728 22:40:42.889"/>
 </kw>
 <kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${SUM}</arg>
-<arg>${supplier_debt}</arg>
-<arg>Công nợ sau khi nhập hàng của NCC không đúng</arg>
+<arg>${RESPONSE.json()["OrderDetails"][${index}]["ProductId"]}</arg>
+<arg>${list_order.json()["Data"][0]["OrderDetails"][${index}]["ProductId"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<status status="PASS" starttime="20250726 23:13:45.301" endtime="20250726 23:13:45.302"/>
+<status status="PASS" starttime="20250728 22:40:42.889" endtime="20250728 22:40:42.892"/>
 </kw>
-<status status="PASS" starttime="20250726 23:13:45.222" endtime="20250726 23:13:45.302"/>
-</kw>
-<kw name="And Kiểm tra tồn kho hàng hóa sau khi nhập hàng" library="Purchase_keywords">
-<kw name="Format String" library="String">
-<var>${endpoint1}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID1}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.303" level="INFO">${endpoint1} = products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:45.303" endtime="20250726 23:13:45.303"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint2}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID2}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.304" level="INFO">${endpoint2} = products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:45.303" endtime="20250726 23:13:45.304"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint3}</var>
-<arg>${endpoint_product_detail}</arg>
-<arg>${PRODUCT_ID3}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.304" level="INFO">${endpoint3} = products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2</msg>
-<status status="PASS" starttime="20250726 23:13:45.304" endtime="20250726 23:13:45.304"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result1}</var>
-<arg>session</arg>
-<arg>${endpoint1}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.393" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:45.394" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/6326422/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'ae213b62fec0466fac28a9dba1d5c800', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '804'} 
- body={"Product":{"Id":6326422,"ProductType":2,"CategoryId":1454797,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Xoài Tứ Quý","FullName":"Xoài Tứ Quý","Code":"SP9934437195","BasePrice":89000.0000,"Cost":55583.8400,"LatestPurchasePrice":58000.0000,"OnHand":134,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":134,"CompareCost":55583.8400,"CompareBasePrice":89000.0000,"CompareCode":"SP9934437195","CompareName":"Xoài Tứ Quý","CompareProductShelves":[],"CompareMinQuantity":0,"CompareMaxQuantity":999999999,"CompareCategoryId":1454797,"CompareWeight":0,"Weight":0,"Reserved":4,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":999999999,"CustomId":0,"CustomValue":0,"ConversionValue":1,"ProductAttributes":[],"ProductShelves":[],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":8,"CompareRewardPoint":8,"IsBatchExpireControl":false,"FormulaCount":0,"TradeMarkName":"","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:45.394" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.394" level="INFO">${result1} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.304" endtime="20250726 23:13:45.395"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_after_product1}</var>
-<arg>${result1.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.396" level="INFO">${onhand_after_product1} = 134</msg>
-<status status="PASS" starttime="20250726 23:13:45.395" endtime="20250726 23:13:45.396"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_AFT_PRODUCT1}</arg>
-<arg>${onhand_after_product1}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:45.398" level="INFO">${ONHAND_AFT_PRODUCT1} = 134</msg>
-<status status="PASS" starttime="20250726 23:13:45.396" endtime="20250726 23:13:45.398"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result2}</var>
-<arg>session</arg>
-<arg>${endpoint2}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.486" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:45.486" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/5816657/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': 'fd02c3abef37494c871ea517c7ef8196', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '810'} 
- body={"Product":{"Id":5816657,"ProductType":2,"CategoryId":1000050035,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Redbull","FullName":"Redbull","Code":"SP9934437062","Description":"","BasePrice":10000.0000,"Cost":9646.8300,"LatestPurchasePrice":10000.0000,"OnHand":146,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":146,"CompareCost":9646.8300,"CompareBasePrice":10000.0000,"CompareCode":"SP9934437062","CompareBarcode":"","CompareName":"Redbull","CompareProductShelves":[],"CompareMinQuantity":0,"CompareMaxQuantity":999999999,"CompareCategoryId":1000050035,"CompareDescription":"","CompareOrderTemplate":"","Reserved":7,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":999999999,"CustomId":0,"CustomValue":0,"ConversionValue":1,"OrderTemplate":"","ProductAttributes":[],"ProductShelves":[],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":1,"CompareRewardPoint":1,"IsBatchExpireControl":false,"FormulaCount":0,"Barcode":"","TradeMarkName":"","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:45.486" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.486" level="INFO">${result2} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.399" endtime="20250726 23:13:45.487"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_after_product2}</var>
-<arg>${result2.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.488" level="INFO">${onhand_after_product2} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.487" endtime="20250726 23:13:45.488"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_AFT_PRODUCT2}</arg>
-<arg>${onhand_after_product2}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:45.489" level="INFO">${ONHAND_AFT_PRODUCT2} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.488" endtime="20250726 23:13:45.489"/>
-</kw>
-<kw name="GET On Session" library="RequestsLibrary">
-<var>${result3}</var>
-<arg>session</arg>
-<arg>${endpoint3}</arg>
-<doc>Sends a GET request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.569" level="INFO">GET Request : url=https://api-man1.kiotviet.vn/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- path_url=/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:45.570" level="INFO">GET Response : url=https://api-man1.kiotviet.vn/api/products/2001424958/initialdata?Includes=ProductAttributes&amp;ProductType=2 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '2e6d2b3c540d4d1193519f995e6bc3b0', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '920'} 
- body={"Product":{"Id":2001424958,"ProductType":2,"CategoryId":1000000002,"CategoryName":"","isActive":true,"HasVariants":false,"VariantCount":1,"AllowsSale":true,"isDeleted":false,"Name":"Hộp phở bò phố cổ","FullName":"Hộp phở bò phố cổ","Code":"ggg235325","BasePrice":10000.0000,"Cost":7845.4700,"LatestPurchasePrice":8000.0000,"OnHand":146,"OnOrder":0,"OnHandCompareMin":0,"OnHandCompareMax":0,"CompareOnHand":146,"CompareCost":7845.4700,"CompareBasePrice":10000.0000,"CompareCode":"ggg235325","CompareBarcode":"","CompareTradeMarkId":1000000001,"CompareName":"Hộp phở bò phố cổ","CompareProductShelves":[{"Id":1000000008,"ShelvesId":100036,"ProductId":2001424958,"RetailerId":861751,"CreatedDate":"2021-08-03T12:01:06.5770000+07:00"}],"CompareMinQuantity":0,"CompareMaxQuantity":50,"CompareCategoryId":1000000002,"CompareWeight":0,"Weight":0,"Reserved":0,"ActualReserved":0,"MinQuantity":0,"MaxQuantity":50,"CustomId":0,"CustomValue":0,"ConversionValue":1,"ProductAttributes":[],"ProductShelves":[{"Id":1000000008,"ShelvesId":100036,"ProductId":2001424958,"RetailerId":861751,"CreatedDate":"2021-08-03T12:01:06.5770000+07:00"}],"ProductUnits":[],"IsLotSerialControl":false,"IsRewardPoint":true,"RewardPoint":1,"CompareRewardPoint":1,"IsBatchExpireControl":false,"FormulaCount":0,"Barcode":"","TradeMarkId":1000000001,"TradeMarkName":"Hảo hảo","Type4":2,"PageSize":0},"AtributeList":[],"CommissionDetails":[],"AllowUpdateCost":true,"ProductMaterialType2s":[{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":0,"TypeName":"mm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":1,"TypeName":"cm"},{"__type":"&lt;&gt;f__AnonymousType329`2[[System.Int32, mscorlib],[System.String, mscorlib]], KiotViet.Web.Api","TypeId":2,"TypeName":"m"}],"ProductWithWarehouseStockTakes":[],"ProductAttrBranchInBranch":[]} 
- </msg>
-<msg timestamp="20250726 23:13:45.570" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.570" level="INFO">${result3} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.489" endtime="20250726 23:13:45.570"/>
-</kw>
-<kw name="Set Variable" library="BuiltIn">
-<var>${onhand_after_product3}</var>
-<arg>${result3.json()["Product"]["OnHand"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.571" level="INFO">${onhand_after_product3} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.571" endtime="20250726 23:13:45.572"/>
-</kw>
-<kw name="Set Test Variable" library="BuiltIn">
-<arg>${ONHAND_AFT_PRODUCT3}</arg>
-<arg>${onhand_after_product3}</arg>
-<doc>Makes a variable available everywhere within the scope of the current test.</doc>
-<msg timestamp="20250726 23:13:45.573" level="INFO">${ONHAND_AFT_PRODUCT3} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.572" endtime="20250726 23:13:45.573"/>
-</kw>
-<kw name="Evaluate" library="BuiltIn">
-<var>${compare_onhand1}</var>
-<arg>${ONHAND_BEF_PRODUCT1} + ${QUANTITY1}</arg>
-<doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250726 23:13:45.573" level="INFO">${compare_onhand1} = 134</msg>
-<status status="PASS" starttime="20250726 23:13:45.573" endtime="20250726 23:13:45.573"/>
+<status status="PASS" starttime="20250728 22:40:42.888" endtime="20250728 22:40:42.893"/>
+</iter>
+<iter>
+<var name="${index}">1</var>
+<kw name="Log" library="BuiltIn">
+<arg>${index}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250728 22:40:42.893" level="INFO">1</msg>
+<status status="PASS" starttime="20250728 22:40:42.893" endtime="20250728 22:40:42.893"/>
 </kw>
 <kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${compare_onhand1}</arg>
-<arg>${onhand_after_product1}</arg>
+<arg>${RESPONSE.json()["OrderDetails"][${index}]["ProductId"]}</arg>
+<arg>${list_order.json()["Data"][0]["OrderDetails"][${index}]["ProductId"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<status status="PASS" starttime="20250726 23:13:45.574" endtime="20250726 23:13:45.574"/>
+<status status="PASS" starttime="20250728 22:40:42.893" endtime="20250728 22:40:42.896"/>
 </kw>
-<kw name="Evaluate" library="BuiltIn">
-<var>${compare_onhand2}</var>
-<arg>${ONHAND_BEF_PRODUCT2} + ${QUANTITY2}</arg>
-<doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250726 23:13:45.574" level="INFO">${compare_onhand2} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.574" endtime="20250726 23:13:45.574"/>
+<status status="PASS" starttime="20250728 22:40:42.893" endtime="20250728 22:40:42.896"/>
+</iter>
+<iter>
+<var name="${index}">2</var>
+<kw name="Log" library="BuiltIn">
+<arg>${index}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20250728 22:40:42.897" level="INFO">2</msg>
+<status status="PASS" starttime="20250728 22:40:42.897" endtime="20250728 22:40:42.897"/>
 </kw>
 <kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${compare_onhand2}</arg>
-<arg>${onhand_after_product2}</arg>
+<arg>${RESPONSE.json()["OrderDetails"][${index}]["ProductId"]}</arg>
+<arg>${list_order.json()["Data"][0]["OrderDetails"][${index}]["ProductId"]}</arg>
 <doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<status status="PASS" starttime="20250726 23:13:45.574" endtime="20250726 23:13:45.574"/>
+<status status="PASS" starttime="20250728 22:40:42.897" endtime="20250728 22:40:42.900"/>
 </kw>
-<kw name="Evaluate" library="BuiltIn">
-<var>${compare_onhand3}</var>
-<arg>${ONHAND_BEF_PRODUCT3} + ${QUANTITY3}</arg>
-<doc>Evaluates the given expression in Python and returns the result.</doc>
-<msg timestamp="20250726 23:13:45.575" level="INFO">${compare_onhand3} = 146</msg>
-<status status="PASS" starttime="20250726 23:13:45.575" endtime="20250726 23:13:45.575"/>
+<status status="PASS" starttime="20250728 22:40:42.897" endtime="20250728 22:40:42.900"/>
+</iter>
+<status status="PASS" starttime="20250728 22:40:42.888" endtime="20250728 22:40:42.900"/>
+</for>
+<status status="PASS" starttime="20250728 22:40:42.809" endtime="20250728 22:40:42.901"/>
 </kw>
-<kw name="Should Be Equal As Numbers" library="BuiltIn">
-<arg>${compare_onhand3}</arg>
-<arg>${onhand_after_product3}</arg>
-<doc>Fails if objects are unequal after converting them to real numbers.</doc>
-<status status="PASS" starttime="20250726 23:13:45.575" endtime="20250726 23:13:45.575"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:45.302" endtime="20250726 23:13:45.575"/>
-</kw>
-<kw name="Xóa phiếu nhập hàng" library="Purchase_keywords" type="TEARDOWN">
-<kw name="Set Variable" library="BuiltIn">
-<var>${purchase_id}</var>
-<arg>${RESPONSE.json()["Id"]}</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20250726 23:13:45.577" level="INFO">${purchase_id} = 2998866</msg>
-<status status="PASS" starttime="20250726 23:13:45.576" endtime="20250726 23:13:45.577"/>
-</kw>
-<kw name="Format String" library="String">
-<var>${endpoint}</var>
-<arg>${endpoint_delete_purchaseOrder}</arg>
-<arg>${purchase_id}</arg>
-<doc>Formats a ``template`` using the given ``positional`` and ``named`` arguments.</doc>
-<msg timestamp="20250726 23:13:45.577" level="INFO">${endpoint} = purchaseOrders?Id=2998866&amp;IsVoidPayment=false&amp;CompareStatus=3</msg>
-<status status="PASS" starttime="20250726 23:13:45.577" endtime="20250726 23:13:45.577"/>
-</kw>
-<kw name="DELETE On Session" library="RequestsLibrary">
-<var>${result}</var>
-<arg>session</arg>
-<arg>${endpoint}</arg>
-<doc>Sends a DELETE request on a previously created HTTP Session.</doc>
-<msg timestamp="20250726 23:13:45.633" level="INFO">DELETE Request : url=https://api-man1.kiotviet.vn/api/purchaseOrders?Id=2998866&amp;IsVoidPayment=false&amp;CompareStatus=3 
- path_url=/api/purchaseOrders?Id=2998866&amp;IsVoidPayment=false&amp;CompareStatus=3 
- headers={'User-Agent': 'python-requests/2.31.0', 'Accept-Encoding': 'gzip, deflate', 'Accept': '*/*', 'Connection': 'keep-alive', 'content-type': 'application/json;charset=utf-8', 'retailer': 'testz23', 'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IndYYSJ9.eyJpc3MiOiJrdnNzand0Iiwic3ViIjo1MTAsImlhdCI6MTc1MzU0NjQyNCwiZXhwIjoxNzU1OTY1NjI0LCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbIlVzZXIiXSwia3Zzb3VyY2UiOiJSZXRhaWwiLCJrdnVzZXRmYSI6MCwia3Z3YWl0b3RwIjowLCJrdnNlcyI6IjhmNzMzZTY4N2ZhYzQyZDJiOWJlZWMxYjg4MTBlOTQ5Iiwia3Z1aWQiOjUxMCwia3ZsYW5nIjoidmktVk4iLCJrdnV0eXBlIjowLCJrdnVsaW1pdCI6IkZhbHNlIiwia3Z1YWRtaW4iOiJUcnVlIiwia3Z1YWN0IjoiVHJ1ZSIsImt2dWxpbWl0dHJhbnMiOiJGYWxzZSIsImt2dXNob3dzdW0iOiJUcnVlIiwia3ZiaSI6IkZhbHNlIiwia3ZiaWQiOjMwLCJrdnJpbmRpZCI6OSwia3ZyY29kZSI6InRlc3R6MjMiLCJrdnJpZCI6ODYxNzUxLCJrdnVyaWQiOjg2MTc1MSwia3ZyZ2lkIjoyMywicGVybXMiOiIifQ.OsqUnd3vjiGo7VUd3eQ6IA-1zFo6Cl4_T8W_q0oScNG-nDF1zIA5Dd0NhYi15BUPBoHrp1t90gmdCTHmyk44ejuS7lXDGhTXQD4yTKfbcCiKt8sPiDTGy4QrCJpMjxLEs_Gc7KJqw7D08ZPk0PaYTFi3sndW-oxGJoS8TVh-G_SlFO7lu7sToRhZGJFhWRzBDCPjVfFD8hXytE1Wjepio66MHlXQyVDuvjepvdcdoCTX0XjfmThbr0hDf95MxGhYa9F4CY1V48PTPQkf5bcM0atxy6BSj5LDPQMlGfM-7MeAQYnn5qOpTzlaP7waW3kOgAJ0WtuEhDPSAzNsAZFl2w', 'BranchId': '30', 'Cookie': 'ss-id=bxdiK15yqTo8RGTpDZJ7; ss-pid=Jr2bgHqclSfEifpqLQdR', 'Content-Length': '0'} 
- body=None 
- </msg>
-<msg timestamp="20250726 23:13:45.634" level="INFO">DELETE Response : url=https://api-man1.kiotviet.vn/api/purchaseOrders?Id=2998866&amp;IsVoidPayment=false&amp;CompareStatus=3 
- status=200, reason=OK 
- headers={'cache-control': 'private', 'content-type': 'application/json;charset=utf-8', 'content-encoding': 'gzip', 'vary': 'Accept,Accept-Encoding', 'isusekvclient': 'True', 'isusespa': 'true', 'gatewaynodes': 'https://api-sd1.kiotviet.vn,https://api-sd2.kiotviet.vn', 'retailer-pos-version': '1.0.70', 'fb-pos-version': '', 'kv.app': 'RetailApp 1.22.0723.00', '__revision': '20250726192733', 'kv.gitcommit': '915c34a', 'kv.gittag': '', 'retailer': 'testz23', 'zone': '23', 'retailerindustryid': '9', 'kv.requestid': '9879dd8b20204363842d75c614060fae', 'access-control-allow-origin': '*', 'access-control-allow-headers': 'X-Request-Id, X-Language, X-Timezone,WarehouseId,Origin,X-Requested-With,Content-Type,Accept,Authorization,Retailer-POS-Version,Zone,FingerPrintKey,Referer,Retailer,User-Agent,BranchId,IsUseKvClient,x-group-id,x-retailer-code,retailercode,retailerid,latestbranchid,Authorization,KvClientImport,GatewayNodes,FromSpa,app,jwt,retailer,retail_object,branchid', 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-expose-headers': 'Retailer-POS-Version, FB-POS-Version, IsUseKvClient, GatewayNodes, FromSpa, IsUseSpa', 'access-control-allow-credentials': 'true', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'date': 'Sat, 26 Jul 2025 16:13:45 GMT', 'content-length': '925'} 
- body={"Id":2998866,"Code":"PN000442","PurchaseDate":"2025-07-26T23:13:45.2370000+07:00","SupplierId":2001401362,"BranchId":30,"RetailerId":861751,"UserId":510,"Status":4,"DiscountRatio":5,"Discount":3800.0000,"CreatedDate":"2025-07-26T23:13:45.2530000+07:00","CreatedBy":510,"ModifiedBy":510,"ModifiedDate":"2025-07-26T23:13:46.1054489+07:00","Total":72200.0000,"PurchaseOrderDetails":[{"Id":8536290,"PurchaseId":2998866,"ProductId":6326422,"Quantity":1,"Price":58000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":2900.0000,"OrderByNumber":0,"AllocationSuppliers":483.8400,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":58000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0},{"Id":8536291,"PurchaseId":2998866,"ProductId":5816657,"Quantity":1,"Price":10000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2570000+07:00","Allocation":500.0000,"OrderByNumber":1,"AllocationSuppliers":83.4200,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":10000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0},{"Id":8536292,"PurchaseId":2998866,"ProductId":2001424958,"Quantity":1,"Price":8000.0000,"Discount":0.0000,"CreatedDate":"2025-07-26T23:13:45.2600000+07:00","Allocation":400.0000,"OrderByNumber":2,"AllocationSuppliers":66.7400,"RetailerId":861751,"BaseCost":0,"PurchaseOrderDetailTaxes":[],"IdOld":0,"ProductName":"","ProductCode":"","ReturnQuantity":0,"SubTotal":8000.0000,"OrderQuantity":0,"Reserved":0,"OnHand":0,"ActualReserved":0,"ProductSName":"","BasePrice":0}],"PurchaseReturns":[],"PurchasePayments":[],"PurchaseOrderExpensesOthers":[],"IdOld":0,"CompareCode":"PN000442","CompareUserId":0,"CompareSupplierId":2001401362,"ComparePurchaseDate":"2025-07-26T23:13:45.2370000+07:00","CompareDiscount":3800.0000,"TotalQuantity":3,"TotalProductType":3,"SubTotal":76000.0000,"PaidAmount":0,"ToComplete":false,"CompareStatusValue":"Đã hủy","StatusValue":"Đã hủy","ViewPrice":false,"SupplierDebt":0,"SupplierOldDebt":0,"IsHideDiscount":false,"UpdatePurchaseId":0,"EventId":0,"EventAction":0,"RetryCount":0,"DocumentTypeByEvent":0,"MasterBranchId":0,"IsApplyPurchaseTax":false,"DiscountPayment":0} 
- </msg>
-<msg timestamp="20250726 23:13:45.634" level="INFO">C:\Users\ADMIN\AppData\Local\Programs\Python\Python313\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'api-man1.kiotviet.vn'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
-  warnings.warn(</msg>
-<msg timestamp="20250726 23:13:45.649" level="INFO">${result} = &lt;Response [200]&gt;</msg>
-<status status="PASS" starttime="20250726 23:13:45.577" endtime="20250726 23:13:45.649"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:45.576" endtime="20250726 23:13:45.649"/>
-</kw>
-<status status="PASS" starttime="20250726 23:13:44.245" endtime="20250726 23:13:45.654"/>
+<status status="PASS" starttime="20250728 22:40:42.141" endtime="20250728 22:40:42.901"/>
 </test>
-<status status="PASS" starttime="20250726 23:13:43.797" endtime="20250726 23:13:45.655"/>
+<status status="PASS" starttime="20250728 22:40:41.709" endtime="20250728 22:40:42.903"/>
 </suite>
 <statistics>
 <total>
@@ -1230,7 +502,7 @@
 <tag>
 </tag>
 <suite>
-<stat pass="1" fail="0" skip="0" id="s1" name="Purchase">Purchase</stat>
+<stat pass="1" fail="0" skip="0" id="s1" name="Orders">Orders</stat>
 </suite>
 </statistics>
 <errors>
